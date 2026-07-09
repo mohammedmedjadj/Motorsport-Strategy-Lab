@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+
+# FastF1 cache — large binary downloads, never committed
+data/cache/
+
+# Derived data that is large or regenerable stays out; small versioned
+# derived datasets live in data/derived/ and are committed explicitly.
+
+# Tooling
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Environment secrets (none expected, but never commit them)
+.env
+.env.*
