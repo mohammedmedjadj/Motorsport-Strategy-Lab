@@ -5,8 +5,8 @@ system (tyre degradation model, safety-car probability model, Monte Carlo
 strategy simulator) plus a retrospective audit comparing the model's
 recommendations against real strategy calls from actual races.
 
-**Status: Phase 4 (Monte Carlo simulator) delivered — awaiting validation
-before Phase 5 (retrospective audit).** Phases 0-3 validated.
+**Status: Phase 5 (retrospective decision audit) delivered — awaiting
+validation before Phase 6 (methodology report).** Phases 0-4 validated.
 
 ## Why this project
 

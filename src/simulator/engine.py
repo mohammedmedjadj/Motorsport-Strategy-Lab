@@ -62,6 +62,14 @@ class Scenario:
     tyre_age: int
     target_compound: str
     rivals: tuple[RivalSpec, ...] = field(default_factory=tuple)
+    #: A neutralisation already running at the decision point:
+    #: (kind "SC"/"VSC", laps already run under it). Its remaining length is
+    #: resampled per draw from observed durations conditional on exceeding
+    #: the elapsed laps.
+    ongoing: tuple[str, int] | None = None
+    #: Adds a "no further stop" pseudo-candidate (pit_lap 0 in outputs) —
+    #: required to audit races where staying out was the real strategy.
+    include_no_stop: bool = False
 
     def candidate_pit_laps(self, min_final_stint: int = 3) -> tuple[int, ...]:
         """Feasible pit laps: from next lap to race end minus a minimal stint."""
@@ -92,13 +100,25 @@ def _sample_coef(rng: np.random.Generator, coef: GaussianCoef) -> float:
 
 
 def _sample_status(
-    model: CircuitModel, n_laps: int, rng: np.random.Generator
+    model: CircuitModel,
+    n_laps: int,
+    rng: np.random.Generator,
+    ongoing: tuple[str, int] | None = None,
 ) -> np.ndarray:
     """Per-lap status timeline from resampled hazards and duration pools."""
     lam_sc = rng.gamma(model.sc_hazard.alpha, 1.0 / model.sc_hazard.beta)
     lam_vsc = rng.gamma(model.vsc_hazard.alpha, 1.0 / model.vsc_hazard.beta)
     status = np.full(n_laps, GREEN, dtype=np.int8)
     lap = 0
+    if ongoing is not None:
+        kind, elapsed = ongoing
+        pool = model.sc_durations if kind == "SC" else model.vsc_durations
+        code = SC if kind == "SC" else VSC
+        longer = [d for d in pool if d > elapsed]
+        remaining = (int(rng.choice(longer)) - elapsed) if longer else 1
+        remaining = min(max(remaining, 1), n_laps)
+        status[:remaining] = code
+        lap = remaining
     while lap < n_laps:
         u = rng.random()
         if u < lam_sc:
@@ -172,6 +192,8 @@ def simulate(
     """Evaluate every candidate pit lap over ``n_draws`` shared realisations."""
     rng = np.random.default_rng(seed)
     candidates = scenario.candidate_pit_laps(min_final_stint)
+    if scenario.include_no_stop:
+        candidates = (*candidates, 0)  # 0 = stay out to the end
     laps = np.arange(scenario.current_lap + 1, scenario.total_laps + 1)
     n_laps = len(laps)
 
@@ -180,7 +202,7 @@ def simulate(
              for r in scenario.rivals}
 
     for d in range(n_draws):
-        status = _sample_status(model, n_laps, rng)
+        status = _sample_status(model, n_laps, rng, scenario.ongoing)
         fuel = _sample_coef(rng, model.fuel_slope)
         deg = {
             c: tuple(_sample_coef(rng, g) for g in coefs)
@@ -199,7 +221,8 @@ def simulate(
             t = _car_times(
                 model, laps, status, our_noise, fuel, deg,
                 scenario.compound, scenario.tyre_age, scenario.current_lap,
-                pit_lap, scenario.target_compound, model.pit_loss.median_s,
+                pit_lap if pit_lap > 0 else None,
+                scenario.target_compound, model.pit_loss.median_s,
             )
             our[i, d] = t
             for rival in scenario.rivals:
