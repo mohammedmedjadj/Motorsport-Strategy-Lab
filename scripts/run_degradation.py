@@ -37,7 +37,7 @@ CIRCUITS = ("monaco", "singapore", "barcelona", "suzuka")
 DEGREES = (1, 2)
 
 
-def coefficients_rows(fit: FitResult) -> list[dict[str, object]]:
+def coefficients_rows(fit: FitResult, cv_rmse_s: float) -> list[dict[str, object]]:
     """Flatten one fit into simulator-ready coefficient rows."""
     rows: list[dict[str, object]] = []
     for compound, coefs in fit.deg_coefs.items():
@@ -45,6 +45,7 @@ def coefficients_rows(fit: FitResult) -> list[dict[str, object]]:
             "circuit": fit.circuit,
             "compound": compound,
             "degree": fit.degree,
+            "cv_rmse_s": cv_rmse_s,  # lap-level noise scale for the simulator
             "fuel_slope_s_per_lap": fit.fuel_slope.value,
             "fuel_slope_ci_low": fit.fuel_slope.ci_low,
             "fuel_slope_ci_high": fit.fuel_slope.ci_high,
@@ -94,7 +95,7 @@ def main() -> int:
         selected = min(DEGREES, key=lambda d: mean_rmse(cv[d]))
         fit = fit_circuit(frame, circuit, degree=selected)
         degradation_figure(frame, fit, REPORTS_DIR / "figures" / f"degradation_{circuit}.png")
-        all_coef_rows += coefficients_rows(fit)
+        all_coef_rows += coefficients_rows(fit, mean_rmse(cv[selected]))
 
         report += [
             f"## {circuit}",
