@@ -26,6 +26,17 @@ def _ensure_cache() -> None:
         _cache_enabled = True
 
 
+def event_matches_request(requested_gp: str, actual_event_name: str) -> bool:
+    """True iff FastF1's fuzzy matching returned the event we asked for.
+
+    FastF1 silently fuzzy-matches event names: requesting the cancelled
+    2020 Monaco GP returns a *different* 2020 race instead of failing.
+    Requiring the requested name to appear in the resolved event name
+    turns that silent contamination into an explicit, reportable error.
+    """
+    return requested_gp.strip().lower() in actual_event_name.strip().lower()
+
+
 @dataclass
 class RawRaceData:
     """Unprocessed session data for one race, as plain DataFrames."""
@@ -48,6 +59,12 @@ def load_race(race: RaceId) -> RawRaceData:
     """
     _ensure_cache()
     session = fastf1.get_session(race.season, race.gp_name, "R")
+    resolved = str(session.event["EventName"])
+    if not event_matches_request(race.gp_name, resolved):
+        raise LookupError(
+            f"{race.slug}: requested '{race.gp_name}' but FastF1 fuzzy-matched "
+            f"'{resolved}' — edition most likely not held that season"
+        )
     session.load(laps=True, telemetry=False, weather=True, messages=True)
 
     track_status = session.track_status
