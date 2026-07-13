@@ -5,8 +5,8 @@ system (tyre degradation model, safety-car probability model, Monte Carlo
 strategy simulator) plus a retrospective audit comparing the model's
 recommendations against real strategy calls from actual races.
 
-**Status: Phase 6 (methodology report) delivered — awaiting validation
-before Phase 7 (final packaging).** Phases 0-5 validated.
+**Status: complete (phases 0-7).** Full methodology and findings:
+[`reports/methodology.md`](reports/methodology.md).
 
 ## Why this project
 
@@ -27,6 +27,43 @@ further:
 
 All data comes from [FastF1](https://github.com/theOehrly/Fast-F1). No data
 is invented or simulated to fill gaps; missing data is documented as missing.
+
+## Key results
+
+- **The audit's headline (Case A, Barcelona 2024):** Verstappen's real
+  lap-17 covering stop costs +3.2s in median race time vs the model's
+  optimum — yet holds the highest P(best) (0.43) and the best P(ahead of
+  Norris) (0.70). Median race time alone mis-ranks real decisions; the
+  distribution outputs are the point of the design.
+- **A limitation turned into a measurement (Case C, Singapore 2023):** the
+  model calls Sainz's universally-praised SC stop ~6.5s "too early" —
+  because it does not model field bunching. The audit converts that known
+  gap into a measured bias for SC-window decisions at the front.
+- **Decision vs outcome (Case D):** Mercedes' Singapore 2023 VSC gamble
+  failed on track but was the right bet — better median time AND higher
+  win probability than staying out.
+- **Cross-season instability:** degradation slopes fitted on two seasons
+  often predict a third season's stints worse than a flat line (negative
+  within-stint R²), while the same pipeline scores 0.85 on synthetic data
+  at its noise floor. All coefficients are therefore used as
+  distributions, never point values.
+- **Folklore checked against data:** Monaco's "guaranteed safety car" is
+  3 races out of 7 (2018-2025), P = 0.44 [0.14, 0.77].
+
+Full numbers: [`reports/`](reports/) — one committed report per phase.
+
+## For the FastF1 community
+
+Three pieces of this repo are designed to be reusable beyond the project
+(see `reports/methodology.md` for context):
+
+1. the flag-based cleaning layer (`src/ingestion/cleaning.py`) — pace-lap
+   selection with per-reason accounting instead of silent drops;
+2. the `TrackStatus` event extractor (`src/safety_car/dataset.py`) —
+   SC/VSC/red periods mapped to race laps, with the fuzzy-match guard for
+   cancelled events (`src/ingestion/loader.py`);
+3. the measured circuit constants (pit losses, SC/VSC pace ratios) and
+   the method to recompute them from any race.
 
 ## System overview
 
