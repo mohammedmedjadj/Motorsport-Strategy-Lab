@@ -1,7 +1,8 @@
 # Uncertainty-First Race Strategy Modelling and a Retrospective Audit of Real Formula 1 Pit-Stop Decisions
 
-**Author:** Mohammed Reda Medjadj — code and analysis developed with an AI
-pair-programmer under phase-gated review.
+**Author:** Mohammed Reda Medjadj (research direction, validation and
+analysis). Implementation produced with AI assistance under the author's
+phase-gated review.
 **Date:** July 2026.
 **Repository:** `f1-strategy-ml` (all numbers in this report are generated
 by the scripts in `scripts/` and traceable to the phase reports in
