@@ -1,4 +1,4 @@
-# f1-strategy-ml — F1 Strategy Simulator & Decision Audit
+﻿# motorsport-strategy-lab â€” F1 Strategy Simulator & Decision Audit
 
 A research project on Formula 1 race strategy: a three-layer decision-support
 system (tyre degradation model, safety-car probability model, Monte Carlo
@@ -10,11 +10,11 @@ recommendations against real strategy calls from actual races.
 
 ## Why this project
 
-Most public F1 data projects stop at "predict the pit-stop lap" — a basic
+Most public F1 data projects stop at "predict the pit-stop lap" â€” a basic
 regression that already exists in dozens of notebooks. This project goes
 further:
 
-1. It quantifies **uncertainty** instead of producing a single number — a
+1. It quantifies **uncertainty** instead of producing a single number â€” a
    pit window is a distribution of outcomes, not a point estimate.
 2. It combines two independently modelled risk sources (tyre degradation and
    safety-car deployment) inside a **Monte Carlo simulator**, which is how
@@ -23,7 +23,7 @@ further:
    documented race moments (a successful undercut, a missed one, a safety car
    that reshuffled the order), we compare what the model would have
    recommended at that instant against what the strategists actually did, and
-   analyse the gap honestly — including when the model is wrong.
+   analyse the gap honestly â€” including when the model is wrong.
 
 All data comes from [FastF1](https://github.com/theOehrly/Fast-F1). No data
 is invented or simulated to fill gaps; missing data is documented as missing.
@@ -32,34 +32,34 @@ is invented or simulated to fill gaps; missing data is documented as missing.
 
 - **The audit's headline (Case A, Barcelona 2024):** Verstappen's real
   lap-17 covering stop costs +3.2s in median race time vs the model's
-  optimum — yet holds the highest P(best) (0.43) and the best P(ahead of
+  optimum â€” yet holds the highest P(best) (0.43) and the best P(ahead of
   Norris) (0.70). Median race time alone mis-ranks real decisions; the
   distribution outputs are the point of the design.
 - **A limitation turned into a measurement (Case C, Singapore 2023):** the
-  model calls Sainz's universally-praised SC stop ~6.5s "too early" —
+  model calls Sainz's universally-praised SC stop ~6.5s "too early" â€”
   because it does not model field bunching. The audit converts that known
   gap into a measured bias for SC-window decisions at the front.
 - **Decision vs outcome (Case D):** Mercedes' Singapore 2023 VSC gamble
-  failed on track but was the right bet — better median time AND higher
+  failed on track but was the right bet â€” better median time AND higher
   win probability than staying out.
 - **Cross-season instability:** degradation slopes fitted on two seasons
   often predict a third season's stints worse than a flat line (negative
-  within-stint R²), while the same pipeline scores 0.85 on synthetic data
+  within-stint RÂ²), while the same pipeline scores 0.85 on synthetic data
   at its noise floor. All coefficients are therefore used as
   distributions, never point values.
 - **Folklore checked against data:** Monaco's "guaranteed safety car" is
   3 races out of 7 (2018-2025), P = 0.44 [0.14, 0.77].
 
-Full numbers: [`reports/`](reports/) — one committed report per phase.
+Full numbers: [`reports/`](reports/) â€” one committed report per phase.
 
 ## For the FastF1 community
 
 Three pieces of this repo are designed to be reusable beyond the project
 (see `reports/methodology.md` for context):
 
-1. the flag-based cleaning layer (`src/ingestion/cleaning.py`) — pace-lap
+1. the flag-based cleaning layer (`src/ingestion/cleaning.py`) â€” pace-lap
    selection with per-reason accounting instead of silent drops;
-2. the `TrackStatus` event extractor (`src/safety_car/dataset.py`) —
+2. the `TrackStatus` event extractor (`src/safety_car/dataset.py`) â€”
    SC/VSC/red periods mapped to race laps, with the fuzzy-match guard for
    cancelled events (`src/ingestion/loader.py`);
 3. the measured circuit constants (pit losses, SC/VSC pace ratios) and
@@ -71,13 +71,13 @@ Three pieces of this repo are designed to be reusable beyond the project
 |---|---|---|
 | 1. Tyre degradation | `src/degradation/` | Models lap-time evolution vs tyre age, per compound and per circuit |
 | 2. Safety-car risk | `src/safety_car/` | Models SC/VSC deployment probability per circuit from historical `TrackStatus` data, with explicit uncertainty |
-| 3. Strategy simulator | `src/simulator/` | Monte Carlo simulation combining layers 1–2 to recommend a pit window at a given race state, with a full outcome distribution |
+| 3. Strategy simulator | `src/simulator/` | Monte Carlo simulation combining layers 1â€“2 to recommend a pit window at a given race state, with a full outcome distribution |
 | 4. Decision audit | `src/audit/` | Replays real race decision points through the simulator and compares against what actually happened |
 
 ## Data scope (MVP)
 
-**Seasons: 2023, 2024, 2025** — the three most recent completed seasons, all
-inside the 2022–2025 ground-effect regulation era, so car and tyre behaviour
+**Seasons: 2023, 2024, 2025** â€” the three most recent completed seasons, all
+inside the 2022â€“2025 ground-effect regulation era, so car and tyre behaviour
 is broadly comparable across the dataset. (2022 is deliberately excluded from
 the MVP: early ground-effect cars suffered porpoising issues that add noise
 to degradation modelling; it can be added later as a robustness check.)
@@ -86,12 +86,12 @@ to degradation modelling; it can be added later as a robustness check.)
 
 | Circuit | Grand Prix | Why it is in the set |
 |---|---|---|
-| Monaco | Monaco GP | Street circuit, historically among the highest SC rates, near-zero overtaking — strategy is almost purely track-position driven |
-| Marina Bay | Singapore GP | Street circuit with a near-100% historical SC rate — the strongest test for the SC-probability layer |
-| Barcelona-Catalunya | Spanish GP | Permanent circuit, historically low SC rate, high front-tyre stress — a clean laboratory for the degradation layer |
-| Suzuka | Japanese GP | Permanent high-load circuit, low SC rate, strong tyre energy — contrasts with Barcelona on degradation character |
+| Monaco | Monaco GP | Street circuit, historically among the highest SC rates, near-zero overtaking â€” strategy is almost purely track-position driven |
+| Marina Bay | Singapore GP | Street circuit with a near-100% historical SC rate â€” the strongest test for the SC-probability layer |
+| Barcelona-Catalunya | Spanish GP | Permanent circuit, historically low SC rate, high front-tyre stress â€” a clean laboratory for the degradation layer |
+| Suzuka | Japanese GP | Permanent high-load circuit, low SC rate, strong tyre energy â€” contrasts with Barcelona on degradation character |
 
-This gives a 2×2-ish contrast: high-SC/low-degradation-signal street tracks
+This gives a 2Ã—2-ish contrast: high-SC/low-degradation-signal street tracks
 vs low-SC/high-degradation permanent tracks, which is exactly the trade-off
 the Monte Carlo simulator has to arbitrate.
 
@@ -99,14 +99,14 @@ the Monte Carlo simulator has to arbitrate.
 [`reports/data_availability_phase0.md`](reports/data_availability_phase0.md)
 is generated by [`scripts/check_data_availability.py`](scripts/check_data_availability.py)
 from real FastF1 session loads (laps, track status, weather) for all 12
-circuit-season combinations — the selection above was only frozen after that
+circuit-season combinations â€” the selection above was only frozen after that
 check passed. Known caveats found during verification are listed in that
 report and re-stated in the Limitations section of the methodology report.
 
 ## Repository structure
 
 ```
-f1-strategy-ml/
+motorsport-strategy-lab/
   data/
     cache/              # FastF1 cache (gitignored)
     derived/            # small versioned derived datasets (committed)
@@ -116,7 +116,7 @@ f1-strategy-ml/
     safety_car/         # SC/VSC probability model
     simulator/          # Monte Carlo strategy simulator
     audit/              # retrospective audit scripts
-  notebooks/            # exploration only — never the source of truth
+  notebooks/            # exploration only â€” never the source of truth
   scripts/              # one-shot utilities (e.g. data availability check)
   tests/                # pytest: ingestion, models, simulator invariants
   reports/              # methodology report, audit cases, data quality
@@ -144,7 +144,7 @@ f1-strategy-ml/
 
 ```bash
 git clone <repo-url>
-cd f1-strategy-ml
+cd motorsport-strategy-lab
 python -m venv .venv
 .venv/Scripts/activate          # Windows; use .venv/bin/activate on Unix
 pip install -r requirements.txt # or requirements.lock for exact pins
@@ -163,12 +163,12 @@ Each phase stops for explicit validation before the next one starts.
 |---|---|---|
 | 0. Setup & scoping | Repo, environment, verified data scope, this README | Repo initialised; all 12 candidate sessions load through FastF1 with laps + `TrackStatus` + weather confirmed present; plan validated |
 | 1. Ingestion pipeline | `src/ingestion/` + tests + data quality report | One clean, documented DataFrame per circuit-season; in/out laps and inaccurate laps handled; tests pass; report states % of laps excluded and why |
-| 2. Tyre degradation model | `src/degradation/` + tests + figures | Per-compound/per-circuit fits with honest metrics (R², error) from cross-validation that never mixes laps of one race across train/test; limitations documented (e.g. fuel effect not isolated) |
+| 2. Tyre degradation model | `src/degradation/` + tests + figures | Per-compound/per-circuit fits with honest metrics (RÂ², error) from cross-validation that never mixes laps of one race across train/test; limitations documented (e.g. fuel effect not isolated) |
 | 3. SC/VSC probability model | `src/safety_car/` + tests | Per-circuit deployment probabilities **with confidence intervals**; explicit discussion of small-sample reliability |
 | 4. Monte Carlo simulator | `src/simulator/` + tests | Given (circuit, current lap, compound, tyre age, gaps), produces a pit-window recommendation as an outcome distribution; seeded and reproducible; invariant tests pass (window inside race bounds, probabilities sum to 1, etc.) |
-| 5. Retrospective audit | `reports/audit_cases.md` | 4–6 real race moments (validated with Mohammed) replayed through the simulator; model vs real decision compared quantitatively; disagreements analysed honestly |
+| 5. Retrospective audit | `reports/audit_cases.md` | 4â€“6 real race moments (validated with Mohammed) replayed through the simulator; model vs real decision compared quantitatively; disagreements analysed honestly |
 | 6. Methodology report | `reports/methodology.md` | Mini-paper (abstract, motivation/related work, method, results, limitations, future work); every number traceable to project output; no invented citations |
-| 7. Packaging | Final README, clean-clone check | Everything runs from a fresh clone; 2–3 concrete FastF1-community contribution ideas proposed; short factual activity description drafted |
+| 7. Packaging | Final README, clean-clone check | Everything runs from a fresh clone; 2â€“3 concrete FastF1-community contribution ideas proposed; short factual activity description drafted |
 
 ## Known limitations (stated up front)
 
@@ -188,3 +188,4 @@ Each phase stops for explicit validation before the next one starts.
 Data accessed through FastF1, which sources official F1 live timing. This
 project is unaffiliated with Formula 1. Code license to be chosen before
 public release (MIT planned).
+

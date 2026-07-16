@@ -1,5 +1,5 @@
-[project]
-name = "f1-strategy-ml"
+﻿[project]
+name = "motorsport-strategy-lab"
 version = "0.1.0"
 description = "F1 race strategy decision-support system: tyre degradation and safety-car models feeding a Monte Carlo pit-stop simulator, plus a retrospective audit of real strategy calls."
 readme = "README.md"
@@ -20,3 +20,4 @@ addopts = "-q"
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["src*"]
+
