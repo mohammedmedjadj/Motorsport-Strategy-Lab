@@ -110,6 +110,44 @@ target HARD; a rival 2.5s ahead planning to stop in 8 laps and one
 | 31 | 3453.62 | 3498.47 | 3436.73 | 3604.93 | 0.04 | 0.32 | 0.70 |
 | 32 | 3453.97 | 3498.68 | 3436.72 | 3605.50 | 0.04 | 0.32 | 0.68 |
 
+## Implementation notes
+
+### Vectorised Monte Carlo
+
+The engine is fully vectorised over draws: fuel/degradation coefficients
+and per-lap noise are batch-sampled once, and each candidate pit lap and
+rival is evaluated with a single broadcast pass across all draws rather
+than a Python loop of per-draw calls. The batched path is bit-identical
+to the earlier per-draw scalar path (max abs diff 0.0); common random
+numbers and seed reproducibility are unchanged. Effect: a 5000-draw,
+32-candidate, 2-rival scenario runs in ~1.8s instead of ~22s (~12x).
+
+### Optional quasi-Monte Carlo sampling (`sampler="qmc"`)
+
+The smooth, globally-shared input subspace — fuel slope, degradation
+coefficients, and every per-lap noise vector — can be drawn from a
+scrambled Sobol' sequence (inverse-CDF mapped to the same Normal
+marginals) instead of i.i.d. Gaussians. Scrambling keeps it an unbiased,
+seed-reproducible estimator (randomised QMC).
+
+Measured effect on the RMSE of the estimated per-candidate mean lap time
+(vs a 10^5-draw reference), synthetic circuit:
+
+| Regime | n=256 | n=1024 | n=4096 |
+|---|---|---|---|
+| SC/VSC hazards ~0 (smooth integrand) | **15.4x** | 5.4x | 3.2x |
+| Realistic SC/VSC hazards | ~1.0x | ~1.0x | ~1.0x |
+
+The honest finding: QMC delivers a large variance reduction **only when
+the integrand is smooth**. Under realistic hazards the estimator variance
+is dominated by the *discrete* SC/VSC jump process — which stays on plain
+Monte Carlo, because a variable-length run-length walk does not admit a
+clean fixed-dimension QMC embedding — so the smooth-subspace gain is
+masked. QMC is therefore worthwhile for low-neutralisation circuits and
+for any downstream quantity that is smooth in the coefficients (expected
+degradation, fuel-corrected pace deltas), and a no-op elsewhere. Default
+stays `"mc"`; nothing about the reported results above changes.
+
 ## Model scope (assumptions restated)
 
 - Field bunching behind the SC (gap resets) is NOT modelled; the

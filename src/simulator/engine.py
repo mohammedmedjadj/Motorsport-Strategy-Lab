@@ -30,9 +30,11 @@ Modelling assumptions (stated, mirrored in the Phase 4 report):
 
 from __future__ import annotations
 
+import warnings
 from dataclasses import dataclass, field
 
 import numpy as np
+from scipy.stats import norm, qmc
 
 from src.simulator.artifacts import CircuitModel, GaussianCoef
 
@@ -103,6 +105,76 @@ def _sample_coef_batch(rng: np.random.Generator, coef: GaussianCoef, n: int) -> 
     """``n`` independent draws of ``coef``, as a column vector for broadcasting."""
     values = rng.normal(coef.mean, coef.sd, size=n) if coef.sd > 0 else np.full(n, coef.mean)
     return values[:, None]
+
+
+def _coef_specs(model: CircuitModel) -> list[GaussianCoef]:
+    """The smooth, globally-shared coefficients, in a fixed order: fuel slope
+    then each compound's polynomial coefficients (compounds sorted for
+    determinism). This is the low-dimensional subspace QMC integrates over."""
+    specs = [model.fuel_slope]
+    for compound in sorted(model.degradation):
+        specs.extend(model.degradation[compound])
+    return specs
+
+
+def _sample_smooth_qmc(
+    model: CircuitModel,
+    n_draws: int,
+    n_laps: int,
+    rival_names: tuple[str, ...],
+    seed: int,
+) -> tuple[np.ndarray, dict[str, tuple[np.ndarray, ...]], np.ndarray, dict[str, np.ndarray]]:
+    """Sobol' (scrambled) draws of the whole *smooth* input subspace, mapped to
+    their Normal marginals by inverse-CDF: the shared coefficients (fuel +
+    degradation) **and** every per-lap noise vector (our car + each rival).
+
+    These are exactly the dimensions on which QMC pays off — the integrand is
+    linear/smooth in them. The status timeline (discrete SC/VSC jumps) and its
+    Gamma hazards stay on plain MC; QMC gains nothing on a jump-driven,
+    variable-length process. Returns the same shapes the MC path produces, so
+    ``simulate`` is oblivious to which sampler drew them.
+
+    Scrambling makes this randomised QMC: unbiased, seed-reproducible, and with
+    variance on the smooth part no worse than MC (usually markedly lower).
+    """
+    coef_specs = _coef_specs(model)
+    n_coef = len(coef_specs)
+    n_noise_cols = n_laps * (1 + len(rival_names))
+    d = n_coef + n_noise_cols
+
+    engine = qmc.Sobol(d=d, scramble=True, seed=seed)
+    with warnings.catch_warnings():
+        # Non-power-of-2 sample sizes lose Sobol's balance guarantee but stay a
+        # valid RQMC point set; we accept arbitrary n_draws deliberately.
+        warnings.simplefilter("ignore")
+        u = engine.random(n_draws)  # (n_draws, d) in (0, 1)
+
+    def coef_col(spec: GaussianCoef, j: int) -> np.ndarray:
+        if spec.sd <= 0:
+            return np.full((n_draws, 1), spec.mean)
+        return norm.ppf(u[:, j], loc=spec.mean, scale=spec.sd)[:, None]
+
+    fuel = coef_col(coef_specs[0], 0)
+    deg: dict[str, tuple[np.ndarray, ...]] = {}
+    j = 1
+    for compound in sorted(model.degradation):
+        coefs = model.degradation[compound]
+        deg[compound] = tuple(coef_col(coefs[k], j + k) for k in range(len(coefs)))
+        j += len(coefs)
+
+    # Remaining columns are the per-lap noise blocks, one (n_draws, n_laps) slab
+    # per car, mapped to N(0, lap_noise_s).
+    noise_block = u[:, n_coef:]
+    if model.lap_noise_s > 0:
+        noise = norm.ppf(noise_block, loc=0.0, scale=model.lap_noise_s)
+    else:
+        noise = np.zeros_like(noise_block)
+    our_noise = noise[:, :n_laps]
+    rival_noise = {
+        name: noise[:, n_laps * (i + 1) : n_laps * (i + 2)]
+        for i, name in enumerate(rival_names)
+    }
+    return fuel, deg, our_noise, rival_noise
 
 
 def _sample_status(
@@ -203,8 +275,19 @@ def simulate(
     n_draws: int = 5000,
     seed: int = 20260712,
     min_final_stint: int = 3,
+    sampler: str = "mc",
 ) -> SimulationResult:
-    """Evaluate every candidate pit lap over ``n_draws`` shared realisations."""
+    """Evaluate every candidate pit lap over ``n_draws`` shared realisations.
+
+    ``sampler`` selects how the smooth coefficient subspace (fuel + degradation)
+    is drawn: ``"mc"`` (default) uses i.i.d. Gaussians; ``"qmc"`` uses a
+    scrambled Sobol' sequence mapped through the same Normal marginals. QMC is
+    a drop-in variance-reduction option — the status timeline and per-lap noise
+    stay on plain MC either way, and results remain unbiased and reproducible
+    for a given seed.
+    """
+    if sampler not in ("mc", "qmc"):
+        raise ValueError(f"unknown sampler {sampler!r}; use 'mc' or 'qmc'")
     rng = np.random.default_rng(seed)
     candidates = scenario.candidate_pit_laps(min_final_stint)
     if scenario.include_no_stop:
@@ -226,18 +309,27 @@ def simulate(
     status = np.stack(
         [_sample_status(model, n_laps, rng, scenario.ongoing) for _ in range(n_draws)]
     )
-    fuel = _sample_coef_batch(rng, model.fuel_slope, n_draws)
-    deg = {
-        c: tuple(_sample_coef_batch(rng, g, n_draws) for g in coefs)
-        for c, coefs in model.degradation.items()
-    }
-    our_noise = rng.normal(0.0, model.lap_noise_s, size=(n_draws, n_laps))
+    if sampler == "qmc":
+        rival_names = tuple(r.name for r in scenario.rivals)
+        fuel, deg, our_noise, rival_noise = _sample_smooth_qmc(
+            model, n_draws, n_laps, rival_names, seed
+        )
+    else:
+        fuel = _sample_coef_batch(rng, model.fuel_slope, n_draws)
+        deg = {
+            c: tuple(_sample_coef_batch(rng, g, n_draws) for g in coefs)
+            for c, coefs in model.degradation.items()
+        }
+        our_noise = rng.normal(0.0, model.lap_noise_s, size=(n_draws, n_laps))
+        rival_noise = {
+            r.name: rng.normal(0.0, model.lap_noise_s, size=(n_draws, n_laps))
+            for r in scenario.rivals
+        }
 
     rival_times: dict[str, np.ndarray] = {}
     for rival in scenario.rivals:
-        rival_noise = rng.normal(0.0, model.lap_noise_s, size=(n_draws, n_laps))
         rival_times[rival.name] = _car_times(
-            model, laps, status, rival_noise,
+            model, laps, status, rival_noise[rival.name],
             fuel, deg, rival.compound, rival.tyre_age, scenario.current_lap,
             rival.pit_lap, rival.target_compound, model.pit_loss.median_s,
         ) - rival.gap_s  # a rival ahead by g effectively finishes g sooner
