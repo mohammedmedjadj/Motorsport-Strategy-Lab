@@ -30,9 +30,11 @@ Modelling assumptions (stated, mirrored in the Phase 4 report):
 
 from __future__ import annotations
 
+import warnings
 from dataclasses import dataclass, field
 
 import numpy as np
+from scipy.stats import norm, qmc
 
 from src.simulator.artifacts import CircuitModel, GaussianCoef
 
@@ -99,6 +101,82 @@ def _sample_coef(rng: np.random.Generator, coef: GaussianCoef) -> float:
     return float(rng.normal(coef.mean, coef.sd)) if coef.sd > 0 else coef.mean
 
 
+def _sample_coef_batch(rng: np.random.Generator, coef: GaussianCoef, n: int) -> np.ndarray:
+    """``n`` independent draws of ``coef``, as a column vector for broadcasting."""
+    values = rng.normal(coef.mean, coef.sd, size=n) if coef.sd > 0 else np.full(n, coef.mean)
+    return values[:, None]
+
+
+def _coef_specs(model: CircuitModel) -> list[GaussianCoef]:
+    """The smooth, globally-shared coefficients, in a fixed order: fuel slope
+    then each compound's polynomial coefficients (compounds sorted for
+    determinism). This is the low-dimensional subspace QMC integrates over."""
+    specs = [model.fuel_slope]
+    for compound in sorted(model.degradation):
+        specs.extend(model.degradation[compound])
+    return specs
+
+
+def _sample_smooth_qmc(
+    model: CircuitModel,
+    n_draws: int,
+    n_laps: int,
+    rival_names: tuple[str, ...],
+    seed: int,
+) -> tuple[np.ndarray, dict[str, tuple[np.ndarray, ...]], np.ndarray, dict[str, np.ndarray]]:
+    """Sobol' (scrambled) draws of the whole *smooth* input subspace, mapped to
+    their Normal marginals by inverse-CDF: the shared coefficients (fuel +
+    degradation) **and** every per-lap noise vector (our car + each rival).
+
+    These are exactly the dimensions on which QMC pays off — the integrand is
+    linear/smooth in them. The status timeline (discrete SC/VSC jumps) and its
+    Gamma hazards stay on plain MC; QMC gains nothing on a jump-driven,
+    variable-length process. Returns the same shapes the MC path produces, so
+    ``simulate`` is oblivious to which sampler drew them.
+
+    Scrambling makes this randomised QMC: unbiased, seed-reproducible, and with
+    variance on the smooth part no worse than MC (usually markedly lower).
+    """
+    coef_specs = _coef_specs(model)
+    n_coef = len(coef_specs)
+    n_noise_cols = n_laps * (1 + len(rival_names))
+    d = n_coef + n_noise_cols
+
+    engine = qmc.Sobol(d=d, scramble=True, seed=seed)
+    with warnings.catch_warnings():
+        # Non-power-of-2 sample sizes lose Sobol's balance guarantee but stay a
+        # valid RQMC point set; we accept arbitrary n_draws deliberately.
+        warnings.simplefilter("ignore")
+        u = engine.random(n_draws)  # (n_draws, d) in (0, 1)
+
+    def coef_col(spec: GaussianCoef, j: int) -> np.ndarray:
+        if spec.sd <= 0:
+            return np.full((n_draws, 1), spec.mean)
+        return norm.ppf(u[:, j], loc=spec.mean, scale=spec.sd)[:, None]
+
+    fuel = coef_col(coef_specs[0], 0)
+    deg: dict[str, tuple[np.ndarray, ...]] = {}
+    j = 1
+    for compound in sorted(model.degradation):
+        coefs = model.degradation[compound]
+        deg[compound] = tuple(coef_col(coefs[k], j + k) for k in range(len(coefs)))
+        j += len(coefs)
+
+    # Remaining columns are the per-lap noise blocks, one (n_draws, n_laps) slab
+    # per car, mapped to N(0, lap_noise_s).
+    noise_block = u[:, n_coef:]
+    if model.lap_noise_s > 0:
+        noise = norm.ppf(noise_block, loc=0.0, scale=model.lap_noise_s)
+    else:
+        noise = np.zeros_like(noise_block)
+    our_noise = noise[:, :n_laps]
+    rival_noise = {
+        name: noise[:, n_laps * (i + 1) : n_laps * (i + 2)]
+        for i, name in enumerate(rival_names)
+    }
+    return fuel, deg, our_noise, rival_noise
+
+
 def _sample_status(
     model: CircuitModel,
     n_laps: int,
@@ -134,11 +212,12 @@ def _sample_status(
     return status
 
 
-def _poly(coefs: tuple[float, ...], age: np.ndarray) -> np.ndarray:
-    out = np.zeros_like(age, dtype=float)
+def _poly(coefs: tuple[float, ...] | tuple[np.ndarray, ...], age: np.ndarray) -> np.ndarray:
+    """Sum of ``c * age**power``, broadcasting scalar or per-draw-column coefs."""
+    total = 0.0
     for power, c in enumerate(coefs, start=1):
-        out += c * age**power
-    return out
+        total = total + c * age**power
+    return total
 
 
 def _car_times(
@@ -146,16 +225,24 @@ def _car_times(
     scenario_laps: np.ndarray,
     status: np.ndarray,
     noise: np.ndarray,
-    fuel: float,
-    deg: dict[str, tuple[float, ...]],
+    fuel: float | np.ndarray,
+    deg: dict[str, tuple[float, ...] | tuple[np.ndarray, ...]],
     start_compound: str,
     start_age: int,
     current_lap: int,
     pit_lap: int | None,
     target_compound: str | None,
     pit_loss_s: float,
-) -> float:
-    """Total remaining time for one car under one realisation."""
+) -> float | np.ndarray:
+    """Total remaining time for one car under one or many realisations.
+
+    ``status``/``noise`` are ``(n_laps,)`` for a single realisation or
+    ``(n_draws, n_laps)`` for a batch; ``fuel``/``deg`` follow the same
+    scalar-vs-``(n_draws, 1)`` convention so every op below broadcasts
+    identically in both modes. Returns a scalar in the former, an
+    ``(n_draws,)`` array in the latter — the last axis (laps) is always
+    the one reduced over.
+    """
     green = status == GREEN
     ratio = np.where(
         status == SC, model.pace_ratios.sc_ratio,
@@ -168,17 +255,17 @@ def _car_times(
     )
     old_age = start_age + (scenario_laps - current_lap)
     deg_total = np.where(green, _poly(deg[start_compound], old_age.astype(float)), 0.0)
-    total = float(base.sum())
+    total = base.sum(axis=-1)
     if pit_lap is None:
-        return total + float(deg_total.sum())
+        return total + deg_total.sum(axis=-1)
 
     k = int(pit_lap - current_lap - 1)  # index of the in-lap
     new_age = (scenario_laps - pit_lap).astype(float)
     new_compound = target_compound or start_compound
     deg_new = np.where(green, _poly(deg[new_compound], np.maximum(new_age, 0.0)), 0.0)
-    total += float(deg_total[: k + 1].sum()) + float(deg_new[k + 1 :].sum())
+    total = total + deg_total[..., : k + 1].sum(axis=-1) + deg_new[..., k + 1 :].sum(axis=-1)
     # A stop under neutralisation is cheaper by the measured pace ratio.
-    total += pit_loss_s / float(ratio[k])
+    total = total + pit_loss_s / ratio[..., k]
     return total
 
 
@@ -188,8 +275,19 @@ def simulate(
     n_draws: int = 5000,
     seed: int = 20260712,
     min_final_stint: int = 3,
+    sampler: str = "mc",
 ) -> SimulationResult:
-    """Evaluate every candidate pit lap over ``n_draws`` shared realisations."""
+    """Evaluate every candidate pit lap over ``n_draws`` shared realisations.
+
+    ``sampler`` selects how the smooth coefficient subspace (fuel + degradation)
+    is drawn: ``"mc"`` (default) uses i.i.d. Gaussians; ``"qmc"`` uses a
+    scrambled Sobol' sequence mapped through the same Normal marginals. QMC is
+    a drop-in variance-reduction option — the status timeline and per-lap noise
+    stay on plain MC either way, and results remain unbiased and reproducible
+    for a given seed.
+    """
+    if sampler not in ("mc", "qmc"):
+        raise ValueError(f"unknown sampler {sampler!r}; use 'mc' or 'qmc'")
     rng = np.random.default_rng(seed)
     candidates = scenario.candidate_pit_laps(min_final_stint)
     if scenario.include_no_stop:
@@ -201,31 +299,49 @@ def simulate(
     ahead = {r.name: np.empty((len(candidates), n_draws), dtype=bool)
              for r in scenario.rivals}
 
-    for d in range(n_draws):
-        status = _sample_status(model, n_laps, rng, scenario.ongoing)
-        fuel = _sample_coef(rng, model.fuel_slope)
+    # Status timelines are built one draw at a time (the SC/VSC run-length
+    # walk is inherently sequential per draw), but every other per-draw
+    # quantity — fuel/degradation coefficients, lap noise — is sampled in a
+    # single batched call and every candidate/rival is then evaluated with
+    # ONE vectorised _car_times call across all n_draws at once, instead of
+    # a Python-level call per draw. Same realisations, same CRN guarantee,
+    # far fewer small numpy calls.
+    status = np.stack(
+        [_sample_status(model, n_laps, rng, scenario.ongoing) for _ in range(n_draws)]
+    )
+    if sampler == "qmc":
+        rival_names = tuple(r.name for r in scenario.rivals)
+        fuel, deg, our_noise, rival_noise = _sample_smooth_qmc(
+            model, n_draws, n_laps, rival_names, seed
+        )
+    else:
+        fuel = _sample_coef_batch(rng, model.fuel_slope, n_draws)
         deg = {
-            c: tuple(_sample_coef(rng, g) for g in coefs)
+            c: tuple(_sample_coef_batch(rng, g, n_draws) for g in coefs)
             for c, coefs in model.degradation.items()
         }
-        our_noise = rng.normal(0.0, model.lap_noise_s, n_laps)
-        rival_times: dict[str, float] = {}
-        for rival in scenario.rivals:
-            rival_times[rival.name] = _car_times(
-                model, laps, status, rng.normal(0.0, model.lap_noise_s, n_laps),
-                fuel, deg, rival.compound, rival.tyre_age, scenario.current_lap,
-                rival.pit_lap, rival.target_compound, model.pit_loss.median_s,
-            ) - rival.gap_s  # a rival ahead by g effectively finishes g sooner
+        our_noise = rng.normal(0.0, model.lap_noise_s, size=(n_draws, n_laps))
+        rival_noise = {
+            r.name: rng.normal(0.0, model.lap_noise_s, size=(n_draws, n_laps))
+            for r in scenario.rivals
+        }
 
-        for i, pit_lap in enumerate(candidates):
-            t = _car_times(
-                model, laps, status, our_noise, fuel, deg,
-                scenario.compound, scenario.tyre_age, scenario.current_lap,
-                pit_lap if pit_lap > 0 else None,
-                scenario.target_compound, model.pit_loss.median_s,
-            )
-            our[i, d] = t
-            for rival in scenario.rivals:
-                ahead[rival.name][i, d] = t < rival_times[rival.name]
+    rival_times: dict[str, np.ndarray] = {}
+    for rival in scenario.rivals:
+        rival_times[rival.name] = _car_times(
+            model, laps, status, rival_noise[rival.name],
+            fuel, deg, rival.compound, rival.tyre_age, scenario.current_lap,
+            rival.pit_lap, rival.target_compound, model.pit_loss.median_s,
+        ) - rival.gap_s  # a rival ahead by g effectively finishes g sooner
+
+    for i, pit_lap in enumerate(candidates):
+        our[i] = _car_times(
+            model, laps, status, our_noise, fuel, deg,
+            scenario.compound, scenario.tyre_age, scenario.current_lap,
+            pit_lap if pit_lap > 0 else None,
+            scenario.target_compound, model.pit_loss.median_s,
+        )
+        for rival in scenario.rivals:
+            ahead[rival.name][i] = our[i] < rival_times[rival.name]
 
     return SimulationResult(candidates=candidates, our_time=our, ahead_of_rival=ahead)

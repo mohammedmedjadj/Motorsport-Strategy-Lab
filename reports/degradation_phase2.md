@@ -130,6 +130,57 @@ CV folds (degree 2):
 - **Consequence for Phase 5:** real strategists' decisions must not be
   audited as if the true degradation slope had been knowable in-race.
 
+## Is the instability an OLS artefact? A GP robustness check
+
+A natural objection: the negative out-of-sample R² might be an artefact of
+forcing a low-degree *polynomial* onto the tyre-age curve. To test that, a
+nonparametric **Gaussian-process** degradation curve (RBF kernel, per-compound,
+hyperparameters by marginal likelihood; `src/degradation/gp_model.py`) was run
+through the *identical* leave-one-race-out within-stint protocol. On the same
+demeaned metric the GP reduces to a 1-D curve in tyre age, so it can bend
+freely where a polynomial cannot.
+
+Result (12 folds, 4 circuits x 3 seasons):
+
+| Model | Mean CV RMSE (s) | Folds won | Out-of-sample R² |
+|---|---|---|---|
+| OLS (fixed effects, degree 1) | 0.844 | 4 / 12 | mostly ≤ 0 |
+| Gaussian process (nonparametric) | 0.838 | 8 / 12 | mostly ≤ 0 |
+
+The GP is **statistically indistinguishable** from OLS: a 0.006 s/lap mean
+improvement on a 0.84 s/lap error (mean absolute per-fold difference 0.025 s),
+and it stays at or below zero R² out of sample on the same folds. Added
+functional flexibility does **not** recover cross-season predictability.
+
+**Conclusion:** the instability is a property of the *data* — the true
+degradation slope genuinely moves between seasons — not of the OLS functional
+form. This strengthens, rather than weakens, the decision to carry degradation
+as a distribution into the simulator. OLS remains the reporting model (its
+coefficients are directly interpretable and carry CIs); the GP stands as a
+committed, reproducible robustness check.
+
+## Online counterpart: a Kalman filter for in-race estimation
+
+The model above is retrospective — it needs a full stint (indeed a full season)
+before it can state a slope. A strategist needs the current tyres' degradation
+rate *now*, updated every lap. `src/degradation/kalman.py` adds that online
+counterpart: a local-linear-trend Kalman filter over state `[level, slope]`,
+observing the pace offset each lap, returning the posterior slope and its
+standard deviation after every lap.
+
+On a real stint (Alonso, HARD, 27 laps, Suzuka 2023) the online slope converges
+to the whole-stint OLS slope while its uncertainty collapses as laps arrive:
+
+| After | Kalman slope (s/lap) | Whole-stint OLS |
+|---|---|---|
+| 5 laps | +0.062 ± 0.202 | |
+| 10 laps | +0.046 ± 0.071 | +0.071 |
+| 27 laps | +0.072 ± 0.019 | |
+
+Unlike the static fit, the filter can also track a mid-stint change in the
+degradation rate (the "cliff") rather than assuming one constant slope — see
+`tests/test_kalman.py`. It complements, and does not replace, the batch model.
+
 ## Limitations (stated, not hidden)
 
 - **Fuel and tyre age are separated only through the fixed-effects

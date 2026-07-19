@@ -63,6 +63,48 @@ def test_candidates_stay_inside_race_bounds() -> None:
     assert max(result.candidates) <= scenario.total_laps - 3
 
 
+def test_qmc_sampler_is_reproducible_and_a_valid_distribution() -> None:
+    a = simulate(make_scenario(), make_model(), n_draws=256, seed=7, sampler="qmc")
+    b = simulate(make_scenario(), make_model(), n_draws=256, seed=7, sampler="qmc")
+    assert np.array_equal(a.our_time, b.our_time)
+    assert np.all(np.isfinite(a.our_time))
+    assert a.p_best.sum() == pytest.approx(1.0)
+
+
+def test_unknown_sampler_is_rejected() -> None:
+    with pytest.raises(ValueError, match="unknown sampler"):
+        simulate(make_scenario(), make_model(), n_draws=32, sampler="sobol")
+
+
+def test_qmc_cuts_variance_on_a_smooth_integrand() -> None:
+    """With SC/VSC hazards ~zero the integrand is smooth in the coefficient and
+    noise subspace, so scrambled-Sobol QMC must estimate the per-candidate mean
+    lap-time far more precisely than plain MC at the same draw count. (When real
+    safety-car jumps dominate the variance this gain is masked — documented in
+    the Phase 4 report; here we isolate the regime where QMC provably helps.)"""
+    from dataclasses import replace
+
+    from src.simulator.artifacts import HazardPosterior
+
+    off = HazardPosterior(alpha=1e-9, beta=500.0)
+    model = replace(make_model(), sc_hazard=off, vsc_hazard=off)
+    scenario = make_scenario()
+    n, seeds = 256, range(1, 13)
+    truth = simulate(scenario, model, n_draws=100_000, seed=999).our_time.mean(axis=1)
+
+    def rmse(sampler: str) -> float:
+        errs = [
+            np.sqrt(np.mean(
+                (simulate(scenario, model, n_draws=n, seed=s, sampler=sampler)
+                 .our_time.mean(axis=1) - truth) ** 2
+            ))
+            for s in seeds
+        ]
+        return float(np.mean(errs))
+
+    assert rmse("mc") > 3.0 * rmse("qmc")
+
+
 def test_p_best_is_a_probability_distribution() -> None:
     result = simulate(make_scenario(), make_model(), n_draws=500)
     assert np.all(result.p_best >= 0)

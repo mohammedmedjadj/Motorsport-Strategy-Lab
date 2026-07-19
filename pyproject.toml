@@ -1,4 +1,4 @@
-﻿[project]
+[project]
 name = "motorsport-strategy-lab"
 version = "0.1.0"
 description = "F1 race strategy decision-support system: tyre degradation and safety-car models feeding a Monte Carlo pit-stop simulator, plus a retrospective audit of real strategy calls."
@@ -11,7 +11,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-dev = ["pytest"]
+dev = ["pytest", "hypothesis"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

@@ -74,6 +74,26 @@ Three pieces of this repo are designed to be reusable beyond the project
 | 3. Strategy simulator | `src/simulator/` | Monte Carlo simulation combining layers 1â€“2 to recommend a pit window at a given race state, with a full outcome distribution |
 | 4. Decision audit | `src/audit/` | Replays real race decision points through the simulator and compares against what actually happened |
 
+### Modelling extensions
+
+Built on top of the four core layers, each with tests and an honest write-up in
+[`reports/`](reports/):
+
+- **Vectorised Monte Carlo** — the simulator evaluates all draws in one broadcast
+  pass (~12x faster; bit-identical to the per-draw path).
+- **Optional quasi-Monte Carlo** (`simulate(..., sampler="qmc")`) — scrambled
+  Sobol' over the smooth coefficient/noise subspace; large variance reduction on
+  smooth integrands, a no-op when safety-car jumps dominate (measured, documented).
+- **Multi-objective Pareto front** (`recommend.pareto_front`) — exact non-dominated
+  pit laps trading race time against track position, the trade-off the single-
+  objective recommendation collapses.
+- **Gaussian-process degradation** (`degradation.gp_model`) — a nonparametric
+  robustness check that confirms the cross-season instability is intrinsic to the
+  data, not an OLS artefact (GP ties OLS out-of-sample).
+- **Online Kalman filter** (`degradation.kalman`) — estimates the current tyre
+  degradation rate lap-by-lap with uncertainty; converges to the retrospective
+  slope and tracks a mid-stint cliff.
+
 ## Data scope (MVP)
 
 **Seasons: 2023, 2024, 2025** â€” the three most recent completed seasons, all
@@ -112,9 +132,11 @@ motorsport-strategy-lab/
     derived/            # small versioned derived datasets (committed)
   src/
     ingestion/          # FastF1 loading, cleaning, validation
-    degradation/        # tyre degradation model
+    degradation/        # tyre degradation: OLS fixed-effects model + LORO CV,
+                        #   GP robustness check (gp_model), online Kalman filter
     safety_car/         # SC/VSC probability model
-    simulator/          # Monte Carlo strategy simulator
+    simulator/          # vectorised Monte Carlo simulator (optional Sobol QMC),
+                        #   multi-objective Pareto front over pit laps
     audit/              # retrospective audit scripts
   notebooks/            # exploration only â€” never the source of truth
   scripts/              # one-shot utilities (e.g. data availability check)

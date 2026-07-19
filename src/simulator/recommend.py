@@ -77,6 +77,56 @@ def summarise(scenario: Scenario, result: SimulationResult) -> Recommendation:
     return Recommendation(scenario=scenario, table=table, best_lap=best_lap, window=window)
 
 
+def pareto_front(
+    rec: Recommendation, objectives: dict[str, str]
+) -> pd.DataFrame:
+    """Exact Pareto-optimal pit laps over several competing objectives.
+
+    ``objectives`` maps a column of ``rec.table`` to ``"min"`` or ``"max"``,
+    e.g. ``{"mean_s": "min", "p_ahead_car_ahead": "max"}`` to trade expected
+    race time against the probability of finishing ahead of a rival. Returns
+    the sub-table of *non-dominated* candidates — those for which no other
+    candidate is at least as good on every objective and strictly better on
+    one — sorted by the first objective.
+
+    The candidate set is a small discrete 1-D grid (feasible pit laps), so the
+    front is enumerated exactly by pairwise non-dominated sorting; there is no
+    need for, and no accuracy lost relative to, a metaheuristic like NSGA-II,
+    whose purpose is large or continuous search spaces.
+
+    The default single-objective ``summarise`` recommendation is the special
+    case ``{"median_s": "min"}``; this exposes the trade-off that collapses.
+    """
+    if not objectives:
+        raise ValueError("need at least one objective")
+    missing = [c for c in objectives if c not in rec.table.columns]
+    if missing:
+        raise ValueError(f"unknown objective column(s): {missing}")
+    bad = {d for d in objectives.values()} - {"min", "max"}
+    if bad:
+        raise ValueError(f"objective direction must be 'min' or 'max', got {bad}")
+
+    # Orient every objective so that "larger is better", then a point is
+    # dominated iff some other point is >= on all axes and > on at least one.
+    signs = np.array([1.0 if d == "max" else -1.0 for d in objectives.values()])
+    values = rec.table[list(objectives)].to_numpy(dtype=float) * signs
+    n = len(values)
+    keep = np.ones(n, dtype=bool)
+    for i in range(n):
+        for j in range(n):
+            if i == j:
+                continue
+            if np.all(values[j] >= values[i]) and np.any(values[j] > values[i]):
+                keep[i] = False
+                break
+
+    first = next(iter(objectives))
+    front = rec.table.loc[keep].sort_values(
+        first, ascending=objectives[first] == "min"
+    )
+    return front.reset_index(drop=True)
+
+
 def table_markdown(rec: Recommendation, max_rows: int = 12) -> str:
     """Compact markdown table centred on the recommended window."""
     df = rec.table.copy()
