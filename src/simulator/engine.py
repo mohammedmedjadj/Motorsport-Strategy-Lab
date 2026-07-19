@@ -99,6 +99,12 @@ def _sample_coef(rng: np.random.Generator, coef: GaussianCoef) -> float:
     return float(rng.normal(coef.mean, coef.sd)) if coef.sd > 0 else coef.mean
 
 
+def _sample_coef_batch(rng: np.random.Generator, coef: GaussianCoef, n: int) -> np.ndarray:
+    """``n`` independent draws of ``coef``, as a column vector for broadcasting."""
+    values = rng.normal(coef.mean, coef.sd, size=n) if coef.sd > 0 else np.full(n, coef.mean)
+    return values[:, None]
+
+
 def _sample_status(
     model: CircuitModel,
     n_laps: int,
@@ -134,11 +140,12 @@ def _sample_status(
     return status
 
 
-def _poly(coefs: tuple[float, ...], age: np.ndarray) -> np.ndarray:
-    out = np.zeros_like(age, dtype=float)
+def _poly(coefs: tuple[float, ...] | tuple[np.ndarray, ...], age: np.ndarray) -> np.ndarray:
+    """Sum of ``c * age**power``, broadcasting scalar or per-draw-column coefs."""
+    total = 0.0
     for power, c in enumerate(coefs, start=1):
-        out += c * age**power
-    return out
+        total = total + c * age**power
+    return total
 
 
 def _car_times(
@@ -146,16 +153,24 @@ def _car_times(
     scenario_laps: np.ndarray,
     status: np.ndarray,
     noise: np.ndarray,
-    fuel: float,
-    deg: dict[str, tuple[float, ...]],
+    fuel: float | np.ndarray,
+    deg: dict[str, tuple[float, ...] | tuple[np.ndarray, ...]],
     start_compound: str,
     start_age: int,
     current_lap: int,
     pit_lap: int | None,
     target_compound: str | None,
     pit_loss_s: float,
-) -> float:
-    """Total remaining time for one car under one realisation."""
+) -> float | np.ndarray:
+    """Total remaining time for one car under one or many realisations.
+
+    ``status``/``noise`` are ``(n_laps,)`` for a single realisation or
+    ``(n_draws, n_laps)`` for a batch; ``fuel``/``deg`` follow the same
+    scalar-vs-``(n_draws, 1)`` convention so every op below broadcasts
+    identically in both modes. Returns a scalar in the former, an
+    ``(n_draws,)`` array in the latter — the last axis (laps) is always
+    the one reduced over.
+    """
     green = status == GREEN
     ratio = np.where(
         status == SC, model.pace_ratios.sc_ratio,
@@ -168,17 +183,17 @@ def _car_times(
     )
     old_age = start_age + (scenario_laps - current_lap)
     deg_total = np.where(green, _poly(deg[start_compound], old_age.astype(float)), 0.0)
-    total = float(base.sum())
+    total = base.sum(axis=-1)
     if pit_lap is None:
-        return total + float(deg_total.sum())
+        return total + deg_total.sum(axis=-1)
 
     k = int(pit_lap - current_lap - 1)  # index of the in-lap
     new_age = (scenario_laps - pit_lap).astype(float)
     new_compound = target_compound or start_compound
     deg_new = np.where(green, _poly(deg[new_compound], np.maximum(new_age, 0.0)), 0.0)
-    total += float(deg_total[: k + 1].sum()) + float(deg_new[k + 1 :].sum())
+    total = total + deg_total[..., : k + 1].sum(axis=-1) + deg_new[..., k + 1 :].sum(axis=-1)
     # A stop under neutralisation is cheaper by the measured pace ratio.
-    total += pit_loss_s / float(ratio[k])
+    total = total + pit_loss_s / ratio[..., k]
     return total
 
 
@@ -201,31 +216,40 @@ def simulate(
     ahead = {r.name: np.empty((len(candidates), n_draws), dtype=bool)
              for r in scenario.rivals}
 
-    for d in range(n_draws):
-        status = _sample_status(model, n_laps, rng, scenario.ongoing)
-        fuel = _sample_coef(rng, model.fuel_slope)
-        deg = {
-            c: tuple(_sample_coef(rng, g) for g in coefs)
-            for c, coefs in model.degradation.items()
-        }
-        our_noise = rng.normal(0.0, model.lap_noise_s, n_laps)
-        rival_times: dict[str, float] = {}
-        for rival in scenario.rivals:
-            rival_times[rival.name] = _car_times(
-                model, laps, status, rng.normal(0.0, model.lap_noise_s, n_laps),
-                fuel, deg, rival.compound, rival.tyre_age, scenario.current_lap,
-                rival.pit_lap, rival.target_compound, model.pit_loss.median_s,
-            ) - rival.gap_s  # a rival ahead by g effectively finishes g sooner
+    # Status timelines are built one draw at a time (the SC/VSC run-length
+    # walk is inherently sequential per draw), but every other per-draw
+    # quantity — fuel/degradation coefficients, lap noise — is sampled in a
+    # single batched call and every candidate/rival is then evaluated with
+    # ONE vectorised _car_times call across all n_draws at once, instead of
+    # a Python-level call per draw. Same realisations, same CRN guarantee,
+    # far fewer small numpy calls.
+    status = np.stack(
+        [_sample_status(model, n_laps, rng, scenario.ongoing) for _ in range(n_draws)]
+    )
+    fuel = _sample_coef_batch(rng, model.fuel_slope, n_draws)
+    deg = {
+        c: tuple(_sample_coef_batch(rng, g, n_draws) for g in coefs)
+        for c, coefs in model.degradation.items()
+    }
+    our_noise = rng.normal(0.0, model.lap_noise_s, size=(n_draws, n_laps))
 
-        for i, pit_lap in enumerate(candidates):
-            t = _car_times(
-                model, laps, status, our_noise, fuel, deg,
-                scenario.compound, scenario.tyre_age, scenario.current_lap,
-                pit_lap if pit_lap > 0 else None,
-                scenario.target_compound, model.pit_loss.median_s,
-            )
-            our[i, d] = t
-            for rival in scenario.rivals:
-                ahead[rival.name][i, d] = t < rival_times[rival.name]
+    rival_times: dict[str, np.ndarray] = {}
+    for rival in scenario.rivals:
+        rival_noise = rng.normal(0.0, model.lap_noise_s, size=(n_draws, n_laps))
+        rival_times[rival.name] = _car_times(
+            model, laps, status, rival_noise,
+            fuel, deg, rival.compound, rival.tyre_age, scenario.current_lap,
+            rival.pit_lap, rival.target_compound, model.pit_loss.median_s,
+        ) - rival.gap_s  # a rival ahead by g effectively finishes g sooner
+
+    for i, pit_lap in enumerate(candidates):
+        our[i] = _car_times(
+            model, laps, status, our_noise, fuel, deg,
+            scenario.compound, scenario.tyre_age, scenario.current_lap,
+            pit_lap if pit_lap > 0 else None,
+            scenario.target_compound, model.pit_loss.median_s,
+        )
+        for rival in scenario.rivals:
+            ahead[rival.name][i] = our[i] < rival_times[rival.name]
 
     return SimulationResult(candidates=candidates, our_time=our, ahead_of_rival=ahead)
