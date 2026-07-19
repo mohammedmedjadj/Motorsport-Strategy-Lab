@@ -130,6 +130,35 @@ CV folds (degree 2):
 - **Consequence for Phase 5:** real strategists' decisions must not be
   audited as if the true degradation slope had been knowable in-race.
 
+## Is the instability an OLS artefact? A GP robustness check
+
+A natural objection: the negative out-of-sample R² might be an artefact of
+forcing a low-degree *polynomial* onto the tyre-age curve. To test that, a
+nonparametric **Gaussian-process** degradation curve (RBF kernel, per-compound,
+hyperparameters by marginal likelihood; `src/degradation/gp_model.py`) was run
+through the *identical* leave-one-race-out within-stint protocol. On the same
+demeaned metric the GP reduces to a 1-D curve in tyre age, so it can bend
+freely where a polynomial cannot.
+
+Result (12 folds, 4 circuits x 3 seasons):
+
+| Model | Mean CV RMSE (s) | Folds won | Out-of-sample R² |
+|---|---|---|---|
+| OLS (fixed effects, degree 1) | 0.844 | 4 / 12 | mostly ≤ 0 |
+| Gaussian process (nonparametric) | 0.838 | 8 / 12 | mostly ≤ 0 |
+
+The GP is **statistically indistinguishable** from OLS: a 0.006 s/lap mean
+improvement on a 0.84 s/lap error (mean absolute per-fold difference 0.025 s),
+and it stays at or below zero R² out of sample on the same folds. Added
+functional flexibility does **not** recover cross-season predictability.
+
+**Conclusion:** the instability is a property of the *data* — the true
+degradation slope genuinely moves between seasons — not of the OLS functional
+form. This strengthens, rather than weakens, the decision to carry degradation
+as a distribution into the simulator. OLS remains the reporting model (its
+coefficients are directly interpretable and carry CIs); the GP stands as a
+committed, reproducible robustness check.
+
 ## Limitations (stated, not hidden)
 
 - **Fuel and tyre age are separated only through the fixed-effects
