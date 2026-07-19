@@ -11,7 +11,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-dev = ["pytest"]
+dev = ["pytest", "hypothesis"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
