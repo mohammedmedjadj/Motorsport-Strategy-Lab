@@ -159,6 +159,28 @@ as a distribution into the simulator. OLS remains the reporting model (its
 coefficients are directly interpretable and carry CIs); the GP stands as a
 committed, reproducible robustness check.
 
+## Online counterpart: a Kalman filter for in-race estimation
+
+The model above is retrospective — it needs a full stint (indeed a full season)
+before it can state a slope. A strategist needs the current tyres' degradation
+rate *now*, updated every lap. `src/degradation/kalman.py` adds that online
+counterpart: a local-linear-trend Kalman filter over state `[level, slope]`,
+observing the pace offset each lap, returning the posterior slope and its
+standard deviation after every lap.
+
+On a real stint (Alonso, HARD, 27 laps, Suzuka 2023) the online slope converges
+to the whole-stint OLS slope while its uncertainty collapses as laps arrive:
+
+| After | Kalman slope (s/lap) | Whole-stint OLS |
+|---|---|---|
+| 5 laps | +0.062 ± 0.202 | |
+| 10 laps | +0.046 ± 0.071 | +0.071 |
+| 27 laps | +0.072 ± 0.019 | |
+
+Unlike the static fit, the filter can also track a mid-stint change in the
+degradation rate (the "cliff") rather than assuming one constant slope — see
+`tests/test_kalman.py`. It complements, and does not replace, the batch model.
+
 ## Limitations (stated, not hidden)
 
 - **Fuel and tyre age are separated only through the fixed-effects
