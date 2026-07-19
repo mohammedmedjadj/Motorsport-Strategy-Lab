@@ -1,7 +1,6 @@
 ﻿# Uncertainty-First Race Strategy Modelling and a Retrospective Audit of Real Formula 1 Pit-Stop Decisions
 
-**Author:** Mohammed Reda Medjadj (research direction, validation and
-analysis).
+**Author:** Mohammed Reda Medjadj
 **Date:** July 2026.
 **Repository:** `motorsport-strategy-lab` (all numbers in this report are generated
 by the scripts in `scripts/` and traceable to the phase reports in
@@ -9,7 +8,7 @@ by the scripts in `scripts/` and traceable to the phase reports in
 
 ## Abstract
 
-We build a three-layer decision-support system for Formula 1 pit-stop
+I build a three-layer decision-support system for Formula 1 pit-stop
 strategy from public timing data (FastF1): (1) a fixed-effects tyre
 degradation model per circuit and compound; (2) a Bayesian safety-car (SC)
 and virtual-safety-car (VSC) probability model on 2018-2025 history; and
