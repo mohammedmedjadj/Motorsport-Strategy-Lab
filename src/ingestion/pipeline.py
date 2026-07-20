@@ -47,16 +47,31 @@ def export_track_status(raw: RawRaceData) -> pd.DataFrame:
 
 
 def run_all(races: tuple[RaceId, ...] = RACES) -> list[QualityRow]:
-    """Run the full ingestion for all scoped races and persist outputs."""
+    """Run the full ingestion for all scoped races and persist outputs.
+
+    Races that cannot be loaded are **skipped, not fatal**: a rolling scope
+    (see ``SEASONS`` in ``config.py``) includes the current season, whose later
+    rounds have not been run yet, so FastF1 will legitimately fail to load them.
+    A skip is recorded and reported — the same discipline the SC-history phase
+    already applies to cancelled editions — so a partial season never aborts the
+    whole refresh or silently drops a round without a trace.
+    """
     F1_DERIVED_DIR.mkdir(parents=True, exist_ok=True)
     F1_REPORTS_DIR.mkdir(parents=True, exist_ok=True)
 
     quality_rows: list[QualityRow] = []
     session_meta: list[dict[str, object]] = []
+    skipped: list[tuple[str, str]] = []
 
     for race in races:
         print(f"Ingesting {race.slug} ...", flush=True)
-        raw = load_race(race)
+        try:
+            raw = load_race(race)
+        except Exception as exc:  # not-yet-run round, or a genuine load failure
+            reason = f"{type(exc).__name__}: {exc}"
+            print(f"  skipped {race.slug}: {reason}", flush=True)
+            skipped.append((race.slug, reason))
+            continue
         cleaned = process_race(raw)
         cleaned.to_csv(F1_DERIVED_DIR / f"laps_{race.slug}.csv", index=False)
         export_track_status(raw).to_csv(
@@ -75,5 +90,9 @@ def run_all(races: tuple[RaceId, ...] = RACES) -> list[QualityRow]:
 
     pd.DataFrame(session_meta).to_csv(F1_DERIVED_DIR / "sessions.csv", index=False)
     report = to_markdown(quality_rows)
+    if skipped:
+        lines = ["", "## Races skipped (not available at ingest time)", ""]
+        lines += [f"- {slug}: {reason}" for slug, reason in skipped]
+        report = report + "\n".join(lines) + "\n"
     (F1_REPORTS_DIR / "data_quality_phase1.md").write_text(report, encoding="utf-8")
     return quality_rows

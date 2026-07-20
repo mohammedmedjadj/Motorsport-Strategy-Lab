@@ -1,5 +1,7 @@
 """Endurance neutralisation extraction and posteriors, on the full committed
-96-race flag set plus synthetic timelines with known answers."""
+flag set (96 races at time of writing; assertions use floors, not that exact
+count, so a data refresh cannot break them) plus synthetic timelines with
+known answers."""
 
 from __future__ import annotations
 
@@ -64,8 +66,14 @@ def test_exposure_is_the_race_length() -> None:
 
 
 def test_real_data_covers_every_race(real_timeline) -> None:
-    assert real_timeline.groupby(RACE_KEY).ngroups == 96
+    # Invariant, not a snapshot: the flag set only ever grows as new rounds are
+    # added upstream, so assert a floor (never shrinks below the verified
+    # baseline) rather than an exact count that a data refresh would break.
+    n_races = real_timeline.groupby(RACE_KEY).ngroups
+    assert n_races >= 96
     assert set(real_timeline["series_code"].unique()) == {"imsa", "wec"}
+    # Structural identity: every race must have at least one lap in the timeline.
+    assert real_timeline.groupby(RACE_KEY)["lap"].size().min() >= 1
 
 
 def test_imsa_fcy_is_near_certain_and_imsa_has_no_safety_car(real_timeline) -> None:

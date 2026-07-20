@@ -8,6 +8,7 @@ after verifying real FastF1 availability — see
 from __future__ import annotations
 
 from dataclasses import dataclass
+from datetime import date
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -41,9 +42,16 @@ class RaceId:
         return f"{self.season}_{self.circuit}"
 
 
-#: MVP scope: 4 contrasted circuits x 3 seasons (2023-2025), all verified
-#: to load with laps + TrackStatus + weather in Phase 0.
-SEASONS: tuple[int, ...] = (2023, 2024, 2025)
+#: Data scope: 4 contrasted circuits (below) x every season from 2023 to the
+#: current year. The scope is **rolling**: it automatically extends to the live
+#: season so the scheduled refresh (see .github/workflows/post-race-refresh.yml)
+#: picks up new rounds as they are run. The current season is usually partial —
+#: its later rounds have not happened yet — and ``pipeline.run_all`` skips any
+#: round FastF1 cannot yet load rather than failing. 2023-2025 were verified in
+#: Phase 0; earlier seasons stay out (2022 = porpoising-era noise; pre-2022 =
+#: different regulations).
+_FIRST_SEASON = 2023
+SEASONS: tuple[int, ...] = tuple(range(_FIRST_SEASON, date.today().year + 1))
 
 _CIRCUITS: tuple[tuple[str, str], ...] = (
     ("Monaco", "monaco"),
