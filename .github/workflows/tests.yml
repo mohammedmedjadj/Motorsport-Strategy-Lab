@@ -1,0 +1,41 @@
+name: Tests
+
+# Runs the full test suite on every push and pull request. The suite is
+# fully offline — F1 and endurance tests read the committed derived CSVs in
+# data/derived/, so no FastF1 or DuckDB network access is needed.
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - "reports/**"
+      - "**/*.md"
+  pull_request: {}
+  workflow_dispatch: {}
+
+concurrency:
+  group: tests-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  pytest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run test suite
+        run: pytest -q
