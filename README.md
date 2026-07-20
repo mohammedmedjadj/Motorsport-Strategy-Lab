@@ -1,9 +1,14 @@
-﻿# motorsport-strategy-lab â€” F1 Strategy Simulator & Decision Audit
+﻿# motorsport-strategy-lab — Race Strategy Simulator & Decision Audit
 
-A research project on Formula 1 race strategy: a three-layer decision-support
+A research project on motorsport race strategy: a three-layer decision-support
 system (tyre degradation model, safety-car probability model, Monte Carlo
 strategy simulator) plus a retrospective audit comparing the model's
 recommendations against real strategy calls from actual races.
+
+Built first on **Formula 1** (via FastF1) and since extended to **endurance
+racing — IMSA and WEC**, which FastF1 does not cover and which required a new
+ingestion path and re-derived models. See
+[Endurance racing](#endurance-racing-imsa--wec).
 
 **Status: complete (phases 0-7).** Full methodology and findings:
 [`reports/methodology.md`](reports/methodology.md).
@@ -25,8 +30,10 @@ further:
    recommended at that instant against what the strategists actually did, and
    analyse the gap honestly â€” including when the model is wrong.
 
-All data comes from [FastF1](https://github.com/theOehrly/Fast-F1). No data
-is invented or simulated to fill gaps; missing data is documented as missing.
+F1 data comes from [FastF1](https://github.com/theOehrly/Fast-F1); endurance
+data from a community-maintained IMSA/WEC DuckDB (see
+[Endurance racing](#endurance-racing-imsa--wec)). No data is invented or
+simulated to fill gaps; missing data is documented as missing.
 
 ## Key results
 
@@ -94,6 +101,45 @@ Built on top of the four core layers, each with tests and an honest write-up in
   degradation rate lap-by-lap with uncertainty; converges to the retrospective
   slope and tracks a mid-stint cliff.
 
+## Endurance racing (IMSA / WEC)
+
+FastF1 covers only Formula 1, so endurance racing needed a new ingestion path
+and its own models. Source: a community-maintained DuckDB whose
+`laps_with_metadata` view carries IMSA, WEC, ELMS and ALMS together.
+
+**Phase 0 verified the data before any architecture was written**, which caught
+two traps that would have silently corrupted every downstream model:
+
+- the source mixes practice/qualifying/warmup with race laps, so an unfiltered
+  event made the #01 GTP car "run" 266 laps of a 201-lap race;
+- `stint_number` is the **driver** stint, not the tyre stint — tyre life lives in
+  `est_tire_age` and resets independently. The #01 car made **13 pit visits
+  across only 4 driver stints**; the gap is fuel-only stops.
+
+| Layer | Module | Finding |
+|---|---|---|
+| Data | `src/data/` | Normalised multi-series lap schema; 2 real races committed for offline tests |
+| Degradation | `src/degradation/endurance.py` | Spa +0.042 s/lap; Watkins Glen −0.007 (covers zero) |
+| Neutralisations | `src/safety_car/endurance.py` | 96 races; IMSA FCY P=0.96, WEC prefers the Safety Car (P=0.57) |
+| Simulator | `src/simulator/endurance.py` | Pit loss ~62 s, FCY pace ratio ~2.0×, fuel range ~30 laps |
+
+Three results worth stating plainly:
+
+- **The two series are not interchangeable.** An IMSA race is near-certain to be
+  neutralised (P = 0.96, one FCY per ~48 laps); WEC reaches for a Safety Car
+  about twice as often as a Full Course Yellow.
+- **Fuel is a binding constraint, and F1 has no equivalent.** At Spa the tyres
+  want a stop near lap 106; the tank runs dry at lap 90, and that boundary — not
+  tyre wear — decides the strategy.
+- **A fuel/degradation split was attempted and rejected on the evidence.** 88-93%
+  of pit visits also change tyres, leaving the two regressors correlated +0.95 to
+  +0.99, so only the identified *net* slope is quoted, behind a `separable` flag.
+
+Reports: [Phase 0](reports/endurance_availability_phase0.md) ·
+[degradation](reports/endurance_degradation_phase1.md) ·
+[neutralisations](reports/endurance_safety_car_phase2.md) ·
+[simulator](reports/endurance_simulator_phase3.md)
+
 ## Data scope (MVP)
 
 **Seasons: 2023, 2024, 2025** â€” the three most recent completed seasons, all
@@ -134,7 +180,8 @@ motorsport-strategy-lab/
     ingestion/          # FastF1 loading, cleaning, validation
     degradation/        # tyre degradation: OLS fixed-effects model + LORO CV,
                         #   GP robustness check (gp_model), online Kalman filter
-    safety_car/         # SC/VSC probability model
+    data/               # multi-series loaders (IMSA/WEC); normalised lap schema
+    safety_car/         # SC/VSC probability model; endurance FCY/Safety Car
     simulator/          # vectorised Monte Carlo simulator (optional Sobol QMC),
                         #   multi-objective Pareto front over pit laps
     audit/              # retrospective audit scripts
