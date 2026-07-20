@@ -96,6 +96,36 @@ def test_spa_has_measurable_net_degradation_watkins_glen_does_not() -> None:
     assert glen.net_slope.ci_low < 0 < glen.net_slope.ci_high  # covers zero
 
 
+def test_field_wide_slow_laps_are_trimmed_even_when_most_of_a_car_is_affected() -> None:
+    """Regression test for a real anomaly found in IMSA Road America 2024: laps
+    2-3 are field-wide standing-start laps (median ~2x green pace across all
+    cars) but flagged "GF" in the source. A per-car quantile trim alone cannot
+    catch this in a short race, because the anomaly inflates a large enough
+    share of each car's own laps to push its own 90th-percentile cutoff above
+    the anomaly (that bug produced a nonsense -0.53 s/lap slope with RMSE
+    13.9s before the field-wide filter was added). Reproduced synthetically so
+    it does not depend on network access."""
+    laps = make_synthetic(n_cars=6, stint_len=30, stints=1, noise_s=0.05)
+    # Make laps 2 and 3 field-wide slow for every car (a "standing start").
+    laps.loc[laps["lap"].isin([2, 3]), "lap_time_s"] += 100.0
+    frame = build_endurance_frame(laps)
+    assert not frame["lap"].isin([2, 3]).any()
+    fit = fit_endurance_degradation(frame)
+    assert fit.net_slope.value == pytest.approx(TRUE_NET, abs=0.02)
+    assert fit.rmse_s < 1.0  # not inflated by the field-wide anomaly
+
+
+def test_road_america_2024_no_longer_an_outlier() -> None:
+    """The real race the field-wide trim was built for: before the fix this
+    race's slope was -0.53 s/lap with an 13.9s RMSE, wildly inconsistent with
+    its own 2023 (-0.02) and 2025 (+0.01) editions. After the fix it must sit
+    in the same order of magnitude and RMSE range as ordinary races."""
+    laps = EnduranceLoader("imsa").load_laps(2024, "Road America", "GTP")
+    fit = fit_endurance_degradation(build_endurance_frame(laps))
+    assert fit.rmse_s < 3.0
+    assert abs(fit.net_slope.value) < 0.15
+
+
 def test_rejects_empty_input() -> None:
     with pytest.raises(ValueError, match="cannot fit an empty frame"):
         fit_endurance_degradation(pd.DataFrame())

@@ -6,12 +6,19 @@ returned rather than a single "pit on lap N". `src/simulator/endurance.py`.
 
 ## Measured inputs per circuit (nothing assumed)
 
-| Circuit | Green pace (s) | Pit loss (s) | FCY ratio | SC ratio | Fuel range (laps) | Net degradation slope |
+| Circuit | Green pace (s) | Pit loss (s) | FCY ratio | SC ratio | Fuel range (laps) | Net degradation slope (2024) |
 |---|---|---|---|---|---|---|
-| Spa | 130.7 | 63.0 | 1.77 | 2.17 | 28 | **+0.0421** (significant) |
-| Fuji | 93.0 | 79.0 | 1.37 | 1.53 | 42 | **+0.0137** (significant) |
-| Bahrain | 114.6 | 80.6 | 1.89 | 1.91 | 32 | **+0.0511** (significant) |
-| Imola | 94.9 | **26.8** | 1.61 | 1.71 | 36 | **−0.0441** (significant, anomalous) |
+| Spa | 130.7 | 63.0 | 1.77 | 2.17 | 28 | **+0.0404** (significant) |
+| Fuji | 93.0 | 79.0 | 1.37 | 1.53 | 42 | **+0.0135** (significant) |
+| Bahrain | 114.6 | 80.6 | 1.89 | 1.91 | 32 | **+0.0493** (significant) |
+| Imola | 94.9 | **26.8** | 1.61 | 1.71 | 36 | **−0.0198** (significant, anomalous) |
+
+These are each circuit's 2024 fit (the demo scenario below uses it);
+[Phase 1](degradation_phase1.md) has 2023/2025 fits too (or 2025 only for
+Imola), where every circuit's slope moves between seasons — Bahrain is the
+sole exception, staying in a tight +0.042 to +0.049 band. The simulator's
+degradation input for a real decision should use the season actually being
+raced, not a value frozen from a different year.
 
 Pit loss is measured exactly as in F1, and Imola stands out: **26.8 s**, a third
 of Spa/Fuji/Bahrain's 63-81 s — a genuinely shorter or faster pit lane at that
@@ -35,10 +42,10 @@ bunching the field more than a Full Course Yellow does.
 
 | Circuit | Best-median pit lap | P(best) | Spread across candidates |
 |---|---|---|---|
-| Spa | 90 | 0.88 | 37.3 s |
-| Fuji | 140 | 0.79 | 29.0 s |
-| Bahrain | 141 | 0.92 | 96.8 s |
-| Imola | 103 | 0.98 | 76.1 s |
+| Spa | 90 | 0.88 | 35.5 s |
+| Fuji | 140 | 0.79 | 28.0 s |
+| Bahrain | 141 | 0.92 | 93.4 s |
+| Imola | 103 | 0.95 | 34.1 s |
 
 All four give decisive recommendations (P(best) 0.79-0.98) — consistent with
 every WEC circuit in scope having a degradation slope clear of zero (unlike
@@ -61,9 +68,11 @@ and pinned by a regression test (`test_spa_optimum_is_pinned_by_the_fuel_constra
 - **SC and FCY hazards are sampled independently**, though Phase 2 notes an
   FCY can in reality escalate into an SC, so the two rates are not fully
   independent — the same caveat the F1 phase states for its own SC/VSC pair.
-- **Per-race, not per-season.** Each circuit's model is fitted on one 2024
-  race; [Phase 1](degradation_phase1.md)'s cross-*circuit* LORO already shows
-  slopes do not transfer (and can flip sign), and cross-season stability has
-  not yet been tested.
+- **Cross-season stability is poor almost everywhere, and now measured, not
+  assumed.** [Phase 1](degradation_phase1.md)'s leave-one-season-out CV (3
+  seasons at Spa/Fuji/Bahrain, 2 at Imola) shows near-zero or negative mean R²
+  at Spa and Imola; Fuji is modest; **Bahrain is a genuine exception**, with a
+  tightly-banded slope and R² around +0.21. The demo above uses each circuit's
+  2024 fit specifically, not a value assumed stable.
 - Imola's anomalous negative net slope (Phase 1) propagates into this
   simulator as-is.

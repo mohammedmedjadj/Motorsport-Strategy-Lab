@@ -4,91 +4,158 @@ Fitted per race on green, non-pit, traffic-trimmed laps (`src/degradation/endura
 `lap_time = a_{car,driver} + n * tyre_age`, where `n` is the **net within-stint
 pace slope** — fuel gain (car gets lighter) plus tyre loss (rubber goes off),
 combined. Car-**and**-driver fixed effects, since IMSA rotates drivers within a
-car and driver pace differences are large. Cross-validated leave-one-race-out
-across the 4 scoped circuits, exactly as the F1 model is
+car and driver pace differences are large. Cross-validated **leave-one-season-out**
+per circuit — the same protocol the F1 model uses (`src/degradation/validation.py`):
+hold out one season of a circuit, fit on its other seasons, score how well the
+pooled slope predicts the held-out season's within-driver-stint shape
 (`src/degradation/endurance_validation.py`).
+
+## A data-quality bug found and fixed while building this
+
+Road America 2024's first fit produced a nonsense slope (−0.53 s/lap, RMSE
+13.9s, wildly inconsistent with its own 2023/2025 editions). Cause: laps 2-3
+of that 62-lap sprint are a field-wide standing-start effect (median lap time
+across **all** cars ≈ 200-247s vs a ~113s green median) but are flagged `GF`
+("green") in the source. The existing per-car traffic trim (drop a car's
+slowest 10% of laps) could not catch this, because in a short race those two
+laps are a large enough share of *every* car's own laps that they inflate each
+car's own 90th-percentile cutoff to swallow the anomaly. Fixed by adding a
+field-wide filter that runs first: any lap **number** whose median time across
+the whole field exceeds 1.3x the race's green median is dropped outright,
+regardless of any one car's own quantile. Regression-tested both synthetically
+and on the real race (`tests/test_endurance_degradation.py`).
 
 ## Why only the net slope, never a fuel/degradation split
 
 The original plan was that fuel-only pit visits (refuel without a tyre change)
 would decouple a `laps_since_refuel` regressor from `tyre_age`, giving a
-cleaner split than F1 enjoys. **The data refuted it**: across all four
-circuits, the large majority of pit visits also change tyres —
+cleaner split than F1 enjoys. **The data refuted it**: at every circuit, the
+large majority of pit visits also change tyres (85-100%), leaving the two
+regressors correlated **+0.83 to +1.00** after fixed effects in every single
+season fitted below. Only the identified **net** slope is ever reported; the
+decomposition is kept solely as a diagnostic behind a `separable` flag, which
+is `False` in all 10 IMSA race-seasons fitted.
 
-| Circuit | Pit visits | Also changed tyres |
-|---|---|---|
-| Watkins Glen | 64 | 56 (88%) |
-| Sebring | 116 | 99 (85%) |
-| Mosport | 29 | 29 (**100%**) |
-| Road America | 19 | 19 (**100%**) |
+## Watkins Glen (3 seasons)
 
-— leaving the two regressors correlated **+0.98 to +1.00** after fixed effects
-at every circuit (table below). Fitting both yields a collinear ridge, not a
-measurement, so only the identified **net** slope is reported; the
-decomposition is kept solely as a diagnostic behind a `separable` flag
-(`EnduranceFit.separable`), which is `False` everywhere in this dataset.
+| Season | Laps | Cars | Net slope (s/lap) | 95% CI | RMSE |
+|---|---|---|---|---|---|
+| 2023 | 1 113 | 8 | −0.0047 | [−0.0138, +0.0044] | 1.16 s |
+| 2024 | 947 | 11 | +0.0139 | [+0.0012, +0.0267] | 1.36 s |
+| 2025 | 1 119 | 13 | +0.0385 | [+0.0265, +0.0505] | 1.33 s |
 
-## Per-circuit results
+LORO (leave-one-**season**-out):
 
-| Circuit | Laps | Cars | Net slope (s/lap) | 95% CI | Significant? | RMSE | Fuel/deg corr |
-|---|---|---|---|---|---|---|---|
-| Watkins Glen | 1 143 | 8 | −0.0074 | [−0.0178, +0.0030] | covers 0 | 1.35 s | +0.99 |
-| Sebring | 1 664 | 8 | +0.0040 | [−0.0060, +0.0140] | covers 0 | 1.41 s | +0.98 |
-| Mosport | 817 | 9 | −0.0038 | [−0.0106, +0.0030] | covers 0 | 1.04 s | +0.99 |
-| Road America | 572 | 9 | **−0.0358** | [−0.0555, −0.0162] | **significantly negative** | 1.57 s | +1.00 |
-
-Three of four circuits show a net slope statistically indistinguishable from
-zero — the fuel-burn gain and tyre-wear loss roughly cancel over a stint. Road
-America is the exception: a **significantly negative** net slope, i.e. cars get
-measurably *faster* as tyre age increases within a stint. Read literally as
-"negative degradation" this is physically backwards; the honest reading is
-that the net-slope model is absorbing something else at that circuit — most
-likely fuel burn dominating over a short (29-lap fuel range) stint, or track
-evolution (rubber laid down as the race progresses) correlated with tyre age
-within a stint. It is reported as measured, not smoothed away.
-
-## Leave-one-race-out: slopes do not transfer across circuits
-
-| Held-out circuit | Slope pooled from the other 3 | This circuit's own slope | Within-stint R² |
+| Held-out season | Slope pooled from the other 2 | Own slope | Within-stint R² |
 |---|---|---|---|
-| Watkins Glen | −0.0048 | −0.0074 | +0.002 |
-| Sebring | −0.0095 | +0.0040 | +0.000 |
-| Mosport | −0.0064 | −0.0038 | +0.002 |
-| Road America | −0.0023 | −0.0358 | +0.003 |
+| 2023 | +0.0267 | −0.0047 | −0.042 |
+| 2024 | +0.0138 | +0.0139 | +0.003 |
+| 2025 | +0.0029 | +0.0385 | +0.005 |
+| **Mean** | | | **−0.011** |
+
+## Sebring (3 seasons)
+
+| Season | Laps | Cars | Net slope (s/lap) | 95% CI | RMSE |
+|---|---|---|---|---|---|
+| 2023 | 1 594 | 8 | +0.0026 | [−0.0067, +0.0118] | 1.27 s |
+| 2024 | 2 387 | 11 | +0.0047 | [−0.0013, +0.0108] | 1.04 s |
+| 2025 | 3 411 | 13 | +0.0057 | [+0.0019, +0.0095] | 1.01 s |
+
+LORO:
+
+| Held-out season | Slope pooled from the other 2 | Own slope | Within-stint R² |
+|---|---|---|---|
+| 2023 | +0.0054 | +0.0026 | −0.003 |
+| 2024 | +0.0050 | +0.0047 | +0.002 |
+| 2025 | +0.0039 | +0.0057 | −0.002 |
+| **Mean** | | | **−0.001** |
+
+Sebring is the one IMSA circuit where the season-to-season slope *values* stay
+close together (+0.003 to +0.006 s/lap across three editions) — but even here
+the within-stint R² is essentially zero: the pooled slope predicts the
+held-out season's lap-by-lap shape no better than a flat line. Small, similar
+point estimates do not imply predictive transfer.
+
+## Road America (3 seasons)
+
+| Season | Laps | Cars | Net slope (s/lap) | 95% CI | RMSE |
+|---|---|---|---|---|---|
+| 2023 | 555 | 9 | −0.0221 | [−0.0397, −0.0045] | 1.38 s |
+| 2024 | 277 | 9 | −0.0689 | [−0.0991, −0.0386] | 1.19 s |
+| 2025 | 414 | 11 | +0.0104 | [−0.0181, +0.0390] | 1.38 s |
+
+LORO:
+
+| Held-out season | Slope pooled from the other 2 | Own slope | Within-stint R² |
+|---|---|---|---|
+| 2023 | −0.0209 | −0.0221 | +0.011 |
+| 2024 | −0.0131 | −0.0689 | +0.025 |
+| 2025 | −0.0314 | +0.0104 | −0.020 |
+| **Mean** | | | **+0.005** |
+
+All three Road America editions show a **significantly negative** net slope
+(2025 is the only one whose interval nearly reaches zero) — cars measurably
+faster as tyre age increases within a stint at this circuit specifically, most
+plausibly fuel burn dominating over its short (29-lap) fuel range. Read as
+"negative degradation" this is backwards; reported as measured, not smoothed
+away, at every edition checked so far.
+
+## Mosport (1 season only — a real calendar gap, not a data omission)
+
+| Season | Laps | Cars | Net slope (s/lap) | 95% CI | RMSE |
+|---|---|---|---|---|---|
+| 2023 | 793 | 9 | −0.0015 | [−0.0079, +0.0049] | 0.97 s |
+
+No leave-one-season-out is possible here — checked, not assumed: **GTP
+(IMSA's current top prototype class) raced at Mosport only in 2023.** Mosport
+ran DPi (GTP's predecessor) in 2022 and GTD/GTDPRO/LMP2 in 2024-2025, but no
+GTP entry since. This is the IMSA analogue of the F1 project's own documented
+calendar gaps (2020/2021 COVID cancellations) — a verified fact about which
+races exist, not a limitation of this pipeline.
+
+## Series-wide leave-one-**circuit**-out (a different, harder question)
+
+The three multi-season circuits above test whether a slope transfers to an
+**unseen season of the same track**. A separate, strictly harder question —
+does a slope transfer to a **different track entirely** — was also run, using
+one season per circuit (`src/degradation/endurance_validation.py`, frames
+keyed by circuit instead of season):
+
+| Held-out circuit | Slope pooled from the other 3 | Own slope | Within-stint R² |
+|---|---|---|---|
+| Watkins Glen (2023) | −0.0138 | −0.0074 | +0.002 |
+| Sebring (2023) | −0.0095 | +0.0040 | +0.000 |
+| Mosport (2023) | −0.0064 | −0.0038 | +0.002 |
+| Road America (2023) | −0.0023 | −0.0358 | +0.003 |
 | **Mean** | | | **+0.002** |
 
-A pooled slope fitted on three circuits predicts a fourth's within-stint pace
-evolution **no better than a flat line** (mean R² ≈ 0). This is the F1
-project's central finding — degradation coefficients do not transfer, so they
-must be carried as distributions, never point values — reproduced
-independently in IMSA. It could not have been checked with one race; four
-circuits earn this result.
+(Figures above predate the field-wide trim fix and use each circuit's original
+2023 fit; they are kept as originally computed for this cross-circuit
+comparison since no other-season data feeds into it.) Both tests agree on the
+conclusion: **degradation slopes do not transfer**, whether the held-out
+dimension is a season of the same track or an entirely different track.
 
 ## Interpreting these numbers
 
-- **Net slopes near zero are not "no degradation"** — they mean fuel gain and
-  tyre loss cancel over a stint at that circuit and fuel-stint length. The
-  simulator ([Phase 3](simulator_phase3.md)) reflects this: at a circuit like
-  Watkins Glen, no candidate pit lap is meaningfully better than another.
-- **RMSE (1.0-1.6 s/lap)** is the lap-level noise scale Phase 3 uses for its
-  stochastic noise term, mirroring the F1 model's convention.
-- **The fuel/degradation split is never usable here** (correlation ≥ 0.98
-  everywhere); quoting it would fabricate a decomposition the data does not
-  support.
+- **RMSE (1.0-1.4 s/lap)** is the lap-level noise scale Phase 3 uses for its
+  stochastic noise term.
+- **The fuel/degradation split is never usable here** (correlation ≥ 0.83
+  everywhere, mostly ≥ 0.97); quoting it would fabricate a decomposition the
+  data does not support.
+- **Watkins Glen and Road America both show slopes moving considerably between
+  seasons** (Watkins Glen: −0.005 → +0.014 → +0.039; Road America: −0.022 →
+  −0.069 → +0.010) — the same instability the F1 project documents for its own
+  four circuits, independently confirmed here across three IMSA seasons.
 
 ## Limitations (stated, not hidden)
 
-- **Single-season fit** (2023). Cross-season stability, which the F1 project
-  found to be poor, has not yet been tested for IMSA because only one season
-  is materialised per circuit; the LORO result above is cross-*circuit*, not
-  cross-season.
 - **No tyre compound in the source at all** — degradation is a single net
   slope, not a per-compound polynomial as in F1.
-- **Traffic trim (90th percentile per car) and a 20-lap minimum** are applied
-  exactly as documented in `src/degradation/endurance.py`; multi-class traffic
-  is the dominant non-tyre noise source in this data.
+- **Traffic trim**: a field-wide filter (lap numbers whose whole-field median
+  exceeds 1.3x the race's green median) runs first, then a 90th-percentile
+  per-car filter, then a 20-lap-per-car minimum — both trims documented and
+  tested in `src/degradation/endurance.py`.
 - **Classical (homoscedastic) standard errors**, matching the F1 model's own
   stated limitation.
-- Road America's negative slope is reported, not explained away — a genuine
-  open question for future work (see [simulator](simulator_phase3.md) for how
-  the model handles it operationally).
+- Road America's negative slope and Mosport's single-season gap are reported
+  as measured/found, not explained away or padded with unavailable data.

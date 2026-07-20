@@ -51,7 +51,7 @@ def test_synthetic_slope_transfers_across_races() -> None:
 
 def test_test_race_never_leaks_into_the_pooled_fit(imsa_frames) -> None:
     folds = leave_one_race_out_endurance(imsa_frames)
-    assert {f.test_event for f in folds} == set(IMSA_EVENTS)
+    assert {f.held_out for f in folds} == set(IMSA_EVENTS)
     assert len(folds) == 4
 
 
@@ -75,3 +75,33 @@ def test_wec_slopes_do_not_transfer_and_can_flip_sign(wec_frames) -> None:
     assert mean_r2(folds) < 0.1
     sign_flips = [f for f in folds if np.sign(f.pooled_slope) != np.sign(f.own_slope)]
     assert len(sign_flips) >= 1
+
+
+def _same_circuit_frames(series: str, event: str, years: tuple[int, ...], car_class: str):
+    return {
+        str(yr): build_endurance_frame(EnduranceLoader(series).load_laps(yr, event, car_class))
+        for yr in years
+    }
+
+
+def test_watkins_glen_slope_does_not_transfer_across_its_own_seasons() -> None:
+    """Same-circuit, leave-one-SEASON-out (the exact F1 protocol): three real
+    Watkins Glen editions (2023-2025), a mean R2 near zero."""
+    frames = _same_circuit_frames("imsa", "Watkins Glen", (2023, 2024, 2025), "GTP")
+    folds = leave_one_race_out_endurance(frames)
+    assert {f.held_out for f in folds} == {"2023", "2024", "2025"}
+    assert mean_r2(folds) < 0.05
+
+
+def test_bahrain_is_the_one_circuit_where_the_slope_genuinely_transfers() -> None:
+    """The honest exception: Bahrain's net slope sits in a tight band across
+    three real seasons (2023-2025) and a pooled slope explains a real share of
+    the held-out season's within-stint variance — unlike every other scoped
+    circuit in either series."""
+    frames = _same_circuit_frames("wec", "Bahrain", (2023, 2024, 2025), "HYPERCAR")
+    folds = leave_one_race_out_endurance(frames)
+    assert mean_r2(folds) > 0.15
+    assert all(f.r2_within > 0.1 for f in folds)
+    # And the slope itself stays in a tight band, not just the R2.
+    slopes = [f.own_slope for f in folds]
+    assert max(slopes) - min(slopes) < 0.01

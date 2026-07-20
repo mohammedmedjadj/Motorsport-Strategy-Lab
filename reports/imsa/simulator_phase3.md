@@ -6,12 +6,18 @@ returned rather than a single "pit on lap N". `src/simulator/endurance.py`.
 
 ## Measured inputs per circuit (nothing assumed)
 
-| Circuit | Green pace (s) | Pit loss (s) | FCY pace ratio | Fuel range (laps) | Net degradation slope |
+| Circuit | Green pace (s) | Pit loss (s) | FCY pace ratio | Fuel range (laps) | Net degradation slope (2023) |
 |---|---|---|---|---|---|
-| Watkins Glen | 96.2 | 60.6 | 2.03 | 34 | −0.0074 (covers 0) |
-| Sebring | 111.6 | 72.1 | 1.90 | 29 | +0.0040 (covers 0) |
-| Mosport | 69.7 | 56.9 | 1.93 | 50 | −0.0038 (covers 0) |
-| Road America | 112.4 | 76.7 | 2.18 | 29 | **−0.0358** (significant) |
+| Watkins Glen | 96.2 | 60.6 | 2.03 | 34 | −0.0047 (covers 0) |
+| Sebring | 111.6 | 72.1 | 1.90 | 29 | +0.0026 (covers 0) |
+| Mosport | 69.7 | 56.9 | 1.93 | 50 | −0.0015 (covers 0) |
+| Road America | 112.4 | 76.7 | 2.18 | 29 | **−0.0221** (significant) |
+
+These are each circuit's 2023 fit (the demo scenario below uses it); Road
+America and Watkins Glen additionally have 2024/2025 fits in
+[Phase 1](degradation_phase1.md), where the slope moves considerably between
+seasons — the simulator's degradation input for a real decision should always
+use the season actually being raced, not a value frozen from a different year.
 
 Pit loss is measured exactly as in F1 (in-lap + out-lap minus twice the car's
 own green pace, green-flanked stops only), which here averages **~66 s**
@@ -42,10 +48,10 @@ rather than manufacturing a confident answer.
 
 | Circuit | Best-median pit lap | P(best) | Spread across candidates |
 |---|---|---|---|
-| Watkins Glen | 103 | 0.55 | 15.6 s |
-| Sebring | 182 | 0.60 | 13.5 s |
-| Mosport | 80 | 0.37 | **1.3 s** |
-| Road America | 44 | 0.65 | **40.0 s** |
+| Watkins Glen | 103 | 0.50 | 12.7 s |
+| Sebring | 182 | 0.55 | 11.6 s |
+| Mosport | 80 | 0.30 | **1.8 s** |
+| Road America | 44 | 0.65 | **38.8 s** |
 
 Road America — the one circuit with a significant (if physically puzzling,
 see [Phase 1](degradation_phase1.md)) degradation slope — gives the most
@@ -62,9 +68,12 @@ fixed per-circuit assumption.
   traffic that a two-car abstraction would not represent honestly.
 - **No driver-stint regulatory constraints** (minimum/maximum driving time per
   driver) are modelled.
-- **Per-race, not per-season.** Each circuit's model is fitted on one 2023
-  race; [Phase 1](degradation_phase1.md)'s cross-*circuit* LORO already shows
-  slopes do not transfer, and cross-season stability has not yet been tested.
+- **Cross-season stability is poor, and now measured, not assumed.**
+  [Phase 1](degradation_phase1.md)'s leave-one-season-out CV (3 seasons at
+  Watkins Glen/Sebring/Road America) shows slopes moving considerably between
+  editions and a near-zero mean R², plus a separate leave-one-*circuit*-out
+  result showing the same failure to transfer across tracks. The demo above
+  uses each circuit's 2023 fit specifically, not a value assumed stable.
 - Road America's negative net slope (Phase 1) propagates into this simulator
   as-is — the honest but unresolved anomaly is not hidden by the strategy
   layer either.

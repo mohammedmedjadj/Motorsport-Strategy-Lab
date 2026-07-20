@@ -57,6 +57,16 @@ TRAFFIC_QUANTILE = 0.90
 #: A car needs at least this many usable green laps to carry a fixed effect.
 MIN_LAPS_PER_CAR = 20
 
+#: A lap NUMBER is excluded field-wide if the median lap time across all cars
+#: on that lap exceeds this multiple of the race's overall green median. Found
+#: necessary by inspection of IMSA Road America 2024 (a 62-lap sprint): laps 2
+#: and 3 are flagged "GF" in the source but are field-wide standing-start/
+#: early-caution laps at ~2x green pace (median 246.6s and 197.8s vs a ~113s
+#: green median) — a per-car quantile trim cannot catch this because it
+#: compromises most of each car's own laps in a short race, pushing each car's
+#: own 90th-percentile cutoff up to swallow the anomaly.
+FIELD_WIDE_TRIM_RATIO = 1.3
+
 
 @dataclass(frozen=True)
 class Coefficient:
@@ -129,7 +139,15 @@ def build_endurance_frame(laps: pd.DataFrame) -> pd.DataFrame:
     if green.empty:
         raise ValueError("no usable green laps with tyre age in this race")
 
-    # Trim traffic-compromised laps per car.
+    # Field-wide filter FIRST: drop lap numbers where the whole field was slow
+    # at once (standing start / an early caution mislabelled green) — this
+    # must run before the per-car quantile, because such laps inflate a car's
+    # own cutoff and become invisible to it.
+    overall_median = float(green["lap_time_s"].median())
+    lap_median = green.groupby("lap")["lap_time_s"].transform("median")
+    green = green[lap_median <= FIELD_WIDE_TRIM_RATIO * overall_median]
+
+    # Trim remaining traffic-compromised laps per car.
     cutoff = green.groupby("car")["lap_time_s"].transform(
         lambda s: s.quantile(TRAFFIC_QUANTILE)
     )
