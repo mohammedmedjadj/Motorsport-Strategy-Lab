@@ -573,22 +573,21 @@ Pareto front by pairwise non-dominance rather than collapsing to one number;
 on a small discrete grid of candidate laps this is exact, so a metaheuristic
 like NSGA-II would buy nothing.
 
-### Is any of this actually physics?
+### Scope: statistical models fit to measured physical quantities
 
-Being direct about it: no. There's no equation of motion, no tyre
-thermodynamics, no aerodynamics, no fuel-combustion model anywhere in this
-project — nothing here is derived from first-principles physics. What *is*
-real and physical is the raw material every technique above is fit to: a
-pit stop takes a measurable amount of time, worn tyres measurably slow a car
-down, a lighter fuel load measurably speeds one up, and a safety car or full
--course yellow imposes a real, measurable drop in the whole field's pace.
-Those quantities are read directly off timing data — pit loss from paired
-in-lap/out-lap timing against a driver's own green-flag pace, neutralisation
-pace ratios from the lap times actually recorded under caution, fuel range
-from the observed distribution of laps between pit visits — and then handed
-to the statistical machinery described above. Calling that "physical
-modelling" would be overselling it; it's closer to: physical quantities,
-measured honestly, modelled statistically.
+Nothing in this project is derived from first-principles physics — there is
+no equation of motion, tyre thermodynamics, aerodynamic model, or
+fuel-combustion model anywhere in the codebase. What the models above are
+fit to is nonetheless physically real: a pit stop takes a measurable amount
+of time, worn tyres measurably slow a car down, a lighter fuel load
+measurably speeds it up, and a safety car or full-course yellow imposes a
+measurable drop in the whole field's pace. Each of those quantities is read
+directly off timing data — pit loss from paired in-lap/out-lap timing
+against a driver's own green-flag pace, neutralisation pace ratios from the
+lap times actually recorded under caution, fuel range from the observed
+distribution of laps between pit visits — and handed to the statistical
+machinery described above. The techniques are mathematical; the quantities
+they operate on are physical.
 
 One place this distinction actually mattered: fuel burn and tyre wear pull a
 car's pace in opposite directions across a stint, and separating them
