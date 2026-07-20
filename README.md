@@ -492,9 +492,10 @@ motorsport-strategy-lab/
     audit/              # F1 retrospective audit scripts
   notebooks/            # exploration only — never the source of truth
   scripts/              # run_ingestion.py, run_degradation.py, run_safety_car.py,
-                        #   run_simulator_demo.py (F1); run_endurance_flags.py
-                        #   (WEC/IMSA neutralisation data pull); demo_extensions.py
-  tests/                # pytest, all three series, 130+ tests
+                        #   run_simulator_demo.py (F1); run_endurance_flags.py +
+                        #   run_endurance_models.py (WEC/IMSA data + model
+                        #   artifacts); demo_extensions.py
+  tests/                # pytest, all three series, 140+ tests
   reports/
     f1/                 # phase 0-4 reports, audit cases, figures
     imsa/               # phase 0-4 reports
