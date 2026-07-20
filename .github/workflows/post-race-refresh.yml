@@ -1,0 +1,102 @@
+name: Post-race data refresh
+
+# Re-runs the reproducible F1 pipeline (ingest -> degradation -> safety car ->
+# simulator -> audit) and commits the result ONLY if the regenerated artifacts
+# actually changed. Scheduled for Monday mornings, after a race weekend, plus a
+# manual trigger.
+#
+# IMPORTANT — this is a genuine no-op until the data scope moves forward.
+# The pipeline is deterministic over the frozen scope in
+# src/ingestion/config.py (SEASONS). Re-running it produces byte-identical
+# output, so `git diff` is empty and nothing is committed. It only starts
+# producing commits once a new season/round enters that scope (see the README's
+# note on making SEASONS rolling). The endurance (WEC/IMSA) side is deliberately
+# NOT refreshed here: its committed reports and several tests are pinned to
+# exact race counts (e.g. "96 races"), so an automatic data pull would fail the
+# test gate below by design — refreshing it is a manual, reviewed change.
+
+on:
+  schedule:
+    - cron: "0 6 * * 1" # Mondays 06:00 UTC
+  workflow_dispatch: {}
+
+# Never let two refreshes race each other into a push conflict.
+concurrency:
+  group: post-race-refresh
+  cancel-in-progress: false
+
+permissions:
+  contents: write # the bot needs this to push the refreshed artifacts
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      # FastF1 downloads hundreds of MB; cache the local store between runs so a
+      # scheduled refresh only fetches genuinely new sessions.
+      - name: Cache FastF1 downloads
+        uses: actions/cache@v4
+        with:
+          path: data/cache
+          key: fastf1-cache-${{ github.run_id }}
+          restore-keys: |
+            fastf1-cache-
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      # --- Reproducible F1 pipeline, in dependency order ------------------
+      - name: Ingest laps and track status (FastF1)
+        run: python scripts/run_ingestion.py
+
+      - name: Fit tyre-degradation model
+        run: python scripts/run_degradation.py
+
+      - name: Fit safety-car / VSC probability model
+        run: python scripts/run_safety_car.py
+
+      - name: Regenerate simulator demo report
+        run: python scripts/run_simulator_demo.py
+
+      - name: Regenerate retrospective audit report
+        run: python scripts/run_audit.py
+      # -------------------------------------------------------------------
+
+      # Gate: a refresh is only allowed to commit if the whole suite still
+      # passes on the regenerated artifacts. A broken refresh fails the job and
+      # commits nothing.
+      - name: Run test suite
+        run: pytest -q
+
+      - name: Commit and push refreshed artifacts (only on a real diff)
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          # Stage only the script-generated F1 outputs. Figures (*.png) are
+          # left out on purpose: matplotlib bakes a timestamp into PNG metadata,
+          # which would otherwise create a spurious diff on every run.
+          git add data/derived/f1
+          git add 'reports/f1/data_quality_phase1.md' \
+                  'reports/f1/degradation_phase2.md' \
+                  'reports/f1/safety_car_phase3.md' \
+                  'reports/f1/simulator_phase4.md' \
+                  'reports/f1/audit_cases.md'
+
+          if git diff --staged --quiet; then
+            echo "No changes in the F1 pipeline output — nothing to commit."
+          else
+            git commit -m "chore(f1): post-race data refresh $(date -u +%Y-%m-%d)"
+            git push
+          fi
