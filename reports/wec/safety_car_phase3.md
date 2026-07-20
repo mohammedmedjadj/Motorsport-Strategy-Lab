@@ -58,7 +58,7 @@ average. This directly contradicts the naive expectation that FCY (the
 leans the other way.
 
 **IMSA, for contrast, shows zero Safety Car races out of 63** — the two series
-are not interchangeable; see [the IMSA report](../imsa/safety_car_phase2.md).
+are not interchangeable; see [the IMSA report](../imsa/safety_car_phase3.md).
 
 ## Method and its limits
 

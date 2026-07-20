@@ -14,7 +14,7 @@ returned rather than a single "pit on lap N". `src/simulator/endurance.py`.
 | Imola | 94.9 | **26.8** | 1.61 | 1.71 | 36 | **−0.0198** (significant, anomalous) |
 
 These are each circuit's 2024 fit (the demo scenario below uses it);
-[Phase 1](degradation_phase1.md) has 2023/2025 fits too (or 2025 only for
+[Phase 2](degradation_phase2.md) has 2023/2025 fits too (or 2025 only for
 Imola), where every circuit's slope moves between seasons — Bahrain is the
 sole exception, staying in a tight +0.042 to +0.049 band. The simulator's
 degradation input for a real decision should use the season actually being
@@ -29,7 +29,7 @@ measured, not treated as suspicious.
 ## WEC-specific: two neutralisation kinds, both modelled
 
 Unlike IMSA, WEC has real Safety Car (`SF`) laps at every scoped circuit
-([Phase 2](safety_car_phase2.md) found SC is used *more* than FCY everywhere),
+([Phase 3](safety_car_phase3.md) found SC is used *more* than FCY everywhere),
 so the engine samples **both hazards independently per draw** and prices each
 lap by whichever kind is active, exactly mirroring how the F1 engine handles
 SC vs VSC. The Safety Car pace ratio is measured directly from each race's own
@@ -69,7 +69,7 @@ and pinned by a regression test (`test_spa_optimum_is_pinned_by_the_fuel_constra
   FCY can in reality escalate into an SC, so the two rates are not fully
   independent — the same caveat the F1 phase states for its own SC/VSC pair.
 - **Cross-season stability is poor almost everywhere, and now measured, not
-  assumed.** [Phase 1](degradation_phase1.md)'s leave-one-season-out CV (3
+  assumed.** [Phase 2](degradation_phase2.md)'s leave-one-season-out CV (3
   seasons at Spa/Fuji/Bahrain, 2 at Imola) shows near-zero or negative mean R²
   at Spa and Imola; Fuji is modest; **Bahrain is a genuine exception**, with a
   tightly-banded slope and R² around +0.21. The demo above uses each circuit's

@@ -15,7 +15,7 @@ returned rather than a single "pit on lap N". `src/simulator/endurance.py`.
 
 These are each circuit's 2023 fit (the demo scenario below uses it); Road
 America and Watkins Glen additionally have 2024/2025 fits in
-[Phase 1](degradation_phase1.md), where the slope moves considerably between
+[Phase 2](degradation_phase2.md), where the slope moves considerably between
 seasons — the simulator's degradation input for a real decision should always
 use the season actually being raced, not a value frozen from a different year.
 
@@ -23,7 +23,7 @@ Pit loss is measured exactly as in F1 (in-lap + out-lap minus twice the car's
 own green pace, green-flanked stops only), which here averages **~66 s**
 against F1's 19-27 s, because IMSA stops refuel and usually change driver.
 
-IMSA has **no observed Safety Car** in 63 races ([Phase 2](safety_car_phase2.md)),
+IMSA has **no observed Safety Car** in 63 races ([Phase 3](safety_car_phase3.md)),
 so the simulator's Safety Car pace ratio falls back to the FCY ratio at every
 circuit (flagged via `sc_ratio_measured = False`) rather than a Safety-Car-free
 model silently pretending the state cannot occur — Phase 2's near-zero Gamma
@@ -54,7 +54,7 @@ rather than manufacturing a confident answer.
 | Road America | 44 | 0.65 | **38.8 s** |
 
 Road America — the one circuit with a significant (if physically puzzling,
-see [Phase 1](degradation_phase1.md)) degradation slope — gives the most
+see [Phase 2](degradation_phase2.md)) degradation slope — gives the most
 decisive recommendation of the four, exactly as expected: the simulator's
 confidence tracks the strength of the underlying degradation signal, not a
 fixed per-circuit assumption.
@@ -69,7 +69,7 @@ fixed per-circuit assumption.
 - **No driver-stint regulatory constraints** (minimum/maximum driving time per
   driver) are modelled.
 - **Cross-season stability is poor, and now measured, not assumed.**
-  [Phase 1](degradation_phase1.md)'s leave-one-season-out CV (3 seasons at
+  [Phase 2](degradation_phase2.md)'s leave-one-season-out CV (3 seasons at
   Watkins Glen/Sebring/Road America) shows slopes moving considerably between
   editions and a near-zero mean R², plus a separate leave-one-*circuit*-out
   result showing the same failure to transfer across tracks. The demo above

@@ -7,7 +7,7 @@ Only the *event extraction* is new, because the source encodes race control as a
 per-lap flag rather than F1's ``TrackStatus`` intervals.
 
 Flag semantics, established empirically over all 96 available races rather than
-assumed (see ``reports/endurance_safety_car_phase2.md``):
+assumed (see ``reports/imsa/safety_car_phase3.md`` and ``reports/wec/safety_car_phase3.md``):
 
 ===== ============================================================
 Flag   Meaning

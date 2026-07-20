@@ -37,7 +37,7 @@ IMSA. Checked across all 96 available races: `SF` occurs only in WEC
 (2022-2026), in contiguous runs, and is adjacent to `FCY` exactly **once** in
 the entire dataset. That pattern — a distinct flag, never fused with FCY —
 means WEC runs a genuine Safety Car procedure separate from the Full Course
-Yellow, and both are modelled ([Phase 2](safety_car_phase2.md)). At all four
+Yellow, and both are modelled ([Phase 3](safety_car_phase3.md)). At all four
 scoped races the Safety Car is used *more* than the FCY (e.g. Spa: 220 SC laps
 vs 71 FCY laps) — the opposite balance from IMSA, which has no Safety Car flag
 at all.
@@ -66,5 +66,5 @@ loader, and four real committed races spanning three continents and two race
 lengths.
 
 Not built by this phase: degradation, neutralisation and simulator models —
-see [degradation](degradation_phase1.md), [neutralisations](safety_car_phase2.md)
-and [simulator](simulator_phase3.md).
+see [data quality](data_quality_phase1.md), [degradation](degradation_phase2.md),
+[neutralisations](safety_car_phase3.md) and [simulator](simulator_phase4.md).

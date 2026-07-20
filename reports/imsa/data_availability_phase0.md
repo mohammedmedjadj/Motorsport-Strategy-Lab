@@ -69,5 +69,5 @@ Delivered: a verified source, a normalised schema shared with WEC
 spanning sprint to 12-hour formats.
 
 Not built by this phase: degradation, neutralisation and simulator models —
-see [degradation](degradation_phase1.md), [neutralisations](safety_car_phase2.md)
-and [simulator](simulator_phase3.md).
+see [data quality](data_quality_phase1.md), [degradation](degradation_phase2.md),
+[neutralisations](safety_car_phase3.md) and [simulator](simulator_phase4.md).

@@ -10,7 +10,7 @@ is new, because this source encodes race control as a per-lap flag rather than
 `FCY` was distinguished from the chequered flag (`FF`) and red flag (`RF`).
 
 IMSA shows **no Safety Car flag at all** (that is a WEC-only procedure — see
-[the WEC report](../wec/safety_car_phase2.md)); only Full Course Yellow is
+[the WEC report](../wec/safety_car_phase3.md)); only Full Course Yellow is
 modelled here.
 
 ## Per-circuit results (4-6 editions each — the scoped circuits)

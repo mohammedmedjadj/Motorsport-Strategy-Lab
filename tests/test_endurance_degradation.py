@@ -13,6 +13,7 @@ from src.data.endurance_loader import EnduranceLoader
 from src.degradation.endurance import (
     build_endurance_frame,
     fit_endurance_degradation,
+    frame_diagnostics,
 )
 
 TRUE_NET = 0.08  # s per lap of tyre age
@@ -124,6 +125,32 @@ def test_road_america_2024_no_longer_an_outlier() -> None:
     fit = fit_endurance_degradation(build_endurance_frame(laps))
     assert fit.rmse_s < 3.0
     assert abs(fit.net_slope.value) < 0.15
+
+
+def test_frame_diagnostics_accounts_for_every_lap() -> None:
+    """Every excluded lap must be attributed to exactly one stage: the stage
+    counts plus what's kept must reconstruct the raw total (the data-quality
+    reports quote these numbers directly, so the identity must hold exactly)."""
+    laps = EnduranceLoader("imsa").load_laps(2023, "Watkins Glen", "GTP")
+    d = frame_diagnostics(laps)
+    assert d.total_laps == len(laps)
+    accounted = (
+        d.non_green_or_pit + d.missing_tyre_age + d.field_wide_trimmed
+        + d.per_car_trimmed + d.insufficient_car_laps + d.kept
+    )
+    assert accounted == d.total_laps
+    assert d.kept == len(build_endurance_frame(laps))
+    assert d.pct_kept == pytest.approx(100.0 * d.kept / d.total_laps)
+
+
+def test_frame_diagnostics_flags_road_america_2024_as_heavily_trimmed() -> None:
+    """The anomalous race (see the field-wide trim tests above) must show up
+    here as an outlier on the trim/insufficient columns, not just in the
+    fitted slope — this is the number the data-quality report actually cites."""
+    laps = EnduranceLoader("imsa").load_laps(2024, "Road America", "GTP")
+    d = frame_diagnostics(laps)
+    assert d.field_wide_trimmed > 40
+    assert d.insufficient_car_laps > 0  # at least one car dropped outright
 
 
 def test_rejects_empty_input() -> None:

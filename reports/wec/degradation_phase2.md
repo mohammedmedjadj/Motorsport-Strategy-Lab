@@ -20,7 +20,7 @@ field-wide filter dropping any lap number whose whole-field median exceeds
 1.3x the race's green median, applied before the existing per-car trim —
 changes WEC's numbers too, most visibly at Imola 2024 (RMSE 2.66s → 2.36s).
 Every number below reflects the fixed pipeline; see
-[the IMSA report](../imsa/degradation_phase1.md) for the full diagnosis.
+[the IMSA report](../imsa/degradation_phase2.md) for the full diagnosis.
 
 ## Why only the net slope, never a fuel/degradation split
 

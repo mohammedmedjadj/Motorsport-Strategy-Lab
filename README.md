@@ -1,46 +1,115 @@
 # motorsport-strategy-lab — Race Strategy Simulator & Decision Audit
 
-A research project on motorsport race strategy: a three-layer decision-support
-system (tyre degradation model, safety-car probability model, Monte Carlo
-strategy simulator) plus a retrospective audit comparing the model's
-recommendations against real strategy calls from actual races.
+A motorsport race-strategy research project: a three-layer decision-support
+system — tyre degradation model, safety-car probability model, Monte Carlo
+strategy simulator — plus a retrospective audit that replays real strategy
+calls through the simulator and checks what it would have recommended.
 
-Built first on **Formula 1** (via FastF1) and since extended to **endurance
-racing — WEC and IMSA**, which FastF1 does not cover and which required a new
-ingestion path and re-derived models, brought to the same depth as the F1
-work: verified data availability, a fitted and cross-validated degradation
-model, a Bayesian neutralisation model, and a Monte Carlo simulator, each with
-its own committed report.
+It started on **Formula 1** (via FastF1) and has since been extended to
+**endurance racing, WEC and IMSA**, which FastF1 doesn't cover. Both series
+needed a new ingestion path and their own fitted models, built to the same
+standard as the F1 work: verified data availability, a cross-validated
+degradation model, a Bayesian neutralisation model, a Monte Carlo simulator,
+each with its own report and its own test suite.
 
-**Status: F1 complete (phases 0-7); WEC and IMSA extended through an
-equivalent Phase 0-3.** Full F1 methodology: [`reports/methodology.md`](reports/methodology.md).
-Jump to: [Formula 1](#formula-1) · [WEC](#wec) · [IMSA](#imsa).
+**Status:** F1 is complete end to end (phases 0-7, including the audit and a
+written methodology). WEC and IMSA cover the equivalent modelling phases
+(0-4) but don't yet have an audit of real strategy calls or their own
+methodology write-up — see the limitations under each series.
+Jump to: [Formula 1](#formula-1) · [WEC](#wec) · [IMSA](#imsa) ·
+[Methods](#mathematical-and-physical-methods).
 
 ## Why this project
 
-Most public F1 data projects stop at "predict the pit-stop lap" — a basic
-regression that already exists in dozens of notebooks. This project goes
-further:
+Most public F1 data projects stop at "predict the pit-stop lap," a regression
+that already exists in dozens of notebooks. Three things set this one apart:
 
-1. It quantifies **uncertainty** instead of producing a single number — a
-   pit window is a distribution of outcomes, not a point estimate.
-2. It combines two independently modelled risk sources (tyre degradation and
-   safety-car deployment) inside a **Monte Carlo simulator**, which is how
-   real strategy teams reason about races.
-3. Its differentiating core is a **retrospective decision audit**: for real,
-   documented race moments (a successful undercut, a missed one, a safety car
-   that reshuffled the order), we compare what the model would have
-   recommended at that instant against what the strategists actually did, and
-   analyse the gap honestly — including when the model is wrong.
+1. Every output is a **distribution**, not a number. A pit window is a range
+   of outcomes with probabilities attached, not a single best guess.
+2. Tyre degradation and safety-car risk are modelled independently and then
+   combined inside a **Monte Carlo simulator**, which is closer to how a
+   strategy team actually reasons about a race than fitting one model to
+   lap times and calling it done.
+3. The results are checked against reality. Five documented race moments
+   (a successful undercut, a missed one, a safety-car reshuffle) are replayed
+   through the simulator and compared with what the strategists actually
+   did — including the cases where the model disagrees with the outcome, or
+   turns out to be wrong.
 
 F1 data comes from [FastF1](https://github.com/theOehrly/Fast-F1); WEC and
-IMSA data come from a community-maintained DuckDB (see [WEC](#wec) and
-[IMSA](#imsa) below). No data is invented or simulated to fill gaps; missing
-data is documented as missing, in every series.
+IMSA data come from a community-maintained dataset (details under
+[WEC](#wec) and [IMSA](#imsa)). Nothing is invented to fill a gap — if a
+source doesn't have something, that's stated as a limitation, not patched
+over.
+
+## Mathematical and physical methods
+
+The three layers lean on a specific, deliberately chosen set of techniques
+rather than a single off-the-shelf model:
+
+**Degradation — fixed-effects linear regression.** Lap time is decomposed as
+`a_{driver,race} + fuel_slope × lap_number + degradation(tyre_age)`, fit by
+ordinary least squares via `numpy.linalg.lstsq`, with one dummy-variable
+intercept per driver-race pair absorbing car pace, driver pace, and track
+conditions that would otherwise confound the tyre-age effect. Standard errors
+come from the classical homoscedastic formula, and a Moore-Penrose
+pseudoinverse handles the rank-deficient cases (a driver-race seen on only
+one tyre compound, for instance). The degree of the tyre-age polynomial
+(linear or quadratic) is chosen per circuit by leave-one-race-out
+cross-validation, scored on the *within-stint*, demeaned residual — because a
+driver-race intercept fit on training data cannot be observed on a held-out
+race, comparing raw lap times would silently leak information. Two robustness
+checks sit alongside the OLS model: a Gaussian-process regression (RBF
+kernel, hyperparameters fit by maximising the log marginal likelihood via
+Cholesky factorisation) shows the polynomial assumption isn't the source of
+the instability, and a Kalman filter (a local-linear-trend state-space model,
+run lap by lap) tracks degradation online instead of retrospectively.
+
+**Safety-car and neutralisation risk — conjugate Bayesian models.** Two
+questions, two matching distributions: whether a race sees at least one
+deployment is a **Beta-Binomial** (posterior mean `(k+0.5)/(n+1)` under a
+Jeffreys prior), and the deployment rate per lap is a **Gamma-Poisson**, also
+Jeffreys. With as few as three to eight editions of a circuit, a frequentist
+point estimate would be false precision; the conjugate posterior gives an
+exact credible interval instead, and a circuit that has never seen a safety
+car still gets a small, non-zero, honestly wide probability rather than a
+hard zero.
+
+**The strategy simulator — Monte Carlo with variance-reduction and exact
+Pareto search.** Each candidate pit lap is evaluated over thousands of
+simulated race continuations, with every source of uncertainty resampled
+per draw: degradation and fuel coefficients from their confidence intervals,
+neutralisation hazards from their Gamma posteriors, lap noise at the
+cross-validated residual scale. Candidates share the same random draws
+(common random numbers), so the comparison between two pit laps isn't
+polluted by unrelated noise. An optional sampler replaces the i.i.d. draws
+with a scrambled Sobol' low-discrepancy sequence, mapped to the model's
+Normal marginals by the inverse CDF — a form of randomised quasi-Monte Carlo
+that cuts estimator variance sharply when the underlying function is smooth,
+and is honestly reported as a no-op when a jump process (a safety car) is
+what actually drives the variance. Where a decision genuinely trades off two
+objectives — race time against track position — the engine returns the exact
+Pareto front by pairwise non-dominance rather than collapsing to one number;
+on a small discrete grid of candidate laps this is exact, so a metaheuristic
+like NSGA-II would buy nothing.
+
+**Physical grounding.** Every constant the simulator uses is measured, not
+assumed: pit-lane loss from paired in-lap/out-lap timing against a
+driver's own green-flag pace, neutralisation pace ratios from the lap times
+actually recorded under caution, fuel range from the observed distribution of
+laps between pit visits. The endurance work also surfaces a genuine
+identification problem: fuel burn and tyre wear both move a car's pace in
+opposite directions across a stint, and only when a car's *fuel* and *tyre*
+clocks are reset independently of each other — something F1 never allows, but
+endurance racing's fuel-only pit stops sometimes do — can the two effects be
+separated at all. Where that separation isn't possible, the model reports
+the combined (net) effect and says so, rather than fabricating a split the
+data can't support.
 
 ## Repository map
 
-The project is organised so each series is self-contained and symmetric:
+Each series is self-contained, but the two endurance series share code where
+the underlying problem is genuinely the same:
 
 ```
 src/degradation/   model.py (F1) | endurance.py + endurance_validation.py (WEC/IMSA, shared)
@@ -52,11 +121,11 @@ reports/            f1/ | imsa/ | wec/ | methodology.md (F1 mini-paper)
 ```
 
 WEC and IMSA share one loader and one degradation/neutralisation/simulator
-module each (`*_endurance.py` / `endurance.py`), because both series need the
-same three-way split — pit visit vs tyre change vs driver stint — that FastF1
-never has to make for F1. Series-specific numbers (degradation slopes,
-neutralisation rates, simulator constants) are always fitted and reported
-separately; nothing is pooled across series.
+module apiece, because both need the same three-way split — pit visit versus
+tyre change versus driver stint — that FastF1's data model never forces on
+the F1 side. What's never shared is the fitted numbers: coefficients,
+posteriors, and simulator constants are always estimated per series, never
+pooled.
 
 ---
 
@@ -64,369 +133,404 @@ separately; nothing is pooled across series.
 
 ### Key results
 
-- **The audit's headline (Case A, Barcelona 2024):** Verstappen's real
-  lap-17 covering stop costs +3.2s in median race time vs the model's
-  optimum — yet holds the highest P(best) (0.43) and the best P(ahead of
-  Norris) (0.70). Median race time alone mis-ranks real decisions; the
-  distribution outputs are the point of the design.
-- **A limitation turned into a measurement (Case C, Singapore 2023):** the
-  model calls Sainz's universally-praised SC stop ~6.5s "too early" —
-  because it does not model field bunching. The audit converts that known
-  gap into a measured bias for SC-window decisions at the front.
-- **Decision vs outcome (Case D):** Mercedes' Singapore 2023 VSC gamble
-  failed on track but was the right bet — better median time AND higher
-  win probability than staying out.
-- **Cross-season instability:** degradation slopes fitted on two seasons
-  often predict a third season's stints worse than a flat line (negative
-  within-stint R²), while the same pipeline scores 0.85 on synthetic data
-  at its noise floor. All coefficients are therefore used as
-  distributions, never point values.
-- **Folklore checked against data:** Monaco's "guaranteed safety car" is
-  3 races out of 7 (2018-2025), P = 0.44 [0.14, 0.77].
+Verstappen's real lap-17 covering stop at Barcelona 2024 (Case A) cost +3.2s
+in median race time against the model's optimum, yet it held the highest
+probability of being the best strategy (0.43) and the best odds of finishing
+ahead of Norris (0.70) — a reminder that median race time alone mis-ranks
+real decisions, which is exactly why the simulator's output is a distribution
+rather than a single number.
 
-Full numbers: [`reports/f1/`](reports/f1/) — one committed report per phase.
+At Singapore 2023 (Case C), the model calls Sainz's widely-praised safety-car
+stop about 6.5 seconds "too early." That's not a bug so much as a known
+blind spot made concrete: the simulator doesn't model the field bunching up
+behind a safety car, and the audit turns that gap into a measured bias rather
+than leaving it as a caveat.
+
+Mercedes' Singapore 2023 VSC gamble (Case D) failed on track, but the model
+says it was still the right bet — better expected time *and* better win
+probability than staying out, regardless of how it played out that day.
+
+Degradation slopes fitted on two seasons routinely fail to predict a third
+season's stints — the within-stint R² frequently goes negative out of
+sample — even though the identical pipeline scores 0.85 on synthetic data at
+its noise floor. That's the reason every coefficient in this project is
+carried as a distribution and never quoted as a point value. And on the
+folklore side: Monaco's reputation for a "guaranteed" safety car holds up in
+3 of 7 editions since 2018 (P = 0.44, credible interval [0.14, 0.77]) —
+notably less certain than the reputation suggests.
+
+Full numbers: [`reports/f1/`](reports/f1/), one report per phase.
 
 ### For the FastF1 community
 
-Three pieces of this repo are designed to be reusable beyond the project
-(see `reports/methodology.md` for context):
+Three pieces of this repo are meant to be reusable outside the project (see
+`reports/methodology.md` for the fuller argument):
 
-1. the flag-based cleaning layer (`src/ingestion/cleaning.py`) — pace-lap
-   selection with per-reason accounting instead of silent drops;
-2. the `TrackStatus` event extractor (`src/safety_car/dataset.py`) —
-   SC/VSC/red periods mapped to race laps, with the fuzzy-match guard for
-   cancelled events (`src/ingestion/loader.py`);
-3. the measured circuit constants (pit losses, SC/VSC pace ratios) and
-   the method to recompute them from any race.
+1. the flag-based cleaning layer (`src/ingestion/cleaning.py`), which keeps a
+   per-reason count of every excluded lap instead of silently dropping rows;
+2. the `TrackStatus` event extractor (`src/safety_car/dataset.py`), which
+   maps SC/VSC/red-flag periods to race laps and guards against FastF1's
+   fuzzy-matching silently substituting a cancelled event with the wrong one
+   (`src/ingestion/loader.py`);
+3. the measured circuit constants — pit losses, SC/VSC pace ratios — and the
+   method used to recompute them from any race.
 
 ### System overview
 
 | Layer | Module | What it does |
 |---|---|---|
-| 1. Tyre degradation | `src/degradation/` | Models lap-time evolution vs tyre age, per compound and per circuit |
-| 2. Safety-car risk | `src/safety_car/` | Models SC/VSC deployment probability per circuit from historical `TrackStatus` data, with explicit uncertainty |
-| 3. Strategy simulator | `src/simulator/` | Monte Carlo simulation combining layers 1–2 to recommend a pit window at a given race state, with a full outcome distribution |
-| 4. Decision audit | `src/audit/` | Replays real race decision points through the simulator and compares against what actually happened |
+| 1. Tyre degradation | `src/degradation/` | Lap-time evolution vs tyre age, per compound and circuit |
+| 2. Safety-car risk | `src/safety_car/` | SC/VSC deployment probability per circuit from `TrackStatus` history, with explicit uncertainty |
+| 3. Strategy simulator | `src/simulator/` | Monte Carlo simulation combining layers 1-2 into a pit-window recommendation with a full outcome distribution |
+| 4. Decision audit | `src/audit/` | Replays real race decision points and compares the model's call with what actually happened |
 
 ### Modelling extensions
 
-Built on top of the four core layers, each with tests and an honest write-up in
-[`reports/f1/`](reports/f1/):
+Layered on top of the four core modules, each with its own tests and a
+written justification in [`reports/f1/`](reports/f1/):
 
-- **Vectorised Monte Carlo** — the simulator evaluates all draws in one broadcast
-  pass (~12x faster; bit-identical to the per-draw path).
+- **Vectorised Monte Carlo** — every draw evaluated in one broadcast pass
+  instead of a Python loop; about 12x faster and bit-identical to the
+  original per-draw results.
 - **Optional quasi-Monte Carlo** (`simulate(..., sampler="qmc")`) — scrambled
-  Sobol' over the smooth coefficient/noise subspace; large variance reduction on
-  smooth integrands, a no-op when safety-car jumps dominate (measured, documented).
-- **Multi-objective Pareto front** (`recommend.pareto_front`) — exact non-dominated
-  pit laps trading race time against track position, the trade-off the single-
-  objective recommendation collapses.
-- **Gaussian-process degradation** (`degradation.gp_model`) — a nonparametric
-  robustness check that confirms the cross-season instability is intrinsic to the
-  data, not an OLS artefact (GP ties OLS out-of-sample).
-- **Online Kalman filter** (`degradation.kalman`) — estimates the current tyre
-  degradation rate lap-by-lap with uncertainty; converges to the retrospective
-  slope and tracks a mid-stint cliff.
+  Sobol' sequences over the smooth part of the model. Cuts variance sharply
+  when the underlying function is smooth, and is a measured no-op once
+  safety-car jumps dominate — reported as such rather than oversold.
+- **Multi-objective Pareto front** (`recommend.pareto_front`) — the exact set
+  of non-dominated pit laps trading race time against track position, where
+  the single-objective recommendation would otherwise collapse a real
+  trade-off into one number.
+- **Gaussian-process degradation** (`degradation.gp_model`) — a
+  nonparametric check confirming the cross-season instability is a property
+  of the data, not an artefact of assuming a polynomial shape.
+- **Online Kalman filter** (`degradation.kalman`) — tracks the current tyre's
+  degradation rate lap by lap, converging to the same answer as the
+  retrospective fit while also catching a mid-stint change in wear rate.
 
 ### Data scope (MVP)
 
-**Seasons: 2023, 2024, 2025** — the three most recent completed seasons, all
-inside the 2022–2025 ground-effect regulation era, so car and tyre behaviour
-is broadly comparable across the dataset. (2022 is deliberately excluded from
-the MVP: early ground-effect cars suffered porpoising issues that add noise
-to degradation modelling; it can be added later as a robustness check.)
+**Seasons 2023-2025** — the three most recent completed seasons, all inside
+the 2022-2025 ground-effect regulation era so car and tyre behaviour stays
+comparable across the set. 2022 itself is left out on purpose: early
+ground-effect cars suffered porpoising that would add noise unrelated to
+tyre wear, though it's a plausible robustness check for later.
 
-**Circuits (4), chosen to contrast the two risk dimensions the system models:**
+**Four circuits, chosen to contrast the two things the system models:**
 
 | Circuit | Grand Prix | Why it is in the set |
 |---|---|---|
-| Monaco | Monaco GP | Street circuit, historically among the highest SC rates, near-zero overtaking — strategy is almost purely track-position driven |
-| Marina Bay | Singapore GP | Street circuit with a near-100% historical SC rate — the strongest test for the SC-probability layer |
-| Barcelona-Catalunya | Spanish GP | Permanent circuit, historically low SC rate, high front-tyre stress — a clean laboratory for the degradation layer |
-| Suzuka | Japanese GP | Permanent high-load circuit, low SC rate, strong tyre energy — contrasts with Barcelona on degradation character |
+| Monaco | Monaco GP | Street circuit, among the highest historical SC rates, almost no overtaking — strategy is nearly all track position |
+| Marina Bay | Singapore GP | Street circuit with a near-100% historical SC rate — the hardest test for the SC-probability layer |
+| Barcelona-Catalunya | Spanish GP | Permanent circuit, low historical SC rate, high front-tyre stress — a clean read on the degradation layer |
+| Suzuka | Japanese GP | Permanent, high-load, low SC rate — contrasts with Barcelona on how degradation actually behaves |
 
-This gives a 2×2-ish contrast: high-SC/low-degradation-signal street tracks
-vs low-SC/high-degradation permanent tracks, which is exactly the trade-off
-the Monte Carlo simulator has to arbitrate.
+Roughly a 2×2: high-SC/low-degradation street circuits against
+low-SC/high-degradation permanent ones, which is precisely the trade-off the
+simulator has to arbitrate between.
 
-**Verified availability.** The table in
-[`reports/f1/data_availability_phase0.md`](reports/f1/data_availability_phase0.md)
-is generated by [`scripts/check_data_availability.py`](scripts/check_data_availability.py)
-from real FastF1 session loads (laps, track status, weather) for all 12
-circuit-season combinations — the selection above was only frozen after that
-check passed. Known caveats found during verification are listed in that
-report and re-stated in the Limitations section of the methodology report.
+**Verified, not assumed.** The table in
+[`reports/f1/data_availability_phase0.md`](reports/f1/data_availability_phase0.md),
+generated by [`scripts/check_data_availability.py`](scripts/check_data_availability.py),
+confirms real FastF1 loads (laps, track status, weather) for all 12
+circuit-season combinations before the scope above was frozen. Any caveat
+found along the way is listed there and restated in the methodology report's
+limitations section.
 
 ### F1 phase plan & Definition of Done
 
-Each phase stops for explicit validation before the next one starts.
+Each phase stopped for explicit validation before the next one started.
 
 | Phase | Deliverable | Definition of Done |
 |---|---|---|
-| 0. Setup & scoping | Repo, environment, verified data scope | Repo initialised; all 12 candidate sessions load through FastF1 with laps + `TrackStatus` + weather confirmed present; plan validated |
-| 1. Ingestion pipeline | `src/ingestion/` + tests + data quality report | One clean, documented DataFrame per circuit-season; in/out laps and inaccurate laps handled; tests pass; report states % of laps excluded and why |
-| 2. Tyre degradation model | `src/degradation/` + tests + figures | Per-compound/per-circuit fits with honest metrics (R², error) from cross-validation that never mixes laps of one race across train/test; limitations documented (e.g. fuel effect not isolated) |
-| 3. SC/VSC probability model | `src/safety_car/` + tests | Per-circuit deployment probabilities **with confidence intervals**; explicit discussion of small-sample reliability |
-| 4. Monte Carlo simulator | `src/simulator/` + tests | Given (circuit, current lap, compound, tyre age, gaps), produces a pit-window recommendation as an outcome distribution; seeded and reproducible; invariant tests pass (window inside race bounds, probabilities sum to 1, etc.) |
-| 5. Retrospective audit | `reports/f1/audit_cases.md` | 4–6 real race moments (validated with Mohammed) replayed through the simulator; model vs real decision compared quantitatively; disagreements analysed honestly |
-| 6. Methodology report | `reports/methodology.md` | Mini-paper (abstract, motivation/related work, method, results, limitations, future work); every number traceable to project output; no invented citations |
-| 7. Packaging | Final README, clean-clone check | Everything runs from a fresh clone; 2–3 concrete FastF1-community contribution ideas proposed; short factual activity description drafted |
+| 0. Setup & scoping | Repo, environment, verified data scope | All 12 candidate sessions load through FastF1 with laps, `TrackStatus`, and weather confirmed present |
+| 1. Ingestion pipeline | `src/ingestion/` + tests + data quality report | One clean DataFrame per circuit-season; in/out laps and inaccurate laps handled; report states the % of laps excluded and why |
+| 2. Tyre degradation model | `src/degradation/` + tests + figures | Per-compound/per-circuit fits, cross-validated without mixing one race's laps across train/test; limitations (e.g. the fuel effect isn't fully isolated) stated plainly |
+| 3. SC/VSC probability model | `src/safety_car/` + tests | Per-circuit probabilities with confidence intervals, and an explicit discussion of how much the small sample sizes limit them |
+| 4. Monte Carlo simulator | `src/simulator/` + tests | Given a race state, produces a pit-window recommendation as an outcome distribution, seeded and reproducible |
+| 5. Retrospective audit | `reports/f1/audit_cases.md` | Real race moments replayed through the simulator, model vs. actual decision compared quantitatively, disagreements analysed honestly |
+| 6. Methodology report | `reports/methodology.md` | Full write-up — motivation, method, results, limitations, future work — every number traceable to project output |
+| 7. Packaging | Final README, clean-clone check | Runs from a fresh clone; contribution ideas for the FastF1 community written up |
 
 ### F1 known limitations (stated up front)
 
-- **Sample size for SC probability is structurally small** (one race per
-  circuit per season, ~3 usable races per circuit in the MVP window plus
-  historical extensions where data quality allows). The SC model will report
-  wide intervals; that is a feature, not a bug.
-- **Fuel load and tyre age are confounded** within a stint; without private
-  telemetry the fuel effect can only be partially controlled (e.g. by
-  modelling a linear fuel correction). This is quantified and discussed
-  in the Phase 2 report rather than hidden.
-- **Track evolution, traffic and driver-specific pace** are not explicitly
-  modelled in the MVP; they are absorbed into residual noise.
+- **Sample size for SC probability is structurally small** — about three
+  usable races per circuit in the MVP window. The model reports wide
+  intervals as a result; that's the honest answer, not a shortcoming to fix.
+- **Fuel load and tyre age are confounded** within a stint. Without private
+  telemetry the fuel effect can only be partially isolated, which the Phase 2
+  report discusses rather than glosses over.
+- **Track evolution, traffic, and driver-specific pace** aren't modelled
+  explicitly in the MVP; they end up absorbed into residual noise.
 
 ---
 
 ## WEC
 
-FastF1 covers only Formula 1, so the World Endurance Championship needed a new
-ingestion path and its own models, brought to the same depth as F1's: verified
-data availability, a fitted and cross-validated degradation model, a Bayesian
-neutralisation model, and a Monte Carlo simulator.
+The World Endurance Championship needed its own ingestion path and its own
+fitted models — FastF1 only covers Formula 1 — built to the same standard as
+the F1 work above: verified data, a cross-validated degradation model, a
+Bayesian neutralisation model, a Monte Carlo simulator.
 
 ### Data scope
 
-**4 HYPERCAR circuits, 2-3 seasons each (2023-2025)** — the same 4-circuit,
-multi-season shape as the F1 scope, spanning short and long formats and three
+**Four HYPERCAR circuits, two to three seasons each (2023-2025)** — the same
+shape as the F1 scope, spanning short and long formats across three
 continents:
 
 | Circuit | Seasons | Race | Why it is in the set |
 |---|---|---|---|
-| Spa | 2023, 2024, 2025 | 6h | European high-speed circuit; the reference case for the whole build |
-| Fuji | 2023, 2024, 2025 | 6h | Contrasts Spa on layout and climate |
+| Spa | 2023, 2024, 2025 | 6h | High-speed European circuit; the reference case for the whole build |
+| Fuji | 2023, 2024, 2025 | 6h | Different layout and climate from Spa |
 | Bahrain | 2023, 2024, 2025 | 8h | The longest of the four scoped formats |
-| Imola | 2024, 2025 | 6h | HYPERCAR only started racing here in 2024 (checked, not assumed) |
+| Imola | 2024, 2025 | 6h | HYPERCAR only started racing here in 2024 — checked directly, not assumed |
 
-**Le Mans 2024 was deliberately rejected**: the source holds only 43
-HYPERCAR laps for it (a 24h race runs 300+) — the event is incomplete
-upstream. Picking it because it is the famous race would have poisoned every
-model built on it, the same Phase 0 discipline that shapes the F1 scope.
+Le Mans 2024 was left out on purpose: the source holds only 43 HYPERCAR laps
+for what should be a 300+ lap race, meaning the event is incomplete upstream.
+Picking it anyway because it's the famous one would have poisoned every
+model built on it — the same discipline that shaped the F1 scope in the
+first place.
 
-All 33 available HYPERCAR-class WEC races (2021-2026) were used for the
-neutralisation model, which needs the largest sample it can get; the 11
-race-seasons above (3+3+3+2) were selected for degradation/simulator work —
-matching F1's 12 (4 circuits x 3 seasons) as closely as the calendar allows.
+All 33 available HYPERCAR-class WEC races (2021-2026) went into the
+neutralisation model, which wants as large a sample as it can get. The 11
+race-seasons above (3+3+3+2) were the ones selected for degradation and
+simulator work — as close to F1's 12 (four circuits, three seasons) as the
+real calendar allows.
 
-**Verified availability, and what the verification caught:** see
+**What the verification caught before any model got built:** see
 [`reports/wec/data_availability_phase0.md`](reports/wec/data_availability_phase0.md).
-It documents the source (one DuckDB view covering IMSA, WEC, ELMS and ALMS —
-so the plan's separate Al Kamel API was unverified and unnecessary), and the
-two traps caught before any model was built: the source mixes
-practice/qualifying/warmup with race laps, and `stint_number` is the
-**driver** stint, not the tyre stint.
+The source turned out to be one dataset covering IMSA, WEC, ELMS and ALMS
+together, which made a separately-planned WEC API unnecessary. Two things had
+to be caught early: the raw data mixes practice, qualifying and warm-up laps
+in with race laps, and `stint_number` in the source means the *driver*
+stint, not the tyre stint.
 
 ### System overview
 
 | Layer | Module | Key finding |
 |---|---|---|
-| 0. Data | `src/data/` (shared with IMSA) | Normalised multi-series lap schema; `pit visit` / `tyre change` / `driver stint` kept as three separate signals |
-| 1. Tyre degradation | `src/degradation/endurance.py` | Leave-one-**season**-out (3 circuits) and leave-one-**circuit**-out both run; Bahrain is the one circuit in either series where the slope genuinely transfers (mean R² +0.21) |
-| 2. Neutralisations | `src/safety_car/endurance.py` | WEC runs a genuine Safety Car distinct from FCY, and uses it **more** than FCY at every scoped circuit (Spa: P=0.79 SC vs P=0.50 FCY) |
-| 3. Strategy simulator | `src/simulator/endurance.py` | Both neutralisation kinds sampled independently (mirrors F1's SC/VSC); at Spa the fuel tank, not tyre wear, decides the optimal stop lap |
+| 0. Data | `src/data/` (shared with IMSA) | Pit visit, tyre change, and driver stint kept as three distinct signals rather than one |
+| 1. Data quality | [`reports/wec/data_quality_phase1.md`](reports/wec/data_quality_phase1.md) | 78.7% of raw laps kept across 11 race-seasons, mostly lost to neutralisation and ordinary traffic, not data gaps |
+| 2. Tyre degradation | `src/degradation/endurance.py` | Bahrain's slope holds steady across three seasons (mean R² +0.21) — the one circuit, in either series, where degradation genuinely transfers |
+| 3. Neutralisations | `src/safety_car/endurance.py` | A real Safety Car procedure exists alongside FCY and is used more often, at every scoped circuit (Spa: P=0.79 SC vs P=0.50 FCY) |
+| 4. Strategy simulator | `src/simulator/endurance.py` | Both hazards sampled independently, F1's SC/VSC pattern; at Spa it's the fuel tank, not tyre wear, that ends up deciding the stop |
 
 Reports: [data availability](reports/wec/data_availability_phase0.md) ·
-[degradation](reports/wec/degradation_phase1.md) ·
-[neutralisations](reports/wec/safety_car_phase2.md) ·
-[simulator](reports/wec/simulator_phase3.md)
+[data quality](reports/wec/data_quality_phase1.md) ·
+[degradation](reports/wec/degradation_phase2.md) ·
+[neutralisations](reports/wec/safety_car_phase3.md) ·
+[simulator](reports/wec/simulator_phase4.md)
 
 ### Key results
 
-- **Degradation slopes mostly do not transfer — across seasons OR circuits —
-  with one honest exception.** Leave-one-season-out per circuit (matching F1's
-  exact protocol) gives a near-zero or negative mean R² at Spa (−0.006) and
-  Imola (−0.042), and a modest positive one at Fuji (+0.044). **Bahrain is
-  the exception**: its net slope sits in a tight +0.042 to +0.049 s/lap band
-  across three real seasons, and the pooled slope explains ~20% of a held-out
-  season's within-stint variance every time (mean R² +0.209) — the strongest
-  transfer found in either series, F1 included. A separate leave-one-*circuit*-out
-  test (different tracks, one season each) gives a negative mean R² (−0.012)
-  and two sign disagreements, confirming these are two different, both
-  informative, questions.
-- **A fuel/degradation split was attempted and rejected on the evidence.**
-  84-99% of pit visits also change tyres, leaving the fuel and tyre-age
-  regressors correlated +0.95 to +1.00 after fixed effects at every circuit.
-  Only the identified *net* slope is reported, behind a `separable` flag.
-- **Fuel is a binding constraint, and F1 has no equivalent.** At Spa the tyres
-  want a stop near lap 106; the tank runs dry at lap 90, and that boundary —
-  not tyre wear — decides the strategy (pinned by a regression test).
-- **Pit loss varies by circuit as much as it does in F1.** Imola's 26.8s is a
-  third of Spa/Fuji/Bahrain's 63-81s — the WEC analogue of the F1 project's
-  own Monaco-vs-Singapore (19.1s vs 27.3s) pit-loss contrast.
-- **A real data-quality bug was found and fixed while building this**: a
-  field-wide standing-start effect mislabelled "green" in the source produced
-  a nonsense degradation slope for one IMSA race before a new field-wide trim
-  caught it — see [the IMSA key results](#imsa) for the full story; the fix
-  applies to WEC's numbers too.
+Degradation slopes mostly don't transfer, whether the test holds out a
+season or an entire circuit — with one real exception. Leave-one-season-out
+per circuit (the same protocol as the F1 model) gives a near-zero or negative
+mean R² at Spa (−0.006) and Imola (−0.042), and a modest positive one at Fuji
+(+0.044). Bahrain breaks the pattern: its net slope sits in a tight
++0.042 to +0.049 s/lap band across three real seasons, and a pooled slope
+explains around a fifth of a held-out season's within-stint variance every
+time (mean R² +0.209) — the strongest transfer found anywhere in this
+project, F1 included. A separate leave-one-circuit-out test, holding out an
+entire track instead of a season, gives a negative mean R² (−0.012) with two
+outright sign disagreements — a harder, different question with the same
+broad answer.
+
+A fuel/degradation split was attempted and abandoned once the data made
+clear it wasn't identified: 84-99% of pit visits also change tyres, so the
+two effects move together (correlation +0.95 to +1.00 after fixed effects)
+at every circuit. Only the combined net slope is reported, gated behind a
+`separable` flag that would flip on its own if a race with enough fuel-only
+stops ever turned up.
+
+Fuel is a binding constraint here in a way F1 never has to deal with. At Spa,
+the tyres alone would want a stop near lap 106; the tank runs dry at lap 90,
+and that's the boundary the simulator actually lands on — a regression test
+pins the behaviour so it can't silently regress.
+
+Pit loss varies by circuit about as much as it does in F1: Imola's 26.8s is a
+third of Spa/Fuji/Bahrain's 63-81s, echoing the F1 project's own
+Monaco-vs-Singapore contrast (19.1s vs 27.3s).
+
+Building the leave-one-season-out analysis also surfaced a genuine
+data-quality bug — a field-wide standing-start effect mislabelled "green" in
+the source, which distorted one IMSA race's fit before a new trim caught it.
+See [IMSA's key results](#imsa) for the full account; the fix changes WEC's
+numbers too, most visibly at Imola.
 
 ### WEC phase plan & Definition of Done
 
 | Phase | Deliverable | Definition of Done |
 |---|---|---|
-| 0. Data availability | [`reports/wec/data_availability_phase0.md`](reports/wec/data_availability_phase0.md) | Source verified by direct query, not assumed; scope frozen (4 circuits, 2-3 seasons each); both verification traps documented and regression-tested |
-| 1. Degradation | [`reports/wec/degradation_phase1.md`](reports/wec/degradation_phase1.md) + `src/degradation/endurance_validation.py` + tests | Net slope fitted per circuit-season with CIs; leave-one-season-out per circuit AND leave-one-circuit-out across the series, both reported and not conflated; separability diagnostic reported, never a fabricated fuel/degradation split |
-| 2. Neutralisations | [`reports/wec/safety_car_phase2.md`](reports/wec/safety_car_phase2.md) + tests | Per-circuit AND series-wide Beta-Binomial/Gamma-Poisson posteriors with Jeffreys priors, on 33 races; SC vs FCY distinguished empirically |
-| 3. Simulator | [`reports/wec/simulator_phase3.md`](reports/wec/simulator_phase3.md) + tests | Both neutralisation kinds modelled; fuel-range constraint enforced; demo scenario per circuit; reproducible and seeded |
+| 0. Data availability | [`reports/wec/data_availability_phase0.md`](reports/wec/data_availability_phase0.md) | Source verified by direct query; scope frozen at 4 circuits, 2-3 seasons each; both verification traps documented and regression-tested |
+| 1. Data quality | [`reports/wec/data_quality_phase1.md`](reports/wec/data_quality_phase1.md) | Lap-level accounting for all 11 race-seasons, stage by stage, mirroring the F1 quality report |
+| 2. Degradation | [`reports/wec/degradation_phase2.md`](reports/wec/degradation_phase2.md) + `src/degradation/endurance_validation.py` + tests | Net slope per circuit-season with CIs; leave-one-season-out and leave-one-circuit-out both run and clearly distinguished; the fuel/degradation split reported only as a diagnostic |
+| 3. Neutralisations | [`reports/wec/safety_car_phase3.md`](reports/wec/safety_car_phase3.md) + tests | Per-circuit and series-wide Beta-Binomial/Gamma-Poisson posteriors on 33 races; SC and FCY told apart empirically, not assumed |
+| 4. Simulator | [`reports/wec/simulator_phase4.md`](reports/wec/simulator_phase4.md) + tests | Both neutralisation kinds modelled, fuel-range constraint enforced, one demo scenario per circuit, reproducible |
 
-### WEC known limitations (stated up front)
+### WEC known limitations
 
-- **No tyre compound in the source** — degradation is a single net slope, not
-  a per-compound polynomial as in F1.
-- **SC and FCY are modelled independently**, though an FCY can in reality
-  escalate into an SC — the same caveat F1 states for its own SC/VSC pair.
-- **No rivals, no track position, no driver-stint regulatory constraints**
-  (WEC mandates 3 drivers minimum) in the simulator.
-- **Imola has only 2 seasons** (HYPERCAR started there in 2024) — one fewer
-  than the other three scoped circuits, so its LORO result rests on a single
-  fold each way.
-- Imola's anomalous negative degradation slope and its wider RMSE are
-  reported as measured, not smoothed away.
+- No tyre compound survives in the source, so degradation is a single net
+  slope rather than the per-compound curve F1 fits.
+- SC and FCY are modelled as independent hazards, though in reality an FCY
+  can escalate into an SC — the same caveat the F1 model states for its own
+  SC/VSC pair.
+- No rivals, no track position, and no driver-stint regulatory constraints
+  (WEC requires three drivers minimum) in the simulator.
+- Imola has only two seasons of HYPERCAR data, one fewer than the other
+  three scoped circuits, so its leave-one-season-out result rests on a
+  single fold in each direction.
+- Imola's negative degradation slope and noticeably wider RMSE are reported
+  as measured, not explained away.
+- No retrospective audit of real WEC strategy calls exists yet, and there's
+  no WEC-specific methodology write-up — both would be natural next steps
+  once the modelling layer above is considered stable enough to trust.
 
 ---
 
 ## IMSA
 
-FastF1 covers only Formula 1, so the IMSA WeatherTech SportsCar Championship
-needed a new ingestion path and its own models, brought to the same depth as
-F1's and WEC's: verified data availability, a fitted and cross-validated
-degradation model, a Bayesian neutralisation model, and a Monte Carlo
-simulator. IMSA shares its loader and model modules with WEC
-(`src/data/endurance_loader.py`, `src/degradation/endurance.py`,
-`src/safety_car/endurance.py`, `src/simulator/endurance.py`) — the same
-pit-visit / tyre-change / driver-stint distinction applies to both series —
-but every number below is fitted on IMSA's own data, never pooled with WEC's.
+The IMSA WeatherTech SportsCar Championship needed the same treatment as
+WEC — FastF1 doesn't cover it either. IMSA shares its loader and model code
+with WEC (`src/data/endurance_loader.py`, `src/degradation/endurance.py`,
+`src/safety_car/endurance.py`, `src/simulator/endurance.py`), since both
+series face the same pit-visit/tyre-change/driver-stint distinction, but
+every number below comes from IMSA's own data and is never pooled with
+WEC's.
 
 ### Data scope
 
-**4 GTP circuits, chosen to span sprint- and endurance-length formats and a
-spread of circuit types**, with 2-3 seasons each (2023-2025) — matching the
-F1 scope's 4-circuit, multi-season shape:
+**Four GTP circuits, one to three seasons each (2023-2025)**, chosen to span
+sprint and endurance formats:
 
 | Circuit | Seasons | Race length | Why it is in the set |
 |---|---|---|---|
 | Watkins Glen | 2023, 2024, 2025 | 364 min | Mid-length road course; the reference case for the whole build |
 | Sebring | 2023, 2024, 2025 | 723 min (12h) | The longest of the four scoped formats |
-| Mosport | **2023 only** | 162 min | GTP (the current top prototype class) raced here only in 2023 — checked, not assumed; see below |
-| Road America | 2023, 2024, 2025 | 163 min | Short sprint format; surfaced a real data-quality bug (below) |
+| Mosport | **2023 only** | 162 min | GTP, the current top prototype class, raced here only in 2023 — see below |
+| Road America | 2023, 2024, 2025 | 163 min | Short sprint; surfaced a real data-quality bug, covered below |
 
-96 GTP-class races are available across IMSA 2021-2026 in total; all were used
-for the neutralisation model, which needs the largest sample it can get. The
-10 race-seasons above (3+3+1+3) were selected for degradation/simulator work.
+96 GTP-class races are available across IMSA 2021-2026 in total, and all went
+into the neutralisation model. The 10 race-seasons above (3+3+1+3) were
+selected for degradation and simulator work.
 
-**Mosport's single season is a verified calendar fact, not a data gap.**
-Checked directly against the source: Mosport ran DPi (GTP's predecessor class)
-in 2022 and GTD/GTDPRO/LMP2 in 2024-2025, but no GTP entry outside 2023 — the
-IMSA analogue of the F1 project's own documented calendar gaps (2020/2021
-COVID cancellations).
+Mosport's single season isn't a gap in this pipeline — it's a verified fact
+about the calendar. Checked directly against the source: Mosport ran DPi
+(GTP's predecessor class) in 2022 and GTD/GTDPRO/LMP2 in 2024-2025, but no
+GTP entry outside 2023. It's the IMSA equivalent of the COVID-era calendar
+gaps already documented on the F1 side.
 
-**Verified availability, and what the verification caught:** see
+**What the verification caught:** see
 [`reports/imsa/data_availability_phase0.md`](reports/imsa/data_availability_phase0.md).
-It documents the source (shared with WEC — one DuckDB view covering IMSA, WEC,
-ELMS and ALMS), the two traps caught before any model was built (mixed
-practice/race sessions; `stint_number` is the **driver** stint, not the tyre
-stint — the #01 GTP car made 13 pit visits across only 4 driver stints), and a
-coverage gap found and *corrected after seeing more races*: an early version of
-this report claimed IMSA "ships no weather" as a series-wide fact from a single
-race; with four races materialised, two circuits have full weather coverage
-and two have none — a measured, race-specific fact, not a series-wide one.
+Beyond the mixed-session and driver-stint traps shared with WEC (the #01 GTP
+car made 13 pit visits across only 4 driver stints at Watkins Glen — the gap
+is fuel-only stops), an earlier draft of that report claimed IMSA "ships no
+weather" as a fact about the whole series, based on a single race. With four
+races on hand, the truth turned out to be race-specific: two circuits have
+full weather coverage, two have none.
 
 ### System overview
 
 | Layer | Module | Key finding |
 |---|---|---|
-| 0. Data | `src/data/` (shared with WEC) | Normalised multi-series lap schema; `pit visit` / `tyre change` / `driver stint` kept as three separate signals |
-| 1. Tyre degradation | `src/degradation/endurance.py` | Leave-one-**season**-out (3 circuits) shows near-zero transfer everywhere; Road America is significantly negative in every one of its 3 editions |
-| 2. Neutralisations | `src/safety_car/endurance.py` | Full Course Yellow in 90-93% of races at every scoped circuit; **zero** Safety Car events in 63 races — a genuinely different procedure from WEC's |
-| 3. Strategy simulator | `src/simulator/endurance.py` | Recommendation confidence tracks the underlying degradation signal directly: decisive at Road America, honestly flat (1.8s spread) at Mosport |
+| 0. Data | `src/data/` (shared with WEC) | Pit visit, tyre change, and driver stint kept as three distinct signals rather than one |
+| 1. Data quality | [`reports/imsa/data_quality_phase1.md`](reports/imsa/data_quality_phase1.md) | 69.1% of raw laps kept across 10 race-seasons; Road America 2024 alone accounts for most of the cars dropped outright |
+| 2. Tyre degradation | `src/degradation/endurance.py` | Leave-one-season-out shows near-zero transfer at every circuit; Road America is significantly negative in all three of its editions |
+| 3. Neutralisations | `src/safety_car/endurance.py` | Full Course Yellow in 90-93% of races at every scoped circuit; zero Safety Car events across 63 races — genuinely different from WEC |
+| 4. Strategy simulator | `src/simulator/endurance.py` | Confidence tracks the degradation signal directly: decisive at Road America, honestly flat (under 2s spread) at Mosport |
 
 Reports: [data availability](reports/imsa/data_availability_phase0.md) ·
-[degradation](reports/imsa/degradation_phase1.md) ·
-[neutralisations](reports/imsa/safety_car_phase2.md) ·
-[simulator](reports/imsa/simulator_phase3.md)
+[data quality](reports/imsa/data_quality_phase1.md) ·
+[degradation](reports/imsa/degradation_phase2.md) ·
+[neutralisations](reports/imsa/safety_car_phase3.md) ·
+[simulator](reports/imsa/simulator_phase4.md)
 
 ### Key results
 
-- **Degradation slopes do not transfer, across seasons or circuits.**
-  Leave-one-**season**-out per circuit (the exact F1 protocol, 3 real seasons
-  at Watkins Glen/Sebring/Road America) gives a mean within-stint R² of −0.011,
-  −0.001 and +0.005 respectively — indistinguishable from zero, or worse. A
-  separate leave-one-**circuit**-out test (different tracks, one season each)
-  gives +0.002 — the same conclusion from a different, harder question.
-  Independent confirmation, in a second series and by two distinct tests, of
-  the F1 project's central finding.
-- **A fuel/degradation split was attempted and rejected on the evidence.**
-  85-100% of pit visits also change tyres, leaving the fuel and tyre-age
-  regressors correlated +0.83 to +1.00 after fixed effects at every circuit.
-  Only the identified *net* slope is reported, behind a `separable` flag.
-- **A real data-quality bug was found and fixed.** Road America 2024's first
-  fit produced a nonsense slope (−0.53 s/lap, RMSE 13.9s): laps 2-3 of that
-  62-lap sprint are a field-wide standing-start effect (median lap time across
-  **all** cars ≈2x green pace) flagged "green" in the source. The existing
-  per-car traffic trim couldn't catch it because the anomaly compromises too
-  large a share of every car's own laps in a short race. Fixed with a
-  field-wide filter that runs first (`src/degradation/endurance.py`),
-  regression-tested both synthetically and on the real race.
-- **IMSA and WEC are not interchangeable.** An IMSA race is near-certain to
-  see a Full Course Yellow (P = 0.96 series-wide, confirmed circuit-by-circuit
-  at 90-93%); IMSA has never shown a Safety Car in 63 races, while WEC prefers
-  the Safety Car over FCY at every one of its scoped circuits.
-- **The simulator's confidence is honest, not uniform.** Road America — the
-  one circuit with a statistically significant degradation slope every season
-  checked — gives the most decisive recommendation of the four; Mosport, whose
-  slope covers zero, spreads under 2s across all candidate pit laps.
+Degradation slopes don't transfer here either, whether the test holds out a
+season or a whole circuit. Leave-one-season-out per circuit — the exact F1
+protocol, run on three real seasons at Watkins Glen, Sebring, and Road
+America — gives mean within-stint R² of −0.011, −0.001, and +0.005: no
+better than a flat line, sometimes worse. A separate leave-one-circuit-out
+test lands at +0.002. Two different, both harder-than-they-look questions,
+and the same answer from each: this project's central finding about
+degradation instability isn't a quirk of Formula 1, since it shows up
+independently in a second series tested two different ways.
+
+A fuel/degradation split was tried here too, and rejected for the same
+reason as WEC: 85-100% of pit visits also change tyres, leaving fuel and
+tyre age correlated +0.83 to +1.00 after fixed effects at every circuit.
+Only the net slope is reported.
+
+Building the leave-one-season-out analysis surfaced a real bug. Road America
+2024's first fit produced a nonsense slope of −0.53 s/lap with a 13.9-second
+RMSE — an order of magnitude off every other race. The cause: laps 2 and 3 of
+that 62-lap sprint are a field-wide standing-start effect, every car running
+at roughly twice its normal pace, flagged "green" in the source data. The
+existing per-car traffic trim couldn't catch it, because in such a short race
+the anomaly compromises too large a share of each car's own laps and inflates
+that car's own cutoff right along with it. The fix adds a field-wide filter
+that runs before the per-car one (`src/degradation/endurance.py`), and it's
+regression-tested against both a synthetic case and the real race.
+
+IMSA and WEC turn out not to be interchangeable at all. An IMSA race is
+almost certain to see a Full Course Yellow (P = 0.96 series-wide, and every
+scoped circuit individually sits at 90-93%), and IMSA has never shown a
+Safety Car in 63 races — while WEC prefers the Safety Car over FCY at every
+one of its own scoped circuits.
+
+The simulator's confidence follows the strength of the underlying signal
+rather than defaulting to some fixed level of certainty: Road America, the
+one circuit with a statistically significant slope in every season checked,
+gives the most decisive recommendation of the four; Mosport, whose slope
+covers zero, spreads under two seconds across every candidate pit lap and
+says so rather than picking a winner anyway.
 
 ### IMSA phase plan & Definition of Done
 
 | Phase | Deliverable | Definition of Done |
 |---|---|---|
-| 0. Data availability | [`reports/imsa/data_availability_phase0.md`](reports/imsa/data_availability_phase0.md) | Source verified by direct query, not assumed; scope frozen (4 circuits, 1-3 seasons each); both verification traps documented and regression-tested |
-| 1. Degradation | [`reports/imsa/degradation_phase1.md`](reports/imsa/degradation_phase1.md) + `src/degradation/endurance_validation.py` + tests | Net slope fitted per circuit-season with CIs; leave-one-season-out per circuit AND leave-one-circuit-out across the series, both reported and not conflated; separability diagnostic reported, never a fabricated fuel/degradation split |
-| 2. Neutralisations | [`reports/imsa/safety_car_phase2.md`](reports/imsa/safety_car_phase2.md) + tests | Per-circuit AND series-wide Beta-Binomial/Gamma-Poisson posteriors with Jeffreys priors, on 63 races; the zero-Safety-Car case handled by the Jeffreys prior, not hard-coded |
-| 3. Simulator | [`reports/imsa/simulator_phase3.md`](reports/imsa/simulator_phase3.md) + tests | Fuel-range constraint enforced; demo scenario per circuit; reproducible and seeded |
+| 0. Data availability | [`reports/imsa/data_availability_phase0.md`](reports/imsa/data_availability_phase0.md) | Source verified by direct query; scope frozen at 4 circuits, 1-3 seasons each; both verification traps documented and regression-tested |
+| 1. Data quality | [`reports/imsa/data_quality_phase1.md`](reports/imsa/data_quality_phase1.md) | Lap-level accounting for all 10 race-seasons, stage by stage, mirroring the F1 quality report |
+| 2. Degradation | [`reports/imsa/degradation_phase2.md`](reports/imsa/degradation_phase2.md) + `src/degradation/endurance_validation.py` + tests | Net slope per circuit-season with CIs; leave-one-season-out and leave-one-circuit-out both run and clearly distinguished; the fuel/degradation split reported only as a diagnostic |
+| 3. Neutralisations | [`reports/imsa/safety_car_phase3.md`](reports/imsa/safety_car_phase3.md) + tests | Per-circuit and series-wide Beta-Binomial/Gamma-Poisson posteriors on 63 races; the zero-Safety-Car case handled by the Jeffreys prior rather than hard-coded |
+| 4. Simulator | [`reports/imsa/simulator_phase4.md`](reports/imsa/simulator_phase4.md) + tests | Fuel-range constraint enforced, one demo scenario per circuit, reproducible |
 
-### IMSA known limitations (stated up front)
+### IMSA known limitations
 
-- **Mosport has only 1 season** of GTP data (a verified calendar fact, not a
-  gap in this pipeline — see Data scope above), so it has no leave-one-season-out
-  result; the simulator's Mosport demo still uses its single available fit.
-- **No tyre compound in the source** — degradation is a single net slope, not
-  a per-compound polynomial as in F1.
-- **No rivals, no track position, no driver-stint regulatory constraints** in
-  the simulator; IMSA is heavily multi-class (GTP/GTD/GTDPRO/LMP2/LMP3), which
-  a two-car rival abstraction would not represent honestly.
-- Road America's anomalous negative degradation slope is reported as
-  measured, not smoothed away — a genuine open question for future work.
+- Mosport has only one season of GTP data — a verified calendar fact, not a
+  gap in this pipeline (see Data scope above) — so it has no
+  leave-one-season-out result; the simulator's Mosport demo still runs on its
+  single available fit.
+- No tyre compound survives in the source, so degradation is a single net
+  slope rather than a per-compound curve.
+- No rivals, no track position, and no driver-stint regulatory constraints in
+  the simulator; IMSA is heavily multi-class (GTP/GTD/GTDPRO/LMP2/LMP3), and
+  a two-car rival abstraction wouldn't represent that honestly.
+- Road America's negative degradation slope is reported as measured, a
+  genuine open question rather than something smoothed over.
+- No retrospective audit of real IMSA strategy calls exists yet, and there's
+  no IMSA-specific methodology write-up.
 
 ---
 
 ## Engineering rules (all three series)
 
-- **No fabricated data.** If a source does not provide something, it is
-  documented as unavailable, never estimated silently.
-- **No data leakage.** The decision models only use information that was
-  knowable at the simulated moment of the race. Race outcomes never leak into
-  features.
-- **Uncertainty is first-class.** Every probability and every recommendation
-  ships with an interval or a distribution, never a bare point estimate.
-- **Reproducibility.** Fixed seeds for all stochastic code (Monte Carlo),
-  pinned dependency versions (`requirements.lock`), FastF1 cache enabled for
-  F1; WEC/IMSA races are committed as derived CSVs so their tests run offline.
-- **Tested.** `pytest` covers ingestion parsing/cleaning, degradation model
-  non-regression, and simulator physical-consistency invariants — for all
-  three series.
-- **Typed and documented.** Docstrings and type hints everywhere in `src/`.
-- **Nothing is pooled across series.** F1, WEC and IMSA each get their own
-  fitted coefficients, posteriors and simulator constants; only the estimator
-  *code* (and, for WEC/IMSA, the data schema) is shared.
+- **No fabricated data.** Anything a source doesn't provide is documented as
+  unavailable, never estimated silently.
+- **No data leakage.** The decision models only ever use information that
+  was knowable at the simulated moment of the race.
+- **Uncertainty is first-class.** Every probability and recommendation ships
+  with an interval or a distribution, never a bare point estimate.
+- **Reproducibility.** Fixed seeds for all stochastic code, pinned dependency
+  versions (`requirements.lock`), FastF1 cache enabled for F1; WEC and IMSA
+  races are committed as derived CSVs so their tests run fully offline.
+- **Tested.** `pytest` covers ingestion parsing and cleaning, degradation
+  model non-regression, and simulator physical-consistency invariants, for
+  all three series.
+- **Typed and documented.** Docstrings and type hints throughout `src/`.
+- **Nothing is pooled across series.** F1, WEC, and IMSA each get their own
+  fitted coefficients, posteriors, and simulator constants; only the
+  estimator code — and, for WEC/IMSA, the data schema — is shared.
 
 ## Repository structure
 
@@ -436,8 +540,8 @@ motorsport-strategy-lab/
     cache/              # FastF1 cache (gitignored)
     derived/
       f1/               # F1 derived laps, track status, sessions, model coefficients
-      imsa/             # IMSA derived laps (4 committed races)
-      wec/              # WEC derived laps (4 committed races)
+      imsa/             # IMSA derived laps: 4 circuits, 10 race-seasons
+      wec/              # WEC derived laps: 4 circuits, 11 race-seasons
       endurance/         # cross-series neutralisation flags (96 races, both series)
   src/
     ingestion/          # FastF1 loading, cleaning, validation (F1 only)
@@ -452,13 +556,14 @@ motorsport-strategy-lab/
   scripts/              # run_ingestion.py, run_degradation.py, run_safety_car.py,
                         #   run_simulator_demo.py (F1); run_endurance_flags.py
                         #   (WEC/IMSA neutralisation data pull); demo_extensions.py
-  tests/                # pytest: all three series, ~130 tests
+  tests/                # pytest, all three series, 130+ tests
   reports/
     f1/                 # phase 0-4 reports, audit cases, figures
-    imsa/               # phase 0-3 reports
-    wec/                # phase 0-3 reports
+    imsa/               # phase 0-4 reports
+    wec/                # phase 0-4 reports
     methodology.md      # F1 mini-paper
   README.md
+  LICENSE               # MIT
   pyproject.toml
   requirements.txt      # top-level deps; requirements.lock pins exact versions
 ```
@@ -475,17 +580,23 @@ python scripts/check_data_availability.py   # populates the FastF1 cache (F1 onl
 pytest
 ```
 
-The first F1 data run downloads several hundred MB into `data/cache/`
-(gitignored) and is served from cache afterwards. WEC and IMSA races are
-already committed as derived CSVs (`data/derived/wec/`, `data/derived/imsa/`),
-so their tests run fully offline with no extra setup; `scripts/run_endurance_flags.py`
+The first F1 run downloads several hundred MB into `data/cache/` (gitignored)
+and is served from cache after that. WEC and IMSA races are already committed
+as derived CSVs (`data/derived/wec/`, `data/derived/imsa/`), so their tests
+run fully offline with no extra setup; `scripts/run_endurance_flags.py`
 re-pulls the neutralisation dataset only if you want to refresh it.
 
 ## License & attribution
 
-F1 data accessed through [FastF1](https://github.com/theOehrly/Fast-F1), which
-sources official F1 live timing; this project is unaffiliated with Formula 1.
-WEC/IMSA data accessed through a community-maintained DuckDB
-(`hf://datasets/tobil/imsa/imsa.duckdb`); this project is unaffiliated with
-IMSA or the FIA World Endurance Championship. Code license to be chosen before
-public release (MIT planned).
+The code in this repository is released under the **MIT License** — see
+[`LICENSE`](LICENSE). Copyright Mohammed Reda Medjadj, 2026.
+
+F1 data is accessed through [FastF1](https://github.com/theOehrly/Fast-F1),
+which sources official Formula 1 live-timing data; this project is
+unaffiliated with Formula 1, the FIA, or any team. WEC and IMSA data are
+accessed through a community-maintained dataset
+(`hf://datasets/tobil/imsa/imsa.duckdb`, maintained by "tobil" on Hugging
+Face and itself released under the MIT License); this project is
+unaffiliated with IMSA, the FIA World Endurance Championship, or any
+competing team. All data is used for independent research and analysis; no
+proprietary or non-public information is used anywhere in this project.

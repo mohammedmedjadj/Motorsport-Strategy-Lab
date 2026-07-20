@@ -69,6 +69,67 @@ FIELD_WIDE_TRIM_RATIO = 1.3
 
 
 @dataclass(frozen=True)
+class FrameDiagnostics:
+    """Lap-accounting breakdown for one race, stage by stage, mirroring the F1
+    ingestion quality report (``reports/f1/data_quality_phase1.md``)."""
+
+    total_laps: int
+    non_green_or_pit: int       # neutralised (FCY/SC/FF/RF) or a pit-visit lap
+    missing_tyre_age: int       # green, non-pit, but tyre_age unknown
+    field_wide_trimmed: int     # field-wide standing-start / mislabelled-caution laps
+    per_car_trimmed: int        # remaining traffic-compromised laps, per car
+    insufficient_car_laps: int  # cars with too few laps to carry a fixed effect
+    kept: int
+
+    @property
+    def pct_kept(self) -> float:
+        return 100.0 * self.kept / self.total_laps if self.total_laps else float("nan")
+
+
+def frame_diagnostics(laps: pd.DataFrame) -> FrameDiagnostics:
+    """Run the exact stages of ``build_endurance_frame`` and count what each
+    one removes, so every exclusion is accounted for rather than only the
+    final total."""
+    total = len(laps)
+    work = laps.sort_values(["car", "lap"], kind="stable").copy()
+
+    green = green_lap_times(work)
+    non_green_or_pit = total - len(green)
+
+    green = green[green["tyre_age"].notna()]
+    missing_age = (total - non_green_or_pit) - len(green)
+
+    if green.empty:
+        return FrameDiagnostics(total, non_green_or_pit, missing_age, 0, 0, 0, 0)
+
+    overall_median = float(green["lap_time_s"].median())
+    lap_median = green.groupby("lap")["lap_time_s"].transform("median")
+    before = len(green)
+    green = green[lap_median <= FIELD_WIDE_TRIM_RATIO * overall_median]
+    field_wide_trimmed = before - len(green)
+
+    cutoff = green.groupby("car")["lap_time_s"].transform(lambda s: s.quantile(TRAFFIC_QUANTILE))
+    before = len(green)
+    green = green[green["lap_time_s"] <= cutoff]
+    per_car_trimmed = before - len(green)
+
+    counts = green.groupby("car")["lap_time_s"].transform("size")
+    before = len(green)
+    green = green[counts >= MIN_LAPS_PER_CAR]
+    insufficient = before - len(green)
+
+    return FrameDiagnostics(
+        total_laps=total,
+        non_green_or_pit=non_green_or_pit,
+        missing_tyre_age=missing_age,
+        field_wide_trimmed=field_wide_trimmed,
+        per_car_trimmed=per_car_trimmed,
+        insufficient_car_laps=insufficient,
+        kept=len(green),
+    )
+
+
+@dataclass(frozen=True)
 class Coefficient:
     """One estimated coefficient with its 95% confidence interval."""
 

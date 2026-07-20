@@ -1,13 +1,16 @@
 [project]
 name = "motorsport-strategy-lab"
 version = "0.1.0"
-description = "F1 race strategy decision-support system: tyre degradation and safety-car models feeding a Monte Carlo pit-stop simulator, plus a retrospective audit of real strategy calls."
+description = "Motorsport race-strategy decision-support system (F1, WEC, IMSA): tyre degradation and safety-car/neutralisation models feeding Monte Carlo pit-stop simulators, with a retrospective audit of real F1 strategy calls."
 readme = "README.md"
 requires-python = ">=3.11"
 authors = [{ name = "Mohammed Reda Medjadj" }]
+license = "MIT"
+license-files = ["LICENSE"]
 dependencies = [
     "fastf1",
     "scipy",
+    "duckdb",
 ]
 
 [project.optional-dependencies]
