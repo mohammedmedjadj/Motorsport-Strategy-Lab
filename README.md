@@ -573,31 +573,6 @@ Pareto front by pairwise non-dominance rather than collapsing to one number;
 on a small discrete grid of candidate laps this is exact, so a metaheuristic
 like NSGA-II would buy nothing.
 
-### Scope: statistical models fit to measured physical quantities
-
-Nothing in this project is derived from first-principles physics — there is
-no equation of motion, tyre thermodynamics, aerodynamic model, or
-fuel-combustion model anywhere in the codebase. What the models above are
-fit to is nonetheless physically real: a pit stop takes a measurable amount
-of time, worn tyres measurably slow a car down, a lighter fuel load
-measurably speeds it up, and a safety car or full-course yellow imposes a
-measurable drop in the whole field's pace. Each of those quantities is read
-directly off timing data — pit loss from paired in-lap/out-lap timing
-against a driver's own green-flag pace, neutralisation pace ratios from the
-lap times actually recorded under caution, fuel range from the observed
-distribution of laps between pit visits — and handed to the statistical
-machinery described above. The techniques are mathematical; the quantities
-they operate on are physical.
-
-One place this distinction actually mattered: fuel burn and tyre wear pull a
-car's pace in opposite directions across a stint, and separating them
-requires a car's fuel clock and tyre clock to reset independently of one
-another at some point — something Formula 1's refuelling ban never allows,
-but endurance racing's fuel-only pit stops occasionally do. Checked against
-real data, that separation turned out not to be available (fuel-only stops
-are too rare), so the model reports the combined effect and says so instead
-of fabricating a split the data can't support.
-
 ## License & attribution
 
 The code in this repository is released under the **MIT License** — see
