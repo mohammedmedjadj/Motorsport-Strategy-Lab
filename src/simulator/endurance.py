@@ -19,11 +19,22 @@ decision problem is different in three ways that drive the design:
    compound is not in the source at all, so there is no compound choice to model
    — degradation is the single net slope from Phase 1.
 
+A fourth difference, WEC-specific: **WEC runs two distinct neutralisation
+kinds**, Full Course Yellow and a genuine Safety Car, and Phase 2 found the
+Safety Car is used *more* often than FCY at every scoped WEC circuit. The
+engine therefore samples both hazards independently and prices each lap by
+whichever kind is active that draw — mirroring exactly how the F1 engine
+handles SC vs VSC (`src/simulator/engine.py::_sample_status`). IMSA shows no
+Safety Car in 63 races (Phase 2's Jeffreys posterior is a near-zero rate, not
+an assumed absence), so its Safety Car draws are vanishingly rare but not
+hard-coded to zero — the model does not special-case a series, it reflects
+what Phase 2 measured for it.
+
 Uncertainty propagated per draw: the net degradation slope is resampled from its
-Phase 1 confidence interval, the FCY per-lap rate from its Phase 2 Gamma
-posterior, and FCY durations from the observed pool. Candidates share
-realisations (common random numbers), so P(best) is a clean per-draw argmin —
-the same guarantee the F1 engine gives.
+Phase 1 confidence interval, each neutralisation kind's per-lap rate from its
+Phase 2 Gamma posterior, and each kind's durations from its own observed pool.
+Candidates share realisations (common random numbers), so P(best) is a clean
+per-draw argmin — the same guarantee the F1 engine gives.
 """
 
 from __future__ import annotations
@@ -35,7 +46,7 @@ import pandas as pd
 
 from src.data.endurance_loader import green_lap_times
 
-GREEN, FCY = 0, 1
+GREEN, FCY, SC = 0, 1, 2
 
 #: Stops slower than this multiple of the median are not routine (garage
 #: repairs, penalties served in the box) and are trimmed before estimating.
@@ -64,6 +75,19 @@ class EnduranceRaceModel:
     fcy_exposure: float
     #: Observed FCY durations in laps, resampled per draw.
     fcy_durations: tuple[int, ...]
+    #: Median lap time under Safety Car divided by green pace (>= 1). Falls
+    #: back to ``fcy_pace_ratio`` (flagged via ``sc_ratio_measured``) when this
+    #: race has no observed SC laps of its own — true for every IMSA race.
+    sc_pace_ratio: float
+    sc_ratio_measured: bool
+    #: Gamma posterior for Safety Car deployments per lap (alpha, exposure).
+    #: IMSA's posterior reflects Phase 2's near-zero (not exactly zero) rate —
+    #: no series is hard-coded to never see one.
+    sc_alpha: float
+    sc_exposure: float
+    #: Observed SC durations in laps; falls back to ``fcy_durations`` if this
+    #: race (or series) has none observed, for the same reason as the ratio.
+    sc_durations: tuple[int, ...]
     #: Hard fuel constraint: maximum laps runnable between pit visits.
     fuel_range_laps: int
 
@@ -101,13 +125,18 @@ def estimate_pit_loss(laps: pd.DataFrame) -> tuple[float, float, int]:
 
 def estimate_fcy_pace_ratio(laps: pd.DataFrame) -> float:
     """Median FCY lap time divided by median green pace (>= 1)."""
+    return estimate_pace_ratio(laps, "FCY")
+
+
+def estimate_pace_ratio(laps: pd.DataFrame, flag_token: str) -> float:
+    """Median lap time under ``flag_token`` divided by median green pace (>= 1)."""
     green = green_lap_times(laps)["lap_time_s"].median()
     neutral = laps.loc[
-        laps["flag"].eq("FCY") & ~laps["is_pit_lap"] & laps["lap_time_s"].notna(),
+        laps["flag"].eq(flag_token) & ~laps["is_pit_lap"] & laps["lap_time_s"].notna(),
         "lap_time_s",
     ]
     if neutral.empty or not np.isfinite(green) or green <= 0:
-        raise ValueError("cannot measure an FCY pace ratio in this race")
+        raise ValueError(f"cannot measure a {flag_token} pace ratio in this race")
     return float(neutral.median() / green)
 
 
@@ -153,16 +182,28 @@ class EnduranceScenario:
 def _sample_status(
     model: EnduranceRaceModel, n_laps: int, n_draws: int, rng: np.random.Generator
 ) -> np.ndarray:
-    """(n_draws, n_laps) green/FCY timelines from the Phase 2 posterior."""
-    rate = rng.gamma(model.fcy_alpha, 1.0 / model.fcy_exposure, size=n_draws)
+    """(n_draws, n_laps) green/FCY/SC timelines from the Phase 2 posteriors.
+
+    Mirrors the F1 engine's SC/VSC sampling exactly (``engine.py::_sample_status``):
+    both hazards are drawn independently per realisation, and whichever kind
+    fires first governs that neutralisation's duration pool.
+    """
+    lam_fcy = rng.gamma(model.fcy_alpha, 1.0 / model.fcy_exposure, size=n_draws)
+    lam_sc = rng.gamma(model.sc_alpha, 1.0 / model.sc_exposure, size=n_draws)
     status = np.full((n_draws, n_laps), GREEN, dtype=np.int8)
-    durations = np.asarray(model.fcy_durations, dtype=int)
+    fcy_durations = np.asarray(model.fcy_durations, dtype=int)
+    sc_durations = np.asarray(model.sc_durations, dtype=int)
     for d in range(n_draws):
         lap = 0
         while lap < n_laps:
-            if rng.random() < rate[d]:
-                span = int(rng.choice(durations))
+            u = rng.random()
+            if u < lam_fcy[d]:
+                span = int(rng.choice(fcy_durations))
                 status[d, lap : lap + span] = FCY
+                lap += span
+            elif u < lam_fcy[d] + lam_sc[d]:
+                span = int(rng.choice(sc_durations))
+                status[d, lap : lap + span] = SC
                 lap += span
             else:
                 lap += 1
@@ -192,7 +233,10 @@ def simulate(
     # Shared per-draw realisations: degradation slope and lap noise.
     slope = rng.normal(model.net_slope_s, model.net_slope_se, size=(n_draws, 1))
     noise = rng.normal(0.0, model.lap_noise_s, size=(n_draws, n_laps))
-    ratio = np.where(is_green, 1.0, model.fcy_pace_ratio)
+    ratio = np.where(
+        status == FCY, model.fcy_pace_ratio,
+        np.where(status == SC, model.sc_pace_ratio, 1.0),
+    )
 
     rows = []
     for pit_lap in candidates:
@@ -240,9 +284,24 @@ def build_race_model(
     fcy_exposure: float,
     fcy_durations: tuple[int, ...],
     lap_noise_s: float,
+    sc_alpha: float = 0.5,
+    sc_exposure: float | None = None,
+    sc_durations: tuple[int, ...] = (),
 ) -> EnduranceRaceModel:
-    """Assemble a race model, measuring pit loss / pace ratio / fuel range."""
+    """Assemble a race model, measuring pit loss / pace ratios / fuel range.
+
+    Safety Car parameters default to a Jeffreys-prior near-zero rate
+    (``sc_alpha=0.5`` over the same exposure as FCY) for series that do not
+    supply their own — true of every IMSA race, since IMSA has no observed
+    Safety Car in 63 races (Phase 2). WEC callers pass their own measured
+    ``sc_alpha``/``sc_exposure``/``sc_durations`` from the Phase 2 posterior.
+    """
     pit_loss, pit_iqr, n_events = estimate_pit_loss(laps)
+    fcy_ratio = estimate_fcy_pace_ratio(laps)
+    try:
+        sc_ratio, sc_measured = estimate_pace_ratio(laps, "SF"), True
+    except ValueError:
+        sc_ratio, sc_measured = fcy_ratio, False  # no SC laps in this race
     return EnduranceRaceModel(
         series=str(laps["series"].iloc[0]),
         event=str(laps["event"].iloc[0]),
@@ -254,9 +313,14 @@ def build_race_model(
         pit_loss_s=pit_loss,
         pit_loss_iqr_s=pit_iqr,
         n_pit_events=n_events,
-        fcy_pace_ratio=estimate_fcy_pace_ratio(laps),
+        fcy_pace_ratio=fcy_ratio,
         fcy_alpha=fcy_alpha,
         fcy_exposure=fcy_exposure,
         fcy_durations=fcy_durations,
+        sc_pace_ratio=sc_ratio,
+        sc_ratio_measured=sc_measured,
+        sc_alpha=sc_alpha,
+        sc_exposure=sc_exposure if sc_exposure is not None else fcy_exposure,
+        sc_durations=sc_durations if sc_durations else fcy_durations,
         fuel_range_laps=estimate_fuel_range(laps),
     )

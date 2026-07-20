@@ -6,8 +6,8 @@ across seasons than car/tyre behaviour. Editions that were not held
 (COVID cancellations) or fail to load are listed explicitly in the report
 — never silently skipped.
 
-Outputs: ``data/derived/sc_events.csv``, ``data/derived/sc_model.csv``,
-``reports/safety_car_phase3.md``.
+Outputs: ``data/derived/f1/sc_events.csv``, ``data/derived/f1/sc_model.csv``,
+``reports/f1/safety_car_phase3.md``.
 
 Usage (from the repo root)::
 
@@ -23,7 +23,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 import pandas as pd  # noqa: E402
 
-from src.ingestion.config import DERIVED_DIR, REPORTS_DIR, RaceId  # noqa: E402
+from src.ingestion.config import F1_DERIVED_DIR, F1_REPORTS_DIR, RaceId  # noqa: E402
 from src.ingestion.loader import load_race  # noqa: E402
 from src.safety_car.dataset import RaceEvents, extract_race_events  # noqa: E402
 from src.safety_car.model import (  # noqa: E402
@@ -170,11 +170,11 @@ def build_report(collected: list[RaceEvents], skipped: list[str]) -> tuple[str, 
 def main() -> int:
     collected, skipped = collect_events()
     events = events_frame(collected)
-    events.to_csv(DERIVED_DIR / "sc_events.csv", index=False)
+    events.to_csv(F1_DERIVED_DIR / "sc_events.csv", index=False)
 
     report, model = build_report(collected, skipped)
-    model.to_csv(DERIVED_DIR / "sc_model.csv", index=False)
-    (REPORTS_DIR / "safety_car_phase3.md").write_text(report, encoding="utf-8")
+    model.to_csv(F1_DERIVED_DIR / "sc_model.csv", index=False)
+    (F1_REPORTS_DIR / "safety_car_phase3.md").write_text(report, encoding="utf-8")
     print(f"\n{len(collected)} editions loaded, {len(skipped)} skipped, "
           f"{len(events)} events extracted.")
     return 0

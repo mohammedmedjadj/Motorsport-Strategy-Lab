@@ -17,7 +17,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from src.audit.cases import AuditCase, build_cases  # noqa: E402
-from src.ingestion.config import REPORTS_DIR  # noqa: E402
+from src.ingestion.config import F1_REPORTS_DIR  # noqa: E402
 from src.simulator.artifacts import load_circuit_models  # noqa: E402
 from src.simulator.engine import simulate  # noqa: E402
 from src.simulator.recommend import summarise  # noqa: E402
@@ -116,7 +116,7 @@ def main() -> int:
         lines += audit_case(case, models)
 
     lines += ANALYSIS
-    (REPORTS_DIR / "audit_cases.md").write_text("\n".join(lines), encoding="utf-8")
+    (F1_REPORTS_DIR / "audit_cases.md").write_text("\n".join(lines), encoding="utf-8")
     print("\nWrote reports/audit_cases.md")
     return 0
 

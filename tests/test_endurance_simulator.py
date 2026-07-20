@@ -36,15 +36,20 @@ def _model(key: str):
     fit = fit_endurance_degradation(build_endurance_frame(laps))
     timeline = race_timeline(load_race_flags())
     events = extract_events(timeline)
-    posterior = {(m.series, m.kind): m for m in fit_neutralisation_models(timeline, events)}[
-        (series, "FCY")
-    ]
-    durations = tuple(
+    posteriors = {(m.series, m.kind): m for m in fit_neutralisation_models(timeline, events)}
+    fcy = posteriors[(series, "FCY")]
+    sc = posteriors[(series, "SC")]
+    fcy_durations = tuple(
         e.duration_laps for e in events if e.series == series and e.kind == "FCY"
+    )
+    sc_durations = tuple(
+        e.duration_laps for e in events if e.series == series and e.kind == "SC"
     )
     model = build_race_model(
         laps, fit.net_slope.value, fit.net_slope.se,
-        posterior.n_events + 0.5, posterior.laps_exposure, durations, fit.rmse_s,
+        fcy.n_events + 0.5, fcy.laps_exposure, fcy_durations, fit.rmse_s,
+        sc_alpha=sc.n_events + 0.5, sc_exposure=sc.laps_exposure,
+        sc_durations=sc_durations,
     )
     return model, laps, fit
 
@@ -156,6 +161,38 @@ def test_watkins_glen_is_honestly_indifferent(imsa) -> None:
     spread = table["median_s"].max() - table["median_s"].min()
     # Under 0.5% of the remaining race time: not a distinguishable difference.
     assert spread / table["median_s"].median() < 0.005
+
+
+def test_wec_measures_its_own_safety_car_pace_ratio(wec) -> None:
+    """WEC has real SF-flagged laps, so the Safety Car ratio must be measured
+    directly, not borrowed from FCY — and Phase 2 found SC is the *more*
+    frequent neutralisation kind at Spa, so its alpha must reflect that."""
+    model, _, _ = wec
+    assert model.sc_ratio_measured is True
+    assert 1.3 < model.sc_pace_ratio < 3.0
+    assert model.sc_alpha > model.fcy_alpha  # more SC events than FCY at Spa
+
+
+def test_imsa_falls_back_to_fcy_ratio_for_its_absent_safety_car(imsa) -> None:
+    """IMSA has zero observed Safety Car events in 63 races (Phase 2), so its
+    race has no SF laps to measure from: the model must fall back to the FCY
+    ratio and say so via sc_ratio_measured, not silently invent a number."""
+    model, _, _ = imsa
+    assert model.sc_ratio_measured is False
+    assert model.sc_pace_ratio == model.fcy_pace_ratio
+    assert model.sc_alpha < model.fcy_alpha  # Jeffreys near-zero rate
+
+
+def test_status_timeline_can_contain_both_neutralisation_kinds(wec) -> None:
+    """With WEC's measured hazards, drawing enough laps must eventually surface
+    both FCY and SC states, not just one — the whole point of modelling both."""
+    from src.simulator.endurance import FCY, GREEN, SC, _sample_status
+
+    model, _, _ = wec
+    rng = np.random.default_rng(1)
+    status = _sample_status(model, n_laps=200, n_draws=200, rng=rng)
+    seen = set(np.unique(status).tolist())
+    assert seen == {GREEN, FCY, SC}
 
 
 def test_pace_ratio_and_fuel_range_reject_impossible_input() -> None:

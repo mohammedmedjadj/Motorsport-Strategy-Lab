@@ -2,17 +2,17 @@
 
 Outputs (all small enough to be committed, per project rules):
 
-- ``data/derived/laps_{season}_{circuit}.csv`` — cleaned laps with flags
-- ``data/derived/track_status_{season}_{circuit}.csv`` — status change log
-- ``data/derived/sessions.csv`` — one metadata row per race
-- ``reports/data_quality_phase1.md`` — lap accounting per race
+- ``data/derived/f1/laps_{season}_{circuit}.csv`` — cleaned laps with flags
+- ``data/derived/f1/track_status_{season}_{circuit}.csv`` — status change log
+- ``data/derived/f1/sessions.csv`` — one metadata row per race
+- ``reports/f1/data_quality_phase1.md`` — lap accounting per race
 """
 
 from __future__ import annotations
 
 import pandas as pd
 
-from src.ingestion.config import DERIVED_DIR, RACES, REPORTS_DIR, RaceId
+from src.ingestion.config import F1_DERIVED_DIR, F1_REPORTS_DIR, RACES, RaceId
 from src.ingestion.cleaning import EXCLUSION_FLAGS, clean_laps
 from src.ingestion.loader import RawRaceData, load_race
 from src.ingestion.quality import QualityRow, summarise_race, to_markdown
@@ -48,8 +48,8 @@ def export_track_status(raw: RawRaceData) -> pd.DataFrame:
 
 def run_all(races: tuple[RaceId, ...] = RACES) -> list[QualityRow]:
     """Run the full ingestion for all scoped races and persist outputs."""
-    DERIVED_DIR.mkdir(parents=True, exist_ok=True)
-    REPORTS_DIR.mkdir(parents=True, exist_ok=True)
+    F1_DERIVED_DIR.mkdir(parents=True, exist_ok=True)
+    F1_REPORTS_DIR.mkdir(parents=True, exist_ok=True)
 
     quality_rows: list[QualityRow] = []
     session_meta: list[dict[str, object]] = []
@@ -58,9 +58,9 @@ def run_all(races: tuple[RaceId, ...] = RACES) -> list[QualityRow]:
         print(f"Ingesting {race.slug} ...", flush=True)
         raw = load_race(race)
         cleaned = process_race(raw)
-        cleaned.to_csv(DERIVED_DIR / f"laps_{race.slug}.csv", index=False)
+        cleaned.to_csv(F1_DERIVED_DIR / f"laps_{race.slug}.csv", index=False)
         export_track_status(raw).to_csv(
-            DERIVED_DIR / f"track_status_{race.slug}.csv", index=False
+            F1_DERIVED_DIR / f"track_status_{race.slug}.csv", index=False
         )
         quality_rows.append(summarise_race(race.slug, cleaned))
         session_meta.append(
@@ -73,7 +73,7 @@ def run_all(races: tuple[RaceId, ...] = RACES) -> list[QualityRow]:
             }
         )
 
-    pd.DataFrame(session_meta).to_csv(DERIVED_DIR / "sessions.csv", index=False)
+    pd.DataFrame(session_meta).to_csv(F1_DERIVED_DIR / "sessions.csv", index=False)
     report = to_markdown(quality_rows)
-    (REPORTS_DIR / "data_quality_phase1.md").write_text(report, encoding="utf-8")
+    (F1_REPORTS_DIR / "data_quality_phase1.md").write_text(report, encoding="utf-8")
     return quality_rows

@@ -11,7 +11,7 @@ from dataclasses import dataclass
 
 import pandas as pd
 
-from src.ingestion.config import DERIVED_DIR
+from src.ingestion.config import F1_DERIVED_DIR
 
 
 @dataclass(frozen=True)
@@ -26,7 +26,7 @@ class DriverState:
 
 def load_race_laps(slug: str) -> pd.DataFrame:
     """Load one race's derived laps (e.g. ``2023_singapore``)."""
-    return pd.read_csv(DERIVED_DIR / f"laps_{slug}.csv")
+    return pd.read_csv(F1_DERIVED_DIR / f"laps_{slug}.csv")
 
 
 def state_at(laps: pd.DataFrame, driver: str, lap: int) -> DriverState:

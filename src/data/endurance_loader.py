@@ -35,7 +35,7 @@ from src.ingestion.config import DERIVED_DIR
 #: The upstream dataset, attached read-only by DuckDB.
 HF_DUCKDB = "hf://datasets/tobil/imsa/imsa.duckdb"
 
-ENDURANCE_DIR = DERIVED_DIR / "endurance"
+ENDURANCE_DIR = DERIVED_DIR  # each series lives in DERIVED_DIR/<series>/
 
 SUPPORTED_SERIES = ("imsa", "wec", "elms", "alms")
 
@@ -57,7 +57,7 @@ def slugify(text: str) -> str:
 
 def derived_path(series: str, year: int, event: str, car_class: str) -> Path:
     """Where a materialised race lives on disk."""
-    return ENDURANCE_DIR / (
+    return ENDURANCE_DIR / series / (
         f"laps_{series}_{year}_{slugify(event)}_{slugify(car_class)}.csv"
     )
 

@@ -19,7 +19,7 @@ from dataclasses import dataclass
 
 import pandas as pd
 
-from src.ingestion.config import DERIVED_DIR, SEASONS
+from src.ingestion.config import F1_DERIVED_DIR, SEASONS
 
 DRY_COMPOUNDS: tuple[str, ...] = ("SOFT", "MEDIUM", "HARD")
 TRAFFIC_TRIM_FACTOR = 1.10
@@ -43,7 +43,7 @@ def load_circuit_laps(circuit: str, seasons: tuple[int, ...] = SEASONS) -> pd.Da
     """Concatenate the derived lap files for one circuit across seasons."""
     frames = []
     for season in seasons:
-        df = pd.read_csv(DERIVED_DIR / f"laps_{season}_{circuit}.csv")
+        df = pd.read_csv(F1_DERIVED_DIR / f"laps_{season}_{circuit}.csv")
         df["race"] = f"{season}_{circuit}"
         df["season"] = season
         frames.append(df)

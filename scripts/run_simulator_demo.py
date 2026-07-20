@@ -16,7 +16,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from src.ingestion.config import REPORTS_DIR  # noqa: E402
+from src.ingestion.config import F1_REPORTS_DIR  # noqa: E402
 from src.simulator.artifacts import load_circuit_models  # noqa: E402
 from src.simulator.engine import RivalSpec, Scenario, simulate  # noqa: E402
 from src.simulator.recommend import summarise, table_markdown  # noqa: E402
@@ -108,7 +108,7 @@ def main() -> int:
         "- One remaining stop; compound-usage rules are the user's job.",
         "",
     ]
-    (REPORTS_DIR / "simulator_phase4.md").write_text("\n".join(lines), encoding="utf-8")
+    (F1_REPORTS_DIR / "simulator_phase4.md").write_text("\n".join(lines), encoding="utf-8")
     print("\nWrote reports/simulator_phase4.md")
     return 0
 

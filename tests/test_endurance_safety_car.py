@@ -11,6 +11,7 @@ from src.safety_car.endurance import (
     RACE_KEY,
     extract_events,
     fit_neutralisation_models,
+    fit_neutralisation_models_by_circuit,
     load_race_flags,
     race_exposure,
     race_timeline,
@@ -104,3 +105,34 @@ def test_every_race_counts_in_the_denominator(real_timeline) -> None:
 def test_empty_timeline_is_rejected() -> None:
     with pytest.raises(ValueError, match="no flag rows"):
         race_timeline(pd.DataFrame())
+
+
+def test_per_circuit_models_have_a_real_multi_season_sample(real_timeline) -> None:
+    """Scoped circuits must each have several seasons of exposure in
+    race_flags.csv, comparable to the F1 phase's 6-8 editions per circuit —
+    not just the single season materialised for degradation/simulator work."""
+    events = extract_events(real_timeline)
+    models = fit_neutralisation_models_by_circuit(real_timeline, events)
+    scoped = {
+        ("imsa", "Watkins Glen"), ("imsa", "Sebring"),
+        ("imsa", "Mosport"), ("imsa", "Road America"),
+        ("wec", "Spa"), ("wec", "Fuji"), ("wec", "Bahrain"), ("wec", "Imola"),
+    }
+    by_circuit = {(m.series, m.event) for m in models}
+    assert scoped <= by_circuit
+    for series, event in scoped:
+        n_races = {m.n_races for m in models if (m.series, m.event) == (series, event)}
+        assert n_races.pop() >= 3
+
+
+def test_wec_safety_car_is_circuit_specific_not_series_wide(real_timeline) -> None:
+    """WEC's SC/FCY balance is not uniform across circuits: Spa leans SC far
+    more heavily than the series-wide pool alone would suggest."""
+    events = extract_events(real_timeline)
+    models = {
+        (m.series, m.event, m.kind): m
+        for m in fit_neutralisation_models_by_circuit(real_timeline, events)
+    }
+    spa_sc = models[("wec", "Spa", "SC")]
+    spa_fcy = models[("wec", "Spa", "FCY")]
+    assert spa_sc.occurrence.mean > spa_fcy.occurrence.mean

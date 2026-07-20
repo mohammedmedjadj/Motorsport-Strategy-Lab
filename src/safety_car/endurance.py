@@ -40,7 +40,7 @@ from dataclasses import dataclass
 
 import pandas as pd
 
-from src.ingestion.config import DERIVED_DIR
+from src.ingestion.config import ENDURANCE_DERIVED_DIR
 from src.safety_car.model import (
     PosteriorEstimate,
     duration_summary,
@@ -48,7 +48,7 @@ from src.safety_car.model import (
     per_lap_rate,
 )
 
-RACE_FLAGS_CSV = DERIVED_DIR / "endurance" / "race_flags.csv"
+RACE_FLAGS_CSV = ENDURANCE_DERIVED_DIR / "race_flags.csv"
 
 #: Raw flag token -> modelled neutralisation kind. Anything absent is not a
 #: neutralisation (GF = racing, FF = chequered, RF = red flag, too rare).
@@ -160,6 +160,61 @@ def fit_neutralisation_models(
             models.append(
                 NeutralisationModel(
                     series=series,
+                    kind=kind,
+                    n_races=n_races,
+                    n_races_with_event=len(races_with),
+                    n_events=len(hits),
+                    laps_exposure=laps,
+                    occurrence=occurrence_probability(len(races_with), n_races),
+                    rate_per_lap=per_lap_rate(len(hits), laps),
+                    durations=duration_summary([e.duration_laps for e in hits]),
+                )
+            )
+    return models
+
+
+@dataclass(frozen=True)
+class CircuitNeutralisationModel:
+    """Posterior summary for one series, one circuit, and one neutralisation
+    kind — the per-circuit analogue of ``NeutralisationModel``, mirroring the
+    F1 phase's per-circuit SC/VSC tables."""
+
+    series: str
+    event: str
+    kind: str
+    n_races: int
+    n_races_with_event: int
+    n_events: int
+    laps_exposure: int
+    occurrence: PosteriorEstimate
+    rate_per_lap: PosteriorEstimate
+    durations: dict[str, float]
+
+
+def fit_neutralisation_models_by_circuit(
+    timeline: pd.DataFrame, events: list[NeutralisationEvent]
+) -> list[CircuitNeutralisationModel]:
+    """Posteriors per (series, event, kind), over every available season of
+    that circuit — not just the one season materialised for degradation/
+    simulator work. ``race_flags.csv`` carries several seasons per circuit
+    (typically 4-6, comparable to F1's 6-8 editions), so this is a genuine
+    per-circuit sample, not a series-wide pool.
+    """
+    exposure = race_exposure(timeline)
+    models: list[CircuitNeutralisationModel] = []
+    for (series, event), races in exposure.groupby(["series_code", "event"]):
+        n_races = len(races)
+        laps = int(races["laps"].sum())
+        for kind in sorted(set(NEUTRALISATION_FLAGS.values())):
+            hits = [
+                e for e in events
+                if e.series == series and e.event == event and e.kind == kind
+            ]
+            races_with = {e.session_id for e in hits}
+            models.append(
+                CircuitNeutralisationModel(
+                    series=str(series),
+                    event=str(event),
                     kind=kind,
                     n_races=n_races,
                     n_races_with_event=len(races_with),

@@ -2,11 +2,11 @@
 
 Sources (all produced by earlier phases, all committed):
 
-- ``data/derived/degradation_coefficients.csv`` (Phase 2): per-compound
+- ``data/derived/f1/degradation_coefficients.csv`` (Phase 2): per-compound
   polynomial coefficients with CIs, fuel slope, CV RMSE (lap noise).
-- ``data/derived/sc_model.csv`` + ``sc_events.csv`` (Phase 3): Gamma
+- ``data/derived/f1/sc_model.csv`` + ``sc_events.csv`` (Phase 3): Gamma
   posterior parameters for per-lap SC/VSC rates and observed duration pools.
-- ``data/derived/laps_*.csv`` (Phase 1): green pace, pit loss and
+- ``data/derived/f1/laps_*.csv`` (Phase 1): green pace, pit loss and
   neutralisation pace ratios, measured on the spot by ``pit_loss.py``.
 
 Coefficient uncertainty convention: the CSVs store 95% CIs; standard
@@ -20,7 +20,7 @@ from dataclasses import dataclass
 
 import pandas as pd
 
-from src.ingestion.config import DERIVED_DIR, SEASONS
+from src.ingestion.config import F1_DERIVED_DIR, SEASONS
 from src.simulator.pit_loss import (
     PaceRatios,
     PitLossEstimate,
@@ -75,7 +75,7 @@ def _gaussian(mean: float, ci_low: float, ci_high: float) -> GaussianCoef:
 
 def _load_all_laps() -> dict[str, pd.DataFrame]:
     laps_by_circuit: dict[str, pd.DataFrame] = {}
-    for path in sorted(DERIVED_DIR.glob("laps_*.csv")):
+    for path in sorted(F1_DERIVED_DIR.glob("laps_*.csv")):
         season, circuit = path.stem.removeprefix("laps_").split("_", 1)
         if int(season) not in SEASONS:
             continue
@@ -97,9 +97,9 @@ def _duration_pool(events: pd.DataFrame, circuit: str, kind: str) -> tuple[int, 
 
 def load_circuit_models() -> dict[str, CircuitModel]:
     """Build the full artifact set for every scoped circuit."""
-    deg = pd.read_csv(DERIVED_DIR / "degradation_coefficients.csv")
-    sc = pd.read_csv(DERIVED_DIR / "sc_model.csv").set_index("circuit")
-    events = pd.read_csv(DERIVED_DIR / "sc_events.csv")
+    deg = pd.read_csv(F1_DERIVED_DIR / "degradation_coefficients.csv")
+    sc = pd.read_csv(F1_DERIVED_DIR / "sc_model.csv").set_index("circuit")
+    events = pd.read_csv(F1_DERIVED_DIR / "sc_events.csv")
     laps_by_circuit = _load_all_laps()
     ratios = estimate_pace_ratios(laps_by_circuit)
 

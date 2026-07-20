@@ -13,7 +13,14 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[2]
 CACHE_DIR = REPO_ROOT / "data" / "cache"
 DERIVED_DIR = REPO_ROOT / "data" / "derived"
+#: Derived data is partitioned by series so the three pipelines never collide.
+F1_DERIVED_DIR = DERIVED_DIR / "f1"
+ENDURANCE_DERIVED_DIR = DERIVED_DIR / "endurance"  # cross-series endurance data
 REPORTS_DIR = REPO_ROOT / "reports"
+#: Reports are partitioned by series, mirroring the derived-data layout.
+F1_REPORTS_DIR = REPORTS_DIR / "f1"
+IMSA_REPORTS_DIR = REPORTS_DIR / "imsa"
+WEC_REPORTS_DIR = REPORTS_DIR / "wec"
 
 
 @dataclass(frozen=True)

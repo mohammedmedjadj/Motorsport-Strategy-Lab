@@ -76,7 +76,7 @@ def demo_pareto(circuit: str = "barcelona", n_draws: int = 4000) -> list[str]:
 
 
 def _circuit_frame(circuit: str) -> pd.DataFrame:
-    files = sorted(glob.glob(f"data/derived/laps_*_{circuit}.csv"))
+    files = sorted(glob.glob(f"data/derived/f1/laps_*_{circuit}.csv"))
     raw = pd.concat(
         [pd.read_csv(f).assign(race=f.split("laps_")[1].split("_")[0] + f"_{circuit}")
          for f in files],
@@ -107,12 +107,12 @@ def demo_gp_vs_ols(circuit: str = "suzuka") -> list[str]:
         f"    OLS mean CV RMSE: {np.mean(ols_rmse):.3f} s/lap",
         f"    GP  mean CV RMSE: {np.mean(gp_rmse):.3f} s/lap  (per-circuit)",
         "    Across all 4 circuits the two tie out-of-sample (0.838 vs 0.844);",
-        "    see reports/degradation_phase2.md.",
+        "    see reports/f1/degradation_phase2.md.",
     ]
 
 
 def demo_kalman(circuit: str = "suzuka") -> list[str]:
-    df = pd.read_csv(sorted(glob.glob(f"data/derived/laps_2023_{circuit}.csv"))[0])
+    df = pd.read_csv(sorted(glob.glob(f"data/derived/f1/laps_2023_{circuit}.csv"))[0])
     df = df[df["is_pace_lap"]]
     groups = df.groupby(["Driver", "Stint"])
     key = max(groups.groups, key=lambda k: len(groups.get_group(k)))

@@ -5,8 +5,8 @@ models, cross-validate both (leave-one-race-out), select the degree with
 the lower mean CV RMSE, save the figure and export coefficients for the
 Phase 4 simulator.
 
-Outputs: ``reports/degradation_phase2.md``, ``reports/figures/*.png``,
-``data/derived/degradation_coefficients.csv``.
+Outputs: ``reports/f1/degradation_phase2.md``, ``reports/f1/figures/*.png``,
+``data/derived/f1/degradation_coefficients.csv``.
 
 Usage (from the repo root)::
 
@@ -31,7 +31,7 @@ from src.degradation.dataset import (  # noqa: E402
 from src.degradation.model import FitResult, fit_circuit  # noqa: E402
 from src.degradation.plots import degradation_figure  # noqa: E402
 from src.degradation.validation import FoldResult, leave_one_race_out, mean_rmse  # noqa: E402
-from src.ingestion.config import DERIVED_DIR, REPORTS_DIR  # noqa: E402
+from src.ingestion.config import F1_DERIVED_DIR, F1_REPORTS_DIR  # noqa: E402
 
 CIRCUITS = ("monaco", "singapore", "barcelona", "suzuka")
 DEGREES = (1, 2)
@@ -94,7 +94,7 @@ def main() -> int:
         }
         selected = min(DEGREES, key=lambda d: mean_rmse(cv[d]))
         fit = fit_circuit(frame, circuit, degree=selected)
-        degradation_figure(frame, fit, REPORTS_DIR / "figures" / f"degradation_{circuit}.png")
+        degradation_figure(frame, fit, F1_REPORTS_DIR / "figures" / f"degradation_{circuit}.png")
         all_coef_rows += coefficients_rows(fit, mean_rmse(cv[selected]))
 
         report += [
@@ -173,9 +173,9 @@ def main() -> int:
     ]
 
     pd.DataFrame(all_coef_rows).to_csv(
-        DERIVED_DIR / "degradation_coefficients.csv", index=False
+        F1_DERIVED_DIR / "degradation_coefficients.csv", index=False
     )
-    (REPORTS_DIR / "degradation_phase2.md").write_text("\n".join(report), encoding="utf-8")
+    (F1_REPORTS_DIR / "degradation_phase2.md").write_text("\n".join(report), encoding="utf-8")
     print(f"\nWrote reports/degradation_phase2.md and {len(all_coef_rows)} coefficient rows.")
     return 0
 
