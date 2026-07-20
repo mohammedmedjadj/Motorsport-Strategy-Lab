@@ -1,0 +1,169 @@
+"""Endurance simulator: measured artifacts, the fuel constraint, and the two
+real races behaving consistently with their Phase 1 degradation findings."""
+
+from __future__ import annotations
+
+import numpy as np
+import pandas as pd
+import pytest
+
+from src.data.endurance_loader import EnduranceLoader
+from src.degradation.endurance import build_endurance_frame, fit_endurance_degradation
+from src.safety_car.endurance import (
+    extract_events,
+    fit_neutralisation_models,
+    load_race_flags,
+    race_timeline,
+)
+from src.simulator.endurance import (
+    EnduranceScenario,
+    build_race_model,
+    estimate_fcy_pace_ratio,
+    estimate_fuel_range,
+    estimate_pit_loss,
+    simulate,
+)
+
+RACES = {
+    "imsa": ("imsa", 2023, "Watkins Glen", "GTP"),
+    "wec": ("wec", 2024, "Spa", "HYPERCAR"),
+}
+
+
+def _model(key: str):
+    series, year, event, cls = RACES[key]
+    laps = EnduranceLoader(series).load_laps(year, event, cls)
+    fit = fit_endurance_degradation(build_endurance_frame(laps))
+    timeline = race_timeline(load_race_flags())
+    events = extract_events(timeline)
+    posterior = {(m.series, m.kind): m for m in fit_neutralisation_models(timeline, events)}[
+        (series, "FCY")
+    ]
+    durations = tuple(
+        e.duration_laps for e in events if e.series == series and e.kind == "FCY"
+    )
+    model = build_race_model(
+        laps, fit.net_slope.value, fit.net_slope.se,
+        posterior.n_events + 0.5, posterior.laps_exposure, durations, fit.rmse_s,
+    )
+    return model, laps, fit
+
+
+@pytest.fixture(scope="module")
+def imsa():
+    return _model("imsa")
+
+
+@pytest.fixture(scope="module")
+def wec():
+    return _model("wec")
+
+
+def test_measured_artifacts_are_physical(imsa, wec) -> None:
+    for model, _, _ in (imsa, wec):
+        # Endurance stops refuel and often change driver: far costlier than F1.
+        assert 40.0 < model.pit_loss_s < 100.0
+        assert model.n_pit_events >= 20
+        # A neutralised lap is slower than a green one, by a lot in endurance.
+        assert 1.5 < model.fcy_pace_ratio < 2.5
+        assert 15 <= model.fuel_range_laps <= 40
+        assert model.green_pace_s > 0
+
+
+def test_pit_loss_trims_non_routine_stops(imsa) -> None:
+    """A car sitting in the garage produces a multi-thousand-second 'stop';
+    it must not drag the estimate."""
+    _, laps, _ = imsa
+    median, iqr, n = estimate_pit_loss(laps)
+    raw = laps.loc[laps["is_pit_lap"], "pit_time_s"].dropna()
+    assert median < 0.5 * float(raw.max())  # the outlier is gone
+    assert iqr > 0 and n > 0
+
+
+def test_fuel_range_caps_the_candidate_set(imsa) -> None:
+    model, _, _ = imsa
+    used = 5
+    scenario = EnduranceScenario(
+        current_lap=100, total_laps=201, tyre_age=5, laps_since_refuel=used
+    )
+    candidates = [c for c in scenario.candidate_pit_laps(model) if c != 0]
+    # Cannot run beyond the fuel range: the last candidate is fuel-bound.
+    assert max(candidates) == 100 + (model.fuel_range_laps - used)
+    assert min(candidates) == 101
+
+
+def test_no_stop_offered_only_when_fuel_reaches_the_flag(imsa) -> None:
+    model, _, _ = imsa
+    near_end = EnduranceScenario(
+        current_lap=195, total_laps=201, tyre_age=10, laps_since_refuel=0
+    )
+    assert 0 in near_end.candidate_pit_laps(model)  # 6 laps left, tank covers it
+    mid = EnduranceScenario(
+        current_lap=100, total_laps=201, tyre_age=10, laps_since_refuel=0
+    )
+    assert 0 not in mid.candidate_pit_laps(model)  # 101 laps left, must stop
+
+
+def test_exhausted_fuel_is_rejected(imsa) -> None:
+    model, _, _ = imsa
+    dry = EnduranceScenario(
+        current_lap=100, total_laps=201, tyre_age=10,
+        laps_since_refuel=model.fuel_range_laps,
+    )
+    with pytest.raises(ValueError, match="fuel already exhausted"):
+        dry.candidate_pit_laps(model)
+
+
+def test_simulation_is_a_valid_reproducible_distribution(wec) -> None:
+    model, _, _ = wec
+    scenario = EnduranceScenario(
+        current_lap=70, total_laps=141, tyre_age=8, laps_since_refuel=8
+    )
+    a = simulate(scenario, model, n_draws=400, seed=3)
+    b = simulate(scenario, model, n_draws=400, seed=3)
+    assert a["p_best"].sum() == pytest.approx(1.0)
+    assert (a["p10_s"] <= a["median_s"]).all() and (a["median_s"] <= a["p90_s"]).all()
+    assert np.allclose(a["median_s"], b["median_s"])  # seeded, reproducible
+
+
+def test_spa_optimum_is_pinned_by_the_fuel_constraint(wec) -> None:
+    """Spa has a clearly positive net slope, so tyres want the stop near the
+    middle of the 71 remaining laps (~lap 106). Fuel does not allow it: the tank
+    runs out at lap 90, and the simulator lands exactly on that boundary. The
+    binding constraint is fuel, not tyres — a situation F1 never faces."""
+    model, _, fit = wec
+    assert fit.net_slope.ci_low > 0
+    scenario = EnduranceScenario(
+        current_lap=70, total_laps=141, tyre_age=8, laps_since_refuel=8
+    )
+    fuel_bound = 70 + (model.fuel_range_laps - 8)
+    table = simulate(scenario, model, n_draws=800, seed=7)
+    best = int(table.loc[table["median_s"].idxmin(), "pit_lap"])
+    assert best == fuel_bound == int(table["pit_lap"].max())
+    assert table["p_best"].max() > 0.5  # and it is decisive about it
+
+
+def test_watkins_glen_is_honestly_indifferent(imsa) -> None:
+    """Watkins Glen's net slope covers zero, so no stop lap is meaningfully
+    better: the spread across candidates must stay negligible relative to the
+    race, rather than the model inventing a confident answer."""
+    model, _, fit = imsa
+    assert fit.net_slope.ci_low < 0 < fit.net_slope.ci_high
+    scenario = EnduranceScenario(
+        current_lap=100, total_laps=201, tyre_age=8, laps_since_refuel=8
+    )
+    table = simulate(scenario, model, n_draws=800, seed=7)
+    spread = table["median_s"].max() - table["median_s"].min()
+    # Under 0.5% of the remaining race time: not a distinguishable difference.
+    assert spread / table["median_s"].median() < 0.005
+
+
+def test_pace_ratio_and_fuel_range_reject_impossible_input() -> None:
+    empty = pd.DataFrame({
+        "series": [], "event": [], "car_class": [], "car": [], "lap": [],
+        "lap_time_s": [], "is_green": [], "is_pit_lap": [], "flag": [],
+    })
+    with pytest.raises(ValueError):
+        estimate_fcy_pace_ratio(empty)
+    with pytest.raises(ValueError):
+        estimate_fuel_range(empty)
