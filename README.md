@@ -17,7 +17,7 @@ written methodology). WEC and IMSA cover the equivalent modelling phases
 (0-4) but don't yet have an audit of real strategy calls or their own
 methodology write-up — see the limitations under each series.
 Jump to: [Formula 1](#formula-1) · [WEC](#wec) · [IMSA](#imsa) ·
-[Methods](#mathematical-and-physical-methods).
+[Methods](#mathematical-methods).
 
 ## Why this project
 
@@ -41,70 +41,6 @@ IMSA data come from a community-maintained dataset (details under
 [WEC](#wec) and [IMSA](#imsa)). Nothing is invented to fill a gap — if a
 source doesn't have something, that's stated as a limitation, not patched
 over.
-
-## Mathematical and physical methods
-
-The three layers lean on a specific, deliberately chosen set of techniques
-rather than a single off-the-shelf model:
-
-**Degradation — fixed-effects linear regression.** Lap time is decomposed as
-`a_{driver,race} + fuel_slope × lap_number + degradation(tyre_age)`, fit by
-ordinary least squares via `numpy.linalg.lstsq`, with one dummy-variable
-intercept per driver-race pair absorbing car pace, driver pace, and track
-conditions that would otherwise confound the tyre-age effect. Standard errors
-come from the classical homoscedastic formula, and a Moore-Penrose
-pseudoinverse handles the rank-deficient cases (a driver-race seen on only
-one tyre compound, for instance). The degree of the tyre-age polynomial
-(linear or quadratic) is chosen per circuit by leave-one-race-out
-cross-validation, scored on the *within-stint*, demeaned residual — because a
-driver-race intercept fit on training data cannot be observed on a held-out
-race, comparing raw lap times would silently leak information. Two robustness
-checks sit alongside the OLS model: a Gaussian-process regression (RBF
-kernel, hyperparameters fit by maximising the log marginal likelihood via
-Cholesky factorisation) shows the polynomial assumption isn't the source of
-the instability, and a Kalman filter (a local-linear-trend state-space model,
-run lap by lap) tracks degradation online instead of retrospectively.
-
-**Safety-car and neutralisation risk — conjugate Bayesian models.** Two
-questions, two matching distributions: whether a race sees at least one
-deployment is a **Beta-Binomial** (posterior mean `(k+0.5)/(n+1)` under a
-Jeffreys prior), and the deployment rate per lap is a **Gamma-Poisson**, also
-Jeffreys. With as few as three to eight editions of a circuit, a frequentist
-point estimate would be false precision; the conjugate posterior gives an
-exact credible interval instead, and a circuit that has never seen a safety
-car still gets a small, non-zero, honestly wide probability rather than a
-hard zero.
-
-**The strategy simulator — Monte Carlo with variance-reduction and exact
-Pareto search.** Each candidate pit lap is evaluated over thousands of
-simulated race continuations, with every source of uncertainty resampled
-per draw: degradation and fuel coefficients from their confidence intervals,
-neutralisation hazards from their Gamma posteriors, lap noise at the
-cross-validated residual scale. Candidates share the same random draws
-(common random numbers), so the comparison between two pit laps isn't
-polluted by unrelated noise. An optional sampler replaces the i.i.d. draws
-with a scrambled Sobol' low-discrepancy sequence, mapped to the model's
-Normal marginals by the inverse CDF — a form of randomised quasi-Monte Carlo
-that cuts estimator variance sharply when the underlying function is smooth,
-and is honestly reported as a no-op when a jump process (a safety car) is
-what actually drives the variance. Where a decision genuinely trades off two
-objectives — race time against track position — the engine returns the exact
-Pareto front by pairwise non-dominance rather than collapsing to one number;
-on a small discrete grid of candidate laps this is exact, so a metaheuristic
-like NSGA-II would buy nothing.
-
-**Physical grounding.** Every constant the simulator uses is measured, not
-assumed: pit-lane loss from paired in-lap/out-lap timing against a
-driver's own green-flag pace, neutralisation pace ratios from the lap times
-actually recorded under caution, fuel range from the observed distribution of
-laps between pit visits. The endurance work also surfaces a genuine
-identification problem: fuel burn and tyre wear both move a car's pace in
-opposite directions across a stint, and only when a car's *fuel* and *tyre*
-clocks are reset independently of each other — something F1 never allows, but
-endurance racing's fuel-only pit stops sometimes do — can the two effects be
-separated at all. Where that separation isn't possible, the model reports
-the combined (net) effect and says so, rather than fabricating a split the
-data can't support.
 
 ## Repository map
 
@@ -585,6 +521,83 @@ and is served from cache after that. WEC and IMSA races are already committed
 as derived CSVs (`data/derived/wec/`, `data/derived/imsa/`), so their tests
 run fully offline with no extra setup; `scripts/run_endurance_flags.py`
 re-pulls the neutralisation dataset only if you want to refresh it.
+
+## Mathematical methods
+
+The three layers lean on a specific, deliberately chosen set of techniques
+rather than a single off-the-shelf model:
+
+**Degradation — fixed-effects linear regression.** Lap time is decomposed as
+`a_{driver,race} + fuel_slope × lap_number + degradation(tyre_age)`, fit by
+ordinary least squares via `numpy.linalg.lstsq`, with one dummy-variable
+intercept per driver-race pair absorbing car pace, driver pace, and track
+conditions that would otherwise confound the tyre-age effect. Standard errors
+come from the classical homoscedastic formula, and a Moore-Penrose
+pseudoinverse handles the rank-deficient cases (a driver-race seen on only
+one tyre compound, for instance). The degree of the tyre-age polynomial
+(linear or quadratic) is chosen per circuit by leave-one-race-out
+cross-validation, scored on the *within-stint*, demeaned residual — because a
+driver-race intercept fit on training data cannot be observed on a held-out
+race, comparing raw lap times would silently leak information. Two robustness
+checks sit alongside the OLS model: a Gaussian-process regression (RBF
+kernel, hyperparameters fit by maximising the log marginal likelihood via
+Cholesky factorisation) shows the polynomial assumption isn't the source of
+the instability, and a Kalman filter (a local-linear-trend state-space model,
+run lap by lap) tracks degradation online instead of retrospectively.
+
+**Safety-car and neutralisation risk — conjugate Bayesian models.** Two
+questions, two matching distributions: whether a race sees at least one
+deployment is a **Beta-Binomial** (posterior mean `(k+0.5)/(n+1)` under a
+Jeffreys prior), and the deployment rate per lap is a **Gamma-Poisson**, also
+Jeffreys. With as few as three to eight editions of a circuit, a frequentist
+point estimate would be false precision; the conjugate posterior gives an
+exact credible interval instead, and a circuit that has never seen a safety
+car still gets a small, non-zero, honestly wide probability rather than a
+hard zero.
+
+**The strategy simulator — Monte Carlo with variance reduction and exact
+Pareto search.** Each candidate pit lap is evaluated over thousands of
+simulated race continuations, with every source of uncertainty resampled
+per draw: degradation and fuel coefficients from their confidence intervals,
+neutralisation hazards from their Gamma posteriors, lap noise at the
+cross-validated residual scale. Candidates share the same random draws
+(common random numbers), so the comparison between two pit laps isn't
+polluted by unrelated noise. An optional sampler replaces the i.i.d. draws
+with a scrambled Sobol' low-discrepancy sequence, mapped to the model's
+Normal marginals by the inverse CDF — a form of randomised quasi-Monte Carlo
+that cuts estimator variance sharply when the underlying function is smooth,
+and is honestly reported as a no-op when a jump process (a safety car) is
+what actually drives the variance. Where a decision genuinely trades off two
+objectives — race time against track position — the engine returns the exact
+Pareto front by pairwise non-dominance rather than collapsing to one number;
+on a small discrete grid of candidate laps this is exact, so a metaheuristic
+like NSGA-II would buy nothing.
+
+### Is any of this actually physics?
+
+Being direct about it: no. There's no equation of motion, no tyre
+thermodynamics, no aerodynamics, no fuel-combustion model anywhere in this
+project — nothing here is derived from first-principles physics. What *is*
+real and physical is the raw material every technique above is fit to: a
+pit stop takes a measurable amount of time, worn tyres measurably slow a car
+down, a lighter fuel load measurably speeds one up, and a safety car or full
+-course yellow imposes a real, measurable drop in the whole field's pace.
+Those quantities are read directly off timing data — pit loss from paired
+in-lap/out-lap timing against a driver's own green-flag pace, neutralisation
+pace ratios from the lap times actually recorded under caution, fuel range
+from the observed distribution of laps between pit visits — and then handed
+to the statistical machinery described above. Calling that "physical
+modelling" would be overselling it; it's closer to: physical quantities,
+measured honestly, modelled statistically.
+
+One place this distinction actually mattered: fuel burn and tyre wear pull a
+car's pace in opposite directions across a stint, and separating them
+requires a car's fuel clock and tyre clock to reset independently of one
+another at some point — something Formula 1's refuelling ban never allows,
+but endurance racing's fuel-only pit stops occasionally do. Checked against
+real data, that separation turned out not to be available (fuel-only stops
+are too rare), so the model reports the combined effect and says so instead
+of fabricating a split the data can't support.
 
 ## License & attribution
 
