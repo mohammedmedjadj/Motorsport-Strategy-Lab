@@ -100,23 +100,28 @@ time. On-track order across classes is recovered from start/finish crossing
 times (a slower car crossing the line just before a GTP is right ahead of it,
 whatever lap either is on), and for each GTP green lap we count the other-class
 cars within 12 s ahead, then measure the pace lost versus the car's own clean
-median (`data/derived/endurance/endurance_traffic_cost.csv`):
+median. Every in-scope season is now measured, so the figure is a **mean across
+seasons with its spread** (`endurance_traffic_cost.csv` per race,
+`endurance_traffic_stability.csv` pooled):
 
-| Circuit | Clear-air vs in-traffic (s/lap) | Cost per car ahead (s) |
-|---|---|---|
-| Mosport | +0.42 | +0.03 |
-| Watkins Glen | +0.37 | +0.05 |
-| Road America | +0.27 | +0.03 |
-| Sebring | −0.02 (no signal) | +0.08 |
+| Circuit | Clear-air vs in-traffic mean (SD) | Cost per car ahead mean (SD) | Seasons |
+|---|---|---|---|
+| Watkins Glen | +0.43 (±0.12) | +0.09 (±0.03) | 3 |
+| Mosport | +0.42 (single season) | +0.03 | 1 |
+| Road America | +0.20 (±0.20) | +0.08 (±0.04) | 3 |
+| Sebring | +0.11 (±0.09) | +0.08 (±0.02) | 3 |
 
-Clear-air laps beat the car's own median at every circuit, and a GTP loses
-0.3-0.4 s a lap in traffic at three of the four. The result is honestly **not
-uniform**: at Sebring — a 12-hour race across five classes where a prototype
-almost never sees clear air — the clean-pace baseline is itself traffic-heavy,
-so the clear-vs-traffic contrast washes out (the per-car slope is still
-positive). Reported as measured, with that caveat, not smoothed. See the
-[WEC report](../wec/simulator_phase4.md) for the cross-series picture (Spa is
-the most traffic-costly circuit measured, at ~+0.95 s/lap).
+Clear-air laps beat the car's own median at every IMSA race-season, and a GTP
+loses ~0.2-0.4 s a lap in traffic. The multi-season view **revises one earlier
+single-season read**: Sebring looked like "no signal" from 2023 alone
+(−0.02 s/lap), but across 2023-2025 it averages **+0.11 s/lap** (−0.01 / +0.13 /
++0.21) — the contrast was compressed that one 12-hour, five-class year, not
+absent. Watkins Glen is the most *stable* meaningful cost (+0.43 ± 0.12); Road
+America is real on average but swings hardest season to season (±0.20). The
+per-car slope is positive and tight everywhere. Reported as measured, spread and
+all, not smoothed. See the [WEC report](../wec/simulator_phase4.md) for the
+cross-series picture (Spa is the most traffic-costly circuit measured,
+~+0.58 s/lap averaged over three seasons).
 
 ## Pit-stop procedure: tyres are nearly free vs WEC (measured)
 

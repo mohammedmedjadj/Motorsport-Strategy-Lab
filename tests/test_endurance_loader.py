@@ -10,7 +10,9 @@ import pytest
 
 from src.data.base_loader import LAP_COLUMNS
 from src.data.endurance_loader import (
+    FIELD_COLUMNS,
     EnduranceLoader,
+    field_path,
     green_lap_times,
     slugify,
 )
@@ -133,3 +135,19 @@ def test_factory_and_validation() -> None:
 def test_slugify() -> None:
     assert slugify("Watkins Glen") == "watkins_glen"
     assert slugify("Le Mans 24h") == "le_mans_24h"
+
+
+def test_field_path_names_the_multi_class_file() -> None:
+    p = field_path("wec", 2024, "Spa")
+    assert p.name == "field_wec_2024_spa.csv"
+    assert p.parent.name == "field"
+
+
+def test_committed_field_has_exactly_the_field_columns() -> None:
+    """Every materialised field is the thin multi-class slice the traffic /
+    track-position primitives consume — no more, no less — so the generator and
+    its consumers cannot silently drift apart."""
+    p = field_path("wec", 2024, "Spa")
+    if not p.exists():
+        pytest.skip("field data not materialised")
+    assert list(pd.read_csv(p).columns) == list(FIELD_COLUMNS)

@@ -167,11 +167,13 @@ written justification in [`reports/f1/`](reports/f1/):
   endurance's unique problem) — a prototype is forever lapping slower-class
   cars, and each one costs it time. Measured from the multi-class field by
   comparing start/finish crossing times (which solves the lapping problem
-  without positions): a HYPERCAR at Spa loses ~0.95 s/lap in traffic vs clear
-  air, ~0.31 s per GT car directly ahead. Honestly non-uniform — strong at most
-  circuits, undetectable at a couple (Sebring's 12h/5-class race leaves almost
-  no clean-air baseline), and reported as such. See the endurance simulator
-  reports.
+  without positions), now across **every in-scope season** (21 race-seasons,
+  materialised reproducibly by `scripts/materialise_endurance_fields.py`) with a
+  cross-season stability check: a HYPERCAR at Spa loses **~0.58 s/lap** in
+  traffic vs clear air averaged over 2023-2025 (a single season swings 0.25-0.95
+  — the earlier "+0.95" was Spa's steepest year alone), ~0.21 s per GT car
+  directly ahead. Honestly non-uniform across circuits *and* seasons, with the
+  spread now quantified rather than hidden. See the endurance simulator reports.
 - **Out-of-sample calibration**, for **all three series** (`src.prediction`) —
   the simulator prices every lap with a per-circuit Safety Car / Full Course
   Yellow probability; this asks whether those numbers actually *forecast*. Each

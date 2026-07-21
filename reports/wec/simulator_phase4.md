@@ -99,24 +99,30 @@ start/finish crossing times (a GT that crosses the line just before a prototype
 is right ahead of it, whatever lap either is on — the lapping problem solved
 without positions), and for each prototype green lap we count the GT cars that
 crossed within 12 s ahead, then measure how much slower that lap runs than the
-car's own clean pace (`data/derived/endurance/endurance_traffic_cost.csv`):
+car's own clean pace. Every in-scope season is now measured, not one, so the
+figure below is a **mean across seasons with its season-to-season spread**
+(`endurance_traffic_cost.csv` per race, `endurance_traffic_stability.csv` pooled):
 
-| Circuit | Clear-air vs in-traffic (s/lap) | Cost per GT car ahead (s) |
-|---|---|---|
-| Spa | **+0.95** | +0.31 |
-| Bahrain | +0.27 | +0.15 |
-| Imola | +0.11 | −0.02 (no signal) |
-| Fuji | +0.10 | +0.05 |
+| Circuit | Clear-air vs in-traffic mean (SD) | Cost per GT car ahead mean (SD) | Seasons |
+|---|---|---|---|
+| Spa | **+0.58** (±0.29) | **+0.21** (±0.09) | 3 |
+| Imola | +0.15 (±0.05) | −0.01 (±0.01, no signal) | 2 |
+| Fuji | +0.14 (±0.05) | +0.04 (±0.02) | 3 |
+| Bahrain | +0.13 (±0.14) | +0.10 (±0.04) | 3 |
 
-Spa is the clearest case: a HYPERCAR in traffic loses nearly a second a lap
-versus clear air, and each GT car directly ahead adds ~0.3 s. Clear-air laps
-beat the car's own median at every circuit. The signal is **not uniform**,
-though, and that is reported rather than smoothed: at Imola the per-car slope is
-flat. Honest caveats — the "clean pace" baseline is the car's own median, so at
-races where a prototype rarely sees clear air the contrast is compressed; the
-12 s window is a parameter; and this is one season per circuit. The primitive
-is measured here; feeding a stochastic traffic cost into the simulator's
-per-lap time is the natural next step.
+Spa is still the clearest case — the largest traffic cost measured in either
+series — but the multi-season view **corrects a single-season overclaim**: the
++0.95 s/lap reported earlier was Spa's 2024 alone, its steepest edition; across
+2023-2025 the mean is **+0.58 s/lap** (the three seasons run 0.25 / 0.95 / 0.55).
+The per-GT-car slope is the more stable signal, holding at ~0.21 s. The result
+is **honestly non-uniform** across both circuits and seasons, and now the spread
+is quantified rather than hidden: Bahrain's clear-vs-traffic contrast even flips
+sign in 2023 (a HYPERCAR there rarely saw clear air), Imola's per-car slope is
+flat, and clear air beats the car's own median at 20 of 21 race-seasons (WEC
+Bahrain 2023 the lone +0.03 s exception). Honest caveats remain: the "clean
+pace" baseline is the car's own median, so races with little clear air compress
+the contrast; the 12 s window is a parameter. Feeding a stochastic traffic cost
+into the simulator's per-lap time is the natural next step.
 
 ## Pit-stop procedure: tyres cost far more than in IMSA (measured)
 

@@ -150,23 +150,38 @@ def main() -> int:
                 f"p_hold_{HOLD_LAPS}_laps": round(o.hold_probability(HOLD_LAPS), 3),
             })
 
-    # Inter-class traffic cost, from the committed multi-class field data
-    # (one season per circuit under data/derived/endurance/field/).
+    # Inter-class traffic cost, per race, from the committed multi-class field
+    # data (data/derived/endurance/field/, now every in-scope season).
     traffic: list[dict[str, object]] = []
     for path in sorted(FIELD_DIR.glob("field_*.csv")):
-        series, _year, circuit_slug = path.stem.removeprefix("field_").split("_", 2)
+        series, year, circuit_slug = path.stem.removeprefix("field_").split("_", 2)
         field = pd.read_csv(path)
         try:
             t = measure_traffic_cost(field, series, circuit_slug, PRIME_CLASS[series])
         except ValueError:
             continue
         traffic.append({
-            "series": series, "circuit": circuit_slug,
+            "series": series, "circuit": circuit_slug, "year": int(year),
             "clean_air_dev_s": t.clean_air_dev_s,
             "clear_vs_traffic_s": t.clear_vs_traffic_s,
             "cost_per_car_s": t.cost_per_car_s,
             "n_prime_laps": t.n_prime_laps, "n_other_cars": t.n_other_cars,
         })
+
+    # Cross-season stability of the traffic cost: the same leave-nothing-out
+    # honesty the degradation phase applies — is a circuit's traffic penalty a
+    # stable property, or does it swing season to season? Reported, not assumed.
+    traffic_stability: list[dict[str, object]] = []
+    tdf = pd.DataFrame(traffic)
+    if not tdf.empty:
+        for (series, circuit), g in tdf.groupby(["series", "circuit"]):
+            traffic_stability.append({
+                "series": series, "circuit": circuit, "n_seasons": len(g),
+                "clear_vs_traffic_mean_s": round(g["clear_vs_traffic_s"].mean(), 4),
+                "clear_vs_traffic_sd_s": round(g["clear_vs_traffic_s"].std(ddof=0), 4),
+                "cost_per_car_mean_s": round(g["cost_per_car_s"].mean(), 4),
+                "cost_per_car_sd_s": round(g["cost_per_car_s"].std(ddof=0), 4),
+            })
 
     ENDURANCE_DERIVED_DIR.mkdir(parents=True, exist_ok=True)
     outputs = {
@@ -176,6 +191,7 @@ def main() -> int:
         "endurance_pit_procedure.csv": pit_procedure,
         "endurance_overtaking_difficulty.csv": overtaking,
         "endurance_traffic_cost.csv": traffic,
+        "endurance_traffic_stability.csv": traffic_stability,
     }
     for name, rows in outputs.items():
         path = ENDURANCE_DERIVED_DIR / name

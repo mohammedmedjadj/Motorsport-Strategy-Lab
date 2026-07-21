@@ -62,6 +62,20 @@ def derived_path(series: str, year: int, event: str, car_class: str) -> Path:
     )
 
 
+#: The multi-class field (every class, not just the prime) needed for the
+#: inter-class traffic / track-position primitives. Deliberately a thin slice of
+#: the raw schema — car order on track and the neutralisation flag are all the
+#: lapping-problem solver consumes.
+FIELD_COLUMNS = ("car", "class", "lap", "lap_time", "flags", "pit_time")
+
+
+def field_path(series: str, year: int, event: str) -> Path:
+    """Where a materialised whole-field race lives (all classes in one file)."""
+    return ENDURANCE_DIR / "endurance" / "field" / (
+        f"field_{series}_{year}_{slugify(event)}.csv"
+    )
+
+
 def _fahrenheit_to_celsius(f: pd.Series) -> pd.Series:
     return (pd.to_numeric(f, errors="coerce") - 32.0) * 5.0 / 9.0
 
@@ -121,6 +135,30 @@ class EnduranceLoader(BaseLoader):
         path = derived_path(self.series, year, event, car_class)
         path.parent.mkdir(parents=True, exist_ok=True)
         raw.to_csv(path, index=False)
+        return path
+
+    def fetch_field(self, year: int, event: str) -> pd.DataFrame:  # pragma: no cover - network
+        """Pull *every class* of one race — the multi-class field the traffic and
+        track-position primitives need. Same session pin and car/lap ordering as
+        :meth:`fetch_remote`, minus the class filter."""
+        con = self._connect()
+        return con.execute(
+            f"SELECT {', '.join(FIELD_COLUMNS)} FROM imsa.laps_with_metadata "
+            "WHERE series_code = ? AND year = ? AND event = ? "
+            "AND session = 'race' ORDER BY car, lap",
+            [self.series, str(year), event],
+        ).df()
+
+    def materialise_field(self, year: int, event: str) -> Path:  # pragma: no cover - network
+        """Fetch one race's whole field and cache it under
+        ``data/derived/endurance/field/``. Idempotent: a re-fetch reproduces the
+        committed file byte-for-byte (verified against the originals)."""
+        field = self.fetch_field(year, event)
+        if field.empty:
+            raise ValueError(f"no field laps for {self.series} {year} {event}")
+        path = field_path(self.series, year, event)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        field.to_csv(path, index=False)
         return path
 
     # ----------------------------------------------------------- normalising
