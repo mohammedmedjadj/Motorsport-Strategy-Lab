@@ -92,6 +92,32 @@ makes an uncovered undercut worth ~0.44 of win probability (see
 circuit the pit-timing game is nearly moot — and the model says so, instead of
 manufacturing a decisive call.
 
+## Inter-class traffic cost (endurance's unique problem)
+
+IMSA GTP prototypes share the track with **four** slower classes (GTD, GTDPRO,
+LMP2, LMP3), so lapping traffic is relentless, and each car fought past costs
+time. On-track order across classes is recovered from start/finish crossing
+times (a slower car crossing the line just before a GTP is right ahead of it,
+whatever lap either is on), and for each GTP green lap we count the other-class
+cars within 12 s ahead, then measure the pace lost versus the car's own clean
+median (`data/derived/endurance/endurance_traffic_cost.csv`):
+
+| Circuit | Clear-air vs in-traffic (s/lap) | Cost per car ahead (s) |
+|---|---|---|
+| Mosport | +0.42 | +0.03 |
+| Watkins Glen | +0.37 | +0.05 |
+| Road America | +0.27 | +0.03 |
+| Sebring | −0.02 (no signal) | +0.08 |
+
+Clear-air laps beat the car's own median at every circuit, and a GTP loses
+0.3-0.4 s a lap in traffic at three of the four. The result is honestly **not
+uniform**: at Sebring — a 12-hour race across five classes where a prototype
+almost never sees clear air — the clean-pace baseline is itself traffic-heavy,
+so the clear-vs-traffic contrast washes out (the per-car slope is still
+positive). Reported as measured, with that caveat, not smoothed. See the
+[WEC report](../wec/simulator_phase4.md) for the cross-series picture (Spa is
+the most traffic-costly circuit measured, at ~+0.95 s/lap).
+
 ## Pit-stop procedure: tyres are nearly free vs WEC (measured)
 
 IMSA services tyres **in parallel** with refuelling, so a tyre change adds little

@@ -90,6 +90,34 @@ the undercut is weak and covering barely moves the number (~0.08). A frozen-riva
 simulator is therefore most dangerously optimistic exactly where tyres matter
 most — which the model quantifies rather than assumes.
 
+## Inter-class traffic cost (endurance's unique problem)
+
+A HYPERCAR never runs in clean air for long — it is forever lapping LMGT3 cars,
+and each one it fights past costs time. No single-class F1 project models this;
+here it is measurable. On-track order across classes is recovered from
+start/finish crossing times (a GT that crosses the line just before a prototype
+is right ahead of it, whatever lap either is on — the lapping problem solved
+without positions), and for each prototype green lap we count the GT cars that
+crossed within 12 s ahead, then measure how much slower that lap runs than the
+car's own clean pace (`data/derived/endurance/endurance_traffic_cost.csv`):
+
+| Circuit | Clear-air vs in-traffic (s/lap) | Cost per GT car ahead (s) |
+|---|---|---|
+| Spa | **+0.95** | +0.31 |
+| Bahrain | +0.27 | +0.15 |
+| Imola | +0.11 | −0.02 (no signal) |
+| Fuji | +0.10 | +0.05 |
+
+Spa is the clearest case: a HYPERCAR in traffic loses nearly a second a lap
+versus clear air, and each GT car directly ahead adds ~0.3 s. Clear-air laps
+beat the car's own median at every circuit. The signal is **not uniform**,
+though, and that is reported rather than smoothed: at Imola the per-car slope is
+flat. Honest caveats — the "clean pace" baseline is the car's own median, so at
+races where a prototype rarely sees clear air the contrast is compressed; the
+12 s window is a parameter; and this is one season per circuit. The primitive
+is measured here; feeding a stochastic traffic cost into the simulator's
+per-lap time is the natural next step.
+
 ## Pit-stop procedure: tyres cost far more than in IMSA (measured)
 
 WEC's rulebook forbids touching the tyres until the fuel hose is out — refuel

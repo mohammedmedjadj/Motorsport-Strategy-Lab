@@ -46,8 +46,11 @@ from src.simulator.track_position import (  # noqa: E402
     adjacent_swap_rate_endurance,
     measure_circuit,
 )
+from src.simulator.traffic import measure_traffic_cost  # noqa: E402
 
 HOLD_LAPS = 15
+FIELD_DIR = ENDURANCE_DERIVED_DIR / "field"
+PRIME_CLASS = {"imsa": "GTP", "wec": "HYPERCAR"}
 
 
 def _frames(series: str, event: str, car_class: str, seasons: tuple[int, ...]):
@@ -147,6 +150,24 @@ def main() -> int:
                 f"p_hold_{HOLD_LAPS}_laps": round(o.hold_probability(HOLD_LAPS), 3),
             })
 
+    # Inter-class traffic cost, from the committed multi-class field data
+    # (one season per circuit under data/derived/endurance/field/).
+    traffic: list[dict[str, object]] = []
+    for path in sorted(FIELD_DIR.glob("field_*.csv")):
+        series, _year, circuit_slug = path.stem.removeprefix("field_").split("_", 2)
+        field = pd.read_csv(path)
+        try:
+            t = measure_traffic_cost(field, series, circuit_slug, PRIME_CLASS[series])
+        except ValueError:
+            continue
+        traffic.append({
+            "series": series, "circuit": circuit_slug,
+            "clean_air_dev_s": t.clean_air_dev_s,
+            "clear_vs_traffic_s": t.clear_vs_traffic_s,
+            "cost_per_car_s": t.cost_per_car_s,
+            "n_prime_laps": t.n_prime_laps, "n_other_cars": t.n_other_cars,
+        })
+
     ENDURANCE_DERIVED_DIR.mkdir(parents=True, exist_ok=True)
     outputs = {
         "endurance_degradation_fits.csv": fits,
@@ -154,6 +175,7 @@ def main() -> int:
         "endurance_data_quality.csv": quality,
         "endurance_pit_procedure.csv": pit_procedure,
         "endurance_overtaking_difficulty.csv": overtaking,
+        "endurance_traffic_cost.csv": traffic,
     }
     for name, rows in outputs.items():
         path = ENDURANCE_DERIVED_DIR / name

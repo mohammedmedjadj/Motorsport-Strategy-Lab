@@ -163,6 +163,15 @@ written justification in [`reports/f1/`](reports/f1/):
   steep-wear Bahrain, ~0.08 at flat Watkins Glen. See
   [`reports/f1/adversarial_rival.md`](reports/f1/adversarial_rival.md) and the
   endurance simulator reports.
+- **Inter-class traffic cost** (`simulator.traffic`, WEC/IMSA only —
+  endurance's unique problem) — a prototype is forever lapping slower-class
+  cars, and each one costs it time. Measured from the multi-class field by
+  comparing start/finish crossing times (which solves the lapping problem
+  without positions): a HYPERCAR at Spa loses ~0.95 s/lap in traffic vs clear
+  air, ~0.31 s per GT car directly ahead. Honestly non-uniform — strong at most
+  circuits, undetectable at a couple (Sebring's 12h/5-class race leaves almost
+  no clean-air baseline), and reported as such. See the endurance simulator
+  reports.
 
 ### Data scope (MVP)
 
