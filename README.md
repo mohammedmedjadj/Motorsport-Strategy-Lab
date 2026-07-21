@@ -1,4 +1,3 @@
-ff  
 
 # motorsport-strategy-lab — Race Strategy Simulator & Decision Audit
 
