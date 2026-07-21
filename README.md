@@ -174,6 +174,17 @@ written justification in [`reports/f1/`](reports/f1/):
   — the earlier "+0.95" was Spa's steepest year alone), ~0.21 s per GT car
   directly ahead. Honestly non-uniform across circuits *and* seasons, with the
   spread now quantified rather than hidden. See the endurance simulator reports.
+- **Multi-stop strategy**, WEC/IMSA (`simulator.multistop`) — the single-stop
+  engine plans the *next* stop; a 6-24 h race needs 2-10. An exact dynamic
+  program finds the minimum-time stop sequence under the hard fuel-tank
+  constraint traded against tyre degradation, then runs it through the same
+  neutralisation sampling for a full-race time distribution. The honest headline:
+  **no measured endurance race is tyre-limited — every one is fuel-limited on
+  stop count**, and the *break-even slope* says how much steeper degradation
+  would have to be to change that (×4.3 at Bahrain, ×76 at Sebring). The measured
+  traffic spread folds in here as calibrated, zero-mean race-time variance — it
+  widens the uncertainty band without biasing which plan wins. See the endurance
+  simulator reports.
 - **Out-of-sample calibration**, for **all three series** (`src.prediction`) —
   the simulator prices every lap with a per-circuit Safety Car / Full Course
   Yellow probability; this asks whether those numbers actually *forecast*. Each

@@ -141,10 +141,46 @@ from the raw stop durations. Strategically it means IMSA teams can take tyres
 almost whenever they stop for fuel, a flexibility WEC teams do not have. See
 [the WEC report](../wec/simulator_phase4.md) for the contrast.
 
+## Multi-stop strategy: the whole race, not just the next stop
+
+The engine above prices one stop; an IMSA race needs 2-10. `src.simulator.multistop`
+plans the full sequence with an exact dynamic program (minimise green running +
+degradation + `n_stops × pit_loss` over every partition of the race into stints
+no longer than the fuel tank), then runs the plan through the same per-draw
+neutralisation timeline for a race-time distribution
+(`data/derived/endurance/multistop_plans.csv`):
+
+| Circuit | Laps | Net slope | Stops (min → optimal) | Stint plan | Break-even slope | Median race |
+|---|---|---|---|---|---|---|
+| Watkins Glen | 200 | −0.005 | 5 → 5 | fuel-max | n/a (slope ≤ 0) | 21 260 s |
+| Sebring | 315 | +0.003 | 10 → 10 | re-spaced evenly | ×76 | 38 652 s |
+| Road America | 80 | −0.022 | 2 → 2 | fuel-max | n/a (slope ≤ 0) | 9 927 s |
+| Mosport | 120 | −0.002 | 2 → 2 | fuel-max | n/a (slope ≤ 0) | 9 095 s |
+
+The headline is a genuine, and genuinely un-flashy, result: **no IMSA race in
+scope is tyre-limited — every one is fuel-limited on stop count.** The optimum
+never takes more stops than the fuel minimum, because measured degradation (flat
+or, at three of four circuits, negative) never out-weighs a ~60-77 s pit stop.
+Where a break-even slope exists (Sebring, the one weakly-positive circuit) it is
+**76× steeper** than measured — this race is nowhere near tyre-limited. The other
+three, with slopes at or below zero, want fuel-max stints outright and the DP
+returns exactly that. This generalises to the full race the single-stop finding
+that fuel, not wear, binds — as an exact optimisation, not one demo lap.
+
+Traffic enters this layer honestly, as **variance not bias**: the average cost of
+lapping traffic is already inside the measured green pace, so the multi-class
+field's contribution is its *spread* (the cross-season SD above), injected as a
+zero-mean per-race effect. It widens the race-time band without shifting the
+median or biasing which plan wins — neutralisation timing dominates the
+uncertainty, and traffic is honestly a second-order term behind it. See
+[the WEC report](../wec/simulator_phase4.md) for the same treatment there.
+
 ## Limitations
 
-- **Single next stop.** The engine evaluates the next stop, not the full
-  multi-stop sequence a 6-12h race needs.
+- **Stop *timing* under live cautions is still open.** The multi-stop DP plans
+  against expected pace; it does not yet solve the stochastic optimal-stopping
+  policy of *reacting* to a Full Course Yellow in real time, which the
+  single-stop engine prices for the next stop but the full sequence does not.
 - **No rivals, no track position** — unlike the F1 engine, there is no
   `P(ahead)`; IMSA is multi-class (GTP/GTD/GTDPRO/LMP2/LMP3) with heavy
   traffic that a two-car abstraction would not represent honestly.

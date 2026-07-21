@@ -121,8 +121,8 @@ sign in 2023 (a HYPERCAR there rarely saw clear air), Imola's per-car slope is
 flat, and clear air beats the car's own median at 20 of 21 race-seasons (WEC
 Bahrain 2023 the lone +0.03 s exception). Honest caveats remain: the "clean
 pace" baseline is the car's own median, so races with little clear air compress
-the contrast; the 12 s window is a parameter. Feeding a stochastic traffic cost
-into the simulator's per-lap time is the natural next step.
+the contrast; the 12 s window is a parameter. This measured spread now feeds the
+multi-stop simulator below as calibrated race-time variance.
 
 ## Pit-stop procedure: tyres cost far more than in IMSA (measured)
 
@@ -143,10 +143,52 @@ clearly outweighs the ~22 s. (The simulator currently prices a stop with a
 single measured pit loss; splitting it by whether tyres are taken, using this
 premium, is the natural next refinement.)
 
+## Multi-stop strategy: the whole race, not just the next stop
+
+The engine above prices one stop; a WEC race needs 4-7. `src.simulator.multistop`
+plans the full sequence with an exact dynamic program (minimise green running +
+degradation + `n_stops × pit_loss` over every partition of the race into stints
+no longer than the fuel tank), then runs the chosen plan through the same
+per-draw neutralisation timeline for a race-time distribution
+(`data/derived/endurance/multistop_plans.csv`):
+
+| Circuit | Laps | Net slope | Stops (min → optimal) | Stint plan | Break-even slope | Median race |
+|---|---|---|---|---|---|---|
+| Spa | 140 | +0.040 | 4 → 4 | fuel-max (5×28) | ×4.8 | 18 917 s |
+| Fuji | 213 | +0.014 | 5 → 5 | re-spaced evenly | ×11 | 20 428 s |
+| Bahrain | 235 | +0.049 | 7 → 7 | re-spaced evenly | ×4.3 | 28 104 s |
+| Imola | 203 | −0.020 | 5 → 5 | fuel-max | n/a (slope ≤ 0) | 19 575 s |
+
+The headline is a genuine, and genuinely un-flashy, result: **no WEC race in
+scope is tyre-limited — every one is fuel-limited on stop count.** The optimum
+never takes more stops than the fuel minimum, because measured degradation never
+out-weighs a ~60-80 s pit stop. The *break-even slope* quantifies the margin:
+Bahrain's tyres would have to degrade **4.3× steeper** than measured (0.21 vs
+0.049 s/lap) before a splash-extra stop paid off; Fuji's, 11×. This generalises
+to the full race the single-stop engine's finding that fuel, not wear, is the
+binding constraint — now as an exact optimisation, not one demo lap.
+
+What the DP *does* change, where the slope is positive and the race does not
+divide evenly into tank-length stints (Fuji, Bahrain), is the **spacing**: it
+spreads the stints evenly rather than running the tank flat out and cutting the
+last stint short, shaving degradation at the same stop count. Where the slope is
+flat or negative (Imola), fuel-max is already optimal and it says so.
+
+Traffic enters this layer honestly, as **variance not bias**: the average cost of
+lapping traffic is already inside the measured green pace, so the multi-class
+field's contribution is its *spread* (the cross-season SD above), injected as a
+zero-mean per-race effect. It widens the P10-P90 band at a traffic-volatile
+circuit (Spa, ±0.29 → +9 s of band) more than a stable one, without shifting the
+median or biasing which plan wins — neutralisation timing dominates race-time
+uncertainty, and traffic is honestly a second-order term behind it.
+
 ## Limitations
 
-- **Single next stop.** The engine evaluates the next stop, not the 5-10 stops
-  a 6-8h race actually needs.
+- **Stop *timing* under live cautions is still open.** The multi-stop DP plans
+  against expected pace; it does not yet solve the stochastic optimal-stopping
+  policy of *reacting* to a Safety Car in real time (pitting the instant one
+  falls), which the single-stop engine prices for the next stop but the full
+  sequence does not.
 - **No rivals, no track position** — unlike the F1 engine, there is no
   `P(ahead)`; WEC is multi-class (HYPERCAR racing among LMGT3 traffic) with
   heavy traffic that a two-car abstraction would not represent honestly.
