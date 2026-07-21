@@ -151,6 +151,15 @@ written justification in [`reports/f1/`](reports/f1/):
   **stable season to season** (it is track geometry), so it is a trustworthy
   circuit constant — and it is the racecraft primitive the adversarial rival
   model (next) is built on. See [`reports/f1/track_position.md`](reports/f1/track_position.md).
+- **Adversarial rival** (`simulator.adversarial`) — the pit stop as a two-player
+  game: the rival **reacts**, covering your undercut instead of following a
+  frozen plan. The engine runs both cars head-to-head lap by lap, resolves who
+  wins the pit exchange, and locks the lead in with the measured track-position
+  stickiness, then solves the game (rival best-response, Stackelberg optimum).
+  It quantifies what a frozen-rival simulator hides: assuming the rival won't
+  cover overstates an undercut by ~8-9 points of win probability, and the same
+  undercut is worth more at Monaco (sticky) than Barcelona (fluid). See
+  [`reports/f1/adversarial_rival.md`](reports/f1/adversarial_rival.md).
 
 ### Data scope (MVP)
 
