@@ -61,3 +61,15 @@ def test_loro_backs_the_bahrain_exception(loro) -> None:
     glen = loro[(loro["event"] == "Watkins Glen") & (loro["held_out_season"] == "MEAN")]
     assert float(bahrain["r2_within"].iloc[0]) > 0.15
     assert float(glen["r2_within"].iloc[0]) < 0.05
+
+
+def test_pit_procedure_confirms_the_wec_sequential_rule() -> None:
+    """WEC changes tyres only after the fuel hose is out (sequential), IMSA does
+    both at once (parallel), so WEC's tyre-change premium must be far larger.
+    Both a data-backed claim and a drift guard on the committed artifact."""
+    proc = pd.read_csv(ENDURANCE_DERIVED_DIR / "endurance_pit_procedure.csv").set_index("series")
+    imsa_prem = float(proc.loc["imsa", "tyre_change_premium_s"])
+    wec_prem = float(proc.loc["wec", "tyre_change_premium_s"])
+    assert 0 < imsa_prem < 15          # tyres largely hidden behind the fuel fill
+    assert wec_prem > 18               # full tyre service added on top
+    assert wec_prem > 2.5 * imsa_prem  # the procedural difference, quantified

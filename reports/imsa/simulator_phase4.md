@@ -59,6 +59,24 @@ decisive recommendation of the four, exactly as expected: the simulator's
 confidence tracks the strength of the underlying degradation signal, not a
 fixed per-circuit assumption.
 
+## Pit-stop procedure: tyres are nearly free vs WEC (measured)
+
+IMSA services tyres **in parallel** with refuelling, so a tyre change adds little
+over a fuel-only stop — the opposite of WEC, which is sequential (fuel then
+tyres). Pooled across all scoped races
+(`data/derived/endurance/endurance_pit_procedure.csv`):
+
+| Series | Fuel-only stop | Fuel + tyres | Tyre-change premium |
+|---|---|---|---|
+| IMSA (parallel) | 63.0 s | 69.6 s | **+6.6 s** |
+| WEC (sequential) | 56.0 s | 78.5 s | +22.5 s |
+
+A tyre change costs IMSA only ~7 s over a splash, against ~23 s in WEC — a 3x
+difference straight from the two series' procedural rules, and confirmed here
+from the raw stop durations. Strategically it means IMSA teams can take tyres
+almost whenever they stop for fuel, a flexibility WEC teams do not have. See
+[the WEC report](../wec/simulator_phase4.md) for the contrast.
+
 ## Limitations
 
 - **Single next stop.** The engine evaluates the next stop, not the full

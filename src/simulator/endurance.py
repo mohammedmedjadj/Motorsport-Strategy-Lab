@@ -152,6 +152,50 @@ def estimate_fuel_range(laps: pd.DataFrame, quantile: float = 0.9) -> int:
 
 
 @dataclass(frozen=True)
+class TyreChangePremium:
+    """How much extra a stop that also changes tyres costs over a fuel-only
+    stop, measured from raw pit-visit durations."""
+
+    fuel_only_median_s: float
+    tyre_change_median_s: float
+    premium_s: float          # tyre_change - fuel_only
+    n_fuel_only: int
+    n_tyre_change: int
+
+
+def estimate_tyre_change_premium(laps: pd.DataFrame) -> TyreChangePremium:
+    """Extra pit time a tyre change adds over a fuel-only stop.
+
+    This is where IMSA and WEC diverge on a real procedural rule: IMSA services
+    tyres **while** refuelling (parallel), so a tyre change adds little; WEC
+    forbids touching the tyres until the fuel hose is out (sequential), so a
+    tyre change adds the full tyre-service time on top. Measured on the two
+    series it comes out ~+7 s (IMSA) vs ~+23 s (WEC) — a 3x difference from the
+    rulebook alone, and a real strategic cost: in WEC, fitting tyres is far more
+    expensive relative to a fuel-only splash.
+
+    Garage/repair outliers are trimmed at ``PIT_LOSS_TRIM`` x the median, as in
+    ``estimate_pit_loss``.
+    """
+    pits = laps[laps["is_pit_lap"] & laps["pit_time_s"].notna()].copy()
+    if pits.empty:
+        raise ValueError("no pit visits with a recorded duration")
+    pits = pits[pits["pit_time_s"] <= PIT_LOSS_TRIM * pits["pit_time_s"].median()]
+    fuel_only = pits.loc[~pits["is_tyre_change"], "pit_time_s"]
+    tyre_change = pits.loc[pits["is_tyre_change"], "pit_time_s"]
+    if fuel_only.empty or tyre_change.empty:
+        raise ValueError("need both fuel-only and tyre-change stops to compare")
+    fo, tc = float(fuel_only.median()), float(tyre_change.median())
+    return TyreChangePremium(
+        fuel_only_median_s=fo,
+        tyre_change_median_s=tc,
+        premium_s=tc - fo,
+        n_fuel_only=int(fuel_only.size),
+        n_tyre_change=int(tyre_change.size),
+    )
+
+
+@dataclass(frozen=True)
 class EnduranceScenario:
     """Race state at a decision point."""
 

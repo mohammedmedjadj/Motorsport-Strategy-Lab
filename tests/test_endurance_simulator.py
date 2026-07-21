@@ -21,8 +21,30 @@ from src.simulator.endurance import (
     estimate_fcy_pace_ratio,
     estimate_fuel_range,
     estimate_pit_loss,
+    estimate_tyre_change_premium,
     simulate,
 )
+
+
+def test_tyre_change_premium_is_measured_from_stop_durations() -> None:
+    """Fuel-only stops sit near a base duration; tyre-change stops add a known
+    premium. The estimator must recover that premium as the median difference."""
+    rows = []
+    for i in range(20):
+        rows.append({"is_pit_lap": True, "pit_time_s": 40.0 + (i % 3),
+                     "is_tyre_change": False})
+        rows.append({"is_pit_lap": True, "pit_time_s": 60.0 + (i % 3),
+                     "is_tyre_change": True})
+    prem = estimate_tyre_change_premium(pd.DataFrame(rows))
+    assert prem.premium_s == pytest.approx(20.0, abs=1.0)
+    assert prem.n_fuel_only == 20 and prem.n_tyre_change == 20
+
+
+def test_tyre_change_premium_needs_both_stop_types() -> None:
+    only_fuel = pd.DataFrame({"is_pit_lap": [True] * 5, "pit_time_s": [40.0] * 5,
+                              "is_tyre_change": [False] * 5})
+    with pytest.raises(ValueError, match="both fuel-only and tyre-change"):
+        estimate_tyre_change_premium(only_fuel)
 
 RACES = {
     "imsa": ("imsa", 2023, "Watkins Glen", "GTP"),

@@ -41,6 +41,7 @@ from src.degradation.endurance_validation import (  # noqa: E402
     mean_r2,
 )
 from src.ingestion.config import ENDURANCE_DERIVED_DIR  # noqa: E402
+from src.simulator.endurance import estimate_tyre_change_premium  # noqa: E402
 
 
 def _frames(series: str, event: str, car_class: str, seasons: tuple[int, ...]):
@@ -103,11 +104,32 @@ def main() -> int:
                     "r2_within": round(mean_r2(folds), 4), "rmse_s": "", "n_laps": "",
                 })
 
+    # Pit-stop procedure: pool every scoped race per series (a series-level
+    # rulebook property, not a per-circuit one) and measure the tyre-change
+    # premium — IMSA services tyres in parallel with fuel, WEC in sequence.
+    pit_procedure: list[dict[str, object]] = []
+    for series, circuits in ENDURANCE_SCOPE.items():
+        loader = EnduranceLoader(series)
+        pooled = pd.concat(
+            [loader.load_laps(yr, cs.event, cs.car_class)
+             for cs in circuits for yr in cs.seasons],
+            ignore_index=True,
+        )
+        p = estimate_tyre_change_premium(pooled)
+        pit_procedure.append({
+            "series": series,
+            "fuel_only_median_s": round(p.fuel_only_median_s, 1),
+            "tyre_change_median_s": round(p.tyre_change_median_s, 1),
+            "tyre_change_premium_s": round(p.premium_s, 1),
+            "n_fuel_only": p.n_fuel_only, "n_tyre_change": p.n_tyre_change,
+        })
+
     ENDURANCE_DERIVED_DIR.mkdir(parents=True, exist_ok=True)
     outputs = {
         "endurance_degradation_fits.csv": fits,
         "endurance_degradation_loro.csv": loro,
         "endurance_data_quality.csv": quality,
+        "endurance_pit_procedure.csv": pit_procedure,
     }
     for name, rows in outputs.items():
         path = ENDURANCE_DERIVED_DIR / name

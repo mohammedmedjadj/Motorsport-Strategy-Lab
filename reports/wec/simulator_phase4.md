@@ -56,6 +56,25 @@ runs dry at lap 90 — the simulator lands exactly on that boundary. **The
 binding constraint is fuel, not tyre wear**, a situation with no F1 equivalent
 and pinned by a regression test (`test_spa_optimum_is_pinned_by_the_fuel_constraint`).
 
+## Pit-stop procedure: tyres cost far more than in IMSA (measured)
+
+WEC's rulebook forbids touching the tyres until the fuel hose is out — refuel
+**then** tyres, in sequence — whereas IMSA services both at once. That rule
+leaves a measurable fingerprint in the raw stop durations, pooled across all
+scoped races (`data/derived/endurance/endurance_pit_procedure.csv`):
+
+| Series | Fuel-only stop | Fuel + tyres | Tyre-change premium |
+|---|---|---|---|
+| WEC (sequential) | 56.0 s | 78.5 s | **+22.5 s** |
+| IMSA (parallel) | 63.0 s | 69.6 s | +6.6 s |
+
+Fitting tyres in WEC costs **~3x** what it does in IMSA relative to a fuel-only
+splash. Strategically that raises the bar for a tyre change: a WEC splash-and-go
+is comparatively cheap, so tyres are only worth taking when the pace gain
+clearly outweighs the ~22 s. (The simulator currently prices a stop with a
+single measured pit loss; splitting it by whether tyres are taken, using this
+premium, is the natural next refinement.)
+
 ## Limitations
 
 - **Single next stop.** The engine evaluates the next stop, not the 5-10 stops
