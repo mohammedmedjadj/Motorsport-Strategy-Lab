@@ -172,6 +172,18 @@ written justification in [`reports/f1/`](reports/f1/):
   circuits, undetectable at a couple (Sebring's 12h/5-class race leaves almost
   no clean-air baseline), and reported as such. See the endurance simulator
   reports.
+- **Out-of-sample calibration**, for **all three series** (`src.prediction`) —
+  the simulator prices every lap with a per-circuit Safety Car / Full Course
+  Yellow probability; this asks whether those numbers actually *forecast*. Each
+  race edition is left out, its probability formed from the other editions only,
+  and graded with proper scoring rules (Brier, log-loss, Brier skill vs
+  climatology). The honest answer: **per circuit they do not beat the base
+  rate** — 6-8 F1 and 3-11 endurance editions are too few, so the point
+  estimates are little more than the series rate. A built-in positive control
+  (endurance FCY grouped by *series*, IMSA ~0.97 vs WEC ~0.73) does show clear
+  skill, proving the harness detects real signal and rejects noise rather than
+  always returning zero. A limitation the project measures about its own
+  simulator. See [`reports/prediction/calibration.md`](reports/prediction/calibration.md).
 
 ### Data scope (MVP)
 
