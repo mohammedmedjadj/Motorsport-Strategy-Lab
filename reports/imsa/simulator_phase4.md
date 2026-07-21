@@ -77,6 +77,21 @@ IMSA GTP racing is markedly more fluid than an F1 street circuit (Monaco sits at
 more often, so a lead won in the pits is only ever provisional here. This is the
 primitive the adversarial rival model consumes.
 
+## Adversarial rival (the rival covers)
+
+The same two-player pit-stop game as F1 ([adversarial_rival.md](../f1/adversarial_rival.md)),
+on the endurance engine: `src/simulator/adversarial_endurance.py`. The rival
+covers the undercut rather than following a fixed plan.
+
+The endurance finding is that **the value of covering scales with degradation**.
+At Watkins Glen, whose net slope covers zero, the undercut is weak: assuming the
+rival keeps its plan overstates the win probability by only **~0.08**, and the
+cover-aware optimum barely differs. Contrast WEC Bahrain, where a steep slope
+makes an uncovered undercut worth ~0.44 of win probability (see
+[the WEC report](../wec/simulator_phase4.md)). So on a low-degradation IMSA
+circuit the pit-timing game is nearly moot — and the model says so, instead of
+manufacturing a decisive call.
+
 ## Pit-stop procedure: tyres are nearly free vs WEC (measured)
 
 IMSA services tyres **in parallel** with refuelling, so a tyre change adds little

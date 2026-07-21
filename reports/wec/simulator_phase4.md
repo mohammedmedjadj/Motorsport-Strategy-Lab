@@ -74,6 +74,22 @@ a BoP-equalised prototype field changes position often, so track position won
 in the pits is only provisional. This is the primitive the adversarial rival
 model consumes.
 
+## Adversarial rival (the rival covers)
+
+The same two-player pit-stop game as F1 ([adversarial_rival.md](../f1/adversarial_rival.md)),
+on the endurance engine: `src/simulator/adversarial_endurance.py`. The rival
+covers instead of following a fixed plan; the exchange is resolved lap by lap
+and the lead locked in with the measured endurance overtaking difficulty above.
+
+The endurance result is a clean one: **the value of covering scales with the
+circuit's degradation.** At Bahrain — steep, significant net slope (+0.049 s/lap)
+— an uncovered undercut is enormously powerful, so assuming the rival keeps its
+plan overstates the ego car's win probability by **~0.44** (0.90 if the rival
+sits out, 0.47 once it covers). Where degradation is flat (Watkins Glen, IMSA)
+the undercut is weak and covering barely moves the number (~0.08). A frozen-rival
+simulator is therefore most dangerously optimistic exactly where tyres matter
+most — which the model quantifies rather than assumes.
+
 ## Pit-stop procedure: tyres cost far more than in IMSA (measured)
 
 WEC's rulebook forbids touching the tyres until the fuel hose is out — refuel

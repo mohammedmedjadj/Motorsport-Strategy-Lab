@@ -109,10 +109,70 @@ class DuelResult:
     adversarial_win_prob: float
 
     @property
+    def naive_overstatement(self) -> float:
+        """Win probability the naive (frozen-rival) plan *overstates*: what you
+        think you will get at the naive pit lap minus what you really get once
+        the rival covers. The headline cost of ignoring the reaction."""
+        return self.naive_win_prob - self.naive_win_prob_if_covered
+
+    @property
     def cost_of_ignoring_the_cover(self) -> float:
-        """Win probability lost by pitting at the naive optimum and being
-        covered, versus playing the cover-aware optimum."""
+        """Win probability recovered by switching from the naive pit lap (once
+        covered) to the cover-aware optimum — the *value* of playing the game
+        rather than the frozen-rival plan. Often small when the naive lap is
+        already robust to a cover."""
         return self.adversarial_win_prob - self.naive_win_prob_if_covered
+
+
+def win_probability_matrix(
+    ego_cum: np.ndarray, riv_cum: np.ndarray, k_ego: np.ndarray, k_rival: np.ndarray,
+    swap_rate: float, passing_window_s: float, rng: np.random.Generator,
+) -> np.ndarray:
+    """Series-agnostic payoff matrix from per-candidate cumulative lap times.
+
+    ``ego_cum``/``riv_cum`` are ``(n_choice, n_draws, n_laps)`` cumulative-time
+    arrays (the rival's already offset by any starting gap); ``k_ego``/``k_rival``
+    are the in-lap indices per candidate. Returns ``P[i, j] = P(ego ahead)``.
+    """
+    n_laps = ego_cum.shape[2]
+    ego_total, riv_total = ego_cum[:, :, -1], riv_cum[:, :, -1]
+    leader_holds = rng.random(ego_cum.shape[1]) < hold_probability(swap_rate, n_laps)
+    win = np.empty((ego_cum.shape[0], riv_cum.shape[0]))
+    for i in range(ego_cum.shape[0]):
+        for j in range(riv_cum.shape[0]):
+            margin = riv_total[j] - ego_total[i]           # >0 => ego ahead on time
+            resolve = min(max(k_ego[i], k_rival[j]) + 1, n_laps - 1)
+            ego_won_exchange = ego_cum[i, :, resolve] < riv_cum[j, :, resolve]
+            contested = np.abs(margin) < passing_window_s
+            ego_ahead = np.where(contested,
+                                 np.where(ego_won_exchange, leader_holds, ~leader_holds),
+                                 margin > 0.0)
+            win[i, j] = ego_ahead.mean()
+    return win
+
+
+def solve_pit_game(
+    win_prob: np.ndarray, ego_laps: tuple[int, ...], rival_laps: tuple[int, ...],
+    rival_plan_lap: int,
+) -> DuelResult:
+    """Solve the game from a payoff matrix: rival best-response, the naive
+    optimum (rival keeps its plan) and the Stackelberg optimum (rival covers)."""
+    rival_best = win_prob.argmin(axis=1)
+    covered = win_prob[np.arange(len(ego_laps)), rival_best]
+    j_plan = int(np.argmin([abs(c - rival_plan_lap) for c in rival_laps]))
+    i_naive = int(win_prob[:, j_plan].argmax())
+    i_adv = int(covered.argmax())
+    return DuelResult(
+        ego_pit_laps=ego_laps,
+        rival_pit_laps=rival_laps,
+        win_prob=win_prob,
+        rival_best_response=rival_best,
+        naive_pit_lap=ego_laps[i_naive],
+        naive_win_prob=float(win_prob[i_naive, j_plan]),
+        naive_win_prob_if_covered=float(covered[i_naive]),
+        adversarial_pit_lap=ego_laps[i_adv],
+        adversarial_win_prob=float(covered[i_adv]),
+    )
 
 
 def duel(
@@ -157,45 +217,8 @@ def duel(
     # A rival ahead by gap_s needs gap_s less time to reach the same track point.
     riv_cum = riv_cum - rival.gap_s
 
-    ego_total = ego_cum[:, :, -1]   # (n_ego, n_draws)
-    riv_total = riv_cum[:, :, -1]   # (n_rival, n_draws)
-    hold = hold_probability(swap_rate, n_laps)
-    leader_holds = rng.random(n_draws) < hold  # shared across cells (CRN)
-
-    # in-lap index per candidate; the exchange is resolved once both have pitted.
     k = np.array([p - scenario.current_lap - 1 for p in candidates])
-
-    win_prob = np.empty((len(candidates), len(candidates)))
-    for i in range(len(candidates)):
-        for j in range(len(candidates)):
-            margin = riv_total[j] - ego_total[i]          # >0 => ego ahead on time
-            resolve = min(max(k[i], k[j]) + 1, n_laps - 1)  # lap both have stopped
-            ego_won_exchange = ego_cum[i, :, resolve] < riv_cum[j, :, resolve]
-            contested = np.abs(margin) < passing_window_s
-            # Contested: the car that won the pit exchange holds with `hold`.
-            ego_ahead = np.where(
-                contested,
-                np.where(ego_won_exchange, leader_holds, ~leader_holds),
-                margin > 0.0,
-            )
-            win_prob[i, j] = ego_ahead.mean()
-
-    rival_best = win_prob.argmin(axis=1)          # rival minimises ego's win prob
-    covered = win_prob[np.arange(len(candidates)), rival_best]
-
+    win_prob = win_probability_matrix(ego_cum, riv_cum, k, k, swap_rate,
+                                      passing_window_s, rng)
     plan = rival.pit_lap if rival.pit_lap is not None else candidates[-1]
-    j_plan = int(np.argmin([abs(c - plan) for c in candidates]))
-    i_naive = int(win_prob[:, j_plan].argmax())
-    i_adv = int(covered.argmax())
-
-    return DuelResult(
-        ego_pit_laps=candidates,
-        rival_pit_laps=candidates,
-        win_prob=win_prob,
-        rival_best_response=rival_best,
-        naive_pit_lap=candidates[i_naive],
-        naive_win_prob=float(win_prob[i_naive, j_plan]),
-        naive_win_prob_if_covered=float(covered[i_naive]),
-        adversarial_pit_lap=candidates[i_adv],
-        adversarial_win_prob=float(covered[i_adv]),
-    )
+    return solve_pit_game(win_prob, candidates, candidates, plan)
