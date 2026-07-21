@@ -144,6 +144,13 @@ written justification in [`reports/f1/`](reports/f1/):
 - **Online Kalman filter** (`degradation.kalman`) — tracks the current tyre's
   degradation rate lap by lap, converging to the same answer as the
   retrospective fit while also catching a mid-stint change in wear rate.
+- **Track-position value / overtaking difficulty** (`simulator.track_position`)
+  — measured from real timing as the rate at which nose-to-tail cars swap order
+  on green laps, per circuit. Monaco holds an adjacent rival with ~0.94
+  probability over 15 laps vs ~0.57 at Barcelona. Unlike degradation it is
+  **stable season to season** (it is track geometry), so it is a trustworthy
+  circuit constant — and it is the racecraft primitive the adversarial rival
+  model (next) is built on. See [`reports/f1/track_position.md`](reports/f1/track_position.md).
 
 ### Data scope (MVP)
 
