@@ -63,6 +63,31 @@ def test_loro_backs_the_bahrain_exception(loro) -> None:
     assert float(glen["r2_within"].iloc[0]) < 0.05
 
 
+def test_endurance_overtaking_difficulty_is_measured_and_stable() -> None:
+    """Track-position value reaches WEC/IMSA too (position reconstructed from
+    cumulative time). Values must be physical and the committed artifact must
+    match a fresh recomputation for a sample circuit."""
+    from src.data.endurance_loader import EnduranceLoader
+    from src.data.endurance_scope import ENDURANCE_SCOPE
+    from src.simulator.track_position import (
+        adjacent_swap_rate_endurance,
+        measure_circuit,
+    )
+
+    art = pd.read_csv(ENDURANCE_DERIVED_DIR / "endurance_overtaking_difficulty.csv")
+    assert set(art["series"]) == {"imsa", "wec"}
+    assert art["adj_swap_rate"].between(0.0, 0.15).all()  # physical
+    assert (art["p_hold_15_laps"].between(0.0, 1.0)).all()
+
+    # Drift guard: recompute one circuit and match the committed value.
+    cs = ENDURANCE_SCOPE["wec"][2]  # Bahrain
+    races = {str(y): EnduranceLoader("wec").load_laps(y, cs.event, cs.car_class)
+             for y in cs.seasons}
+    fresh = measure_circuit(races, cs.event, rate_fn=adjacent_swap_rate_endurance)
+    row = art[(art["series"] == "wec") & (art["circuit"] == cs.event)].iloc[0]
+    assert row["adj_swap_rate"] == pytest.approx(round(fresh.swap_rate, 4), abs=1e-4)
+
+
 def test_pit_procedure_confirms_the_wec_sequential_rule() -> None:
     """WEC changes tyres only after the fuel hose is out (sequential), IMSA does
     both at once (parallel), so WEC's tyre-change premium must be far larger.

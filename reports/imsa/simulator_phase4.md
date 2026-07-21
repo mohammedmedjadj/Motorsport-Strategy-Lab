@@ -59,6 +59,24 @@ decisive recommendation of the four, exactly as expected: the simulator's
 confidence tracks the strength of the underlying degradation signal, not a
 fixed per-circuit assumption.
 
+## Track-position value (overtaking difficulty)
+
+The endurance schema has no per-lap position, so on-track order is reconstructed
+from cumulative race time within the class, then the adjacent-pair swap rate is
+measured exactly as for F1 (`data/derived/endurance/endurance_overtaking_difficulty.csv`):
+
+| Circuit | Adjacent swap rate / green lap | P(hold 15 laps) |
+|---|---|---|
+| Mosport | 0.022 | 0.72 |
+| Sebring | 0.034 | 0.59 |
+| Watkins Glen | 0.044 | 0.51 |
+| Road America | 0.051 | 0.46 |
+
+IMSA GTP racing is markedly more fluid than an F1 street circuit (Monaco sits at
+0.004): prototypes in a BoP-equalised, multi-class field change position far
+more often, so a lead won in the pits is only ever provisional here. This is the
+primitive the adversarial rival model consumes.
+
 ## Pit-stop procedure: tyres are nearly free vs WEC (measured)
 
 IMSA services tyres **in parallel** with refuelling, so a tyre change adds little

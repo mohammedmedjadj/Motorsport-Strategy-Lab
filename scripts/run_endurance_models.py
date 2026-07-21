@@ -42,6 +42,12 @@ from src.degradation.endurance_validation import (  # noqa: E402
 )
 from src.ingestion.config import ENDURANCE_DERIVED_DIR  # noqa: E402
 from src.simulator.endurance import estimate_tyre_change_premium  # noqa: E402
+from src.simulator.track_position import (  # noqa: E402
+    adjacent_swap_rate_endurance,
+    measure_circuit,
+)
+
+HOLD_LAPS = 15
 
 
 def _frames(series: str, event: str, car_class: str, seasons: tuple[int, ...]):
@@ -124,12 +130,30 @@ def main() -> int:
             "n_fuel_only": p.n_fuel_only, "n_tyre_change": p.n_tyre_change,
         })
 
+    # Track-position value (overtaking difficulty), per circuit, position
+    # reconstructed from cumulative time within the class.
+    overtaking: list[dict[str, object]] = []
+    for series, circuits in ENDURANCE_SCOPE.items():
+        loader = EnduranceLoader(series)
+        for cs in circuits:
+            races = {str(yr): loader.load_laps(yr, cs.event, cs.car_class)
+                     for yr in cs.seasons}
+            o = measure_circuit(races, cs.event, rate_fn=adjacent_swap_rate_endurance)
+            overtaking.append({
+                "series": series, "circuit": cs.event,
+                "adj_swap_rate": round(o.swap_rate, 4),
+                "sd_across_races": round(o.sd, 4),
+                "n_races": o.n_races, "n_transitions": o.n_transitions,
+                f"p_hold_{HOLD_LAPS}_laps": round(o.hold_probability(HOLD_LAPS), 3),
+            })
+
     ENDURANCE_DERIVED_DIR.mkdir(parents=True, exist_ok=True)
     outputs = {
         "endurance_degradation_fits.csv": fits,
         "endurance_degradation_loro.csv": loro,
         "endurance_data_quality.csv": quality,
         "endurance_pit_procedure.csv": pit_procedure,
+        "endurance_overtaking_difficulty.csv": overtaking,
     }
     for name, rows in outputs.items():
         path = ENDURANCE_DERIVED_DIR / name

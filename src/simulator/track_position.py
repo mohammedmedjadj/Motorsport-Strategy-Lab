@@ -46,16 +46,12 @@ def _green_racing(laps: pd.DataFrame) -> pd.DataFrame:
     ]
 
 
-def adjacent_swap_rate(laps: pd.DataFrame) -> tuple[float, int]:
-    """Mean fraction of rank-adjacent pairs that swap order per green lap, and
-    the number of lap transitions it was measured over.
-
-    A transition is skipped unless at least ``MIN_CARS`` drivers are green-racing
-    on both of its laps.
-    """
-    green = _green_racing(laps)
-    by_lap = {int(ln): sub.set_index("Driver")["Position"]
-              for ln, sub in green.groupby("LapNumber")}
+def _swap_rate_from_by_lap(by_lap: dict[int, pd.Series]) -> tuple[float, int]:
+    """Core measure, series-agnostic: ``by_lap`` maps lap number -> a Series of
+    (car -> a lower-is-further-ahead position value). Returns the mean fraction
+    of rank-adjacent pairs that swap between consecutive laps, and the count of
+    lap transitions used. A transition needs at least ``MIN_CARS`` cars present
+    on both of its laps."""
     rates: list[float] = []
     for lap in sorted(by_lap):
         here, nxt = by_lap.get(lap), by_lap.get(lap + 1)
@@ -73,6 +69,35 @@ def adjacent_swap_rate(laps: pd.DataFrame) -> tuple[float, int]:
     if not rates:
         raise ValueError("no usable green racing lap transitions in this race")
     return float(np.mean(rates)), len(rates)
+
+
+def adjacent_swap_rate(laps: pd.DataFrame) -> tuple[float, int]:
+    """F1 adjacent-pair swap rate, using FastF1's classified ``Position`` per
+    green racing lap."""
+    green = _green_racing(laps)
+    by_lap = {int(ln): sub.set_index("Driver")["Position"]
+              for ln, sub in green.groupby("LapNumber")}
+    return _swap_rate_from_by_lap(by_lap)
+
+
+def adjacent_swap_rate_endurance(laps: pd.DataFrame) -> tuple[float, int]:
+    """Endurance adjacent-pair swap rate. The normalised endurance schema has no
+    per-lap position, so on-track order is **reconstructed** from cumulative
+    race time within the class (lower cumulative time = further ahead) — the
+    laps are already filtered to one class, so this is within-class position.
+    Measured on green, non-pit laps only, so pit-cycle order changes are
+    excluded exactly as the F1 in/out-lap filter does."""
+    work = laps.sort_values(["car", "lap"], kind="stable").copy()
+    work["cum"] = work.groupby("car", sort=False)["lap_time_s"].cumsum()
+    racing = work[
+        work["is_green"].astype(bool)
+        & ~work["is_pit_lap"].astype(bool)
+        & work["lap_time_s"].notna()
+        & work["cum"].notna()
+    ]
+    by_lap = {int(ln): sub.set_index("car")["cum"]
+              for ln, sub in racing.groupby("lap")}
+    return _swap_rate_from_by_lap(by_lap)
 
 
 def hold_probability(swap_rate: float, laps: int) -> float:
@@ -100,14 +125,22 @@ class OvertakingDifficulty:
         return hold_probability(self.swap_rate, laps)
 
 
-def measure_circuit(laps_by_race: dict[str, pd.DataFrame], circuit: str) -> OvertakingDifficulty:
-    """Aggregate the adjacent-swap rate across every race of one circuit."""
+def measure_circuit(
+    laps_by_race: dict[str, pd.DataFrame],
+    circuit: str,
+    rate_fn=adjacent_swap_rate,
+) -> OvertakingDifficulty:
+    """Aggregate the adjacent-swap rate across every race of one circuit.
+
+    ``rate_fn`` is ``adjacent_swap_rate`` for F1 (classified position) or
+    ``adjacent_swap_rate_endurance`` for WEC/IMSA (position reconstructed from
+    cumulative time)."""
     if not laps_by_race:
         raise ValueError(f"{circuit}: no races supplied")
     rates: list[float] = []
     transitions = 0
     for laps in laps_by_race.values():
-        rate, n = adjacent_swap_rate(laps)
+        rate, n = rate_fn(laps)
         rates.append(rate)
         transitions += n
     arr = np.array(rates, dtype=float)

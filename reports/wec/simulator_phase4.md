@@ -56,6 +56,24 @@ runs dry at lap 90 — the simulator lands exactly on that boundary. **The
 binding constraint is fuel, not tyre wear**, a situation with no F1 equivalent
 and pinned by a regression test (`test_spa_optimum_is_pinned_by_the_fuel_constraint`).
 
+## Track-position value (overtaking difficulty)
+
+The endurance schema has no per-lap position, so on-track order is reconstructed
+from cumulative race time within the class, then the adjacent-pair swap rate is
+measured exactly as for F1 (`data/derived/endurance/endurance_overtaking_difficulty.csv`):
+
+| Circuit | Adjacent swap rate / green lap | P(hold 15 laps) |
+|---|---|---|
+| Fuji | 0.031 | 0.63 |
+| Bahrain | 0.031 | 0.63 |
+| Imola | 0.035 | 0.58 |
+| Spa | 0.043 | 0.52 |
+
+HYPERCAR racing is far more fluid than an F1 street circuit (Monaco 0.004):
+a BoP-equalised prototype field changes position often, so track position won
+in the pits is only provisional. This is the primitive the adversarial rival
+model consumes.
+
 ## Pit-stop procedure: tyres cost far more than in IMSA (measured)
 
 WEC's rulebook forbids touching the tyres until the fuel hose is out — refuel

@@ -13,6 +13,7 @@ import pytest
 from src.ingestion.config import F1_DERIVED_DIR
 from src.simulator.track_position import (
     adjacent_swap_rate,
+    adjacent_swap_rate_endurance,
     hold_probability,
     measure_circuit,
 )
@@ -65,6 +66,29 @@ def test_too_few_cars_and_non_green_are_skipped() -> None:
     green["TrackStatus"] = "4"  # safety car
     with pytest.raises(ValueError, match="no usable"):
         adjacent_swap_rate(green)
+
+
+def _endurance_race(cum_times_per_lap: list[list[float]]) -> pd.DataFrame:
+    """A green endurance race: cum_times_per_lap[lap] lists each car's LAP time,
+    cars labelled by index. Cumulative time (reconstructed) sets track order."""
+    rows = []
+    for lap, times in enumerate(cum_times_per_lap, start=1):
+        for car, t in enumerate(times):
+            rows.append({"car": f"C{car}", "lap": lap, "lap_time_s": t,
+                         "is_green": True, "is_pit_lap": False})
+    return pd.DataFrame(rows)
+
+
+def test_endurance_reconstructs_position_from_cumulative_time() -> None:
+    # 4 cars, constant order (A<B<C<D every lap) -> no swaps.
+    static = _endurance_race([[90, 91, 92, 93]] * 3)
+    rate, n = adjacent_swap_rate_endurance(static)
+    assert rate == 0.0 and n == 2
+
+    # One adjacent pair (C,D) swaps on lap 2: cum becomes A180 B182 D184 C185.
+    swapped = _endurance_race([[90, 91, 92, 93], [90, 91, 93, 91]])
+    rate, n = adjacent_swap_rate_endurance(swapped)
+    assert n == 1 and rate == pytest.approx(1 / 3)
 
 
 def _real(circuit: str) -> dict[str, pd.DataFrame]:
