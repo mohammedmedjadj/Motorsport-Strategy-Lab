@@ -133,46 +133,64 @@ scoped races (`data/derived/endurance/endurance_pit_procedure.csv`):
 
 | Series | Fuel-only stop | Fuel + tyres | Tyre-change premium |
 |---|---|---|---|
-| WEC (sequential) | 56.0 s | 78.5 s | **+22.5 s** |
-| IMSA (parallel) | 63.0 s | 69.6 s | +6.6 s |
+| WEC (sequential) | 55.7 s | 77.4 s | **+21.6 s** |
+| IMSA (parallel) | 67.7 s | 76.5 s | +8.7 s |
 
-Fitting tyres in WEC costs **~3x** what it does in IMSA relative to a fuel-only
-splash. Strategically that raises the bar for a tyre change: a WEC splash-and-go
-is comparatively cheap, so tyres are only worth taking when the pace gain
-clearly outweighs the ~22 s. (The simulator currently prices a stop with a
-single measured pit loss; splitting it by whether tyres are taken, using this
-premium, is the natural next refinement.)
+Fitting tyres in WEC costs **~2.5×** what it does in IMSA relative to a
+fuel-only splash — pooled across every scoped race (125 WEC fuel-only stops,
+3 364 tyre changes), narrower than an earlier, smaller-sample read (~3×) but
+still a clear, large procedural gap. Strategically that raises the bar for a
+tyre change: a WEC splash-and-go is comparatively cheap, so tyres are only worth
+taking when the pace gain clearly outweighs the ~22 s. (The simulator currently
+prices a stop with a single measured pit loss; splitting it by whether tyres are
+taken, using this premium, is the natural next refinement.)
 
 ## Multi-stop strategy: the whole race, not just the next stop
 
-The engine above prices one stop; a WEC race needs 4-7. `src.simulator.multistop`
-plans the full sequence with an exact dynamic program (minimise green running +
-degradation + `n_stops × pit_loss` over every partition of the race into stints
-no longer than the fuel tank), then runs the chosen plan through the same
-per-draw neutralisation timeline for a race-time distribution
+The engine above prices one stop; a WEC race needs 3-29 depending on format.
+`src.simulator.multistop` plans the full sequence with an exact dynamic program
+(minimise green running + degradation + `n_stops × pit_loss` over every
+partition of the race into stints no longer than the fuel tank), then runs the
+chosen plan through the same per-draw neutralisation timeline for a race-time
+distribution. **Widened from the original 4 circuits to all 11 eligible WEC
+circuits** the source carries — sprints (COTA), 24 h formats (Le Mans) and
+everything between — verified by `scripts/discover_endurance_events.py`
 (`data/derived/endurance/multistop_plans.csv`):
 
-| Circuit | Laps | Net slope | Stops (min → optimal) | Stint plan | Break-even slope | Median race |
+| Circuit | Laps | Net slope | Stops (min → optimal) | Re-spaced? | Break-even slope | Median race |
 |---|---|---|---|---|---|---|
-| Spa | 140 | +0.040 | 4 → 4 | fuel-max (5×28) | ×4.8 | 18 917 s |
-| Fuji | 213 | +0.014 | 5 → 5 | re-spaced evenly | ×11 | 20 428 s |
-| Bahrain | 235 | +0.049 | 7 → 7 | re-spaced evenly | ×4.3 | 28 104 s |
-| Imola | 203 | −0.020 | 5 → 5 | fuel-max | n/a (slope ≤ 0) | 19 575 s |
+| Bahrain | 236 | +0.044 | 7 → 7 | yes | ×4.9 | 28 096 s |
+| COTA | 120 | −0.281 | 3 → 3 | no | n/a (slope ≤ 0) | 15 547 s |
+| Fuji | 202 | +0.019 | 4 → 4 | yes | ×6.7 | 19 445 s |
+| Imola | 212 | −0.007 | 5 → 5 | yes | n/a (slope ≤ 0) | 20 480 s |
+| Interlagos | 240 | +0.002 | 5 → 5 | yes | ×66.3 | 21 492 s |
+| Le Mans | 379 | −0.024 | 29 → 29 | no | n/a (slope ≤ 0) | 83 056 s |
+| Losail | 317 | −0.014 | 8 → 8 | no | n/a (slope ≤ 0) | 34 123 s |
+| Monza | 180 | −0.004 | 5 → 5 | no | n/a (slope ≤ 0) | 18 474 s |
+| Portimão | 219 | −0.001 | 5 → 5 | no | n/a (slope ≤ 0) | 21 476 s |
+| Sebring | 235 | +0.004 | 7 → 7 | yes | ×67.7 | 27 175 s |
+| Spa | 151 | +0.012 | 5 → 5 | yes | ×23.0 | 19 762 s |
 
-The headline is a genuine, and genuinely un-flashy, result: **no WEC race in
-scope is tyre-limited — every one is fuel-limited on stop count.** The optimum
-never takes more stops than the fuel minimum, because measured degradation never
-out-weighs a ~60-80 s pit stop. The *break-even slope* quantifies the margin:
-Bahrain's tyres would have to degrade **4.3× steeper** than measured (0.21 vs
-0.049 s/lap) before a splash-extra stop paid off; Fuji's, 11×. This generalises
-to the full race the single-stop engine's finding that fuel, not wear, is the
-binding constraint — now as an exact optimisation, not one demo lap.
+The headline **holds, and is now far better tested**: on the widened sample,
+**no WEC race in scope is tyre-limited on stop count — the optimum never takes
+more stops than the fuel minimum**, at all 11 circuits and every format from a
+3-stop sprint to a 29-stop 24-hour race. Where the original 4-circuit report
+could only claim this for a hand-picked sample, this generalises across every
+circuit the source carries — exactly the kind of small-sample concern a wider
+scope is meant to resolve, and here it resolves in the model's favour. Where a
+break-even slope exists, degradation would need to be **4.9× to 67.7×** steeper than
+measured before an extra stop paid off (Sebring the most fuel-secure at ×67.7,
+Bahrain the tightest margin at ×4.9).
 
-What the DP *does* change, where the slope is positive and the race does not
-divide evenly into tank-length stints (Fuji, Bahrain), is the **spacing**: it
-spreads the stints evenly rather than running the tank flat out and cutting the
-last stint short, shaving degradation at the same stop count. Where the slope is
-flat or negative (Imola), fuel-max is already optimal and it says so.
+What the DP *does* still change, at equal stop count, is the **spacing**: 6 of
+11 circuits (marked "yes" above) get their stints re-spaced evenly rather than
+run the tank flat out with a short last stint, shaving degradation without an
+extra stop. This re-spacing rate itself is a real, circuit-dependent fact, not
+noise — it happens exactly where the slope is positive enough to reward it.
+A **retrospective audit against real race winners**
+([`reports/endurance_audit.md`](../endurance_audit.md)) corroborates the
+stop-count claim independently: **25 of 28 real WEC race winners** ran at least
+one stint within 3 laps of the measured fuel range.
 
 Traffic enters this layer honestly, as **variance not bias**: the average cost of
 lapping traffic is already inside the measured green pace, so the multi-class

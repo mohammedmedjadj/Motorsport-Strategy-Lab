@@ -402,9 +402,12 @@ numbers too, most visibly at Imola.
 - Imola's negative degradation slope and noticeably wider RMSE are reported
   as measured, not explained away.
 - A **retrospective audit of real winners now exists** for both endurance
-  series ([`reports/endurance_audit.md`](reports/endurance_audit.md)): 19 of 21
-  scoped-race winners ran fuel-limited stints, corroborating the multi-stop
-  model's headline against what teams actually did. A per-decision replay like
+  series ([`reports/endurance_audit.md`](reports/endurance_audit.md)): 49 of 61
+  scoped-race winners ran fuel-limited stints (WEC 25/28, IMSA 24/33),
+  corroborating the multi-stop model's headline — that no scoped race is
+  tyre-limited on stop count, which holds 21/21 circuits — against what teams
+  actually did; the exceptions plausibly reflect neutralisation-shortened
+  stints. A per-decision replay like
   F1's remains a natural next step.
 
 ---
@@ -564,8 +567,8 @@ motorsport-strategy-lab/
     cache/              # FastF1 cache (gitignored)
     derived/
       f1/               # F1 derived laps, track status, sessions, model coefficients
-      imsa/             # IMSA derived laps: 4 circuits, 10 race-seasons
-      wec/              # WEC derived laps: 4 circuits, 11 race-seasons
+      imsa/             # IMSA derived laps: 10 circuits, 33 race-seasons
+      wec/              # WEC derived laps: 11 circuits, 28 race-seasons
       endurance/         # cross-series neutralisation flags (96 races, both series)
   src/
     ingestion/          # FastF1 loading, cleaning, validation (F1 only)

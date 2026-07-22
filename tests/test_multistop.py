@@ -82,7 +82,7 @@ def _toy_model() -> EnduranceRaceModel:
         series="wec", event="Test", car_class="HYPERCAR",
         green_pace_s=130.0, lap_noise_s=0.8, net_slope_s=0.04, net_slope_se=0.01,
         pit_loss_s=60.0, pit_loss_iqr_s=5.0, n_pit_events=50,
-        fcy_pace_ratio=1.8, fcy_alpha=1.0, fcy_exposure=2000.0, fcy_durations=(4, 6),
+        fcy_pace_ratio=1.8, fcy_ratio_measured=True, fcy_alpha=1.0, fcy_exposure=2000.0, fcy_durations=(4, 6),
         sc_pace_ratio=2.1, sc_ratio_measured=True, sc_alpha=1.0, sc_exposure=2000.0,
         sc_durations=(6, 8), fuel_range_laps=28,
     )

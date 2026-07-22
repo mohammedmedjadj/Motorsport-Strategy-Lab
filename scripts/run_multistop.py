@@ -44,17 +44,30 @@ from src.simulator.multistop import (  # noqa: E402
     optimal_stop_plan,
 )
 
-# The circuits at the season each report already demos, for consistency.
-CIRCUITS = [
-    ("imsa", 2023, "Watkins Glen", "GTP", "watkins_glen"),
-    ("imsa", 2023, "Sebring", "GTP", "sebring"),
-    ("imsa", 2023, "Road America", "GTP", "road_america"),
-    ("imsa", 2023, "Mosport", "GTP", "mosport"),
-    ("wec", 2024, "Spa", "HYPERCAR", "spa"),
-    ("wec", 2024, "Fuji", "HYPERCAR", "fuji"),
-    ("wec", 2024, "Bahrain", "HYPERCAR", "bahrain"),
-    ("wec", 2024, "Imola", "HYPERCAR", "imola"),
-]
+# Every scoped circuit's materialised seasons, newest first (fuel range and
+# stop structure are circuit properties, so one representative season per
+# circuit is enough for the plan table the audit consumes — but not every
+# season has a usable model: a genuinely caution-free race has no FCY *or* SC
+# laps to measure a pace ratio from, e.g. IMSA Laguna Seca 2025 and WEC Fuji
+# 2022. ``main()`` tries each candidate in order and moves to the next season
+# on failure, so one clean race does not drop the whole circuit.
+def _circuit_candidates() -> dict[tuple[str, str], list[tuple[str, int, str, str, str]]]:
+    from src.data.endurance_loader import derived_path, slugify
+    from src.data.endurance_scope import ENDURANCE_SCOPE
+    out: dict[tuple[str, str], list[tuple[str, int, str, str, str]]] = {}
+    for series, circuits in ENDURANCE_SCOPE.items():
+        for cs in circuits:
+            candidates = [
+                (series, year, cs.event, cs.car_class, slugify(cs.event))
+                for year in sorted(cs.seasons, reverse=True)
+                if derived_path(series, year, cs.event, cs.car_class).exists()
+            ]
+            if candidates:
+                out[(series, cs.event)] = candidates
+    return out
+
+
+CIRCUIT_CANDIDATES = _circuit_candidates()
 
 
 def _build_model(series: str, year: int, event: str, car_class: str):
@@ -92,12 +105,31 @@ def _breakeven_slope(race_laps: int, model, base_stops: int,
 def main() -> None:
     stability = pd.read_csv(ENDURANCE_DERIVED_DIR / "endurance_traffic_stability.csv")
     rows = []
-    for series, year, event, car_class, circuit in CIRCUITS:
-        model, race_laps = _build_model(series, year, event, car_class)
+    skipped: list[str] = []
+    for (series, event), candidates in CIRCUIT_CANDIDATES.items():
+        model = race_laps = year = car_class = circuit = None
+        for series, year, event, car_class, circuit in candidates:
+            try:
+                model, race_laps = _build_model(series, year, event, car_class)
+                break
+            except ValueError as exc:
+                print(f"  skip {series} {year} {event} (no usable model: {exc}), "
+                      f"trying an earlier season")
+        if model is None:
+            skipped.append(f"{series} {event}")
+            print(f"  GIVING UP on {series} {event}: no season has a usable model")
+            continue
         opt = optimal_stop_plan(race_laps, model.green_pace_s, model.net_slope_s,
                                 model.pit_loss_s, model.fuel_range_laps)
         naive = min_stops_plan(race_laps, model.fuel_range_laps)
-        fuel_limited = opt.stint_lengths == naive.stint_lengths
+        # The headline claim is on STOP COUNT: does the optimum ever take more
+        # stops than the fuel minimum? Separately, at equal stop count the DP can
+        # still choose a different stint-length *pattern* (re-spacing evenly
+        # rather than running the tank flat out with a short last stint) — a
+        # real, narrower finding that a same-named boolean must not blur into
+        # "tyre-limited", so the two are reported as distinct columns.
+        fuel_limited_on_stops = opt.n_stops == naive.n_stops
+        stint_pattern_matches_naive = opt.stint_lengths == naive.stint_lengths
         breakeven = _breakeven_slope(race_laps, model, naive.n_stops)
 
         sd = stability.loc[(stability["series"] == series)
@@ -114,7 +146,8 @@ def main() -> None:
             "pit_loss_s": round(model.pit_loss_s, 1),
             "fuel_range_laps": model.fuel_range_laps,
             "min_stops": naive.n_stops, "optimal_stops": opt.n_stops,
-            "fuel_limited": fuel_limited,
+            "fuel_limited": fuel_limited_on_stops,
+            "stint_pattern_matches_naive": stint_pattern_matches_naive,
             "breakeven_slope_s": breakeven,
             "slope_headroom_x": (round(breakeven / model.net_slope_s, 1)
                                  if model.net_slope_s > 0 and breakeven == breakeven else float("nan")),
@@ -130,6 +163,9 @@ def main() -> None:
     out = ENDURANCE_DERIVED_DIR / "multistop_plans.csv"
     table.to_csv(out, index=False)
     print(table.to_string(index=False))
+    if skipped:
+        print(f"\n{len(skipped)} circuit(s) skipped (no season with a usable "
+              f"FCY/SC model): {', '.join(skipped)}")
     print(f"\nwrote {out}")
 
 

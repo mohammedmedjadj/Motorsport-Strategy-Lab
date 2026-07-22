@@ -33,10 +33,16 @@ from src.ingestion.config import ENDURANCE_DERIVED_DIR  # noqa: E402
 #: The top prototype class per series (what the current scope models).
 PROTOTYPE_CLASS = {"imsa": "GTP", "wec": "HYPERCAR"}
 
-#: Eligibility floor for a degradation fit: at least this many cars, and a race
-#: long enough to have within-stint pace to fit. Conservative, honest cut-offs.
+#: Eligibility floor for a degradation fit: at least this many cars, a race long
+#: enough to have within-stint pace to fit, and *some* green-flag laps. The last
+#: one matters: WEC 2021 (Monza, Portimao) has zero race-control flags at all for
+#: HYPERCAR (100% NaN `flags` upstream) — cars and laps looked fine, but the
+#: degradation fit needs a green/non-green split it structurally cannot get.
+#: Screening for it here means a future scope widening catches the gap by
+#: construction instead of crashing deep in the model script.
 MIN_CARS = 4
 MIN_LAPS = 40
+MIN_GREEN_FRACTION = 0.05
 
 
 def _event_summary(loader: EnduranceLoader, year: int, event: str,
@@ -46,10 +52,13 @@ def _event_summary(loader: EnduranceLoader, year: int, event: str,
         return None
     n_cars = raw["car"].nunique()
     max_laps = int(raw.groupby("car")["lap"].max().max())
+    green_fraction = float(raw["flags"].astype(str).eq("GF").mean())
     return {
         "series": loader.series, "year": year, "event": event,
         "car_class": car_class, "n_cars": int(n_cars), "max_laps": max_laps,
-        "eligible": bool(n_cars >= MIN_CARS and max_laps >= MIN_LAPS),
+        "green_fraction": round(green_fraction, 3),
+        "eligible": bool(n_cars >= MIN_CARS and max_laps >= MIN_LAPS
+                        and green_fraction >= MIN_GREEN_FRACTION),
     }
 
 

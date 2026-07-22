@@ -1,0 +1,923 @@
+series_code,year,event,circuit_name,session,session_id,car,class,driver_name,driver_id,lap,stint_number,stint_lap,lap_time,lap_time_s1,lap_time_s2,lap_time_s3,pit_time,flags,est_tire_age,air_temp_f,track_temp_f,humidity_percent,raining,race_duration_minutes
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Filipe Albuquerque,filipe albuquerque,1,1.0,0,96.02,40.253,27.718,28.049,,GF,0,61.38,100.22,50.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Filipe Albuquerque,filipe albuquerque,2,1.0,1,70.251,20.168,23.192,26.891,,FCY,0,61.38,98.96,50.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Filipe Albuquerque,filipe albuquerque,3,1.0,2,97.123,30.432,32.067,34.624,,FCY,0,61.38,98.96,50.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Filipe Albuquerque,filipe albuquerque,4,1.0,3,112.36,33.49,41.741,37.129,,GF,0,61.38,98.24,50.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Filipe Albuquerque,filipe albuquerque,5,1.0,4,71.585,20.292,24.125,27.168,,GF,1,61.38,98.6,50.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Filipe Albuquerque,filipe albuquerque,6,1.0,5,69.139,19.822,22.814,26.503,,GF,2,61.59,99.32,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Filipe Albuquerque,filipe albuquerque,7,1.0,6,68.768,19.598,22.833,26.337,,GF,3,61.59,101.66,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Filipe Albuquerque,filipe albuquerque,8,1.0,7,68.333,19.519,22.607,26.207,,GF,4,61.59,101.3,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Filipe Albuquerque,filipe albuquerque,9,1.0,8,67.973,19.436,22.53,26.007,,GF,5,61.59,100.04,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Filipe Albuquerque,filipe albuquerque,10,1.0,9,67.774,19.366,22.51,25.898,,GF,6,61.59,100.04,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Filipe Albuquerque,filipe albuquerque,11,1.0,10,67.657,19.304,22.379,25.974,,GF,7,61.59,101.48,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Filipe Albuquerque,filipe albuquerque,12,1.0,11,68.035,19.287,22.569,26.179,,GF,8,61.59,102.2,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Filipe Albuquerque,filipe albuquerque,13,1.0,12,67.84,19.348,22.519,25.973,,GF,9,61.59,103.1,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Filipe Albuquerque,filipe albuquerque,14,1.0,13,68.753,19.773,22.901,26.079,,GF,10,61.59,103.1,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Filipe Albuquerque,filipe albuquerque,15,1.0,14,67.84,19.407,22.59,25.843,,GF,11,61.56,104.36,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Filipe Albuquerque,filipe albuquerque,16,1.0,15,68.629,19.46,23.067,26.102,,GF,12,61.56,104.36,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Filipe Albuquerque,filipe albuquerque,17,1.0,16,68.311,19.471,22.923,25.917,,GF,13,61.56,103.28,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Filipe Albuquerque,filipe albuquerque,18,1.0,17,68.721,19.286,23.183,26.252,,GF,14,61.56,101.48,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Filipe Albuquerque,filipe albuquerque,19,1.0,18,67.183,19.154,22.346,25.683,,GF,15,61.56,100.58,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Filipe Albuquerque,filipe albuquerque,20,1.0,19,68.527,19.261,22.842,26.424,,GF,16,61.56,100.76,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Filipe Albuquerque,filipe albuquerque,21,1.0,20,67.316,19.105,22.356,25.855,,GF,17,62.04,102.56,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Filipe Albuquerque,filipe albuquerque,22,1.0,21,67.398,19.296,22.291,25.811,,GF,18,62.04,103.1,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Filipe Albuquerque,filipe albuquerque,23,1.0,22,66.982,19.157,22.267,25.558,,GF,19,62.04,103.1,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Filipe Albuquerque,filipe albuquerque,24,1.0,23,67.712,19.222,22.597,25.893,,GF,20,62.04,103.1,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Filipe Albuquerque,filipe albuquerque,25,1.0,24,66.832,19.071,22.235,25.526,,GF,21,62.04,103.28,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Filipe Albuquerque,filipe albuquerque,26,1.0,25,66.896,18.993,22.161,25.742,,GF,22,62.04,103.28,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Filipe Albuquerque,filipe albuquerque,27,1.0,26,67.09,19.198,22.291,25.601,,GF,23,62.04,102.38,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Filipe Albuquerque,filipe albuquerque,28,1.0,27,68.04,19.095,22.952,25.993,,GF,24,62.04,101.48,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Filipe Albuquerque,filipe albuquerque,29,1.0,28,67.356,19.356,22.337,25.663,,GF,25,62.04,100.04,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Filipe Albuquerque,filipe albuquerque,30,1.0,29,66.916,19.096,22.257,25.563,,GF,26,62.04,99.5,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Filipe Albuquerque,filipe albuquerque,31,1.0,30,68.473,19.382,22.821,26.27,,GF,27,62.38,99.14,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Filipe Albuquerque,filipe albuquerque,32,1.0,31,68.436,19.582,22.918,25.936,,GF,28,62.38,98.78,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Filipe Albuquerque,filipe albuquerque,33,1.0,32,67.585,19.433,22.391,25.761,,GF,29,62.69,98.42,57.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Filipe Albuquerque,filipe albuquerque,34,1.0,33,68.069,19.296,22.649,26.124,,GF,30,62.69,98.06,57.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Filipe Albuquerque,filipe albuquerque,35,1.0,34,67.339,19.403,22.312,25.624,,GF,31,62.69,98.6,57.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Filipe Albuquerque,filipe albuquerque,36,1.0,35,67.422,19.228,22.283,25.911,,GF,32,62.69,100.4,57.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Filipe Albuquerque,filipe albuquerque,37,1.0,36,68.253,19.315,22.771,26.167,,GF,33,62.69,100.4,57.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Filipe Albuquerque,filipe albuquerque,38,1.0,37,67.218,19.224,22.455,25.539,,GF,34,62.69,100.04,57.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Filipe Albuquerque,filipe albuquerque,39,1.0,38,90.73,19.139,22.376,49.215,,GF,35,62.38,101.12,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Ricky Taylor,ricky taylor,40,2.0,0,75.807,26.32,23.203,26.284,30.693,GF,0,62.56,101.3,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Ricky Taylor,ricky taylor,41,2.0,1,68.104,19.534,22.656,25.914,,GF,0,62.56,101.66,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Ricky Taylor,ricky taylor,42,2.0,2,68.138,19.499,22.655,25.984,,GF,1,62.56,102.02,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Ricky Taylor,ricky taylor,43,2.0,3,69.563,20.412,22.867,26.284,,GF,2,62.56,102.02,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Ricky Taylor,ricky taylor,44,2.0,4,68.18,19.477,22.864,25.839,,GF,3,62.56,101.3,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Ricky Taylor,ricky taylor,45,2.0,5,67.518,19.394,22.551,25.573,,GF,4,62.56,100.4,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Ricky Taylor,ricky taylor,46,2.0,6,67.637,19.395,22.49,25.752,,GF,5,62.56,100.4,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Ricky Taylor,ricky taylor,47,2.0,7,68.467,19.472,22.727,26.268,,GF,6,62.56,100.04,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Ricky Taylor,ricky taylor,48,2.0,8,67.709,19.357,22.517,25.835,,GF,7,62.62,100.04,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Ricky Taylor,ricky taylor,49,2.0,9,67.234,19.153,22.557,25.524,,GF,8,62.62,100.04,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Ricky Taylor,ricky taylor,50,2.0,10,67.525,19.353,22.517,25.655,,GF,9,62.62,101.12,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Ricky Taylor,ricky taylor,51,2.0,11,67.5,19.292,22.589,25.619,,GF,10,62.62,101.3,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Ricky Taylor,ricky taylor,52,2.0,12,67.681,19.234,22.473,25.974,,GF,11,62.62,101.3,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Ricky Taylor,ricky taylor,53,2.0,13,67.76,19.314,22.662,25.784,,GF,12,62.62,100.58,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Ricky Taylor,ricky taylor,54,2.0,14,68.073,19.289,22.898,25.886,,FCY,13,62.62,100.58,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Ricky Taylor,ricky taylor,55,2.0,15,90.385,29.107,30.962,30.316,,FCY,13,62.62,99.5,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Ricky Taylor,ricky taylor,56,2.0,16,115.885,27.221,44.973,43.691,,FCY,13,62.62,98.24,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Ricky Taylor,ricky taylor,57,2.0,17,109.686,33.789,39.426,36.471,,FCY,13,62.67,99.14,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Ricky Taylor,ricky taylor,58,2.0,18,101.298,27.637,35.807,37.854,,FCY,13,62.69,100.04,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Ricky Taylor,ricky taylor,59,2.0,19,115.284,33.23,39.489,42.565,,GF,13,62.69,100.58,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Ricky Taylor,ricky taylor,60,2.0,20,70.905,20.363,23.551,26.991,,GF,14,62.69,100.76,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Ricky Taylor,ricky taylor,61,2.0,21,69.52,20.023,23.064,26.433,,GF,15,62.69,100.94,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Ricky Taylor,ricky taylor,62,2.0,22,68.903,19.602,22.97,26.331,,GF,16,62.67,100.94,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Ricky Taylor,ricky taylor,63,2.0,23,68.341,19.515,22.693,26.133,,GF,17,62.67,100.76,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Ricky Taylor,ricky taylor,64,2.0,24,68.775,19.62,22.757,26.398,,GF,18,62.92,100.76,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Ricky Taylor,ricky taylor,65,2.0,25,68.625,19.695,22.751,26.179,,GF,19,62.92,100.76,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Ricky Taylor,ricky taylor,66,2.0,26,68.186,19.523,22.624,26.039,,GF,20,62.92,100.76,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Ricky Taylor,ricky taylor,67,2.0,27,67.857,19.377,22.61,25.87,,GF,21,62.92,100.4,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Ricky Taylor,ricky taylor,68,2.0,28,68.047,19.361,22.643,26.043,,GF,22,62.92,99.32,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Ricky Taylor,ricky taylor,69,2.0,29,67.861,19.353,22.695,25.813,,GF,23,62.92,98.06,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Ricky Taylor,ricky taylor,70,2.0,30,67.619,19.35,22.51,25.759,,GF,24,62.92,97.7,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Ricky Taylor,ricky taylor,71,2.0,31,69.804,19.496,23.841,26.467,,GF,25,62.92,96.8,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Ricky Taylor,ricky taylor,72,2.0,32,67.993,19.457,22.492,26.044,,GF,26,62.92,96.26,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Ricky Taylor,ricky taylor,73,2.0,33,68.33,19.512,22.697,26.121,,GF,27,63.14,96.08,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Ricky Taylor,ricky taylor,74,2.0,34,67.849,19.363,22.676,25.81,,GF,28,63.91,95.9,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Ricky Taylor,ricky taylor,75,2.0,35,67.885,19.347,22.758,25.78,,GF,29,63.91,96.26,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Ricky Taylor,ricky taylor,76,2.0,36,67.705,19.218,22.74,25.747,,GF,30,63.91,96.26,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Ricky Taylor,ricky taylor,77,2.0,37,67.747,19.33,22.575,25.842,,GF,31,63.91,95.72,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Ricky Taylor,ricky taylor,78,2.0,38,67.25,19.244,22.399,25.607,,GF,32,63.91,95.72,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Ricky Taylor,ricky taylor,79,2.0,39,68.399,19.163,22.896,26.34,,GF,33,63.18,95.72,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Ricky Taylor,ricky taylor,80,2.0,40,68.679,19.387,23.165,26.127,,GF,34,63.18,95.72,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Ricky Taylor,ricky taylor,81,2.0,41,69.73,20.113,23.173,26.444,,GF,35,63.18,96.08,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Ricky Taylor,ricky taylor,82,2.0,42,68.801,20.07,22.79,25.941,,GF,36,63.18,96.44,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Ricky Taylor,ricky taylor,83,2.0,43,68.403,19.564,22.894,25.945,,GF,37,63.18,96.8,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,10,GTP,Ricky Taylor,ricky taylor,84,2.0,44,68.072,19.408,22.725,25.939,,FF,38,63.18,96.98,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Roman de Angelis,roman de angelis,1,1.0,0,99.282,41.158,28.403,29.721,,GF,0,61.38,100.22,50.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Roman de Angelis,roman de angelis,2,1.0,1,72.653,20.44,24.056,28.157,,FCY,0,61.38,98.96,50.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Roman de Angelis,roman de angelis,3,1.0,2,97.236,32.79,32.709,31.737,,FCY,0,61.38,98.96,50.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Roman de Angelis,roman de angelis,4,1.0,3,109.151,33.887,41.5,33.764,,GF,0,61.38,98.24,50.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Roman de Angelis,roman de angelis,5,1.0,4,71.667,20.481,23.962,27.224,,GF,1,61.38,98.6,50.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Roman de Angelis,roman de angelis,6,1.0,5,70.501,20.097,23.736,26.668,,GF,2,61.59,99.32,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Roman de Angelis,roman de angelis,7,1.0,6,69.891,19.9,23.493,26.498,,GF,3,61.59,101.66,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Roman de Angelis,roman de angelis,8,1.0,7,69.515,19.73,23.485,26.3,,GF,4,61.59,101.3,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Roman de Angelis,roman de angelis,9,1.0,8,69.103,19.521,23.316,26.266,,GF,5,61.59,100.04,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Roman de Angelis,roman de angelis,10,1.0,9,68.982,19.528,23.237,26.217,,GF,6,61.59,100.04,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Roman de Angelis,roman de angelis,11,1.0,10,68.977,19.466,23.266,26.245,,GF,7,61.59,101.48,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Roman de Angelis,roman de angelis,12,1.0,11,69.327,19.503,23.549,26.275,,GF,8,61.59,102.2,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Roman de Angelis,roman de angelis,13,1.0,12,68.361,19.433,23.042,25.886,,GF,9,61.59,103.1,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Roman de Angelis,roman de angelis,14,1.0,13,68.458,19.388,23.111,25.959,,GF,10,61.59,103.1,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Roman de Angelis,roman de angelis,15,1.0,14,68.365,19.369,23.078,25.918,,GF,11,61.56,104.36,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Roman de Angelis,roman de angelis,16,1.0,15,69.871,19.47,23.729,26.672,,GF,12,61.56,103.28,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Roman de Angelis,roman de angelis,17,1.0,16,69.075,19.512,23.103,26.46,,GF,13,61.56,103.28,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Roman de Angelis,roman de angelis,18,1.0,17,68.954,19.677,23.201,26.076,,GF,14,61.56,101.48,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Roman de Angelis,roman de angelis,19,1.0,18,68.905,19.478,23.11,26.317,,GF,15,61.56,100.58,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Roman de Angelis,roman de angelis,20,1.0,19,97.614,19.504,23.525,54.585,,GF,16,62.04,102.56,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Ross Gunn,ross gunn,21,2.0,0,74.851,24.814,23.371,26.666,36.359,GF,0,62.04,103.1,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Ross Gunn,ross gunn,22,2.0,1,71.2,19.977,23.945,27.278,,GF,0,62.04,103.1,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Ross Gunn,ross gunn,23,2.0,2,68.795,19.693,23.03,26.072,,GF,1,62.04,103.1,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Ross Gunn,ross gunn,24,2.0,3,68.255,19.42,22.884,25.951,,GF,2,62.04,103.28,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Ross Gunn,ross gunn,25,2.0,4,68.19,19.476,22.739,25.975,,GF,3,62.04,103.28,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Ross Gunn,ross gunn,26,2.0,5,69.066,19.515,23.027,26.524,,GF,4,62.04,102.38,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Ross Gunn,ross gunn,27,2.0,6,68.834,19.693,22.898,26.243,,GF,5,62.04,101.48,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Ross Gunn,ross gunn,28,2.0,7,68.492,19.449,22.948,26.095,,GF,6,62.04,100.04,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Ross Gunn,ross gunn,29,2.0,8,69.262,19.563,23.308,26.391,,GF,7,62.04,99.5,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Ross Gunn,ross gunn,30,2.0,9,68.717,19.55,22.688,26.479,,GF,8,62.38,99.14,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Ross Gunn,ross gunn,31,2.0,10,70.028,19.533,24.152,26.343,,GF,9,62.38,98.78,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Ross Gunn,ross gunn,32,2.0,11,69.062,19.697,23.098,26.267,,GF,10,62.69,98.42,57.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Ross Gunn,ross gunn,33,2.0,12,68.273,19.454,22.883,25.936,,GF,11,62.69,98.06,57.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Ross Gunn,ross gunn,34,2.0,13,69.24,19.462,23.067,26.711,,GF,12,62.69,98.6,57.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Ross Gunn,ross gunn,35,2.0,14,69.262,19.74,23.044,26.478,,GF,13,62.69,100.4,57.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Ross Gunn,ross gunn,36,2.0,15,68.998,19.926,23.011,26.061,,GF,14,62.69,100.4,57.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Ross Gunn,ross gunn,37,2.0,16,68.296,19.463,22.87,25.963,,GF,15,62.69,100.04,57.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Ross Gunn,ross gunn,38,2.0,17,68.407,19.341,22.809,26.257,,GF,16,62.38,101.12,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Ross Gunn,ross gunn,39,2.0,18,68.997,19.844,22.946,26.207,,GF,17,62.56,101.3,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Ross Gunn,ross gunn,40,2.0,19,68.826,19.847,22.968,26.011,,GF,18,62.56,101.66,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Ross Gunn,ross gunn,41,2.0,20,67.979,19.289,22.728,25.962,,GF,19,62.56,101.66,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Ross Gunn,ross gunn,42,2.0,21,68.201,19.452,22.851,25.898,,GF,20,62.56,102.02,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Ross Gunn,ross gunn,43,2.0,22,68.293,19.456,22.758,26.079,,GF,21,62.56,102.02,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Ross Gunn,ross gunn,44,2.0,23,68.392,19.466,22.843,26.083,,GF,22,62.56,101.3,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Ross Gunn,ross gunn,45,2.0,24,68.251,19.485,22.746,26.02,,GF,23,62.56,100.4,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Ross Gunn,ross gunn,46,2.0,25,68.183,19.501,22.698,25.984,,GF,24,62.56,99.32,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Ross Gunn,ross gunn,47,2.0,26,67.945,19.446,22.62,25.879,,GF,25,62.56,100.04,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Ross Gunn,ross gunn,48,2.0,27,68.26,19.362,22.809,26.089,,GF,26,62.62,100.04,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Ross Gunn,ross gunn,49,2.0,28,69.033,20.195,22.741,26.097,,GF,27,62.62,101.12,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Ross Gunn,ross gunn,50,2.0,29,68.257,19.441,22.83,25.986,,GF,28,62.62,101.3,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Ross Gunn,ross gunn,51,2.0,30,67.95,19.408,22.641,25.901,,GF,29,62.62,101.3,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Ross Gunn,ross gunn,52,2.0,31,68.325,19.434,22.757,26.134,,GF,30,62.62,100.58,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Ross Gunn,ross gunn,53,2.0,32,68.873,19.398,23.291,26.184,,GF,31,62.62,100.58,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Ross Gunn,ross gunn,54,2.0,33,84.765,21.023,31.486,32.256,,FCY,32,62.62,99.5,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Ross Gunn,ross gunn,55,2.0,34,83.774,23.5,30.604,29.67,,FCY,32,62.62,98.78,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Ross Gunn,ross gunn,56,2.0,35,76.108,21.101,26.783,28.224,,FCY,32,62.62,98.24,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Ross Gunn,ross gunn,57,2.0,36,108.744,36.265,39.365,33.114,,FCY,32,62.69,99.32,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Ross Gunn,ross gunn,58,2.0,37,93.594,27.384,33.686,32.524,,FCY,32,62.69,100.04,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Ross Gunn,ross gunn,59,2.0,38,105.111,28.677,40.88,35.554,,GF,32,62.69,100.58,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Ross Gunn,ross gunn,60,2.0,39,72.514,20.76,24.264,27.49,,GF,33,62.69,100.76,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Ross Gunn,ross gunn,61,2.0,40,70.408,20.078,23.419,26.911,,GF,34,62.69,100.94,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Ross Gunn,ross gunn,62,2.0,41,69.904,19.792,23.304,26.808,,GF,35,62.67,100.94,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Ross Gunn,ross gunn,63,2.0,42,69.65,19.734,23.392,26.524,,GF,36,62.67,100.76,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Ross Gunn,ross gunn,64,2.0,43,69.659,19.642,23.208,26.809,,GF,37,62.92,100.76,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Ross Gunn,ross gunn,65,2.0,44,69.684,19.811,23.248,26.625,,GF,38,62.92,100.76,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Ross Gunn,ross gunn,66,2.0,45,68.906,19.537,22.974,26.395,,GF,39,62.92,100.76,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Ross Gunn,ross gunn,67,2.0,46,68.71,19.373,22.847,26.49,,GF,40,62.92,100.4,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Ross Gunn,ross gunn,68,2.0,47,69.724,20.637,22.915,26.172,,GF,41,62.92,99.32,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Ross Gunn,ross gunn,69,2.0,48,68.798,19.485,22.897,26.416,,GF,42,62.92,98.06,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Ross Gunn,ross gunn,70,2.0,49,68.443,19.381,22.843,26.219,,GF,43,62.92,97.7,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Ross Gunn,ross gunn,71,2.0,50,69.058,19.462,22.936,26.66,,GF,44,62.92,96.8,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Ross Gunn,ross gunn,72,2.0,51,68.891,19.605,22.998,26.288,,GF,45,62.92,96.26,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Ross Gunn,ross gunn,73,2.0,52,68.837,19.459,22.942,26.436,,GF,46,63.14,96.08,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Ross Gunn,ross gunn,74,2.0,53,68.594,19.489,22.878,26.227,,GF,47,63.91,95.9,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Ross Gunn,ross gunn,75,2.0,54,69.031,19.813,22.983,26.235,,GF,48,63.91,96.26,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Ross Gunn,ross gunn,76,2.0,55,69.019,19.645,22.955,26.419,,GF,49,63.91,96.26,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Ross Gunn,ross gunn,77,2.0,56,68.955,19.598,22.983,26.374,,GF,50,63.91,95.72,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Ross Gunn,ross gunn,78,2.0,57,68.534,19.462,22.886,26.186,,GF,51,63.18,95.18,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Ross Gunn,ross gunn,79,2.0,58,68.761,19.564,22.92,26.277,,GF,52,63.18,95.72,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Ross Gunn,ross gunn,80,2.0,59,68.681,19.407,22.733,26.541,,GF,53,63.18,96.08,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Ross Gunn,ross gunn,81,2.0,60,68.913,19.653,22.979,26.281,,GF,54,63.18,96.44,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Ross Gunn,ross gunn,82,2.0,61,68.62,19.481,22.836,26.303,,GF,55,63.18,96.44,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Ross Gunn,ross gunn,83,2.0,62,70.634,19.686,23.946,27.002,,GF,56,63.18,96.98,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,23,GTP,Ross Gunn,ross gunn,84,2.0,63,72.414,20.303,24.831,27.28,,FF,57,63.18,96.98,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Dries Vanthoor,dries vanthoor,1,1.0,0,96.715,39.74,28.114,28.861,,GF,0,61.38,100.22,50.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Dries Vanthoor,dries vanthoor,2,1.0,1,70.106,20.282,23.05,26.774,,FCY,0,61.38,98.96,50.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Dries Vanthoor,dries vanthoor,3,1.0,2,97.672,31.136,31.672,34.864,,FCY,0,61.38,98.96,50.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Dries Vanthoor,dries vanthoor,4,1.0,3,111.748,33.312,41.99,36.446,,GF,0,61.38,98.24,50.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Dries Vanthoor,dries vanthoor,5,1.0,4,71.546,20.575,23.756,27.215,,GF,1,61.38,98.6,50.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Dries Vanthoor,dries vanthoor,6,1.0,5,69.283,20.001,22.781,26.501,,GF,2,61.59,99.32,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Dries Vanthoor,dries vanthoor,7,1.0,6,68.673,19.678,22.71,26.285,,GF,3,61.59,101.66,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Dries Vanthoor,dries vanthoor,8,1.0,7,68.294,19.553,22.539,26.202,,GF,4,61.59,101.3,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Dries Vanthoor,dries vanthoor,9,1.0,8,68.02,19.554,22.497,25.969,,GF,5,61.59,100.04,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Dries Vanthoor,dries vanthoor,10,1.0,9,67.953,19.394,22.531,26.028,,GF,6,61.59,100.04,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Dries Vanthoor,dries vanthoor,11,1.0,10,67.67,19.439,22.323,25.908,,GF,7,61.59,101.48,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Dries Vanthoor,dries vanthoor,12,1.0,11,67.982,19.439,22.488,26.055,,GF,8,61.59,102.2,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Dries Vanthoor,dries vanthoor,13,1.0,12,67.818,19.427,22.532,25.859,,GF,9,61.59,103.1,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Dries Vanthoor,dries vanthoor,14,1.0,13,68.771,19.658,23.053,26.06,,GF,10,61.59,103.1,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Dries Vanthoor,dries vanthoor,15,1.0,14,67.798,19.428,22.527,25.843,,GF,11,61.56,104.36,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Dries Vanthoor,dries vanthoor,16,1.0,15,68.674,19.389,23.089,26.196,,GF,12,61.56,104.36,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Dries Vanthoor,dries vanthoor,17,1.0,16,68.347,19.405,22.79,26.152,,GF,13,61.56,103.28,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Dries Vanthoor,dries vanthoor,18,1.0,17,69.319,19.354,22.919,27.046,,GF,14,61.56,101.48,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Dries Vanthoor,dries vanthoor,19,1.0,18,67.161,19.25,22.273,25.638,,GF,15,61.56,100.58,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Dries Vanthoor,dries vanthoor,20,1.0,19,68.24,19.269,22.362,26.609,,GF,16,61.56,100.76,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Dries Vanthoor,dries vanthoor,21,1.0,20,67.608,19.465,22.149,25.994,,GF,17,62.04,102.56,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Dries Vanthoor,dries vanthoor,22,1.0,21,67.011,19.269,22.061,25.681,,GF,18,62.04,103.1,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Dries Vanthoor,dries vanthoor,23,1.0,22,66.963,19.266,22.154,25.543,,GF,19,62.04,103.1,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Dries Vanthoor,dries vanthoor,24,1.0,23,67.674,19.532,22.369,25.773,,GF,20,62.04,103.28,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Dries Vanthoor,dries vanthoor,25,1.0,24,66.933,19.25,22.185,25.498,,GF,21,62.04,103.28,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Dries Vanthoor,dries vanthoor,26,1.0,25,66.804,19.231,22.075,25.498,,GF,22,62.04,103.28,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Dries Vanthoor,dries vanthoor,27,1.0,26,66.937,19.211,22.283,25.443,,GF,23,62.04,102.38,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Dries Vanthoor,dries vanthoor,28,1.0,27,68.402,19.288,22.678,26.436,,GF,24,62.04,101.48,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Dries Vanthoor,dries vanthoor,29,1.0,28,66.927,19.22,22.231,25.476,,GF,25,62.04,100.04,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Dries Vanthoor,dries vanthoor,30,1.0,29,94.463,19.334,22.34,52.789,,GF,26,62.38,99.14,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Philipp Eng,philipp eng,31,2.0,0,73.854,24.736,22.883,26.235,35.193,GF,0,62.38,98.78,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Philipp Eng,philipp eng,32,2.0,1,68.471,19.634,22.77,26.067,,GF,0,62.69,98.42,57.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Philipp Eng,philipp eng,33,2.0,2,67.935,19.46,22.614,25.861,,GF,1,62.69,98.06,57.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Philipp Eng,philipp eng,34,2.0,3,67.795,19.505,22.458,25.832,,GF,2,62.69,98.06,57.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Philipp Eng,philipp eng,35,2.0,4,68.409,19.428,22.66,26.321,,GF,3,62.69,98.6,57.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Philipp Eng,philipp eng,36,2.0,5,67.746,19.397,22.419,25.93,,GF,4,62.69,100.4,57.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Philipp Eng,philipp eng,37,2.0,6,68.352,19.389,22.41,26.553,,GF,5,62.69,100.4,57.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Philipp Eng,philipp eng,38,2.0,7,68.898,19.764,23.124,26.01,,GF,6,62.69,100.04,57.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Philipp Eng,philipp eng,39,2.0,8,67.661,19.281,22.358,26.022,,GF,7,62.38,101.12,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Philipp Eng,philipp eng,40,2.0,9,67.681,19.381,22.505,25.795,,GF,8,62.56,101.3,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Philipp Eng,philipp eng,41,2.0,10,68.693,19.391,23.014,26.288,,GF,9,62.56,101.66,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Philipp Eng,philipp eng,42,2.0,11,68.57,19.68,22.668,26.222,,GF,10,62.56,102.02,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Philipp Eng,philipp eng,43,2.0,12,67.763,19.403,22.377,25.983,,GF,11,62.56,102.02,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Philipp Eng,philipp eng,44,2.0,13,69.12,19.906,22.42,26.794,,GF,12,62.56,101.3,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Philipp Eng,philipp eng,45,2.0,14,69.784,19.781,23.456,26.547,,GF,13,62.56,100.4,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Philipp Eng,philipp eng,46,2.0,15,67.381,19.421,22.398,25.562,,GF,14,62.56,100.4,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Philipp Eng,philipp eng,47,2.0,16,67.377,19.498,22.177,25.702,,GF,15,62.56,100.04,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Philipp Eng,philipp eng,48,2.0,17,67.378,19.405,22.306,25.667,,GF,16,62.62,100.04,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Philipp Eng,philipp eng,49,2.0,18,67.574,19.662,22.329,25.583,,GF,17,62.62,100.04,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Philipp Eng,philipp eng,50,2.0,19,66.94,19.236,22.158,25.546,,GF,18,62.62,101.12,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Philipp Eng,philipp eng,51,2.0,20,67.093,19.2,22.227,25.666,,GF,19,62.62,101.3,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Philipp Eng,philipp eng,52,2.0,21,67.14,19.27,22.297,25.573,,GF,20,62.62,101.3,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Philipp Eng,philipp eng,53,2.0,22,67.453,19.303,22.538,25.612,,GF,21,62.62,100.58,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Philipp Eng,philipp eng,54,2.0,23,69.391,19.477,22.405,27.509,,FCY,22,62.62,100.58,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Philipp Eng,philipp eng,55,2.0,24,93.341,29.628,32.382,31.331,,FCY,22,62.62,99.5,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Philipp Eng,philipp eng,56,2.0,25,109.489,23.874,42.329,43.286,,FCY,22,62.62,98.24,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Philipp Eng,philipp eng,57,2.0,26,112.107,35.824,39.386,36.897,,FCY,22,62.67,99.14,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Philipp Eng,philipp eng,58,2.0,27,99.978,28.957,33.4,37.621,,FCY,22,62.69,100.04,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Philipp Eng,philipp eng,59,2.0,28,112.958,33.371,39.152,40.435,,GF,22,62.69,100.58,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Philipp Eng,philipp eng,60,2.0,29,71.231,20.399,23.574,27.258,,GF,23,62.69,100.76,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Philipp Eng,philipp eng,61,2.0,30,69.789,19.904,22.995,26.89,,GF,24,62.69,100.94,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Philipp Eng,philipp eng,62,2.0,31,69.21,19.747,22.927,26.536,,GF,25,62.67,100.94,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Philipp Eng,philipp eng,63,2.0,32,68.946,19.83,22.88,26.236,,GF,26,62.67,100.76,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Philipp Eng,philipp eng,64,2.0,33,68.745,19.648,22.748,26.349,,GF,27,62.92,100.76,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Philipp Eng,philipp eng,65,2.0,34,68.821,19.57,22.89,26.361,,GF,28,62.92,100.76,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Philipp Eng,philipp eng,66,2.0,35,68.476,19.6,22.871,26.005,,GF,29,62.92,100.76,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Philipp Eng,philipp eng,67,2.0,36,68.488,20.184,22.452,25.852,,GF,30,62.92,100.4,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Philipp Eng,philipp eng,68,2.0,37,67.47,19.248,22.468,25.754,,GF,31,62.92,99.32,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Philipp Eng,philipp eng,69,2.0,38,67.517,19.381,22.363,25.773,,GF,32,62.92,98.06,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Philipp Eng,philipp eng,70,2.0,39,67.519,19.333,22.363,25.823,,GF,33,62.92,97.7,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Philipp Eng,philipp eng,71,2.0,40,69.279,19.553,22.736,26.99,,GF,34,62.92,96.8,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Philipp Eng,philipp eng,72,2.0,41,68.904,19.958,22.713,26.233,,GF,35,62.92,96.26,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Philipp Eng,philipp eng,73,2.0,42,68.442,19.607,22.715,26.12,,GF,36,63.14,96.08,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Philipp Eng,philipp eng,74,2.0,43,67.939,19.453,22.559,25.927,,GF,37,63.91,95.9,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Philipp Eng,philipp eng,75,2.0,44,68.615,19.553,22.618,26.444,,GF,38,63.91,96.26,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Philipp Eng,philipp eng,76,2.0,45,67.665,19.535,22.26,25.87,,GF,39,63.91,96.26,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Philipp Eng,philipp eng,77,2.0,46,67.246,19.316,22.254,25.676,,GF,40,63.91,95.72,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Philipp Eng,philipp eng,78,2.0,47,67.907,19.861,22.357,25.689,,GF,41,63.91,95.72,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Philipp Eng,philipp eng,79,2.0,48,67.426,19.33,22.349,25.747,,GF,42,63.18,95.72,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Philipp Eng,philipp eng,80,2.0,49,68.8,19.271,23.06,26.469,,GF,43,63.18,95.72,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Philipp Eng,philipp eng,81,2.0,50,69.004,19.528,22.428,27.048,,GF,44,63.18,96.08,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Philipp Eng,philipp eng,82,2.0,51,69.755,20.024,23.096,26.635,,GF,45,63.18,96.44,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Philipp Eng,philipp eng,83,2.0,52,69.804,20.241,22.826,26.737,,GF,46,63.18,96.8,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,24,GTP,Philipp Eng,philipp eng,84,2.0,53,68.891,19.757,22.735,26.399,,FF,47,63.18,96.98,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Sheldon van der Linde,sheldon van der linde,1,1.0,0,94.155,39.67,27.147,27.338,,GF,0,61.38,100.22,50.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Sheldon van der Linde,sheldon van der linde,2,1.0,1,69.866,19.966,23.316,26.584,,FCY,0,61.38,98.96,50.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Sheldon van der Linde,sheldon van der linde,3,1.0,2,96.655,29.585,30.774,36.296,,FCY,0,61.38,98.96,50.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Sheldon van der Linde,sheldon van der linde,4,1.0,3,114.341,33.361,42.875,38.105,,GF,0,61.38,98.24,50.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Sheldon van der Linde,sheldon van der linde,5,1.0,4,71.473,20.222,24.377,26.874,,GF,1,61.38,98.6,50.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Sheldon van der Linde,sheldon van der linde,6,1.0,5,69.227,19.876,22.928,26.423,,GF,2,61.59,99.32,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Sheldon van der Linde,sheldon van der linde,7,1.0,6,68.629,19.66,22.868,26.101,,GF,3,61.59,101.66,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Sheldon van der Linde,sheldon van der linde,8,1.0,7,68.189,19.515,22.513,26.161,,GF,4,61.59,101.3,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Sheldon van der Linde,sheldon van der linde,9,1.0,8,68.146,19.502,22.658,25.986,,GF,5,61.59,100.04,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Sheldon van der Linde,sheldon van der linde,10,1.0,9,67.785,19.391,22.419,25.975,,GF,6,61.59,100.04,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Sheldon van der Linde,sheldon van der linde,11,1.0,10,67.812,19.409,22.46,25.943,,GF,7,61.59,101.48,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Sheldon van der Linde,sheldon van der linde,12,1.0,11,67.859,19.344,22.57,25.945,,GF,8,61.59,102.2,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Sheldon van der Linde,sheldon van der linde,13,1.0,12,68.254,19.484,22.639,26.131,,GF,9,61.59,103.1,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Sheldon van der Linde,sheldon van der linde,14,1.0,13,68.621,20.053,22.539,26.029,,GF,10,61.59,103.1,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Sheldon van der Linde,sheldon van der linde,15,1.0,14,67.821,19.398,22.439,25.984,,GF,11,61.56,104.36,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Sheldon van der Linde,sheldon van der linde,16,1.0,15,68.403,19.413,22.579,26.411,,GF,12,61.56,104.36,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Sheldon van der Linde,sheldon van der linde,17,1.0,16,68.647,19.837,22.84,25.97,,GF,13,61.56,103.28,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Sheldon van der Linde,sheldon van der linde,18,1.0,17,67.786,19.297,22.744,25.745,,GF,14,61.56,101.48,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Sheldon van der Linde,sheldon van der linde,19,1.0,18,67.75,19.654,22.294,25.802,,GF,15,61.56,100.58,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Sheldon van der Linde,sheldon van der linde,20,1.0,19,67.709,19.302,22.582,25.825,,GF,16,61.56,100.76,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Sheldon van der Linde,sheldon van der linde,21,1.0,20,67.512,19.174,22.356,25.982,,GF,17,62.04,102.56,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Sheldon van der Linde,sheldon van der linde,22,1.0,21,67.72,19.3,22.45,25.97,,GF,18,62.04,103.1,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Sheldon van der Linde,sheldon van der linde,23,1.0,22,67.087,19.258,22.273,25.556,,GF,19,62.04,103.1,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Sheldon van der Linde,sheldon van der linde,24,1.0,23,67.304,19.175,22.37,25.759,,GF,20,62.04,103.1,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Sheldon van der Linde,sheldon van der linde,25,1.0,24,67.014,19.072,22.306,25.636,,GF,21,62.04,103.28,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Sheldon van der Linde,sheldon van der linde,26,1.0,25,90.743,19.144,22.228,49.371,,GF,22,62.04,102.38,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Marco Wittmann,marco wittmann,27,2.0,0,76.517,26.232,23.632,26.653,31.653,GF,0,62.04,101.48,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Marco Wittmann,marco wittmann,28,2.0,1,68.494,19.626,22.605,26.263,,GF,0,62.04,100.04,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Marco Wittmann,marco wittmann,29,2.0,2,68.382,19.801,22.612,25.969,,GF,1,62.04,99.5,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Marco Wittmann,marco wittmann,30,2.0,3,67.516,19.37,22.408,25.738,,GF,2,62.38,99.14,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Marco Wittmann,marco wittmann,31,2.0,4,68.272,19.432,22.755,26.085,,GF,3,62.38,98.78,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Marco Wittmann,marco wittmann,32,2.0,5,72.531,19.75,22.79,29.991,,GF,4,62.69,98.42,57.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Marco Wittmann,marco wittmann,33,2.0,6,72.309,24.224,22.39,25.695,11.993,GF,0,62.69,98.06,57.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Marco Wittmann,marco wittmann,34,2.0,7,67.263,19.188,22.258,25.817,,GF,0,62.69,98.06,57.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Marco Wittmann,marco wittmann,35,2.0,8,67.055,19.242,22.2,25.613,,GF,1,62.69,98.6,57.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Marco Wittmann,marco wittmann,36,2.0,9,67.161,19.236,22.138,25.787,,GF,2,62.69,100.4,57.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Marco Wittmann,marco wittmann,37,2.0,10,67.373,19.341,22.385,25.647,,GF,3,62.69,100.4,57.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Marco Wittmann,marco wittmann,38,2.0,11,67.203,19.286,22.21,25.707,,GF,4,62.69,100.04,57.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Marco Wittmann,marco wittmann,39,2.0,12,68.644,19.586,22.784,26.274,,GF,5,62.38,101.12,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Marco Wittmann,marco wittmann,40,2.0,13,67.343,19.408,22.178,25.757,,GF,6,62.56,101.3,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Marco Wittmann,marco wittmann,41,2.0,14,67.509,19.266,22.276,25.967,,GF,7,62.56,101.66,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Marco Wittmann,marco wittmann,42,2.0,15,67.467,19.28,22.258,25.929,,GF,8,62.56,102.02,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Marco Wittmann,marco wittmann,43,2.0,16,67.688,19.485,22.404,25.799,,GF,9,62.56,102.02,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Marco Wittmann,marco wittmann,44,2.0,17,68.091,19.41,22.566,26.115,,GF,10,62.56,101.3,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Marco Wittmann,marco wittmann,45,2.0,18,69.629,19.683,23.222,26.724,,GF,11,62.56,100.4,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Marco Wittmann,marco wittmann,46,2.0,19,68.127,19.677,22.7,25.75,,GF,12,62.56,99.32,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Marco Wittmann,marco wittmann,47,2.0,20,67.386,19.402,22.273,25.711,,GF,13,62.56,100.04,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Marco Wittmann,marco wittmann,48,2.0,21,68.21,19.243,23.098,25.869,,GF,14,62.62,100.04,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Marco Wittmann,marco wittmann,49,2.0,22,68.932,19.397,22.555,26.98,,GF,15,62.62,100.04,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Marco Wittmann,marco wittmann,50,2.0,23,67.604,19.598,22.242,25.764,,GF,16,62.62,101.12,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Marco Wittmann,marco wittmann,51,2.0,24,67.301,19.288,22.203,25.81,,GF,17,62.62,101.3,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Marco Wittmann,marco wittmann,52,2.0,25,67.034,19.203,22.24,25.591,,GF,18,62.62,101.3,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Marco Wittmann,marco wittmann,53,2.0,26,67.532,19.329,22.453,25.75,,GF,19,62.62,100.58,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Marco Wittmann,marco wittmann,54,2.0,27,68.859,19.839,22.521,26.499,,FCY,20,62.62,100.04,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Marco Wittmann,marco wittmann,55,2.0,28,92.933,27.943,33.754,31.236,,FCY,20,62.62,99.5,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Marco Wittmann,marco wittmann,56,2.0,29,108.134,23.205,41.717,43.212,,FCY,20,62.62,98.24,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Marco Wittmann,marco wittmann,57,2.0,30,112.356,36.121,39.535,36.7,,FCY,20,62.67,99.14,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Marco Wittmann,marco wittmann,58,2.0,31,99.921,28.549,33.859,37.513,,FCY,20,62.69,100.04,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Marco Wittmann,marco wittmann,59,2.0,32,111.552,33.273,38.969,39.31,,GF,20,62.69,100.58,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Marco Wittmann,marco wittmann,60,2.0,33,71.038,20.331,23.695,27.012,,GF,21,62.69,100.76,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Marco Wittmann,marco wittmann,61,2.0,34,69.941,19.902,23.265,26.774,,GF,22,62.69,100.94,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Marco Wittmann,marco wittmann,62,2.0,35,69.281,19.71,23.105,26.466,,GF,23,62.67,100.94,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Marco Wittmann,marco wittmann,63,2.0,36,68.6,19.607,22.712,26.281,,GF,24,62.67,100.76,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Marco Wittmann,marco wittmann,64,2.0,37,68.613,19.672,22.637,26.304,,GF,25,62.92,100.76,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Marco Wittmann,marco wittmann,65,2.0,38,68.755,19.667,22.716,26.372,,GF,26,62.92,100.76,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Marco Wittmann,marco wittmann,66,2.0,39,68.625,19.598,22.782,26.245,,GF,27,62.92,100.76,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Marco Wittmann,marco wittmann,67,2.0,40,68.515,19.817,22.683,26.015,,GF,28,62.92,100.4,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Marco Wittmann,marco wittmann,68,2.0,41,67.464,19.319,22.334,25.811,,GF,29,62.92,99.32,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Marco Wittmann,marco wittmann,69,2.0,42,67.465,19.337,22.365,25.763,,GF,30,62.92,98.06,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Marco Wittmann,marco wittmann,70,2.0,43,67.405,19.223,22.373,25.809,,GF,31,62.92,97.7,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Marco Wittmann,marco wittmann,71,2.0,44,69.078,19.488,22.75,26.84,,GF,32,62.92,96.8,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Marco Wittmann,marco wittmann,72,2.0,45,69.119,19.929,22.933,26.257,,GF,33,62.92,96.26,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Marco Wittmann,marco wittmann,73,2.0,46,68.606,19.495,22.7,26.411,,GF,34,63.14,96.08,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Marco Wittmann,marco wittmann,74,2.0,47,67.776,19.446,22.394,25.936,,GF,35,63.91,95.9,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Marco Wittmann,marco wittmann,75,2.0,48,68.404,19.429,22.696,26.279,,GF,36,63.91,96.26,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Marco Wittmann,marco wittmann,76,2.0,49,67.785,19.653,22.4,25.732,,GF,37,63.91,96.26,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Marco Wittmann,marco wittmann,77,2.0,50,67.37,19.411,22.343,25.616,,GF,38,63.91,95.72,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Marco Wittmann,marco wittmann,78,2.0,51,67.893,19.613,22.574,25.706,,GF,39,63.91,95.72,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Marco Wittmann,marco wittmann,79,2.0,52,67.348,19.313,22.288,25.747,,GF,40,63.18,95.72,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Marco Wittmann,marco wittmann,80,2.0,53,69.003,19.261,23.018,26.724,,GF,41,63.18,95.72,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Marco Wittmann,marco wittmann,81,2.0,54,68.682,19.525,22.376,26.781,,GF,42,63.18,96.08,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Marco Wittmann,marco wittmann,82,2.0,55,70.2,20.552,23.128,26.52,,GF,43,63.18,96.44,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Marco Wittmann,marco wittmann,83,2.0,56,69.305,19.836,22.909,26.56,,GF,44,63.18,96.8,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,25,GTP,Marco Wittmann,marco wittmann,84,2.0,57,70.836,20.838,23.698,26.3,,FF,45,63.18,96.98,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Jack Aitken,jack aitken,1,1.0,0,98.66,40.36,28.9,29.4,,GF,0,61.38,100.22,50.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Jack Aitken,jack aitken,2,1.0,1,72.666,20.88,23.807,27.979,,FCY,0,61.38,98.96,50.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Jack Aitken,jack aitken,3,1.0,2,96.486,31.654,33.332,31.5,,FCY,0,61.38,98.96,50.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Jack Aitken,jack aitken,4,1.0,3,110.144,34.318,41.318,34.508,,GF,0,61.38,98.24,50.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Jack Aitken,jack aitken,5,1.0,4,71.661,20.586,23.706,27.369,,GF,1,61.38,98.6,50.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Jack Aitken,jack aitken,6,1.0,5,70.338,20.242,23.448,26.648,,GF,2,61.59,99.32,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Jack Aitken,jack aitken,7,1.0,6,69.596,20.017,23.191,26.388,,GF,3,61.59,101.66,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Jack Aitken,jack aitken,8,1.0,7,69.104,19.82,22.973,26.311,,GF,4,61.59,101.3,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Jack Aitken,jack aitken,9,1.0,8,68.966,19.759,22.967,26.24,,GF,5,61.59,100.04,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Jack Aitken,jack aitken,10,1.0,9,68.789,19.68,23.18,25.929,,GF,6,61.59,100.04,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Jack Aitken,jack aitken,11,1.0,10,68.666,19.686,22.956,26.024,,GF,7,61.59,101.48,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Jack Aitken,jack aitken,12,1.0,11,68.562,19.865,22.708,25.989,,GF,8,61.59,102.2,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Jack Aitken,jack aitken,13,1.0,12,68.185,19.495,22.826,25.864,,GF,9,61.59,103.1,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Jack Aitken,jack aitken,14,1.0,13,68.481,19.591,22.779,26.111,,GF,10,61.59,103.1,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Jack Aitken,jack aitken,15,1.0,14,68.621,19.567,22.88,26.174,,GF,11,61.56,104.36,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Jack Aitken,jack aitken,16,1.0,15,69.675,20.526,23.072,26.077,,GF,12,61.56,103.28,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Jack Aitken,jack aitken,17,1.0,16,69.285,20.576,22.813,25.896,,GF,13,61.56,103.28,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Jack Aitken,jack aitken,18,1.0,17,69.355,19.659,22.997,26.699,,GF,14,61.56,101.48,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Jack Aitken,jack aitken,19,1.0,18,68.621,19.944,22.841,25.836,,GF,15,61.56,100.58,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Jack Aitken,jack aitken,20,1.0,19,68.627,19.578,22.851,26.198,,GF,16,61.56,100.76,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Jack Aitken,jack aitken,21,1.0,20,95.996,19.635,23.495,52.866,,GF,17,62.04,102.56,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Earl Bamber,earl bamber,22,2.0,0,74.06,24.42,23.443,26.197,33.098,GF,0,62.04,103.1,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Earl Bamber,earl bamber,23,2.0,1,68.42,19.665,22.673,26.082,,GF,0,62.04,103.1,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Earl Bamber,earl bamber,24,2.0,2,69.262,19.79,23.097,26.375,,GF,1,62.04,103.28,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Earl Bamber,earl bamber,25,2.0,3,69.653,19.705,23.415,26.533,,GF,2,62.04,103.28,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Earl Bamber,earl bamber,26,2.0,4,68.955,20.321,22.707,25.927,,GF,3,62.04,102.38,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Earl Bamber,earl bamber,27,2.0,5,68.317,19.537,22.994,25.786,,GF,4,62.04,101.48,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Earl Bamber,earl bamber,28,2.0,6,69.251,19.497,23.835,25.919,,GF,5,62.04,100.04,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Earl Bamber,earl bamber,29,2.0,7,69.096,19.623,22.987,26.486,,GF,6,62.04,99.5,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Earl Bamber,earl bamber,30,2.0,8,69.728,20.101,22.937,26.69,,GF,7,62.38,99.14,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Earl Bamber,earl bamber,31,2.0,9,69.026,19.869,23.015,26.142,,GF,8,62.38,98.78,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Earl Bamber,earl bamber,32,2.0,10,68.007,19.209,22.888,25.91,,GF,9,62.69,98.42,57.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Earl Bamber,earl bamber,33,2.0,11,67.511,19.654,22.438,25.419,,GF,10,62.69,98.06,57.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Earl Bamber,earl bamber,34,2.0,12,67.236,19.063,22.59,25.583,,GF,11,62.69,98.6,57.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Earl Bamber,earl bamber,35,2.0,13,68.473,19.518,22.752,26.203,,GF,12,62.69,98.6,57.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Earl Bamber,earl bamber,36,2.0,14,67.722,19.553,22.809,25.36,,GF,13,62.69,100.4,57.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Earl Bamber,earl bamber,37,2.0,15,67.936,19.303,23.039,25.594,,GF,14,62.69,100.04,57.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Earl Bamber,earl bamber,38,2.0,16,67.745,19.489,22.674,25.582,,GF,15,62.38,101.12,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Earl Bamber,earl bamber,39,2.0,17,67.803,19.431,22.782,25.59,,GF,16,62.38,101.12,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Earl Bamber,earl bamber,40,2.0,18,68.383,19.561,23.439,25.383,,GF,17,62.56,101.66,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Earl Bamber,earl bamber,41,2.0,19,66.861,19.168,22.265,25.428,,GF,18,62.56,101.66,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Earl Bamber,earl bamber,42,2.0,20,67.883,20.039,22.495,25.349,,GF,19,62.56,102.02,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Earl Bamber,earl bamber,43,2.0,21,67.228,19.269,22.58,25.379,,GF,20,62.56,102.02,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Earl Bamber,earl bamber,44,2.0,22,68.198,19.23,22.8,26.168,,GF,21,62.56,101.3,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Earl Bamber,earl bamber,45,2.0,23,67.998,19.719,22.721,25.558,,GF,22,62.56,100.4,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Earl Bamber,earl bamber,46,2.0,24,67.578,19.163,22.511,25.904,,GF,23,62.56,99.32,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Earl Bamber,earl bamber,47,2.0,25,67.435,19.371,22.625,25.439,,GF,24,62.56,100.04,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Earl Bamber,earl bamber,48,2.0,26,67.438,19.403,22.601,25.434,,GF,25,62.62,100.04,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Earl Bamber,earl bamber,49,2.0,27,108.845,19.194,23.548,66.103,,GF,26,62.62,101.12,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Earl Bamber,earl bamber,50,2.0,28,72.591,23.883,23.001,25.707,46.872,GF,0,62.62,101.3,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Earl Bamber,earl bamber,51,2.0,29,67.471,19.442,22.562,25.467,,GF,0,62.62,101.3,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Earl Bamber,earl bamber,52,2.0,30,67.566,19.337,22.51,25.719,,GF,1,62.62,100.58,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Earl Bamber,earl bamber,53,2.0,31,68.705,19.725,22.697,26.283,,FCY,2,62.62,100.04,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Earl Bamber,earl bamber,54,2.0,32,93.533,28.232,33.87,31.431,,FCY,2,62.62,99.5,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Earl Bamber,earl bamber,55,2.0,33,107.688,23.092,41.36,43.236,,FCY,2,62.62,98.24,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Earl Bamber,earl bamber,56,2.0,34,112.516,36.082,39.786,36.648,,FCY,2,62.67,99.14,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Earl Bamber,earl bamber,57,2.0,35,99.522,28.656,33.872,36.994,,FCY,2,62.69,100.04,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Earl Bamber,earl bamber,58,2.0,36,112.062,33.465,38.969,39.628,,GF,2,62.69,100.58,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Earl Bamber,earl bamber,59,2.0,37,71.276,20.47,23.643,27.163,,GF,3,62.69,100.76,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Earl Bamber,earl bamber,60,2.0,38,69.702,20.016,23.052,26.634,,GF,4,62.69,100.94,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Earl Bamber,earl bamber,61,2.0,39,71.806,19.982,24.989,26.835,,GF,5,62.67,100.94,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Earl Bamber,earl bamber,62,2.0,40,68.89,19.748,23.041,26.101,,GF,6,62.67,100.76,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Earl Bamber,earl bamber,63,2.0,41,68.339,19.631,22.745,25.963,,GF,7,62.92,100.76,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Earl Bamber,earl bamber,64,2.0,42,68.249,19.55,22.884,25.815,,GF,8,62.92,100.76,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Earl Bamber,earl bamber,65,2.0,43,68.294,19.505,22.714,26.075,,GF,9,62.92,100.76,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Earl Bamber,earl bamber,66,2.0,44,68.69,19.903,22.752,26.035,,GF,10,62.92,100.4,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Earl Bamber,earl bamber,67,2.0,45,67.69,19.491,22.476,25.723,,GF,11,62.92,99.32,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Earl Bamber,earl bamber,68,2.0,46,69.462,19.388,22.392,27.682,,GF,12,62.92,98.06,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Earl Bamber,earl bamber,69,2.0,47,67.134,19.289,22.454,25.391,,GF,13,62.92,97.7,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Earl Bamber,earl bamber,70,2.0,48,67.447,19.264,22.51,25.673,,GF,14,62.92,96.8,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Earl Bamber,earl bamber,71,2.0,49,68.516,19.427,22.948,26.141,,GF,15,62.92,96.26,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Earl Bamber,earl bamber,72,2.0,50,68.968,19.758,22.791,26.419,,GF,16,63.14,96.08,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Earl Bamber,earl bamber,73,2.0,51,67.538,19.475,22.526,25.537,,GF,17,63.91,95.9,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Earl Bamber,earl bamber,74,2.0,52,68.232,19.551,22.745,25.936,,GF,18,63.91,96.26,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Earl Bamber,earl bamber,75,2.0,53,69.969,20.0,24.361,25.608,,GF,19,63.91,96.26,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Earl Bamber,earl bamber,76,2.0,54,66.715,19.113,22.4,25.202,,GF,20,63.91,95.72,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Earl Bamber,earl bamber,77,2.0,55,68.271,19.171,23.068,26.032,,GF,21,63.18,95.18,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Earl Bamber,earl bamber,78,2.0,56,67.194,19.286,22.482,25.426,,GF,22,63.18,95.72,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Earl Bamber,earl bamber,79,2.0,57,67.931,19.099,23.024,25.808,,GF,23,63.18,95.72,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Earl Bamber,earl bamber,80,2.0,58,69.44,19.467,23.289,26.684,,GF,24,63.18,96.08,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Earl Bamber,earl bamber,81,2.0,59,69.063,19.405,23.029,26.629,,GF,25,63.18,96.44,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Earl Bamber,earl bamber,82,2.0,60,70.591,20.22,23.678,26.693,,GF,26,63.18,96.8,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,31,GTP,Earl Bamber,earl bamber,83,2.0,61,72.041,20.408,23.959,27.674,,FF,27,63.18,96.98,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Louis Deletraz,louis deletraz,1,1.0,0,99.759,40.738,28.864,30.157,,GF,0,61.38,100.22,50.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Louis Deletraz,louis deletraz,2,1.0,1,73.101,20.909,23.852,28.34,,FCY,0,61.38,98.96,50.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Louis Deletraz,louis deletraz,3,1.0,2,97.099,32.574,34.026,30.499,,FCY,0,61.38,98.96,50.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Louis Deletraz,louis deletraz,4,1.0,3,108.922,33.779,41.393,33.75,,GF,0,61.38,98.24,50.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Louis Deletraz,louis deletraz,5,1.0,4,72.301,20.85,23.963,27.488,,GF,1,61.38,98.6,50.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Louis Deletraz,louis deletraz,6,1.0,5,70.585,20.123,23.555,26.907,,GF,2,61.59,99.32,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Louis Deletraz,louis deletraz,7,1.0,6,69.912,20.019,23.184,26.709,,GF,3,61.59,101.66,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Louis Deletraz,louis deletraz,8,1.0,7,69.74,19.919,23.238,26.583,,GF,4,61.59,101.3,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Louis Deletraz,louis deletraz,9,1.0,8,68.848,19.74,22.84,26.268,,GF,5,61.59,100.04,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Louis Deletraz,louis deletraz,10,1.0,9,69.689,19.687,23.632,26.37,,GF,6,61.59,100.04,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Louis Deletraz,louis deletraz,11,1.0,10,68.791,19.613,22.904,26.274,,GF,7,61.59,101.48,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Louis Deletraz,louis deletraz,12,1.0,11,68.942,19.53,23.04,26.372,,GF,8,61.59,102.2,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Louis Deletraz,louis deletraz,13,1.0,12,68.32,19.569,22.785,25.966,,GF,9,61.59,103.1,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Louis Deletraz,louis deletraz,14,1.0,13,68.338,19.566,22.757,26.015,,GF,10,61.59,103.1,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Louis Deletraz,louis deletraz,15,1.0,14,68.504,19.543,22.893,26.068,,GF,11,61.56,104.36,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Louis Deletraz,louis deletraz,16,1.0,15,69.36,19.484,23.184,26.692,,GF,12,61.56,103.28,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Louis Deletraz,louis deletraz,17,1.0,16,68.983,19.858,22.906,26.219,,GF,13,61.56,103.28,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Louis Deletraz,louis deletraz,18,1.0,17,69.407,19.916,23.113,26.378,,GF,14,61.56,101.48,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Louis Deletraz,louis deletraz,19,1.0,18,68.584,19.557,22.975,26.052,,GF,15,61.56,100.58,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Louis Deletraz,louis deletraz,20,1.0,19,69.011,19.88,22.966,26.165,,GF,16,61.56,100.76,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Louis Deletraz,louis deletraz,21,1.0,20,68.846,19.432,22.894,26.52,,GF,17,62.04,102.56,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Louis Deletraz,louis deletraz,22,1.0,21,68.757,19.674,23.008,26.075,,GF,18,62.04,103.1,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Louis Deletraz,louis deletraz,23,1.0,22,67.96,19.531,22.591,25.838,,GF,19,62.04,103.1,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Louis Deletraz,louis deletraz,24,1.0,23,68.297,19.581,22.851,25.865,,GF,20,62.04,103.28,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Louis Deletraz,louis deletraz,25,1.0,24,68.526,19.715,22.733,26.078,,GF,21,62.04,103.28,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Louis Deletraz,louis deletraz,26,1.0,25,68.579,19.465,22.818,26.296,,GF,22,62.04,102.38,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Louis Deletraz,louis deletraz,27,1.0,26,68.618,20.033,22.708,25.877,,GF,23,62.04,101.48,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Louis Deletraz,louis deletraz,28,1.0,27,69.969,19.81,23.736,26.423,,GF,24,62.04,101.48,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Louis Deletraz,louis deletraz,29,1.0,28,68.452,19.51,22.917,26.025,,GF,25,62.04,99.5,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Louis Deletraz,louis deletraz,30,1.0,29,94.381,19.42,23.139,51.822,,GF,26,62.38,99.14,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Jordan Taylor,jordan taylor,31,2.0,0,77.023,25.582,23.813,27.628,32.788,GF,0,62.38,98.78,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Jordan Taylor,jordan taylor,32,2.0,1,69.039,19.583,23.11,26.346,,GF,0,62.69,98.42,57.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Jordan Taylor,jordan taylor,33,2.0,2,70.413,19.647,24.346,26.42,,GF,1,62.69,98.06,57.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Jordan Taylor,jordan taylor,34,2.0,3,69.469,19.553,23.445,26.471,,GF,2,62.69,98.6,57.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Jordan Taylor,jordan taylor,35,2.0,4,68.776,19.856,22.944,25.976,,GF,3,62.69,100.4,57.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Jordan Taylor,jordan taylor,36,2.0,5,68.365,19.492,23.046,25.827,,GF,4,62.69,100.4,57.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Jordan Taylor,jordan taylor,37,2.0,6,67.853,19.297,22.834,25.722,,GF,5,62.69,100.04,57.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Jordan Taylor,jordan taylor,38,2.0,7,68.785,20.082,22.794,25.909,,GF,6,62.38,101.12,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Jordan Taylor,jordan taylor,39,2.0,8,68.776,20.037,22.992,25.747,,GF,7,62.56,101.3,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Jordan Taylor,jordan taylor,40,2.0,9,67.964,19.643,22.678,25.643,,GF,8,62.56,101.66,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Jordan Taylor,jordan taylor,41,2.0,10,67.556,19.218,22.582,25.756,,GF,9,62.56,101.66,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Jordan Taylor,jordan taylor,42,2.0,11,68.837,19.332,23.273,26.232,,GF,10,62.56,102.02,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Jordan Taylor,jordan taylor,43,2.0,12,68.602,19.704,22.872,26.026,,GF,11,62.56,102.02,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Jordan Taylor,jordan taylor,44,2.0,13,68.122,19.382,22.828,25.912,,GF,12,62.56,101.3,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Jordan Taylor,jordan taylor,45,2.0,14,67.721,19.354,22.668,25.699,,GF,13,62.56,100.4,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Jordan Taylor,jordan taylor,46,2.0,15,68.505,19.6,22.932,25.973,,GF,14,62.56,99.32,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Jordan Taylor,jordan taylor,47,2.0,16,67.636,19.373,22.547,25.716,,GF,15,62.56,100.04,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Jordan Taylor,jordan taylor,48,2.0,17,69.361,19.531,23.197,26.633,,GF,16,62.62,100.04,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Jordan Taylor,jordan taylor,49,2.0,18,67.734,19.248,22.638,25.848,,GF,17,62.62,101.12,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Jordan Taylor,jordan taylor,50,2.0,19,68.226,19.314,22.956,25.956,,GF,18,62.62,101.3,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Jordan Taylor,jordan taylor,51,2.0,20,68.061,19.416,22.755,25.89,,GF,19,62.62,101.3,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Jordan Taylor,jordan taylor,52,2.0,21,68.471,19.416,22.875,26.18,,GF,20,62.62,101.3,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Jordan Taylor,jordan taylor,53,2.0,22,69.239,19.934,23.251,26.054,,GF,21,62.62,100.58,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Jordan Taylor,jordan taylor,54,2.0,23,80.306,19.667,30.325,30.314,,FCY,22,62.62,100.04,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Jordan Taylor,jordan taylor,55,2.0,24,84.279,23.286,31.877,29.116,,FCY,22,62.62,98.78,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Jordan Taylor,jordan taylor,56,2.0,25,78.413,21.845,27.777,28.791,,FCY,22,62.62,98.24,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Jordan Taylor,jordan taylor,57,2.0,26,111.981,37.496,40.165,34.32,,FCY,22,62.69,99.32,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Jordan Taylor,jordan taylor,58,2.0,27,94.897,28.656,33.666,32.575,,FCY,22,62.69,100.04,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Jordan Taylor,jordan taylor,59,2.0,28,105.543,28.783,40.967,35.793,,GF,22,62.69,100.58,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Jordan Taylor,jordan taylor,60,2.0,29,72.356,20.695,24.351,27.31,,GF,23,62.69,100.76,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Jordan Taylor,jordan taylor,61,2.0,30,70.293,19.894,23.658,26.741,,GF,24,62.69,100.94,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Jordan Taylor,jordan taylor,62,2.0,31,70.076,19.784,23.507,26.785,,GF,25,62.67,100.94,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Jordan Taylor,jordan taylor,63,2.0,32,69.437,19.575,23.454,26.408,,GF,26,62.67,100.76,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Jordan Taylor,jordan taylor,64,2.0,33,69.854,19.681,23.33,26.843,,GF,27,62.92,100.76,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Jordan Taylor,jordan taylor,65,2.0,34,94.265,19.729,23.309,51.227,,GF,28,62.92,100.76,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Jordan Taylor,jordan taylor,66,2.0,35,69.611,19.905,23.281,26.425,,GF,29,62.92,100.76,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Jordan Taylor,jordan taylor,67,2.0,36,68.869,19.432,23.083,26.354,,GF,30,62.92,99.32,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Jordan Taylor,jordan taylor,68,2.0,37,70.043,19.688,23.83,26.525,,GF,31,62.92,99.32,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Jordan Taylor,jordan taylor,69,2.0,38,69.666,19.629,23.318,26.719,,GF,32,62.92,98.06,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Jordan Taylor,jordan taylor,70,2.0,39,69.07,19.491,23.237,26.342,,GF,33,62.92,96.8,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Jordan Taylor,jordan taylor,71,2.0,40,69.957,19.69,23.834,26.433,,GF,34,62.92,96.8,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Jordan Taylor,jordan taylor,72,2.0,41,69.774,19.602,23.856,26.316,,GF,35,62.92,96.26,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Jordan Taylor,jordan taylor,73,2.0,42,70.125,19.919,23.851,26.355,,GF,36,63.91,95.9,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Jordan Taylor,jordan taylor,74,2.0,43,69.339,19.835,23.403,26.101,,GF,37,63.91,95.9,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Jordan Taylor,jordan taylor,75,2.0,44,68.299,19.339,22.961,25.999,,GF,38,63.91,96.26,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Jordan Taylor,jordan taylor,76,2.0,45,68.304,19.439,22.956,25.909,,GF,39,63.91,96.26,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Jordan Taylor,jordan taylor,77,2.0,46,67.853,19.287,22.838,25.728,,GF,40,63.91,95.72,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Jordan Taylor,jordan taylor,78,2.0,47,67.52,19.286,22.648,25.586,,GF,41,63.18,95.18,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Jordan Taylor,jordan taylor,79,2.0,48,67.418,19.156,22.648,25.614,,GF,42,63.18,95.72,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Jordan Taylor,jordan taylor,80,2.0,49,68.119,19.224,22.765,26.13,,GF,43,63.18,96.08,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Jordan Taylor,jordan taylor,81,2.0,50,67.786,19.278,22.573,25.935,,GF,44,63.18,96.44,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Jordan Taylor,jordan taylor,82,2.0,51,69.205,19.278,23.618,26.309,,GF,45,63.18,96.8,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Jordan Taylor,jordan taylor,83,2.0,52,68.732,19.328,23.256,26.148,,GF,46,63.18,96.98,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,40,GTP,Jordan Taylor,jordan taylor,84,2.0,53,69.763,19.815,23.446,26.502,,FF,47,63.18,96.98,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Matt Campbell,matt campbell,1,1.0,0,97.222,40.025,28.306,28.891,,GF,0,61.38,100.22,50.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Matt Campbell,matt campbell,2,1.0,1,70.537,20.174,23.282,27.081,,FCY,0,61.38,98.96,50.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Matt Campbell,matt campbell,3,1.0,2,97.475,31.71,31.346,34.419,,FCY,0,61.38,98.96,50.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Matt Campbell,matt campbell,4,1.0,3,111.527,33.619,41.974,35.934,,GF,0,61.38,98.24,50.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Matt Campbell,matt campbell,5,1.0,4,71.564,20.362,23.75,27.452,,GF,1,61.38,98.6,50.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Matt Campbell,matt campbell,6,1.0,5,69.29,19.967,22.991,26.332,,GF,2,61.59,99.32,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Matt Campbell,matt campbell,7,1.0,6,68.714,19.623,22.93,26.161,,GF,3,61.59,101.66,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Matt Campbell,matt campbell,8,1.0,7,68.254,19.426,22.598,26.23,,GF,4,61.59,101.3,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Matt Campbell,matt campbell,9,1.0,8,68.111,19.517,22.698,25.896,,GF,5,61.59,100.04,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Matt Campbell,matt campbell,10,1.0,9,67.781,19.348,22.633,25.8,,GF,6,61.59,100.04,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Matt Campbell,matt campbell,11,1.0,10,67.778,19.406,22.529,25.843,,GF,7,61.59,101.48,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Matt Campbell,matt campbell,12,1.0,11,68.23,19.396,22.418,26.416,,GF,8,61.59,102.2,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Matt Campbell,matt campbell,13,1.0,12,67.539,19.34,22.462,25.737,,GF,9,61.59,103.1,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Matt Campbell,matt campbell,14,1.0,13,69.417,19.617,23.413,26.387,,GF,10,61.59,103.1,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Matt Campbell,matt campbell,15,1.0,14,67.489,19.291,22.478,25.72,,GF,11,61.56,104.36,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Matt Campbell,matt campbell,16,1.0,15,68.753,19.222,23.005,26.526,,GF,12,61.56,104.36,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Matt Campbell,matt campbell,17,1.0,16,68.888,19.292,23.19,26.406,,GF,13,61.56,103.28,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Matt Campbell,matt campbell,18,1.0,17,68.404,19.517,22.612,26.275,,GF,14,61.56,101.48,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Matt Campbell,matt campbell,19,1.0,18,67.583,19.354,22.604,25.625,,GF,15,61.56,100.58,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Matt Campbell,matt campbell,20,1.0,19,67.595,19.114,22.495,25.986,,GF,16,61.56,100.76,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Matt Campbell,matt campbell,21,1.0,20,68.027,20.093,22.279,25.655,,GF,17,62.04,102.56,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Matt Campbell,matt campbell,22,1.0,21,67.323,19.305,22.426,25.592,,GF,18,62.04,103.1,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Matt Campbell,matt campbell,23,1.0,22,66.906,19.064,22.513,25.329,,GF,19,62.04,103.1,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Matt Campbell,matt campbell,24,1.0,23,67.496,19.606,22.396,25.494,,GF,20,62.04,103.28,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Matt Campbell,matt campbell,25,1.0,24,67.068,19.083,22.464,25.521,,GF,21,62.04,103.28,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Matt Campbell,matt campbell,26,1.0,25,66.719,18.96,22.308,25.451,,GF,22,62.04,103.28,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Matt Campbell,matt campbell,27,1.0,26,67.279,19.236,22.559,25.484,,GF,23,62.04,102.38,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Matt Campbell,matt campbell,28,1.0,27,67.867,18.997,22.5,26.37,,GF,24,62.04,101.48,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Matt Campbell,matt campbell,29,1.0,28,68.361,19.244,23.133,25.984,,GF,25,62.04,100.04,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Matt Campbell,matt campbell,30,1.0,29,66.855,19.066,22.293,25.496,,GF,26,62.04,99.5,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Matt Campbell,matt campbell,31,1.0,30,71.445,18.941,22.481,30.023,,GF,27,62.38,99.14,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Mathieu Jaminet,mathieu jaminet,32,2.0,0,92.556,43.102,23.114,26.34,31.222,GF,0,62.38,98.78,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Mathieu Jaminet,mathieu jaminet,33,2.0,1,68.157,19.582,22.725,25.85,,GF,0,62.69,98.06,57.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Mathieu Jaminet,mathieu jaminet,34,2.0,2,68.162,19.42,22.672,26.07,,GF,1,62.69,98.06,57.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Mathieu Jaminet,mathieu jaminet,35,2.0,3,68.524,19.945,22.592,25.987,,GF,2,62.69,98.6,57.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Mathieu Jaminet,mathieu jaminet,36,2.0,4,67.916,19.48,22.444,25.992,,GF,3,62.69,100.4,57.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Mathieu Jaminet,mathieu jaminet,37,2.0,5,67.758,19.454,22.514,25.79,,GF,4,62.69,100.4,57.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Mathieu Jaminet,mathieu jaminet,38,2.0,6,67.479,19.306,22.444,25.729,,GF,5,62.69,100.04,57.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Mathieu Jaminet,mathieu jaminet,39,2.0,7,67.259,19.189,22.475,25.595,,GF,6,62.38,101.12,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Mathieu Jaminet,mathieu jaminet,40,2.0,8,68.326,19.466,22.618,26.242,,GF,7,62.56,101.3,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Mathieu Jaminet,mathieu jaminet,41,2.0,9,68.998,19.614,23.301,26.083,,GF,8,62.56,101.66,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Mathieu Jaminet,mathieu jaminet,42,2.0,10,67.981,19.341,22.632,26.008,,GF,9,62.56,102.02,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Mathieu Jaminet,mathieu jaminet,43,2.0,11,69.149,19.653,23.025,26.471,,GF,10,62.56,102.02,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Mathieu Jaminet,mathieu jaminet,44,2.0,12,70.352,20.106,22.916,27.33,,GF,11,62.56,101.3,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Mathieu Jaminet,mathieu jaminet,45,2.0,13,68.096,19.844,22.518,25.734,,GF,12,62.56,100.4,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Mathieu Jaminet,mathieu jaminet,46,2.0,14,67.691,19.306,22.449,25.936,,GF,13,62.56,100.4,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Mathieu Jaminet,mathieu jaminet,47,2.0,15,67.631,19.361,22.501,25.769,,GF,14,62.56,100.04,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Mathieu Jaminet,mathieu jaminet,48,2.0,16,68.03,19.406,22.726,25.898,,GF,15,62.62,100.04,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Mathieu Jaminet,mathieu jaminet,49,2.0,17,67.732,19.333,22.511,25.888,,GF,16,62.62,100.04,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Mathieu Jaminet,mathieu jaminet,50,2.0,18,67.571,19.276,22.557,25.738,,GF,17,62.62,101.12,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Mathieu Jaminet,mathieu jaminet,51,2.0,19,67.33,19.193,22.368,25.769,,GF,18,62.62,101.3,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Mathieu Jaminet,mathieu jaminet,52,2.0,20,67.37,19.214,22.513,25.643,,GF,19,62.62,101.3,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Mathieu Jaminet,mathieu jaminet,53,2.0,21,67.735,19.381,22.606,25.748,,GF,20,62.62,100.58,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Mathieu Jaminet,mathieu jaminet,54,2.0,22,69.429,19.304,22.837,27.288,,FCY,21,62.62,100.58,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Mathieu Jaminet,mathieu jaminet,55,2.0,23,93.047,29.647,32.589,30.811,,FCY,21,62.62,99.5,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Mathieu Jaminet,mathieu jaminet,56,2.0,24,110.044,24.006,42.574,43.464,,FCY,21,62.62,98.24,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Mathieu Jaminet,mathieu jaminet,57,2.0,25,111.767,35.311,39.692,36.764,,FCY,21,62.67,99.14,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Mathieu Jaminet,mathieu jaminet,58,2.0,26,99.883,29.878,32.709,37.296,,FCY,21,62.69,100.04,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Mathieu Jaminet,mathieu jaminet,59,2.0,27,113.797,33.291,39.661,40.845,,GF,21,62.69,100.58,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Mathieu Jaminet,mathieu jaminet,60,2.0,28,71.299,20.355,23.666,27.278,,GF,22,62.69,100.76,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Mathieu Jaminet,mathieu jaminet,61,2.0,29,69.755,19.826,23.186,26.743,,GF,23,62.69,100.94,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Mathieu Jaminet,mathieu jaminet,62,2.0,30,69.38,19.664,23.027,26.689,,GF,24,62.67,100.94,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Mathieu Jaminet,mathieu jaminet,63,2.0,31,68.871,19.652,22.926,26.293,,GF,25,62.67,100.76,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Mathieu Jaminet,mathieu jaminet,64,2.0,32,68.759,19.537,22.833,26.389,,GF,26,62.92,100.76,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Mathieu Jaminet,mathieu jaminet,65,2.0,33,68.79,19.596,22.825,26.369,,GF,27,62.92,100.76,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Mathieu Jaminet,mathieu jaminet,66,2.0,34,67.967,19.461,22.59,25.916,,GF,28,62.92,100.76,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Mathieu Jaminet,mathieu jaminet,67,2.0,35,68.048,19.596,22.51,25.942,,GF,29,62.92,100.4,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Mathieu Jaminet,mathieu jaminet,68,2.0,36,67.612,19.213,22.428,25.971,,GF,30,62.92,99.32,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Mathieu Jaminet,mathieu jaminet,69,2.0,37,67.765,19.34,22.557,25.868,,GF,31,62.92,98.06,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Mathieu Jaminet,mathieu jaminet,70,2.0,38,67.794,19.238,22.68,25.876,,GF,32,62.92,97.7,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Mathieu Jaminet,mathieu jaminet,71,2.0,39,68.834,19.331,22.832,26.671,,GF,33,62.92,96.8,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Mathieu Jaminet,mathieu jaminet,72,2.0,40,68.162,19.519,22.687,25.956,,GF,34,62.92,96.26,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Mathieu Jaminet,mathieu jaminet,73,2.0,41,68.026,19.374,22.497,26.155,,GF,35,63.14,96.08,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Mathieu Jaminet,mathieu jaminet,74,2.0,42,68.149,19.448,22.675,26.026,,GF,36,63.91,95.9,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Mathieu Jaminet,mathieu jaminet,75,2.0,43,68.384,19.376,22.985,26.023,,GF,37,63.91,96.26,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Mathieu Jaminet,mathieu jaminet,76,2.0,44,67.655,19.4,22.537,25.718,,GF,38,63.91,96.26,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Mathieu Jaminet,mathieu jaminet,77,2.0,45,68.158,19.241,22.807,26.11,,GF,39,63.91,95.72,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Mathieu Jaminet,mathieu jaminet,78,2.0,46,67.548,19.271,22.525,25.752,,GF,40,63.91,95.72,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Mathieu Jaminet,mathieu jaminet,79,2.0,47,67.507,19.323,22.452,25.732,,GF,41,63.18,95.72,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Mathieu Jaminet,mathieu jaminet,80,2.0,48,68.604,19.38,22.535,26.689,,GF,42,63.18,95.72,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Mathieu Jaminet,mathieu jaminet,81,2.0,49,69.297,19.516,23.202,26.579,,GF,43,63.18,96.08,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Mathieu Jaminet,mathieu jaminet,82,2.0,50,69.582,19.961,22.851,26.77,,GF,44,63.18,96.44,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Mathieu Jaminet,mathieu jaminet,83,2.0,51,69.065,19.913,22.866,26.286,,GF,45,63.18,96.8,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,6,GTP,Mathieu Jaminet,mathieu jaminet,84,2.0,52,67.816,19.246,22.755,25.815,,FF,46,63.18,96.98,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Tom Blomqvist,tom blomqvist,1,1.0,0,93.568,39.324,27.089,27.155,,GF,0,61.38,100.22,50.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Tom Blomqvist,tom blomqvist,2,1.0,1,69.835,20.046,23.221,26.568,,GF,0,61.38,98.96,50.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Tom Blomqvist,tom blomqvist,3,1.0,2,96.356,29.199,31.086,36.071,,FCY,1,61.38,98.96,50.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Tom Blomqvist,tom blomqvist,4,1.0,3,114.792,32.999,43.341,38.452,,GF,1,61.38,98.24,50.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Tom Blomqvist,tom blomqvist,5,1.0,4,70.703,20.225,23.523,26.955,,GF,2,61.38,98.6,50.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Tom Blomqvist,tom blomqvist,6,1.0,5,69.338,20.021,22.885,26.432,,GF,3,61.59,99.32,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Tom Blomqvist,tom blomqvist,7,1.0,6,68.572,19.747,22.83,25.995,,GF,4,61.59,101.66,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Tom Blomqvist,tom blomqvist,8,1.0,7,68.179,19.612,22.397,26.17,,GF,5,61.59,101.3,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Tom Blomqvist,tom blomqvist,9,1.0,8,68.12,19.645,22.595,25.88,,GF,6,61.59,101.3,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Tom Blomqvist,tom blomqvist,10,1.0,9,67.862,19.39,22.423,26.049,,GF,7,61.59,100.04,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Tom Blomqvist,tom blomqvist,11,1.0,10,67.86,19.479,22.419,25.962,,GF,8,61.59,101.48,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Tom Blomqvist,tom blomqvist,12,1.0,11,67.896,19.315,22.417,26.164,,GF,9,61.59,102.2,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Tom Blomqvist,tom blomqvist,13,1.0,12,68.378,19.421,22.899,26.058,,GF,10,61.59,103.1,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Tom Blomqvist,tom blomqvist,14,1.0,13,68.531,19.712,22.693,26.126,,GF,11,61.59,103.1,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Tom Blomqvist,tom blomqvist,15,1.0,14,67.816,19.352,22.518,25.946,,GF,12,61.56,104.36,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Tom Blomqvist,tom blomqvist,16,1.0,15,68.314,19.56,22.623,26.131,,GF,13,61.56,104.36,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Tom Blomqvist,tom blomqvist,17,1.0,16,68.44,19.774,22.601,26.065,,GF,14,61.56,103.28,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Tom Blomqvist,tom blomqvist,18,1.0,17,67.721,19.366,22.527,25.828,,GF,15,61.56,101.48,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Tom Blomqvist,tom blomqvist,19,1.0,18,67.523,19.255,22.392,25.876,,GF,16,61.56,100.58,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Tom Blomqvist,tom blomqvist,20,1.0,19,67.84,19.619,22.538,25.683,,GF,17,61.56,100.76,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Tom Blomqvist,tom blomqvist,21,1.0,20,67.48,19.168,22.382,25.93,,GF,18,62.04,102.56,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Tom Blomqvist,tom blomqvist,22,1.0,21,90.214,19.233,22.522,48.459,,GF,19,62.04,103.1,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Colin Braun,colin braun,23,2.0,0,73.644,24.422,22.792,26.43,29.905,GF,0,62.04,103.1,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Colin Braun,colin braun,24,2.0,1,70.302,19.655,23.617,27.03,,GF,0,62.04,103.28,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Colin Braun,colin braun,25,2.0,2,68.725,19.54,23.037,26.148,,GF,1,62.04,103.28,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Colin Braun,colin braun,26,2.0,3,68.104,19.397,23.087,25.62,,GF,2,62.04,102.38,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Colin Braun,colin braun,27,2.0,4,67.576,19.331,22.619,25.626,,GF,3,62.04,101.48,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Colin Braun,colin braun,28,2.0,5,68.256,19.365,22.706,26.185,,GF,4,62.04,100.04,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Colin Braun,colin braun,29,2.0,6,68.437,19.634,22.925,25.878,,GF,5,62.04,99.5,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Colin Braun,colin braun,30,2.0,7,67.646,19.295,22.541,25.81,,GF,6,62.38,99.14,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Colin Braun,colin braun,31,2.0,8,68.154,19.338,22.745,26.071,,GF,7,62.38,98.78,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Colin Braun,colin braun,32,2.0,9,68.621,19.556,23.013,26.052,,GF,8,62.69,98.42,57.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Colin Braun,colin braun,33,2.0,10,67.493,19.175,22.629,25.689,,GF,9,62.69,98.06,57.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Colin Braun,colin braun,34,2.0,11,67.804,19.36,22.607,25.837,,GF,10,62.69,98.06,57.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Colin Braun,colin braun,35,2.0,12,68.851,19.298,22.793,26.76,,GF,11,62.69,98.6,57.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Colin Braun,colin braun,36,2.0,13,67.861,19.556,22.591,25.714,,GF,12,62.69,100.4,57.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Colin Braun,colin braun,37,2.0,14,68.129,19.201,22.789,26.139,,GF,13,62.69,100.4,57.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Colin Braun,colin braun,38,2.0,15,69.321,19.471,23.646,26.204,,GF,14,62.69,100.04,57.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Colin Braun,colin braun,39,2.0,16,67.545,19.202,22.547,25.796,,GF,15,62.38,101.12,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Colin Braun,colin braun,40,2.0,17,67.655,19.267,22.599,25.789,,GF,16,62.56,101.3,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Colin Braun,colin braun,41,2.0,18,68.578,19.224,22.738,26.616,,GF,17,62.56,101.66,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Colin Braun,colin braun,42,2.0,19,68.317,19.333,22.813,26.171,,GF,18,62.56,102.02,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Colin Braun,colin braun,43,2.0,20,67.944,19.259,22.838,25.847,,GF,19,62.56,102.02,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Colin Braun,colin braun,44,2.0,21,68.515,19.792,22.662,26.061,,GF,20,62.56,101.3,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Colin Braun,colin braun,45,2.0,22,72.727,19.694,23.567,29.466,,GF,21,62.56,100.4,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Colin Braun,colin braun,46,2.0,23,68.056,19.296,22.488,26.272,,GF,22,62.56,99.32,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Colin Braun,colin braun,47,2.0,24,67.391,19.432,22.311,25.648,,GF,23,62.56,100.04,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Colin Braun,colin braun,48,2.0,25,67.368,19.192,22.49,25.686,,GF,24,62.62,100.04,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Colin Braun,colin braun,49,2.0,26,67.942,19.24,22.732,25.97,,GF,25,62.62,100.04,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Colin Braun,colin braun,50,2.0,27,68.504,19.977,22.664,25.863,,GF,26,62.62,101.12,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Colin Braun,colin braun,51,2.0,28,67.403,19.152,22.598,25.653,,GF,27,62.62,101.3,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Colin Braun,colin braun,52,2.0,29,67.464,19.426,22.458,25.58,,GF,28,62.62,101.3,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Colin Braun,colin braun,53,2.0,30,67.781,19.288,22.616,25.877,,GF,29,62.62,100.58,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Colin Braun,colin braun,54,2.0,31,71.151,19.414,23.138,28.599,,FCY,30,62.62,100.04,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Colin Braun,colin braun,55,2.0,32,89.173,25.596,32.328,31.249,,FCY,30,62.62,99.5,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Colin Braun,colin braun,56,2.0,33,108.358,23.329,41.566,43.463,,FCY,30,62.62,98.24,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Colin Braun,colin braun,57,2.0,34,112.72,35.977,39.665,37.078,,FCY,30,62.67,99.14,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Colin Braun,colin braun,58,2.0,35,99.566,28.626,34.121,36.819,,FCY,30,62.69,100.04,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Colin Braun,colin braun,59,2.0,36,110.986,32.946,39.469,38.571,,GF,30,62.69,100.58,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Colin Braun,colin braun,60,2.0,37,70.968,20.327,23.737,26.904,,GF,31,62.69,100.76,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Colin Braun,colin braun,61,2.0,38,70.022,19.945,23.289,26.788,,GF,32,62.69,100.94,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Colin Braun,colin braun,62,2.0,39,69.485,19.746,23.245,26.494,,GF,33,62.67,100.94,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Colin Braun,colin braun,63,2.0,40,68.555,19.613,22.804,26.138,,GF,34,62.67,100.76,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Colin Braun,colin braun,64,2.0,41,68.405,19.574,22.705,26.126,,GF,35,62.92,100.76,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Colin Braun,colin braun,65,2.0,42,68.706,19.596,22.926,26.184,,GF,36,62.92,100.76,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Colin Braun,colin braun,66,2.0,43,68.678,19.481,22.881,26.316,,GF,37,62.92,100.76,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Colin Braun,colin braun,67,2.0,44,68.689,19.807,22.88,26.002,,GF,38,62.92,100.4,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Colin Braun,colin braun,68,2.0,45,67.752,19.262,22.523,25.967,,GF,39,62.92,99.32,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Colin Braun,colin braun,69,2.0,46,67.527,19.268,22.426,25.833,,GF,40,62.92,98.06,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Colin Braun,colin braun,70,2.0,47,67.579,19.257,22.576,25.746,,GF,41,62.92,97.7,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Colin Braun,colin braun,71,2.0,48,68.32,19.207,22.572,26.541,,GF,42,62.92,96.8,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Colin Braun,colin braun,72,2.0,49,69.29,19.809,23.201,26.28,,GF,43,62.92,96.26,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Colin Braun,colin braun,73,2.0,50,68.908,19.553,22.702,26.653,,GF,44,63.14,96.08,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Colin Braun,colin braun,74,2.0,51,67.577,19.321,22.472,25.784,,GF,45,63.91,95.9,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Colin Braun,colin braun,75,2.0,52,68.311,19.315,22.756,26.24,,GF,46,63.91,96.26,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Colin Braun,colin braun,76,2.0,53,68.032,19.618,22.516,25.898,,GF,47,63.91,96.26,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Colin Braun,colin braun,77,2.0,54,67.474,19.22,22.455,25.799,,GF,48,63.91,95.72,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Colin Braun,colin braun,78,2.0,55,67.902,19.298,22.656,25.948,,GF,49,63.18,95.18,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Colin Braun,colin braun,79,2.0,56,67.737,19.259,22.656,25.822,,GF,50,63.18,95.72,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Colin Braun,colin braun,80,2.0,57,68.175,19.022,22.506,26.647,,GF,51,63.18,95.72,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Colin Braun,colin braun,81,2.0,58,68.788,19.788,22.775,26.225,,GF,52,63.18,96.08,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Colin Braun,colin braun,82,2.0,59,70.381,20.382,22.997,27.002,,GF,53,63.18,96.44,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Colin Braun,colin braun,83,2.0,60,68.8,19.396,23.069,26.335,,GF,54,63.18,96.8,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,60,GTP,Colin Braun,colin braun,84,2.0,61,71.223,20.265,24.359,26.599,,FF,55,63.18,96.98,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Nick Tandy,nick tandy,1,1.0,0,94.57,39.964,27.459,27.147,,GF,0,61.38,100.22,50.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Nick Tandy,nick tandy,2,1.0,1,70.763,19.903,23.34,27.52,,FCY,0,61.38,98.96,50.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Nick Tandy,nick tandy,3,1.0,2,97.187,30.127,31.572,35.488,,FCY,0,61.38,98.96,50.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Nick Tandy,nick tandy,4,1.0,3,112.698,32.436,42.717,37.545,,GF,0,61.38,98.24,50.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Nick Tandy,nick tandy,5,1.0,4,70.536,20.298,23.296,26.942,,GF,1,61.38,98.6,50.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Nick Tandy,nick tandy,6,1.0,5,69.33,19.875,22.953,26.502,,GF,2,61.59,99.32,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Nick Tandy,nick tandy,7,1.0,6,68.688,19.73,22.829,26.129,,GF,3,61.59,101.66,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Nick Tandy,nick tandy,8,1.0,7,68.101,19.535,22.53,26.036,,GF,4,61.59,101.3,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Nick Tandy,nick tandy,9,1.0,8,68.246,19.595,22.678,25.973,,GF,5,61.59,100.04,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Nick Tandy,nick tandy,10,1.0,9,67.759,19.269,22.542,25.948,,GF,6,61.59,100.04,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Nick Tandy,nick tandy,11,1.0,10,67.844,19.33,22.514,26.0,,GF,7,61.59,101.48,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Nick Tandy,nick tandy,12,1.0,11,67.777,19.378,22.473,25.926,,GF,8,61.59,102.2,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Nick Tandy,nick tandy,13,1.0,12,68.45,19.512,22.692,26.246,,GF,9,61.59,103.1,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Nick Tandy,nick tandy,14,1.0,13,68.502,19.923,22.459,26.12,,GF,10,61.59,103.1,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Nick Tandy,nick tandy,15,1.0,14,67.797,19.34,22.459,25.998,,GF,11,61.56,104.36,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Nick Tandy,nick tandy,16,1.0,15,68.548,19.467,22.531,26.55,,GF,12,61.56,104.36,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Nick Tandy,nick tandy,17,1.0,16,68.351,20.119,22.356,25.876,,GF,13,61.56,103.28,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Nick Tandy,nick tandy,18,1.0,17,67.611,19.273,22.497,25.841,,GF,14,61.56,101.48,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Nick Tandy,nick tandy,19,1.0,18,67.55,19.256,22.318,25.976,,GF,15,61.56,100.58,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Nick Tandy,nick tandy,20,1.0,19,67.806,19.462,22.577,25.767,,GF,16,61.56,100.76,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Nick Tandy,nick tandy,21,1.0,20,67.498,19.152,22.352,25.994,,GF,17,62.04,102.56,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Nick Tandy,nick tandy,22,1.0,21,68.086,19.28,22.491,26.315,,GF,18,62.04,103.1,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Nick Tandy,nick tandy,23,1.0,22,66.644,19.027,22.072,25.545,,GF,19,62.04,103.1,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Nick Tandy,nick tandy,24,1.0,23,66.833,19.189,22.231,25.413,,GF,20,62.04,103.1,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Nick Tandy,nick tandy,25,1.0,24,66.826,19.165,22.235,25.426,,GF,21,62.04,103.28,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Nick Tandy,nick tandy,26,1.0,25,66.641,19.067,22.209,25.365,,GF,22,62.04,103.28,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Nick Tandy,nick tandy,27,1.0,26,66.853,19.081,22.106,25.666,,GF,23,62.04,102.38,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Nick Tandy,nick tandy,28,1.0,27,68.571,19.994,22.894,25.683,,GF,24,62.04,101.48,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Nick Tandy,nick tandy,29,1.0,28,67.819,19.139,22.574,26.106,,GF,25,62.04,100.04,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Nick Tandy,nick tandy,30,1.0,29,67.174,19.528,22.115,25.531,,GF,26,62.04,99.5,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Nick Tandy,nick tandy,31,1.0,30,71.444,19.034,22.456,29.954,,GF,27,62.38,99.14,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Felipe Nasr,felipe nasr,32,2.0,0,94.193,45.236,22.971,25.986,32.612,GF,0,62.38,98.78,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Felipe Nasr,felipe nasr,33,2.0,1,67.958,19.446,22.78,25.732,,GF,0,62.69,98.06,57.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Felipe Nasr,felipe nasr,34,2.0,2,68.433,19.642,22.691,26.1,,GF,1,62.69,98.06,57.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Felipe Nasr,felipe nasr,35,2.0,3,67.76,19.331,22.62,25.809,,GF,2,62.69,98.6,57.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Felipe Nasr,felipe nasr,36,2.0,4,67.66,19.445,22.36,25.855,,GF,3,62.69,100.4,57.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Felipe Nasr,felipe nasr,37,2.0,5,67.541,19.367,22.657,25.517,,GF,4,62.69,100.4,57.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Felipe Nasr,felipe nasr,38,2.0,6,67.303,19.254,22.46,25.589,,GF,5,62.69,100.04,57.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Felipe Nasr,felipe nasr,39,2.0,7,67.824,19.389,22.548,25.887,,GF,6,62.38,101.12,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Felipe Nasr,felipe nasr,40,2.0,8,68.067,19.368,22.827,25.872,,GF,7,62.56,101.3,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Felipe Nasr,felipe nasr,41,2.0,9,67.553,19.34,22.473,25.74,,GF,8,62.56,101.66,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Felipe Nasr,felipe nasr,42,2.0,10,68.844,19.432,23.041,26.371,,GF,9,62.56,102.02,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Felipe Nasr,felipe nasr,43,2.0,11,68.187,19.871,22.533,25.783,,GF,10,62.56,102.02,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Felipe Nasr,felipe nasr,44,2.0,12,68.08,19.551,22.517,26.012,,GF,11,62.56,101.3,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Felipe Nasr,felipe nasr,45,2.0,13,68.182,19.626,22.802,25.754,,GF,12,62.56,100.4,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Felipe Nasr,felipe nasr,46,2.0,14,68.698,19.856,22.831,26.011,,GF,13,62.56,100.4,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Felipe Nasr,felipe nasr,47,2.0,15,68.11,19.647,22.615,25.848,,GF,14,62.56,99.32,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Felipe Nasr,felipe nasr,48,2.0,16,67.693,19.373,22.51,25.81,,GF,15,62.62,100.04,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Felipe Nasr,felipe nasr,49,2.0,17,67.487,19.326,22.441,25.72,,GF,16,62.62,100.04,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Felipe Nasr,felipe nasr,50,2.0,18,68.301,19.349,22.588,26.364,,GF,17,62.62,101.12,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Felipe Nasr,felipe nasr,51,2.0,19,67.645,19.471,22.472,25.702,,GF,18,62.62,101.3,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Felipe Nasr,felipe nasr,52,2.0,20,67.707,19.271,22.705,25.731,,GF,19,62.62,101.3,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Felipe Nasr,felipe nasr,53,2.0,21,67.573,19.333,22.534,25.706,,GF,20,62.62,100.58,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Felipe Nasr,felipe nasr,54,2.0,22,68.334,19.326,22.976,26.032,,FCY,21,62.62,100.58,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Felipe Nasr,felipe nasr,55,2.0,23,86.807,27.779,29.563,29.465,,FCY,21,62.62,99.5,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Felipe Nasr,felipe nasr,56,2.0,24,120.431,29.953,46.725,43.753,,FCY,21,62.62,98.24,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Felipe Nasr,felipe nasr,57,2.0,25,108.721,32.001,41.141,35.579,,FCY,21,62.67,99.14,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Felipe Nasr,felipe nasr,58,2.0,26,102.272,26.947,35.311,40.014,,FCY,21,62.69,100.04,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Felipe Nasr,felipe nasr,59,2.0,27,115.564,32.543,39.432,43.589,,GF,21,62.69,100.58,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Felipe Nasr,felipe nasr,60,2.0,28,70.046,19.85,23.573,26.623,,GF,22,62.69,100.76,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Felipe Nasr,felipe nasr,61,2.0,29,68.836,19.535,22.987,26.314,,GF,23,62.69,100.94,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Felipe Nasr,felipe nasr,62,2.0,30,68.974,19.582,23.018,26.374,,GF,24,62.67,100.94,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Felipe Nasr,felipe nasr,63,2.0,31,69.159,19.706,22.964,26.489,,GF,25,62.67,100.76,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Felipe Nasr,felipe nasr,64,2.0,32,68.774,19.575,22.833,26.366,,GF,26,62.92,100.76,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Felipe Nasr,felipe nasr,65,2.0,33,68.758,19.54,22.929,26.289,,GF,27,62.92,100.76,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Felipe Nasr,felipe nasr,66,2.0,34,68.511,19.681,22.739,26.091,,GF,28,62.92,100.76,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Felipe Nasr,felipe nasr,67,2.0,35,68.243,19.498,22.714,26.031,,GF,29,62.92,100.4,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Felipe Nasr,felipe nasr,68,2.0,36,67.876,19.353,22.555,25.968,,GF,30,62.92,99.32,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Felipe Nasr,felipe nasr,69,2.0,37,67.97,19.461,22.713,25.796,,GF,31,62.92,98.06,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Felipe Nasr,felipe nasr,70,2.0,38,67.984,19.265,22.662,26.057,,GF,32,62.92,97.7,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Felipe Nasr,felipe nasr,71,2.0,39,72.527,19.452,24.513,28.562,,GF,33,62.92,96.8,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Felipe Nasr,felipe nasr,72,2.0,40,68.699,19.676,22.761,26.262,,GF,34,62.92,96.26,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Felipe Nasr,felipe nasr,73,2.0,41,68.298,19.535,22.651,26.112,,GF,35,63.14,96.08,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Felipe Nasr,felipe nasr,74,2.0,42,68.089,19.345,22.737,26.007,,GF,36,63.91,95.9,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Felipe Nasr,felipe nasr,75,2.0,43,68.049,19.375,22.662,26.012,,GF,37,63.91,96.26,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Felipe Nasr,felipe nasr,76,2.0,44,67.463,19.316,22.477,25.67,,GF,38,63.91,96.26,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Felipe Nasr,felipe nasr,77,2.0,45,67.776,19.395,22.437,25.944,,GF,39,63.91,95.72,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Felipe Nasr,felipe nasr,78,2.0,46,67.493,19.339,22.41,25.744,,GF,40,63.91,95.72,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Felipe Nasr,felipe nasr,79,2.0,47,67.534,19.269,22.393,25.872,,GF,41,63.18,95.72,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Felipe Nasr,felipe nasr,80,2.0,48,68.544,19.302,22.426,26.816,,GF,42,63.18,95.72,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Felipe Nasr,felipe nasr,81,2.0,49,69.121,19.292,22.996,26.833,,GF,43,63.18,96.08,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Felipe Nasr,felipe nasr,82,2.0,50,69.571,19.755,23.019,26.797,,GF,44,63.18,96.44,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Felipe Nasr,felipe nasr,83,2.0,51,68.973,19.653,22.978,26.342,,GF,45,63.18,96.8,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,7,GTP,Felipe Nasr,felipe nasr,84,2.0,52,68.076,19.326,22.763,25.987,,FF,46,63.18,96.98,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Gianmaria Bruni,giammaria bruni,1,1.0,0,97.751,40.872,27.942,28.937,,GF,0,61.38,100.22,50.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Gianmaria Bruni,giammaria bruni,2,1.0,1,70.817,20.403,23.289,27.125,,FCY,0,61.38,98.96,50.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Gianmaria Bruni,giammaria bruni,3,1.0,2,98.127,33.178,31.704,33.245,,FCY,0,61.38,98.96,50.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Gianmaria Bruni,giammaria bruni,4,1.0,3,110.705,34.029,41.94,34.736,,GF,0,61.38,98.24,50.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Gianmaria Bruni,giammaria bruni,5,1.0,4,71.489,20.399,23.649,27.441,,GF,1,61.38,98.6,50.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Gianmaria Bruni,giammaria bruni,6,1.0,5,70.028,19.934,23.351,26.743,,GF,2,61.59,99.32,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Gianmaria Bruni,giammaria bruni,7,1.0,6,69.159,19.995,22.874,26.29,,GF,3,61.59,101.66,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Gianmaria Bruni,giammaria bruni,8,1.0,7,68.686,19.69,22.718,26.278,,GF,4,61.59,101.3,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Gianmaria Bruni,giammaria bruni,9,1.0,8,68.899,19.744,22.822,26.333,,GF,5,61.59,100.04,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Gianmaria Bruni,giammaria bruni,10,1.0,9,68.464,19.77,22.588,26.106,,GF,6,61.59,100.04,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Gianmaria Bruni,giammaria bruni,11,1.0,10,68.521,19.591,22.753,26.177,,GF,7,61.59,101.48,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Gianmaria Bruni,giammaria bruni,12,1.0,11,68.84,19.758,22.764,26.318,,GF,8,61.59,102.2,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Gianmaria Bruni,giammaria bruni,13,1.0,12,68.202,19.506,22.716,25.98,,GF,9,61.59,103.1,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Gianmaria Bruni,giammaria bruni,14,1.0,13,69.117,19.67,22.968,26.479,,GF,10,61.59,103.1,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Gianmaria Bruni,giammaria bruni,15,1.0,14,69.404,19.591,23.411,26.402,,GF,11,61.56,104.36,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Gianmaria Bruni,giammaria bruni,16,1.0,15,69.872,19.771,23.454,26.647,,GF,12,61.56,103.28,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Gianmaria Bruni,giammaria bruni,17,1.0,16,68.596,19.857,22.599,26.14,,GF,13,61.56,103.28,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Gianmaria Bruni,giammaria bruni,18,1.0,17,69.748,19.532,22.917,27.299,,GF,14,61.56,101.48,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Gianmaria Bruni,giammaria bruni,19,1.0,18,68.701,19.852,22.787,26.062,,GF,15,61.56,100.58,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Gianmaria Bruni,giammaria bruni,20,1.0,19,68.471,19.659,22.597,26.215,,GF,16,61.56,100.76,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Gianmaria Bruni,giammaria bruni,21,1.0,20,99.596,19.702,23.886,56.008,,GF,17,62.04,102.56,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Tijmen van der Helm,tijmen van der helm,22,2.0,0,84.43,26.642,24.43,33.358,36.511,GF,0,62.04,103.1,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Tijmen van der Helm,tijmen van der helm,23,2.0,1,77.837,26.836,23.65,27.351,12.04,GF,0,62.04,103.28,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Tijmen van der Helm,tijmen van der helm,24,2.0,2,70.63,20.084,23.246,27.3,,GF,0,62.04,103.28,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Tijmen van der Helm,tijmen van der helm,25,2.0,3,69.987,20.05,23.085,26.852,,GF,1,62.04,103.28,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Tijmen van der Helm,tijmen van der helm,26,2.0,4,69.529,19.993,22.776,26.76,,GF,2,62.04,101.48,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Tijmen van der Helm,tijmen van der helm,27,2.0,5,68.989,19.695,22.815,26.479,,GF,3,62.04,101.48,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Tijmen van der Helm,tijmen van der helm,28,2.0,6,69.061,19.756,22.814,26.491,,GF,4,62.04,100.04,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Tijmen van der Helm,tijmen van der helm,29,2.0,7,69.024,19.775,22.852,26.397,,GF,5,62.38,99.14,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Tijmen van der Helm,tijmen van der helm,30,2.0,8,69.582,19.869,22.846,26.867,,GF,6,62.38,98.78,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Tijmen van der Helm,tijmen van der helm,31,2.0,9,69.546,19.66,22.837,27.049,,GF,7,62.38,98.78,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Tijmen van der Helm,tijmen van der helm,32,2.0,10,70.009,20.192,23.121,26.696,,GF,8,62.69,98.06,57.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Tijmen van der Helm,tijmen van der helm,33,2.0,11,68.779,19.68,22.669,26.43,,GF,9,62.69,98.06,57.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Tijmen van der Helm,tijmen van der helm,34,2.0,12,70.191,19.772,23.29,27.129,,GF,10,62.69,98.6,57.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Tijmen van der Helm,tijmen van der helm,35,2.0,13,71.915,21.454,23.335,27.126,,GF,11,62.69,100.4,57.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Tijmen van der Helm,tijmen van der helm,36,2.0,14,70.911,20.407,23.77,26.734,,GF,12,62.69,100.4,57.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Tijmen van der Helm,tijmen van der helm,37,2.0,15,72.185,19.939,25.079,27.167,,GF,13,62.69,100.04,57.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Tijmen van der Helm,tijmen van der helm,38,2.0,16,70.285,19.901,22.893,27.491,,GF,14,62.38,101.12,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Tijmen van der Helm,tijmen van der helm,39,2.0,17,69.608,20.006,22.99,26.612,,GF,15,62.56,101.3,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Tijmen van der Helm,tijmen van der helm,40,2.0,18,68.351,19.448,22.671,26.232,,GF,16,62.56,101.66,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Tijmen van der Helm,tijmen van der helm,41,2.0,19,68.546,19.495,22.7,26.351,,GF,17,62.56,102.02,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Tijmen van der Helm,tijmen van der helm,42,2.0,20,69.032,19.477,23.139,26.416,,GF,18,62.56,102.02,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Tijmen van der Helm,tijmen van der helm,43,2.0,21,68.152,19.369,22.584,26.199,,GF,19,62.56,101.3,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Tijmen van der Helm,tijmen van der helm,44,2.0,22,69.39,19.566,23.273,26.551,,GF,20,62.56,100.4,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Tijmen van der Helm,tijmen van der helm,45,2.0,23,69.248,19.73,22.958,26.56,,GF,21,62.56,99.32,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Tijmen van der Helm,tijmen van der helm,46,2.0,24,69.317,19.805,23.023,26.489,,GF,22,62.56,100.04,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Tijmen van der Helm,tijmen van der helm,47,2.0,25,69.049,19.618,22.662,26.769,,GF,23,62.62,100.04,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Tijmen van der Helm,tijmen van der helm,48,2.0,26,69.454,19.439,23.055,26.96,,GF,24,62.62,101.12,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Tijmen van der Helm,tijmen van der helm,49,2.0,27,69.259,19.654,23.034,26.571,,GF,25,62.62,101.12,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Tijmen van der Helm,tijmen van der helm,50,2.0,28,68.448,19.563,22.767,26.118,,GF,26,62.62,101.3,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Tijmen van der Helm,tijmen van der helm,51,2.0,29,68.871,19.453,22.746,26.672,,GF,27,62.62,101.3,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Tijmen van der Helm,tijmen van der helm,52,2.0,30,68.578,19.683,22.681,26.214,,GF,28,62.62,100.58,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Tijmen van der Helm,tijmen van der helm,53,2.0,31,76.05,19.693,24.527,31.83,,FCY,29,62.62,100.04,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Tijmen van der Helm,tijmen van der helm,54,2.0,32,83.826,22.794,30.281,30.751,,FCY,29,62.62,99.5,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Tijmen van der Helm,tijmen van der helm,55,2.0,33,97.573,22.174,31.731,43.668,,FCY,29,62.62,98.24,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Tijmen van der Helm,tijmen van der helm,56,2.0,34,113.898,36.398,40.605,36.895,,FCY,29,62.67,99.14,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Tijmen van der Helm,tijmen van der helm,57,2.0,35,97.58,29.477,33.32,34.783,,FCY,29,62.69,100.04,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Tijmen van der Helm,tijmen van der helm,58,2.0,36,109.865,31.611,41.158,37.096,,GF,29,62.69,100.58,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Tijmen van der Helm,tijmen van der helm,59,2.0,37,71.962,20.733,23.738,27.491,,GF,30,62.69,100.76,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Tijmen van der Helm,tijmen van der helm,60,2.0,38,70.519,19.962,23.409,27.148,,GF,31,62.69,100.94,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Tijmen van der Helm,tijmen van der helm,61,2.0,39,69.969,19.75,23.087,27.132,,GF,32,62.67,100.94,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Tijmen van der Helm,tijmen van der helm,62,2.0,40,69.607,19.693,22.989,26.925,,GF,33,62.67,100.76,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Tijmen van der Helm,tijmen van der helm,63,2.0,41,70.073,19.792,23.116,27.165,,GF,34,62.92,100.76,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Tijmen van der Helm,tijmen van der helm,64,2.0,42,69.52,19.674,23.015,26.831,,GF,35,62.92,100.76,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Tijmen van der Helm,tijmen van der helm,65,2.0,43,68.855,19.609,22.794,26.452,,GF,36,62.92,100.76,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Tijmen van der Helm,tijmen van der helm,66,2.0,44,69.304,19.453,22.828,27.023,,GF,37,62.92,100.4,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Tijmen van der Helm,tijmen van der helm,67,2.0,45,69.249,19.776,22.856,26.617,,GF,38,62.92,99.32,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Tijmen van der Helm,tijmen van der helm,68,2.0,46,68.579,19.435,22.635,26.509,,GF,39,62.92,98.06,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Tijmen van der Helm,tijmen van der helm,69,2.0,47,68.477,19.331,22.887,26.259,,GF,40,62.92,97.7,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Tijmen van der Helm,tijmen van der helm,70,2.0,48,68.458,19.529,22.573,26.356,,GF,41,62.92,96.8,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Tijmen van der Helm,tijmen van der helm,71,2.0,49,68.463,19.438,22.625,26.4,,GF,42,62.92,96.26,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Tijmen van der Helm,tijmen van der helm,72,2.0,50,68.097,19.38,22.509,26.208,,GF,43,63.14,96.08,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Tijmen van der Helm,tijmen van der helm,73,2.0,51,68.143,19.398,22.6,26.145,,GF,44,63.91,95.9,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Tijmen van der Helm,tijmen van der helm,74,2.0,52,68.604,19.5,22.737,26.367,,GF,45,63.91,96.26,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Tijmen van der Helm,tijmen van der helm,75,2.0,53,69.023,19.465,22.99,26.568,,GF,46,63.91,96.26,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Tijmen van der Helm,tijmen van der helm,76,2.0,54,68.095,19.459,22.601,26.035,,GF,47,63.91,95.72,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Tijmen van der Helm,tijmen van der helm,77,2.0,55,68.132,19.445,22.606,26.081,,GF,48,63.18,95.18,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Tijmen van der Helm,tijmen van der helm,78,2.0,56,68.298,19.298,22.909,26.091,,GF,49,63.18,95.72,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Tijmen van der Helm,tijmen van der helm,79,2.0,57,68.015,19.251,22.635,26.129,,GF,50,63.18,95.72,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Tijmen van der Helm,tijmen van der helm,80,2.0,58,70.245,20.465,22.995,26.785,,GF,51,63.18,96.44,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Tijmen van der Helm,tijmen van der helm,81,2.0,59,68.958,19.606,22.825,26.527,,GF,52,63.18,96.44,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Tijmen van der Helm,tijmen van der helm,82,2.0,60,69.718,19.586,23.653,26.479,,GF,53,63.18,96.8,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,85,GTP,Tijmen van der Helm,tijmen van der helm,83,2.0,61,73.728,19.69,26.779,27.259,,FF,54,63.18,96.98,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Nick Yelloly,nicholas yelloly,1,1.0,0,92.76,39.291,26.535,26.934,,GF,0,61.38,100.22,50.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Nick Yelloly,nicholas yelloly,2,1.0,1,69.486,19.964,23.139,26.383,,GF,0,61.38,98.96,50.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Nick Yelloly,nicholas yelloly,3,1.0,2,96.787,28.774,31.408,36.605,,FCY,1,61.38,98.96,50.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Nick Yelloly,nicholas yelloly,4,1.0,3,114.665,32.88,43.392,38.393,,GF,1,61.38,98.24,50.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Nick Yelloly,nicholas yelloly,5,1.0,4,69.772,19.858,23.39,26.524,,GF,2,61.38,98.6,50.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Nick Yelloly,nicholas yelloly,6,1.0,5,68.715,19.652,22.862,26.201,,GF,3,61.59,99.32,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Nick Yelloly,nicholas yelloly,7,1.0,6,68.172,19.414,22.637,26.121,,GF,4,61.59,101.66,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Nick Yelloly,nicholas yelloly,8,1.0,7,68.024,19.46,22.61,25.954,,GF,5,61.59,101.3,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Nick Yelloly,nicholas yelloly,9,1.0,8,67.984,19.457,22.486,26.041,,GF,6,61.59,101.3,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Nick Yelloly,nicholas yelloly,10,1.0,9,68.027,19.351,22.612,26.064,,GF,7,61.59,100.04,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Nick Yelloly,nicholas yelloly,11,1.0,10,67.284,19.152,22.454,25.678,,GF,8,61.59,101.48,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Nick Yelloly,nicholas yelloly,12,1.0,11,68.883,19.277,22.937,26.669,,GF,9,61.59,102.2,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Nick Yelloly,nicholas yelloly,13,1.0,12,68.649,19.687,22.793,26.169,,GF,10,61.59,103.1,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Nick Yelloly,nicholas yelloly,14,1.0,13,67.14,19.193,22.391,25.556,,GF,11,61.59,103.1,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Nick Yelloly,nicholas yelloly,15,1.0,14,68.03,19.315,22.565,26.15,,GF,12,61.56,104.36,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Nick Yelloly,nicholas yelloly,16,1.0,15,67.485,19.4,22.491,25.594,,GF,13,61.56,104.36,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Nick Yelloly,nicholas yelloly,17,1.0,16,67.843,19.596,22.517,25.73,,GF,14,61.56,103.28,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Nick Yelloly,nicholas yelloly,18,1.0,17,67.756,19.249,22.422,26.085,,GF,15,61.56,101.48,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Nick Yelloly,nicholas yelloly,19,1.0,18,67.467,19.367,22.418,25.682,,GF,16,61.56,100.58,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Nick Yelloly,nicholas yelloly,20,1.0,19,67.009,19.265,22.298,25.446,,GF,17,61.56,100.76,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Nick Yelloly,nicholas yelloly,21,1.0,20,66.951,19.008,22.191,25.752,,GF,18,62.04,102.56,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Nick Yelloly,nicholas yelloly,22,1.0,21,68.776,19.162,23.059,26.555,,GF,19,62.04,103.1,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Nick Yelloly,nicholas yelloly,23,1.0,22,68.273,19.278,22.877,26.118,,GF,20,62.04,103.1,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Nick Yelloly,nicholas yelloly,24,1.0,23,67.247,19.156,22.453,25.638,,GF,21,62.04,103.1,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Nick Yelloly,nicholas yelloly,25,1.0,24,67.154,19.129,22.371,25.654,,GF,22,62.04,103.28,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Nick Yelloly,nicholas yelloly,26,1.0,25,67.299,19.304,22.184,25.811,,GF,23,62.04,103.28,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Nick Yelloly,nicholas yelloly,27,1.0,26,95.156,19.487,22.87,52.799,,GF,24,62.04,101.48,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Renger van der Zande,renger van der zande,28,2.0,0,74.282,24.501,23.559,26.222,33.624,GF,0,62.04,101.48,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Renger van der Zande,renger van der zande,29,2.0,1,67.55,19.208,22.702,25.64,,GF,0,62.04,99.5,48.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Renger van der Zande,renger van der zande,30,2.0,2,67.644,19.353,22.74,25.551,,GF,1,62.38,99.14,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Renger van der Zande,renger van der zande,31,2.0,3,67.701,19.249,22.77,25.682,,GF,2,62.38,98.78,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Renger van der Zande,renger van der zande,32,2.0,4,67.569,19.377,22.463,25.729,,GF,3,62.38,98.78,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Renger van der Zande,renger van der zande,33,2.0,5,67.958,19.406,22.797,25.755,,GF,4,62.69,98.06,57.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Renger van der Zande,renger van der zande,34,2.0,6,67.952,19.245,22.934,25.773,,GF,5,62.69,98.06,57.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Renger van der Zande,renger van der zande,35,2.0,7,68.072,19.39,22.805,25.877,,GF,6,62.69,98.6,57.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Renger van der Zande,renger van der zande,36,2.0,8,67.776,19.411,22.657,25.708,,GF,7,62.69,100.4,57.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Renger van der Zande,renger van der zande,37,2.0,9,67.514,19.138,22.76,25.616,,GF,8,62.69,100.4,57.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Renger van der Zande,renger van der zande,38,2.0,10,67.757,19.22,22.814,25.723,,GF,9,62.69,100.04,57.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Renger van der Zande,renger van der zande,39,2.0,11,69.06,19.217,23.294,26.549,,GF,10,62.38,101.12,49.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Renger van der Zande,renger van der zande,40,2.0,12,69.598,20.24,23.014,26.344,,GF,11,62.56,101.3,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Renger van der Zande,renger van der zande,41,2.0,13,68.524,19.454,23.186,25.884,,GF,12,62.56,101.66,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Renger van der Zande,renger van der zande,42,2.0,14,68.141,19.354,22.839,25.948,,GF,13,62.56,102.02,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Renger van der Zande,renger van der zande,43,2.0,15,69.494,19.688,23.31,26.496,,GF,14,62.56,102.02,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Renger van der Zande,renger van der zande,44,2.0,16,69.635,19.323,22.98,27.332,,GF,15,62.56,101.3,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Renger van der Zande,renger van der zande,45,2.0,17,68.347,20.012,22.595,25.74,,GF,16,62.56,100.4,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Renger van der Zande,renger van der zande,46,2.0,18,67.823,19.227,22.803,25.793,,GF,17,62.56,100.4,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Renger van der Zande,renger van der zande,47,2.0,19,67.53,19.195,22.465,25.87,,GF,18,62.56,100.04,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Renger van der Zande,renger van der zande,48,2.0,20,68.072,19.531,22.749,25.792,,GF,19,62.62,100.04,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Renger van der Zande,renger van der zande,49,2.0,21,67.718,19.329,22.707,25.682,,GF,20,62.62,100.04,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Renger van der Zande,renger van der zande,50,2.0,22,67.313,19.202,22.611,25.5,,GF,21,62.62,101.12,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Renger van der Zande,renger van der zande,51,2.0,23,67.647,19.253,22.72,25.674,,GF,22,62.62,101.3,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Renger van der Zande,renger van der zande,52,2.0,24,67.413,19.055,22.518,25.84,,GF,23,62.62,101.3,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Renger van der Zande,renger van der zande,53,2.0,25,67.564,19.28,22.593,25.691,,GF,24,62.62,100.58,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Renger van der Zande,renger van der zande,54,2.0,26,69.45,19.223,22.647,27.58,,FCY,25,62.62,100.58,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Renger van der Zande,renger van der zande,55,2.0,27,92.741,29.406,32.742,30.593,,FCY,25,62.62,99.5,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Renger van der Zande,renger van der zande,56,2.0,28,110.114,23.407,43.306,43.401,,FCY,25,62.62,98.24,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Renger van der Zande,renger van der zande,57,2.0,29,111.06,34.369,40.047,36.644,,FCY,25,62.67,99.14,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Renger van der Zande,renger van der zande,58,2.0,30,100.363,27.872,35.017,37.474,,FCY,25,62.69,100.04,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Renger van der Zande,renger van der zande,59,2.0,31,114.811,33.688,39.139,41.984,,GF,25,62.69,100.58,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Renger van der Zande,renger van der zande,60,2.0,32,71.246,20.124,23.8,27.322,,GF,26,62.69,100.76,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Renger van der Zande,renger van der zande,61,2.0,33,69.408,19.644,23.299,26.465,,GF,27,62.69,100.94,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Renger van der Zande,renger van der zande,62,2.0,34,69.441,19.599,23.333,26.509,,GF,28,62.67,100.94,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Renger van der Zande,renger van der zande,63,2.0,35,68.805,19.51,23.087,26.208,,GF,29,62.67,100.76,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Renger van der Zande,renger van der zande,64,2.0,36,68.741,19.524,22.845,26.372,,GF,30,62.92,100.76,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Renger van der Zande,renger van der zande,65,2.0,37,68.581,19.409,23.014,26.158,,GF,31,62.92,100.76,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Renger van der Zande,renger van der zande,66,2.0,38,68.0,19.363,22.738,25.899,,GF,32,62.92,100.76,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Renger van der Zande,renger van der zande,67,2.0,39,67.784,19.383,22.507,25.894,,GF,33,62.92,100.4,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Renger van der Zande,renger van der zande,68,2.0,40,67.706,19.115,22.738,25.853,,GF,34,62.92,99.32,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Renger van der Zande,renger van der zande,69,2.0,41,67.788,19.346,22.607,25.835,,GF,35,62.92,98.06,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Renger van der Zande,renger van der zande,70,2.0,42,67.572,19.069,22.713,25.79,,GF,36,62.92,97.7,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Renger van der Zande,renger van der zande,71,2.0,43,69.417,19.222,23.441,26.754,,GF,37,62.92,96.8,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Renger van der Zande,renger van der zande,72,2.0,44,67.865,19.296,22.878,25.691,,GF,38,62.92,96.26,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Renger van der Zande,renger van der zande,73,2.0,45,68.297,19.325,22.868,26.104,,GF,39,63.14,96.08,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Renger van der Zande,renger van der zande,74,2.0,46,68.064,19.356,22.759,25.949,,GF,40,63.91,95.9,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Renger van der Zande,renger van der zande,75,2.0,47,67.801,19.289,22.736,25.776,,GF,41,63.91,96.26,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Renger van der Zande,renger van der zande,76,2.0,48,67.617,19.249,22.794,25.574,,GF,42,63.91,96.26,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Renger van der Zande,renger van der zande,77,2.0,49,67.664,19.123,22.758,25.783,,GF,43,63.91,95.72,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Renger van der Zande,renger van der zande,78,2.0,50,67.285,19.14,22.578,25.567,,GF,44,63.91,95.72,47.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Renger van der Zande,renger van der zande,79,2.0,51,68.655,19.243,22.628,26.784,,GF,45,63.18,95.72,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Renger van der Zande,renger van der zande,80,2.0,52,68.241,19.174,22.95,26.117,,GF,46,63.18,95.72,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Renger van der Zande,renger van der zande,81,2.0,53,68.842,19.28,23.227,26.335,,GF,47,63.18,96.08,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Renger van der Zande,renger van der zande,82,2.0,54,68.377,19.891,22.644,25.842,,GF,48,63.18,96.44,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Renger van der Zande,renger van der zande,83,2.0,55,67.683,19.237,22.703,25.743,,GF,49,63.18,96.8,46.0,False,102
+imsa,2025,Detroit,Chevrolet Detroit Grand Prix,race,639,93,GTP,Renger van der Zande,renger van der zande,84,2.0,56,68.791,19.17,23.465,26.156,,FF,50,63.18,96.98,46.0,False,102

@@ -51,10 +51,18 @@ def test_fuel_limited_flag_logic() -> None:
 
 @pytest.mark.skipif(not _ARTIFACT.exists(), reason="audit artifact not generated")
 def test_committed_audit_most_winners_ran_fuel_limited() -> None:
-    """The real-data corroboration, pinned: the large majority of scoped-race
-    winners ran at least one full-fuel-range stint."""
+    """The real-data corroboration, pinned: a clear majority of scoped-race
+    winners ran at least one full-fuel-range stint.
+
+    On the original 4+4 hand-picked circuits, *every* WEC winner did — but that
+    was 6 WEC circuit-seasons; on the widened 28-race WEC sample (every eligible
+    circuit the source carries) three winners fall short (COTA 2024, Fuji 2022,
+    Fuji 2023), each with a longest stint at 85-87% of the fuel range, plausibly
+    explained by neutralisation-shortened stints (see the report's "Reading the
+    exceptions"). The honest bound is therefore a strong majority per series,
+    not "always" — asserting "always" on the small sample would have been
+    exactly the kind of small-N overclaim this widening was meant to catch."""
     art = pd.read_csv(_ARTIFACT)
-    assert art["ran_fuel_limited"].mean() > 0.8
-    # every WEC winner is fuel-limited (WEC has the tightest fuel windows).
-    wec = art[art["series"] == "wec"]
-    assert wec["ran_fuel_limited"].all()
+    assert art["ran_fuel_limited"].mean() > 0.75
+    by_series = art.groupby("series")["ran_fuel_limited"].mean()
+    assert (by_series > 0.7).all()

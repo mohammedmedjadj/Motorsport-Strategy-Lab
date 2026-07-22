@@ -132,40 +132,63 @@ tyres). Pooled across all scoped races
 
 | Series | Fuel-only stop | Fuel + tyres | Tyre-change premium |
 |---|---|---|---|
-| IMSA (parallel) | 63.0 s | 69.6 s | **+6.6 s** |
-| WEC (sequential) | 56.0 s | 78.5 s | +22.5 s |
+| IMSA (parallel) | 67.7 s | 76.5 s | **+8.7 s** |
+| WEC (sequential) | 55.7 s | 77.4 s | +21.6 s |
 
-A tyre change costs IMSA only ~7 s over a splash, against ~23 s in WEC — a 3x
-difference straight from the two series' procedural rules, and confirmed here
-from the raw stop durations. Strategically it means IMSA teams can take tyres
-almost whenever they stop for fuel, a flexibility WEC teams do not have. See
+A tyre change costs IMSA only ~9 s over a splash, against ~22 s in WEC — the
+ratio (~2.5×) narrowed slightly from an earlier, smaller-sample read (~3.4×) once
+widened to every scoped race (331 IMSA fuel-only stops, 2 569 tyre changes), but
+the procedural gap is still large and clear, and points the same direction.
+Strategically it means IMSA teams can take tyres almost whenever they stop for
+fuel, a flexibility WEC teams do not have. See
 [the WEC report](../wec/simulator_phase4.md) for the contrast.
 
 ## Multi-stop strategy: the whole race, not just the next stop
 
-The engine above prices one stop; an IMSA race needs 2-10. `src.simulator.multistop`
-plans the full sequence with an exact dynamic program (minimise green running +
-degradation + `n_stops × pit_loss` over every partition of the race into stints
-no longer than the fuel tank), then runs the plan through the same per-draw
-neutralisation timeline for a race-time distribution
+The engine above prices one stop; an IMSA race needs 1-21 depending on format.
+`src.simulator.multistop` plans the full sequence with an exact dynamic program
+(minimise green running + degradation + `n_stops × pit_loss` over every
+partition of the race into stints no longer than the fuel tank), then runs the
+plan through the same per-draw neutralisation timeline for a race-time
+distribution. **Widened from the original 4 circuits to all 10 eligible IMSA
+circuits** the source carries — a 1-stop 82-lap sprint (Detroit) to a 21-stop
+24-hour race (Daytona) — verified by `scripts/discover_endurance_events.py`
 (`data/derived/endurance/multistop_plans.csv`):
 
-| Circuit | Laps | Net slope | Stops (min → optimal) | Stint plan | Break-even slope | Median race |
+| Circuit | Laps | Net slope | Stops (min → optimal) | Re-spaced? | Break-even slope | Median race |
 |---|---|---|---|---|---|---|
-| Watkins Glen | 200 | −0.005 | 5 → 5 | fuel-max | n/a (slope ≤ 0) | 21 260 s |
-| Sebring | 315 | +0.003 | 10 → 10 | re-spaced evenly | ×76 | 38 652 s |
-| Road America | 80 | −0.022 | 2 → 2 | fuel-max | n/a (slope ≤ 0) | 9 927 s |
-| Mosport | 120 | −0.002 | 2 → 2 | fuel-max | n/a (slope ≤ 0) | 9 095 s |
+| Daytona | 705 | +0.006 | 21 → 21 | yes | ×10.4 | 76 703 s |
+| Detroit | 82 | −0.002 | 1 → 1 | no | n/a (slope ≤ 0) | 5 798 s |
+| Indianapolis | 243 | +0.006 | 4 → 4 | yes | ×13.7 | 20 663 s |
+| Laguna Seca | 119 | +0.013 | 2 → 2 | yes | ×1.8 | 9 660 s |
+| Long Beach | 70 | −0.018 | 1 → 1 | no | n/a (slope ≤ 0) | 5 441 s |
+| Mosport | 120 | −0.002 | 2 → 2 | no | n/a (slope ≤ 0) | 9 095 s |
+| Road America | 66 | +0.010 | 2 → 2 | yes | ×26.9 | 8 069 s |
+| Road Atlanta | 435 | +0.012 | 8 → 8 | yes | ×5.8 | 35 450 s |
+| Sebring | 343 | +0.001 | 10 → 10 | yes | ×205 | 41 439 s |
+| Watkins Glen | 182 | +0.019 | 4 → 4 | yes | ×3.6 | 19 300 s |
 
-The headline is a genuine, and genuinely un-flashy, result: **no IMSA race in
-scope is tyre-limited — every one is fuel-limited on stop count.** The optimum
-never takes more stops than the fuel minimum, because measured degradation (flat
-or, at three of four circuits, negative) never out-weighs a ~60-77 s pit stop.
-Where a break-even slope exists (Sebring, the one weakly-positive circuit) it is
-**76× steeper** than measured — this race is nowhere near tyre-limited. The other
-three, with slopes at or below zero, want fuel-max stints outright and the DP
-returns exactly that. This generalises to the full race the single-stop finding
-that fuel, not wear, binds — as an exact optimisation, not one demo lap.
+The headline **holds, and is now far better tested**: on the widened sample,
+**no IMSA race in scope is tyre-limited on stop count — the optimum never takes
+more stops than the fuel minimum**, across formats from a 70-lap sprint to a
+24-hour enduro. Where a break-even slope exists, degradation would need to be
+**1.8× to 205×** steeper than measured before an extra stop paid off — Laguna
+Seca is the tightest margin measured anywhere in the project (worth watching if
+its slope firms up in a future season), Sebring the most fuel-secure by a wide
+margin. This generalises to the full race the single-stop finding that fuel, not
+wear, binds — as an exact optimisation across ten circuits, not a hand-picked
+four.
+
+At equal stop count, 7 of 10 circuits (marked "yes" above) get their stints
+**re-spaced** rather than run the tank flat out with a short last stint — more
+common in IMSA than WEC (7/10 vs 6/11), consistent with IMSA's flatter but more
+often positive slopes rewarding the adjustment. A **retrospective audit against
+real race winners** ([`reports/endurance_audit.md`](../endurance_audit.md))
+corroborates the stop-count claim independently: **24 of 33 real IMSA race
+winners** ran at least one stint within 3 laps of the measured fuel range — a
+somewhat lower corroboration rate than WEC's, plausibly because IMSA's more
+neutralisation-heavy races (Phase 2) more often shorten a winner's stints below
+the fuel maximum without changing the model's own optimum.
 
 Traffic enters this layer honestly, as **variance not bias**: the average cost of
 lapping traffic is already inside the measured green pace, so the multi-class

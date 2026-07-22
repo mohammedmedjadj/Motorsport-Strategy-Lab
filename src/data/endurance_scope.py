@@ -2,11 +2,13 @@
 circuit-seasons the degradation / CV / simulator work covers, per series.
 
 Kept separate from the *neutralisation* model, which deliberately uses every
-available race (see ``safety_car/endurance.py``). Widening the degradation and
-simulator coverage is now a one-file edit here: add a circuit or a season and
-re-run ``scripts/run_endurance_models.py`` to regenerate the committed model
-artifacts. Only circuit-seasons whose laps are materialised under
-``data/derived/<series>/`` belong here.
+available race (see ``safety_car/endurance.py``). This scope was **widened from
+the original 4+4 hand-picked circuits to every eligible prototype race** the
+upstream DuckDB carries (>= 4 cars, >= 40 laps), enumerated and verified by
+``scripts/discover_endurance_events.py`` — so the names below are the source's
+own event strings, not guessed. Only circuit-seasons whose laps are materialised
+under ``data/derived/<series>/`` belong here; ``scripts/materialise_endurance.py``
+fills them.
 """
 
 from __future__ import annotations
@@ -23,22 +25,40 @@ class CircuitScope:
     seasons: tuple[int, ...]
 
 
-#: series -> circuits, each with its class and the seasons materialised for it.
-#: Mosport is single-season on purpose: GTP raced there only in 2023 (verified;
-#: see reports/imsa/data_availability_phase0.md). Imola (WEC) starts in 2024:
-#: HYPERCAR did not race there before.
+#: series -> circuits, each with its class and the eligible seasons. Generated
+#: from the verified availability scan; 24 h / 12 h formats (Le Mans, Daytona,
+#: Sebring) are included — they are real races, flagged by their lap count where
+#: format matters rather than excluded.
 ENDURANCE_SCOPE: dict[str, tuple[CircuitScope, ...]] = {
     "imsa": (
-        CircuitScope("Watkins Glen", "GTP", (2023, 2024, 2025)),
-        CircuitScope("Sebring", "GTP", (2023, 2024, 2025)),
+        CircuitScope("Daytona", "GTP", (2023, 2024, 2025, 2026)),
+        CircuitScope("Detroit", "GTP", (2024, 2025, 2026)),
+        CircuitScope("Indianapolis", "GTP", (2023, 2024, 2025)),
+        CircuitScope("Laguna Seca", "GTP", (2023, 2024, 2025, 2026)),
+        CircuitScope("Long Beach", "GTP", (2023, 2024, 2025, 2026)),
         CircuitScope("Mosport", "GTP", (2023,)),
         CircuitScope("Road America", "GTP", (2023, 2024, 2025)),
+        CircuitScope("Road Atlanta", "GTP", (2023, 2024, 2025)),
+        CircuitScope("Sebring", "GTP", (2023, 2024, 2025, 2026)),
+        CircuitScope("Watkins Glen", "GTP", (2023, 2024, 2025, 2026)),
     ),
     "wec": (
-        CircuitScope("Spa", "HYPERCAR", (2023, 2024, 2025)),
-        CircuitScope("Fuji", "HYPERCAR", (2023, 2024, 2025)),
-        CircuitScope("Bahrain", "HYPERCAR", (2023, 2024, 2025)),
-        CircuitScope("Imola", "HYPERCAR", (2024, 2025)),
+        CircuitScope("Bahrain", "HYPERCAR", (2022, 2023, 2024, 2025)),
+        CircuitScope("COTA", "HYPERCAR", (2024, 2025)),
+        CircuitScope("Fuji", "HYPERCAR", (2022, 2023, 2024, 2025)),
+        CircuitScope("Imola", "HYPERCAR", (2024, 2025, 2026)),
+        CircuitScope("Interlagos", "HYPERCAR", (2024, 2025)),
+        CircuitScope("Le Mans", "HYPERCAR", (2022, 2025, 2026)),
+        CircuitScope("Losail", "HYPERCAR", (2025,)),
+        # 2021 excluded at both: the source carries no race-control flags at all
+        # for HYPERCAR that season (100% NaN `flags`, verified directly against
+        # the raw materialised laps) — the first Hypercar season, evidently an
+        # upstream collection gap, not a modelling choice. Every other season at
+        # every other circuit in this scope has full flag coverage.
+        CircuitScope("Monza", "HYPERCAR", (2022,)),
+        CircuitScope("Portimao", "HYPERCAR", (2023,)),
+        CircuitScope("Sebring", "HYPERCAR", (2022, 2023)),
+        CircuitScope("Spa", "HYPERCAR", (2022, 2023, 2024, 2025, 2026)),
     ),
 }
 

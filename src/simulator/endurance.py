@@ -68,8 +68,12 @@ class EnduranceRaceModel:
     pit_loss_s: float
     pit_loss_iqr_s: float
     n_pit_events: int
-    #: Median lap time under FCY divided by green pace (>= 1).
+    #: Median lap time under FCY divided by green pace (>= 1). Falls back to
+    #: ``sc_pace_ratio`` (flagged via ``fcy_ratio_measured``) when this race has
+    #: no observed FCY laps of its own but did see a Safety Car — the mirror of
+    #: the SC fallback below, e.g. WEC Portimao 2023 (SC only, zero FCY laps).
     fcy_pace_ratio: float
+    fcy_ratio_measured: bool
     #: Gamma posterior for FCY deployments per lap (alpha, exposure).
     fcy_alpha: float
     fcy_exposure: float
@@ -341,11 +345,21 @@ def build_race_model(
     ``sc_alpha``/``sc_exposure``/``sc_durations`` from the Phase 2 posterior.
     """
     pit_loss, pit_iqr, n_events = estimate_pit_loss(laps)
-    fcy_ratio = estimate_fcy_pace_ratio(laps)
     try:
-        sc_ratio, sc_measured = estimate_pace_ratio(laps, "SF"), True
+        fcy_ratio_own, fcy_measured = estimate_fcy_pace_ratio(laps), True
     except ValueError:
-        sc_ratio, sc_measured = fcy_ratio, False  # no SC laps in this race
+        fcy_ratio_own, fcy_measured = None, False  # no FCY laps in this race
+    try:
+        sc_ratio_own, sc_measured = estimate_pace_ratio(laps, "SF"), True
+    except ValueError:
+        sc_ratio_own, sc_measured = None, False    # no SC laps in this race
+    if not fcy_measured and not sc_measured:
+        raise ValueError("cannot measure either an FCY or SC pace ratio in this race")
+    # Cross-fallback, mirroring both directions: whichever hazard was actually
+    # observed backs the one that was not, so a race is never dropped just
+    # because it happened to run under only one kind of neutralisation.
+    fcy_ratio = fcy_ratio_own if fcy_measured else sc_ratio_own
+    sc_ratio = sc_ratio_own if sc_measured else fcy_ratio_own
     return EnduranceRaceModel(
         series=str(laps["series"].iloc[0]),
         event=str(laps["event"].iloc[0]),
@@ -358,6 +372,7 @@ def build_race_model(
         pit_loss_iqr_s=pit_iqr,
         n_pit_events=n_events,
         fcy_pace_ratio=fcy_ratio,
+        fcy_ratio_measured=fcy_measured,
         fcy_alpha=fcy_alpha,
         fcy_exposure=fcy_exposure,
         fcy_durations=fcy_durations,
