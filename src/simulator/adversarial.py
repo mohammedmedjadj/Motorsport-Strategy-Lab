@@ -222,3 +222,97 @@ def duel(
                                       passing_window_s, rng)
     plan = rival.pit_lap if rival.pit_lap is not None else candidates[-1]
     return solve_pit_game(win_prob, candidates, candidates, plan)
+
+
+@dataclass(frozen=True)
+class MultiStrategyDuel:
+    """Duel where the rival also chooses its **tyre compound**, not just its pit
+    lap — a strictly richer covering strategy space than :class:`DuelResult`."""
+
+    ego_pit_laps: tuple[int, ...]
+    rival_strategies: tuple[tuple[int, str], ...]   # (pit lap, compound) menu
+    win_prob: np.ndarray                            # (n_ego, n_rival_strategies)
+    naive_pit_lap: int
+    naive_win_prob: float                # rival keeps its announced lap+compound
+    naive_win_prob_if_covered: float     # rival picks the best (lap, compound)
+    rival_cover_strategy: tuple[int, str]  # the covering (lap, compound) it uses
+    adversarial_pit_lap: int
+    adversarial_win_prob: float
+
+    @property
+    def naive_overstatement(self) -> float:
+        """Win probability the frozen-rival plan overstates once the rival is free
+        to cover with *both* a pit lap and a compound."""
+        return self.naive_win_prob - self.naive_win_prob_if_covered
+
+
+def duel_multi_compound(
+    scenario: Scenario,
+    rival: RivalSpec,
+    model: CircuitModel,
+    swap_rate: float,
+    n_draws: int = 2000,
+    seed: int = 20260712,
+    passing_window_s: float = DEFAULT_PASSING_WINDOW_S,
+    min_final_stint: int = 3,
+) -> MultiStrategyDuel:
+    """Solve the pit game giving the rival a **compound choice** on top of its
+    pit lap: it covers with whichever ``(lap, compound)`` most hurts the ego car.
+
+    Uses the per-compound degradation the model already measures — no new
+    assumption, just a rival that is no longer pinned to one tyre. The headline is
+    that a compound-aware cover can raise the naive plan's overstatement above the
+    lap-only figure, which is the honest answer to 'the rival reacts too simply'.
+    """
+    rng = np.random.default_rng(seed)
+    candidates = scenario.candidate_pit_laps(min_final_stint)
+    compounds = tuple(model.degradation.keys())
+    laps = np.arange(scenario.current_lap + 1, scenario.total_laps + 1)
+    n_laps = len(laps)
+
+    status = np.stack([_sample_status(model, n_laps, rng, scenario.ongoing)
+                       for _ in range(n_draws)])
+    fuel = _sample_coef_batch(rng, model.fuel_slope, n_draws)
+    deg = {c: tuple(_sample_coef_batch(rng, g, n_draws) for g in coefs)
+           for c, coefs in model.degradation.items()}
+    ego_noise = rng.normal(0.0, model.lap_noise_s, size=(n_draws, n_laps))
+    rival_noise = rng.normal(0.0, model.lap_noise_s, size=(n_draws, n_laps))
+
+    def cum(noise, compound, age, target):
+        return np.stack([
+            _car_lap_times(model, laps, status, noise, fuel, deg, compound, age,
+                           scenario.current_lap, p, target).cumsum(axis=1)
+            for p in candidates
+        ])
+
+    ego_cum = cum(ego_noise, scenario.compound, scenario.tyre_age, scenario.target_compound)
+    riv_cum_all, strategies = [], []
+    for comp in compounds:
+        riv_cum_all.append(cum(rival_noise, rival.compound, rival.tyre_age, comp) - rival.gap_s)
+        strategies.extend((int(p), comp) for p in candidates)
+    riv_cum_all = np.concatenate(riv_cum_all, axis=0)
+
+    k_ego = np.array([p - scenario.current_lap - 1 for p in candidates])
+    k_riv = np.array([p - scenario.current_lap - 1 for p, _ in strategies])
+    win_prob = win_probability_matrix(ego_cum, riv_cum_all, k_ego, k_riv,
+                                      swap_rate, passing_window_s, rng)
+
+    plan_lap = rival.pit_lap if rival.pit_lap is not None else candidates[-1]
+    plan_comp = rival.target_compound or compounds[0]
+    j_plan = min((abs(p - plan_lap), idx) for idx, (p, c) in enumerate(strategies)
+                 if c == plan_comp)[1]
+    i_naive = int(win_prob[:, j_plan].argmax())
+    rival_best = win_prob.argmin(axis=1)
+    covered = win_prob[np.arange(len(candidates)), rival_best]
+    i_adv = int(covered.argmax())
+    return MultiStrategyDuel(
+        ego_pit_laps=candidates,
+        rival_strategies=tuple(strategies),
+        win_prob=win_prob,
+        naive_pit_lap=candidates[i_naive],
+        naive_win_prob=float(win_prob[i_naive, j_plan]),
+        naive_win_prob_if_covered=float(covered[i_naive]),
+        rival_cover_strategy=strategies[int(rival_best[i_naive])],
+        adversarial_pit_lap=candidates[i_adv],
+        adversarial_win_prob=float(covered[i_adv]),
+    )

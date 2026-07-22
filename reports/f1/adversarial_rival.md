@@ -85,3 +85,22 @@ Two things the model gets right, straight from the measured primitives:
   the measured swap rate governs only the contested near-tie region. A full
   overtaking-probability-vs-pace-delta function would need data (lap-by-lap
   positions in wheel-to-wheel battles) this project does not have.
+
+## A richer rival: it also chooses its tyre compound
+
+The rival above covers by choosing a **pit lap**. A real strategist has one more
+lever — the **compound** fitted at that stop — and pinning the rival to one tyre
+is the fair reading of "the rival reacts too simply". So `duel_multi_compound`
+gives the rival the full menu it can actually pick from: every `(pit lap,
+compound)` pair, using the per-compound degradation the model already measures.
+No Q-learning, no invented reward — a Q-learned rival would train against this
+very simulator, i.e. on fabricated experience; this stays on measured primitives.
+
+The rival's larger strategy set **contains** the lap-only one, so under
+seed-matched draws a compound-aware cover can only make a frozen-rival plan
+*more* optimistic, never less — a game-theoretic invariant the tests pin. On a
+worked Barcelona duel it is not marginal: the naive plan's overstatement rises
+from **0.143** (lap-only cover) to **0.187** once the rival may also switch
+tyre, and the cover it picks is an *earlier stop onto SOFT* — undercut pace, not
+just undercut timing. Ignoring a rival's compound response is therefore a second,
+measurable way a frozen-rival simulator flatters your own plan.

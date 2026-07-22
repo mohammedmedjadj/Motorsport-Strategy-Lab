@@ -11,6 +11,13 @@ venv/
 # FastF1 cache — large binary downloads, never committed
 data/cache/
 
+# External raw third-party data (Kaggle F1/WEC exports) — large, licensed and
+# user-supplied. The loaders expect it dropped here; the .gitkeep marks the spot.
+data/external/f1/*
+data/external/wec/*
+!data/external/f1/.gitkeep
+!data/external/wec/.gitkeep
+
 # Derived data that is large or regenerable stays out; small versioned
 # derived datasets live in data/derived/ and are committed explicitly.
 

@@ -242,16 +242,45 @@ Each phase stopped for explicit validation before the next one started.
 | 6. Methodology report       | `reports/methodology.md`                       | Full write-up — motivation, method, results, limitations, future work — every number traceable to project output                                                      |
 | 7. Packaging                | Final README, clean-clone check                  | Runs from a fresh clone; contribution ideas for the FastF1 community written up                                                                                         |
 
+### F1 breadth layer — the whole calendar (Kaggle history)
+
+The high-fidelity FastF1 model above is deep but four circuits. A complementary
+**breadth layer** now fits the same net-slope degradation, pit loss and
+reliability across the **whole F1 calendar** from a Kaggle per-lap export
+(35 circuits, 2011-2024), trading compound/flag fidelity for coverage. Three
+results worth naming:
+
+- **Fuel/tyre confound solved, not just documented** (`degradation.f1_history`).
+  Because F1 has had no refuelling since 2010, fuel mass is a whole-race function
+  of the absolute lap while tyre age resets each stint, so a two-regressor fit
+  **separates tyre wear from fuel burn** — impossible in endurance (every stop
+  refuels). Isolated tyre wear is positive in **88%** of races.
+- **Wet races are excluded via a real weather layer** (`weather.archive`,
+  Open-Meteo) so a wet-to-dry track is never read as tyre wear.
+- **Reliability / attrition** (`reliability.f1_reliability`) over 5 980 entries:
+  permanent circuits finish better than street circuits, and the early hybrid
+  era is the least reliable — both measured, not assumed.
+
+See [`reports/f1/degradation_history.md`](reports/f1/degradation_history.md),
+[`reports/f1/pit_loss_history.md`](reports/f1/pit_loss_history.md),
+[`reports/f1/reliability.md`](reports/f1/reliability.md),
+[`reports/f1/weather.md`](reports/f1/weather.md).
+
 ### F1 known limitations (stated up front)
 
 - **Sample size for SC probability is structurally small** — about three
-  usable races per circuit in the MVP window. The model reports wide
-  intervals as a result; that's the honest answer, not a shortcoming to fix.
-- **Fuel load and tyre age are confounded** within a stint. Without private
-  telemetry the fuel effect can only be partially isolated, which the Phase 2
-  report discusses rather than glosses over.
-- **Track evolution, traffic, and driver-specific pace** aren't modelled
-  explicitly in the MVP; they end up absorbed into residual noise.
+  usable races per circuit in the *FastF1 high-fidelity* window (the Kaggle
+  breadth layer lifts degradation/pit-loss/reliability coverage to 35 circuits,
+  but Kaggle carries no per-lap SC flag, so neutralisation calibration still
+  needs FastF1). Wide intervals are reported as the honest answer.
+- **Scrubbed (lightly-used) tyres** shift a stint's intercept, not its slope, so
+  the degradation rate is unbiased by them; FastF1 handles them exactly via its
+  `TyreLife` / `FreshTyre` columns.
+- **Track evolution and traffic** are absorbed into the whole-race fuel/evolution
+  term the breadth layer isolates; driver pace is a fixed effect.
+- **2026 is walled off.** The new regulations (power unit, active aero + Manual
+  Override Mode, lighter/narrower cars, less fuel, narrower tyres) are their own
+  era; no pre-2026 fit transfers, and the Kaggle source stops at 2024.
 
 ---
 
@@ -372,9 +401,11 @@ numbers too, most visibly at Imola.
   single fold in each direction.
 - Imola's negative degradation slope and noticeably wider RMSE are reported
   as measured, not explained away.
-- No retrospective audit of real WEC strategy calls exists yet, and there's
-  no WEC-specific methodology write-up — both would be natural next steps
-  once the modelling layer above is considered stable enough to trust.
+- A **retrospective audit of real winners now exists** for both endurance
+  series ([`reports/endurance_audit.md`](reports/endurance_audit.md)): 19 of 21
+  scoped-race winners ran fuel-limited stints, corroborating the multi-stop
+  model's headline against what teams actually did. A per-decision replay like
+  F1's remains a natural next step.
 
 ---
 
@@ -499,8 +530,10 @@ says so rather than picking a winner anyway.
   a two-car rival abstraction wouldn't represent that honestly.
 - Road America's negative degradation slope is reported as measured, a
   genuine open question rather than something smoothed over.
-- No retrospective audit of real IMSA strategy calls exists yet, and there's
-  no IMSA-specific methodology write-up.
+- A **retrospective audit of real winners now exists** across IMSA and WEC
+  ([`reports/endurance_audit.md`](reports/endurance_audit.md)) — real winning
+  stint lengths versus each circuit's fuel range. A per-decision replay like
+  F1's remains a natural next step.
 
 ---
 
