@@ -1,4 +1,3 @@
-
 # Motorsport Strategy Lab — Race Strategy Simulator & Decision Audit
 
 <p align="center">
@@ -15,7 +14,7 @@
 
 <p align="center">
   <a href="reports/methodology.md">Methodology</a> ·
-  <a href="#key-findings">Key Findings</a> ·
+  <a href="#key-findings-across-all-three-series">Key Findings</a> ·
   <a href="reports/f1/audit_cases.md">Audit Cases</a> ·
   <a href="#setup">Installation</a> ·
   <a href="CONTRIBUTING.md">Contributing</a>
@@ -39,27 +38,6 @@ written methodology). WEC and IMSA cover the equivalent modelling phases
 methodology write-up — see the limitations under each series.
 Jump to: [Formula 1](#formula-1) · [WEC](#wec) · [IMSA](#imsa) ·
 [Methods](#mathematical-methods).
-
-## Key Findings
-
-> **Monaco's "guaranteed" safety car, measured rather than assumed —**
-> **P = 0.44** [0.14, 0.77]. Only 3 of 7 editions since 2018 actually saw a
-> Safety Car — notably less certain than the circuit's reputation suggests.
-> ([`reports/f1/safety_car_phase3.md`](reports/f1/safety_car_phase3.md))
-
-> **A caught bug: a degradation fit off by an order of magnitude —**
-> **−0.53 s/lap, 13.9s RMSE → −0.0689 s/lap, 1.19s RMSE.** Road America
-> 2024's first fit was nonsense: a field-wide standing-start effect on laps
-> 2-3 was masquerading as tyre wear. Root-caused, fixed with a field-wide
-> filter ahead of the per-car one, regression-tested against the real race.
-> ([`reports/imsa/degradation_phase2.md`](reports/imsa/degradation_phase2.md))
-
-> **What actually transfers across seasons — almost nothing, except one circuit —**
-> **R² ≈ +0.21** at Bahrain (WEC), the one circuit in either series where a
-> slope fit on two seasons predicts a third. Everywhere else checked, F1
-> included, within-stint R² goes negative out of sample — the reason every
-> coefficient in this project is carried as a distribution, never a point
-> value. ([`reports/wec/degradation_phase2.md`](reports/wec/degradation_phase2.md))
 
 ## Why this project
 
@@ -609,6 +587,51 @@ says so rather than picking a winner anyway.
   ([`reports/endurance_audit.md`](reports/endurance_audit.md)) — real winning
   stint lengths versus each circuit's fuel range. A per-decision replay like
   F1's remains a natural next step.
+
+## Key findings across all three series
+
+Having gone through F1, WEC and IMSA individually above, six results stood
+out enough to pull back up here — each one measured, sourced, and (where it
+matters) later corrected rather than quietly kept:
+
+> **Monaco's "guaranteed" safety car, measured rather than assumed —**
+> **P = 0.44** [0.14, 0.77]. Only 3 of 7 editions since 2018 actually saw a
+> Safety Car — notably less certain than the circuit's reputation suggests.
+> ([`reports/f1/safety_car_phase3.md`](reports/f1/safety_car_phase3.md))
+
+> **A caught bug: a degradation fit off by an order of magnitude —**
+> **−0.53 s/lap, 13.9s RMSE → −0.0689 s/lap, 1.19s RMSE.** Road America
+> 2024's first fit was nonsense: a field-wide standing-start effect on laps
+> 2-3 was masquerading as tyre wear. Root-caused, fixed with a field-wide
+> filter ahead of the per-car one, regression-tested against the real race.
+> ([`reports/imsa/degradation_phase2.md`](reports/imsa/degradation_phase2.md))
+
+> **What actually transfers across seasons — almost nothing, except one circuit —**
+> **R² ≈ +0.21** at Bahrain (WEC), the one circuit in either series where a
+> slope fit on two seasons predicts a third. Everywhere else checked, F1
+> included, within-stint R² goes negative out of sample — the reason every
+> coefficient in this project is carried as a distribution, never a point
+> value. ([`reports/wec/degradation_phase2.md`](reports/wec/degradation_phase2.md))
+
+> **Two endurance series, two different hazards entirely —**
+> IMSA sees a Full Course Yellow in **P = 0.96** of races series-wide (every
+> scoped circuit individually between 90-93%) and has **never** shown a
+> Safety Car in 63 races; WEC prefers the Safety Car over FCY at every one
+> of its own scoped circuits. "Endurance racing" isn't one hazard model.
+> ([`reports/imsa/safety_car_phase3.md`](reports/imsa/safety_car_phase3.md))
+
+> **Ignoring how a rival reacts flatters your own plan by a measurable amount —**
+> On a worked Barcelona duel, a frozen-rival simulator overstates a naive
+> undercut's win probability by **0.143** if the rival can only choose *when*
+> to pit, rising to **0.187** once it can also choose *which tyre* — the
+> rival's realistic response is an earlier stop onto softs, undercutting the
+> undercut. ([`reports/f1/adversarial_rival.md`](reports/f1/adversarial_rival.md))
+
+> **The retrospective audit corroborates the simulator's headline finding —**
+> **49 of 61** audited race winners across WEC and IMSA ran a fuel-limited
+> longest stint, matching what the multi-stop model independently concludes
+> for every scoped circuit: strategy is fuel-limited, not tyre-limited, in
+> both endurance series. ([`reports/endurance_audit.md`](reports/endurance_audit.md))
 
 ---
 
