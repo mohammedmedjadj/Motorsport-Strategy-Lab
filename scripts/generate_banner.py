@@ -64,13 +64,12 @@ def _lerp(a: tuple[int, int, int], b: tuple[int, int, int], t: float) -> tuple[i
 
 
 def _gradient_color(u: float, v: float) -> tuple[int, int, int]:
-    """3-stop gradient across the pixel triangle: light blue at the far
-    corner (deepest into the triangle, away from the text), through purple,
-    down to dark blue right at the boundary with the white triangle."""
+    """3-stop gradient across the pixel triangle: dark blue -> purple ->
+    light blue."""
     t = max(0.0, min(1.0, u * 0.6 + v * 0.4))
     if t < 0.5:
-        return _lerp(LIGHT_BLUE, PURPLE, t / 0.5)
-    return _lerp(PURPLE, DARK_BLUE, (t - 0.5) / 0.5)
+        return _lerp(DARK_BLUE, PURPLE, t / 0.5)
+    return _lerp(PURPLE, LIGHT_BLUE, (t - 0.5) / 0.5)
 
 
 def _smoothstep(t: float) -> float:
@@ -97,13 +96,15 @@ def _whiteness_at(x: float, y: float, voids: list[Void]) -> float:
 
 
 def _diagonal_whiteness(x: float, y: float, w: float, h: float) -> float:
-    """Split the rectangle along its own diagonal (top-left to bottom-right)
-    into two right triangles: 0 (full colour) in the upper-right triangle,
-    1 (white) in the lower-left one where the title text lives. A few
-    pixels of antialiasing at the boundary, not a wide fade -- this is meant
-    to read as a clean triangle, not a gradient."""
-    boundary_y = x * (h / w)
-    return 0.0 if y < boundary_y - 3 else (1.0 if y > boundary_y + 3 else (y - (boundary_y - 3)) / 6)
+    """Split the rectangle along its OTHER diagonal (bottom-left to
+    top-right) into two right triangles: 0 (full colour) in the
+    bottom-right/right-hand triangle -- whose acute tips touch the
+    top-right AND bottom-left corners -- 1 (white) in the top-left triangle
+    where the title text lives. A few pixels of antialiasing at the
+    boundary, not a wide fade -- this is meant to read as a clean triangle,
+    not a gradient."""
+    boundary_y = h - x * (h / w)
+    return 0.0 if y > boundary_y + 3 else (1.0 if y < boundary_y - 3 else (boundary_y + 3 - y) / 6)
 
 
 def _tile_blocks(w: int, h: int, voids: list[Void], cell: int = CELL) -> list[tuple[int, int, int, int, tuple[int, int, int]]]:
@@ -201,7 +202,7 @@ def make_banner(w: int, h: int, centered: bool, tag: str | None = None) -> Image
         sub_top = top + title_size + 14
         voids.append((0, sub_top - 2, margin + (sb[2] - sb[0]), sub_top + 22, TEXT_CLEAR_RADIUS))
 
-        stats = [("3", "SERIES"), ("140+", "TESTS"), ("289", "RACE-SEASONS")]
+        stats = [("3", "SERIES"), ("140+", "TESTS"), ("289", "RACES ANALYZED")]
         start_y = top + title_size + 14 + 46
         stat_xs, stat_ws = _stat_layout(draw, stats, w - margin)
         for sx, sw in zip(stat_xs, stat_ws):
@@ -227,7 +228,7 @@ def make_banner(w: int, h: int, centered: bool, tag: str | None = None) -> Image
     if not centered:
         draw.text((margin, h * 0.30), title, font=title_font, fill=INK)
         draw.text((margin, h * 0.30 + title_size + 14), subtitle, font=subtitle_font, fill=INK_SOFT)
-        stats = [("3", "SERIES"), ("140+", "TESTS"), ("289", "RACE-SEASONS")]
+        stats = [("3", "SERIES"), ("140+", "TESTS"), ("289", "RACES ANALYZED")]
         start_y = h * 0.30 + title_size + 14 + 46
         stat_xs, _ = _stat_layout(draw, stats, w - margin)
         for sx, (num, lbl) in zip(stat_xs, stats):
@@ -271,7 +272,7 @@ def make_banner_svg(w: int, h: int) -> str:
     voids: list[Void] = [(0, top - 4, margin + (tb[2] - tb[0]), top + title_size + 2, TEXT_CLEAR_RADIUS)]
     sub_top = top + title_size + 14
     voids.append((0, sub_top - 2, margin + (sb[2] - sb[0]), sub_top + 22, TEXT_CLEAR_RADIUS))
-    stats_labels = [("3", "SERIES"), ("140+", "TESTS"), ("289", "RACE-SEASONS")]
+    stats_labels = [("3", "SERIES"), ("140+", "TESTS"), ("289", "RACES ANALYZED")]
     start_y = top + title_size + 14 + 46
     stat_xs, stat_ws = _stat_layout(dummy, stats_labels, w - margin)
     for sx, sw in zip(stat_xs, stat_ws):
