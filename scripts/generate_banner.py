@@ -1,14 +1,16 @@
 """Render the README banner and GitHub social-preview image directly with
 Pillow (no cairosvg/rsvg-convert/Inkscape available in this environment).
 
-Scattered pixel-mosaic style background: chunky rectangular blocks (not just
-squares) in varying sizes, covering roughly 65% of the canvas along a
-flowing dark-blue -> purple -> light-blue gradient, on plain white for the
-rest. Inspired by the "Mistral" mosaic-gradient look but in this project's
-own palette and with white negative space instead of full-bleed tiling.
-Both raster images share one drawing routine parameterised by size and
-layout, so the banner and the social preview never visually drift apart.
-Run:
+Pixel-mosaic background: chunky rectangular blocks (not just squares) tile
+the *entire* canvas -- no gaps, no reserved panel -- in a flowing dark-blue
+-> purple -> light-blue gradient. Each block's own colour is then alpha-
+blended toward white by how close it sits to the title/subtitle/stat text,
+using a smooth radial falloff. That makes the pixels-to-white transition an
+actual colour gradient (saturated mosaic far from the text, fading through
+pale tints, white right at the text) rather than a hard panel or a binary
+"block here / gap there" pattern. Both raster images share one drawing
+routine parameterised by size and layout, so the banner and the social
+preview never visually drift apart. Run:
 
     python scripts/generate_banner.py
 """
@@ -34,13 +36,16 @@ INK_SOFT = (74, 78, 92)
 
 SEED = 20260723
 CELL = 26
-COVERAGE = 0.65
 SHAPES = (
     (1, 1), (1, 1), (1, 1),
     (2, 1), (1, 2), (2, 1), (1, 2),
     (2, 2), (2, 2),
     (3, 1), (1, 3), (3, 2), (2, 3),
 )
+
+# (x0, y0, x1, y1, fade_radius_px) -- a hard-clear rect that smoothly fades
+# back up to full density over `fade_radius_px` beyond its edge.
+Void = tuple[float, float, float, float, float]
 
 
 def _font(path: Path, size: int, weight: float | None = None) -> ImageFont.FreeTypeFont:
@@ -72,33 +77,43 @@ def _gradient_color(u: float, v: float) -> tuple[int, int, int]:
     return _lerp(PURPLE, LIGHT_BLUE, (t - 0.5) / 0.5)
 
 
-def _scatter_blocks(w: int, h: int, keepouts: list[tuple[int, int, int, int]],
-                     cell: int = CELL, coverage: float = COVERAGE) -> list[tuple[int, int, int, int, tuple[int, int, int]]]:
-    """Pack random 1-3 cell rectangles onto a grid until ~coverage of the
-    full canvas is filled, skipping any cell that falls inside a keepout
-    rect (reserved for text). Returns (x, y, w, h, color) in pixels."""
+def _smoothstep(t: float) -> float:
+    t = max(0.0, min(1.0, t))
+    return t * t * (3 - 2 * t)
+
+
+DEADZONE = 10  # px of guaranteed-pure-white just beyond a void's core rect,
+                # so no fade-tinted pixel ever sits under the text itself
+
+
+def _whiteness_at(x: float, y: float, voids: list[Void]) -> float:
+    """0 = full-strength mosaic colour, 1 = pure white. Smallest (most-white)
+    value wins across overlapping voids."""
+    whiteness = 0.0
+    for x0, y0, x1, y1, radius in voids:
+        dx = max(x0 - x, 0.0, x - x1)
+        dy = max(y0 - y, 0.0, y - y1)
+        dist = max(0.0, math.hypot(dx, dy) - DEADZONE)
+        local_white = 1.0 - (_smoothstep(dist / radius) if radius > 0 else (0.0 if dist > 0 else 1.0))
+        whiteness = max(whiteness, local_white)
+    return whiteness
+
+
+def _tile_blocks(w: int, h: int, voids: list[Void], cell: int = CELL) -> list[tuple[int, int, int, int, tuple[int, int, int]]]:
+    """Pack varying-size rectangles (1-3 cells) over the *entire* canvas --
+    full coverage, no gaps -- then blend each block's colour toward white by
+    its distance from a void (text/stats), so the pixels-to-white transition
+    is a smooth colour gradient instead of a hole in the mosaic. Returns
+    (x, y, w, h, color) in pixels."""
     rng = random.Random(SEED)
     cols, rows = math.ceil(w / cell), math.ceil(h / cell)
-
-    def in_keepout(c: int, r: int) -> bool:
-        x0, y0 = c * cell, r * cell
-        x1, y1 = x0 + cell, y0 + cell
-        for kx0, ky0, kx1, ky1 in keepouts:
-            if x0 < kx1 and x1 > kx0 and y0 < ky1 and y1 > ky0:
-                return True
-        return False
-
-    occupied = [[in_keepout(c, r) for c in range(cols)] for r in range(rows)]
-    target_cells = int(cols * rows * coverage)
-    filled = 0  # keepout cells are pre-marked occupied but don't count toward the budget
+    occupied = [[False] * cols for _ in range(rows)]
 
     positions = [(r, c) for r in range(rows) for c in range(cols)]
     rng.shuffle(positions)
 
     blocks: list[tuple[int, int, int, int, tuple[int, int, int]]] = []
     for r, c in positions:
-        if filled >= target_cells:
-            break
         if occupied[r][c]:
             continue
         shapes = list(SHAPES)
@@ -111,7 +126,6 @@ def _scatter_blocks(w: int, h: int, keepouts: list[tuple[int, int, int, int]],
             for rr in range(r, r + bh):
                 for cc in range(c, c + bw):
                     occupied[rr][cc] = True
-            filled += bw * bh
             px0, py0 = c * cell, r * cell
             pw, ph = bw * cell, bh * cell
             u = (px0 + pw / 2) / w
@@ -119,6 +133,8 @@ def _scatter_blocks(w: int, h: int, keepouts: list[tuple[int, int, int, int]],
             col = _gradient_color(u, v)
             jitter = rng.uniform(-0.08, 0.08)
             col = tuple(max(0, min(255, int(ch * (1 + jitter)))) for ch in col)
+            whiteness = _whiteness_at(px0 + pw / 2, py0 + ph / 2, voids)
+            col = _lerp(col, WHITE, whiteness)
             blocks.append((px0, py0, pw, ph, col))
             break
     return blocks
@@ -130,12 +146,30 @@ def _draw_blocks(img: Image.Image, blocks: list[tuple[int, int, int, int, tuple[
         draw.rectangle([x, y, x + bw - 1, y + bh - 1], fill=col)
 
 
-def _stat_card(draw, x, y, w, h, number, label):
-    draw.rectangle([x, y, x + w, y + h], outline=(210, 213, 222), width=1, fill=WHITE)
+def _stat_label(draw, x, y, number, label):
     num_font = _font(JBMONO, 22, weight=700)
     lbl_font = _font(JBMONO, 11, weight=500)
-    draw.text((x + 14, y + 10), number, font=num_font, fill=RED)
-    draw.text((x + 14, y + h - 26), label, font=lbl_font, fill=INK_SOFT)
+    draw.text((x, y), number, font=num_font, fill=RED)
+    draw.text((x, y + 30), label, font=lbl_font, fill=INK_SOFT)
+
+
+def _stat_layout(draw, stats: list[tuple[str, str]], right_edge: float, gap: float = 34):
+    """Right-align a row of (number, label) stats with real measured widths,
+    so items never overlap regardless of label length."""
+    num_font = _font(JBMONO, 22, weight=700)
+    lbl_font = _font(JBMONO, 11, weight=500)
+    widths = []
+    for num, lbl in stats:
+        nb = draw.textbbox((0, 0), num, font=num_font)
+        lb = draw.textbbox((0, 0), lbl, font=lbl_font)
+        widths.append(max(nb[2] - nb[0], lb[2] - lb[0]))
+    total = sum(widths) + gap * (len(stats) - 1)
+    xs = []
+    x = right_edge - total
+    for wdt in widths:
+        xs.append(x)
+        x += wdt + gap
+    return xs, widths
 
 
 def make_banner(w: int, h: int, centered: bool, tag: str | None = None) -> Image.Image:
@@ -150,47 +184,48 @@ def make_banner(w: int, h: int, centered: bool, tag: str | None = None) -> Image
     subtitle_font = _font(INTER, 19 if not centered else 21, weight=400)
     margin = 60
 
-    # compute text keepout rects up front so the mosaic never overlaps them
-    keepouts: list[tuple[int, int, int, int]] = []
+    voids: list[Void] = []
     if not centered:
         top = h * 0.30
         tb = draw.textbbox((0, 0), title, font=title_font)
         sb = draw.textbbox((0, 0), subtitle, font=subtitle_font)
-        text_right = margin + max(tb[2] - tb[0], sb[2] - sb[0]) + 14
-        keepouts.append((0, int(top) - 10, int(text_right), int(top) + title_size + 42))
+        # separate voids per text line -- lets the mosaic show through the
+        # gap between title and subtitle instead of one big blank rectangle
+        voids.append((0, top - 4, margin + (tb[2] - tb[0]), top + title_size + 2, 90))
+        sub_top = top + title_size + 14
+        voids.append((0, sub_top - 2, margin + (sb[2] - sb[0]), sub_top + 22, 90))
+
         stats = [("3", "SERIES"), ("140+", "TESTS"), ("5", "AUDITED RACES")]
-        card_w, card_h, gap = 150, 78, 16
-        total_w = card_w * 3 + gap * 2
-        start_x = w - margin - total_w
         start_y = top + title_size + 14 + 46
-        keepouts.append((int(start_x) - 10, int(start_y) - 10, w, int(start_y + card_h) + 10))
+        stat_xs, stat_ws = _stat_layout(draw, stats, w - margin)
+        for sx, sw in zip(stat_xs, stat_ws):
+            voids.append((sx - 6, start_y - 6, sx + sw + 6, start_y + 46, 65))
     else:
         tb = draw.textbbox((0, 0), title, font=title_font)
         tw = tb[2] - tb[0]
         sb = draw.textbbox((0, 0), subtitle, font=subtitle_font)
         sw = sb[2] - sb[0]
         top = h * 0.36
-        keepouts.append((int((w - max(tw, sw)) / 2) - 14, int(top) - 18,
-                          int((w + max(tw, sw)) / 2) + 14, int(top) + title_size + 34))
+        voids.append(((w - tw) / 2, top - 4, (w + tw) / 2, top + title_size + 2, 95))
+        sub_top = top + title_size + 22
+        voids.append(((w - sw) / 2, sub_top - 2, (w + sw) / 2, sub_top + 24, 95))
         if tag:
             tag_font = _font(JBMONO, 14, weight=500)
             tgb = draw.textbbox((0, 0), tag, font=tag_font)
             tgw = tgb[2] - tgb[0]
-            keepouts.append((int((w - tgw) / 2) - 10, h - 56, int((w + tgw) / 2) + 10, h - 26))
+            voids.append(((w - tgw) / 2, h - 50, (w + tgw) / 2, h - 30, 60))
 
-    blocks = _scatter_blocks(w, h, keepouts)
+    blocks = _tile_blocks(w, h, voids)
     _draw_blocks(img, blocks)
 
     if not centered:
         draw.text((margin, h * 0.30), title, font=title_font, fill=INK)
         draw.text((margin, h * 0.30 + title_size + 14), subtitle, font=subtitle_font, fill=INK_SOFT)
         stats = [("3", "SERIES"), ("140+", "TESTS"), ("5", "AUDITED RACES")]
-        card_w, card_h, gap = 150, 78, 16
-        total_w = card_w * 3 + gap * 2
-        start_x = w - margin - total_w
         start_y = h * 0.30 + title_size + 14 + 46
-        for i, (num, lbl) in enumerate(stats):
-            _stat_card(draw, start_x + i * (card_w + gap), start_y, card_w, card_h, num, lbl)
+        stat_xs, _ = _stat_layout(draw, stats, w - margin)
+        for sx, (num, lbl) in zip(stat_xs, stats):
+            _stat_label(draw, sx, start_y, num, lbl)
     else:
         tb = draw.textbbox((0, 0), title, font=title_font)
         tw = tb[2] - tb[0]
@@ -225,20 +260,27 @@ def make_banner_svg(w: int, h: int) -> str:
     dummy = ImageDraw.Draw(Image.new("RGB", (1, 1)))
     tb = dummy.textbbox((0, 0), title, font=_font(SPACE_GROTESK, title_size, weight=700))
     sb = dummy.textbbox((0, 0), subtitle_plain, font=_font(INTER, 19, weight=400))
-    text_right = margin + max(tb[2] - tb[0], sb[2] - sb[0]) + 30
 
     top = h * 0.30
-    keepouts = [(0, int(top) - 10, int(text_right), int(top) + title_size + 42)]
-    card_w, card_h, gap = 150, 78, 16
-    total_w = card_w * 3 + gap * 2
-    start_x = w - margin - total_w
+    voids: list[Void] = [(0, top - 4, margin + (tb[2] - tb[0]), top + title_size + 2, 90)]
+    sub_top = top + title_size + 14
+    voids.append((0, sub_top - 2, margin + (sb[2] - sb[0]), sub_top + 22, 90))
+    stats_labels = [("3", "SERIES"), ("140+", "TESTS"), ("5", "AUDITED RACES")]
     start_y = top + title_size + 14 + 46
-    keepouts.append((int(start_x) - 10, int(start_y) - 10, w, int(start_y + card_h) + 10))
+    stat_xs, stat_ws = _stat_layout(dummy, stats_labels, w - margin)
+    for sx, sw in zip(stat_xs, stat_ws):
+        voids.append((sx - 6, start_y - 6, sx + sw + 6, start_y + 46, 65))
 
-    blocks = _scatter_blocks(w, h, keepouts)
+    blocks = _tile_blocks(w, h, voids)
     rects = "".join(
         f'<rect x="{x}" y="{y}" width="{bw}" height="{bh}" fill="#{c[0]:02x}{c[1]:02x}{c[2]:02x}"/>'
         for x, y, bw, bh, c in blocks
+    )
+
+    stat_svg = "".join(
+        f'<g><text x="{sx}" y="{start_y + 22}" font-size="22" font-weight="700" fill="#E10600">{num}</text>'
+        f'<text x="{sx}" y="{start_y + 52}" font-size="11" fill="#4A4E5C">{lbl}</text></g>'
+        for sx, (num, lbl) in zip(stat_xs, stats_labels)
     )
 
     return f'''<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" viewBox="0 0 {w} {h}" role="img"
@@ -251,17 +293,7 @@ def make_banner_svg(w: int, h: int) -> str:
         font-size="46" fill="#12141C" letter-spacing="0.5">{title}</text>
   <text x="{margin}" y="172" font-family="Inter, Arial, sans-serif" font-weight="400"
         font-size="19" fill="#4A4E5C">{subtitle}</text>
-  <g font-family="JetBrains Mono, Consolas, monospace">
-    <g><rect x="658" y="200" width="150" height="78" fill="#ffffff" stroke="#D2D5DE"/>
-      <text x="672" y="228" font-size="22" font-weight="700" fill="#E10600">3</text>
-      <text x="672" y="264" font-size="11" fill="#4A4E5C">SERIES</text></g>
-    <g><rect x="824" y="200" width="150" height="78" fill="#ffffff" stroke="#D2D5DE"/>
-      <text x="838" y="228" font-size="22" font-weight="700" fill="#E10600">140+</text>
-      <text x="838" y="264" font-size="11" fill="#4A4E5C">TESTS</text></g>
-    <g><rect x="990" y="200" width="150" height="78" fill="#ffffff" stroke="#D2D5DE"/>
-      <text x="1004" y="228" font-size="22" font-weight="700" fill="#E10600">5</text>
-      <text x="1004" y="264" font-size="11" fill="#4A4E5C">AUDITED RACES</text></g>
-  </g>
+  <g font-family="JetBrains Mono, Consolas, monospace">{stat_svg}</g>
 </svg>
 '''
 
