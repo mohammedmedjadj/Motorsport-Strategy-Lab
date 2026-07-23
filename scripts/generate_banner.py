@@ -64,12 +64,13 @@ def _lerp(a: tuple[int, int, int], b: tuple[int, int, int], t: float) -> tuple[i
 
 
 def _gradient_color(u: float, v: float) -> tuple[int, int, int]:
-    """3-stop diagonal gradient (dark blue -> purple -> light blue), flowing
-    across the pixel triangle from its boundary edge toward the far corner."""
+    """3-stop gradient across the pixel triangle: light blue at the far
+    corner (deepest into the triangle, away from the text), through purple,
+    down to dark blue right at the boundary with the white triangle."""
     t = max(0.0, min(1.0, u * 0.6 + v * 0.4))
     if t < 0.5:
-        return _lerp(DARK_BLUE, PURPLE, t / 0.5)
-    return _lerp(PURPLE, LIGHT_BLUE, (t - 0.5) / 0.5)
+        return _lerp(LIGHT_BLUE, PURPLE, t / 0.5)
+    return _lerp(PURPLE, DARK_BLUE, (t - 0.5) / 0.5)
 
 
 def _smoothstep(t: float) -> float:
@@ -200,7 +201,7 @@ def make_banner(w: int, h: int, centered: bool, tag: str | None = None) -> Image
         sub_top = top + title_size + 14
         voids.append((0, sub_top - 2, margin + (sb[2] - sb[0]), sub_top + 22, TEXT_CLEAR_RADIUS))
 
-        stats = [("3", "SERIES"), ("140+", "TESTS"), ("5", "AUDITED RACES")]
+        stats = [("3", "SERIES"), ("140+", "TESTS"), ("289", "RACE-SEASONS")]
         start_y = top + title_size + 14 + 46
         stat_xs, stat_ws = _stat_layout(draw, stats, w - margin)
         for sx, sw in zip(stat_xs, stat_ws):
@@ -226,7 +227,7 @@ def make_banner(w: int, h: int, centered: bool, tag: str | None = None) -> Image
     if not centered:
         draw.text((margin, h * 0.30), title, font=title_font, fill=INK)
         draw.text((margin, h * 0.30 + title_size + 14), subtitle, font=subtitle_font, fill=INK_SOFT)
-        stats = [("3", "SERIES"), ("140+", "TESTS"), ("5", "AUDITED RACES")]
+        stats = [("3", "SERIES"), ("140+", "TESTS"), ("289", "RACE-SEASONS")]
         start_y = h * 0.30 + title_size + 14 + 46
         stat_xs, _ = _stat_layout(draw, stats, w - margin)
         for sx, (num, lbl) in zip(stat_xs, stats):
@@ -270,7 +271,7 @@ def make_banner_svg(w: int, h: int) -> str:
     voids: list[Void] = [(0, top - 4, margin + (tb[2] - tb[0]), top + title_size + 2, TEXT_CLEAR_RADIUS)]
     sub_top = top + title_size + 14
     voids.append((0, sub_top - 2, margin + (sb[2] - sb[0]), sub_top + 22, TEXT_CLEAR_RADIUS))
-    stats_labels = [("3", "SERIES"), ("140+", "TESTS"), ("5", "AUDITED RACES")]
+    stats_labels = [("3", "SERIES"), ("140+", "TESTS"), ("289", "RACE-SEASONS")]
     start_y = top + title_size + 14 + 46
     stat_xs, stat_ws = _stat_layout(dummy, stats_labels, w - margin)
     for sx, sw in zip(stat_xs, stat_ws):
