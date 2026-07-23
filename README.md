@@ -2,6 +2,10 @@
 # Motorsport Strategy Lab — Race Strategy Simulator & Decision Audit
 
 <p align="center">
+  <img src="assets/logo.png" alt="Motorsport Strategy Lab mark: an abstract lap loop with a live position marker" width="96">
+</p>
+
+<p align="center">
   <img src="assets/banner.png" alt="Motorsport Strategy Lab -- Bayesian and Monte Carlo race strategy research across F1, WEC and IMSA" width="100%">
 </p>
 

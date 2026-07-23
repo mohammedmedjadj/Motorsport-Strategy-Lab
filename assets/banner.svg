@@ -14,12 +14,27 @@
   <rect width="1200" height="300" fill="url(#bg)"/>
   <rect width="1200" height="300" fill="url(#grid)"/>
 
+  <!-- abstract closed track loop -- an invented shape, not a real circuit -->
+  <ellipse cx="744" cy="150" rx="552" ry="186" fill="none" stroke="#00D9FF"
+           stroke-width="2" opacity="0.10" transform="rotate(-3 744 150)"/>
+
   <!-- degradation / distribution style curves, low-opacity watermark -->
   <g fill="none" stroke="#00D9FF" stroke-width="2">
     <path opacity="0.22" d="M0,90 C150,40 300,140 450,90 S750,40 900,90 S1150,130 1200,90"/>
     <path opacity="0.18" d="M0,150 C180,190 320,110 480,150 S760,200 920,150 S1150,110 1200,150"/>
     <path opacity="0.14" d="M0,200 C160,160 340,230 500,190 S780,150 940,200 S1150,230 1200,190"/>
     <path opacity="0.10" d="M0,240 C200,260 350,210 520,240 S800,270 950,240 S1150,210 1200,240"/>
+  </g>
+
+  <!-- tire-wall texture: a row of tire cross-sections cropped by the top edge -->
+  <g fill="none" stroke="#A8AEBC">
+    <g opacity="0.12">
+      <circle cx="40" cy="-14" r="46"/><circle cx="40" cy="-14" r="31"/><circle cx="40" cy="-14" r="17"/>
+      <circle cx="132" cy="-14" r="46"/><circle cx="132" cy="-14" r="31"/><circle cx="132" cy="-14" r="17"/>
+      <circle cx="224" cy="-14" r="46"/><circle cx="224" cy="-14" r="31"/><circle cx="224" cy="-14" r="17"/>
+      <circle cx="316" cy="-14" r="46"/><circle cx="316" cy="-14" r="31"/><circle cx="316" cy="-14" r="17"/>
+      <circle cx="408" cy="-14" r="46"/><circle cx="408" cy="-14" r="31"/><circle cx="408" cy="-14" r="17"/>
+    </g>
   </g>
 
   <!-- start-lights accent bar -->

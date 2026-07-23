@@ -84,6 +84,47 @@ def _curves(base: Image.Image, w: int, h: int, n: int = 4) -> Image.Image:
     return Image.alpha_composite(base.convert("RGBA"), overlay)
 
 
+def _track_outline(base: Image.Image, w: int, h: int) -> Image.Image:
+    """Abstract closed racetrack-style loop (invented shape, not a real circuit),
+    very low opacity, as a second layer of racing-inspired background texture."""
+    overlay = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    od = ImageDraw.Draw(overlay)
+    cx, cy = w * 0.62, h * 0.5
+    rx, ry = w * 0.46, h * 0.62
+    pts = []
+    for i in range(0, 361, 6):
+        a = math.radians(i)
+        # base ellipse perturbed by two "chicane" kinks so it doesn't read as
+        # a perfect oval
+        r = 1.0
+        r -= 0.14 * math.exp(-((a - 1.1) ** 2) / 0.05)
+        r -= 0.10 * math.exp(-((a - 4.2) ** 2) / 0.08)
+        x = cx + rx * r * math.cos(a)
+        y = cy + ry * r * math.sin(a)
+        pts.append((x, y))
+    od.line(pts + [pts[0]], fill=(*CYAN, 26), width=2)
+    return Image.alpha_composite(base.convert("RGBA"), overlay)
+
+
+def _tire_wall(base: Image.Image, w: int, h: int) -> Image.Image:
+    """Row of tire cross-sections (concentric rings), cropped by the top edge,
+    evoking a pit-lane tire wall without depicting any real tire brand."""
+    overlay = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    od = ImageDraw.Draw(overlay)
+    spacing = 92
+    radius = 46
+    cy = -14
+    x = 40
+    while x < w + radius:
+        for ring, alpha in ((radius, 30), (radius * 0.68, 22), (radius * 0.36, 16)):
+            od.ellipse(
+                [x - ring, cy - ring, x + ring, cy + ring],
+                outline=(*GREY_TEXT, alpha), width=2,
+            )
+        x += spacing
+    return Image.alpha_composite(base.convert("RGBA"), overlay)
+
+
 def _stat_card(draw, x, y, w, h, number, label):
     draw.rectangle([x, y, x + w, y + h], outline=(*GRID,), width=1, fill=(18, 21, 29))
     num_font = _font(JBMONO, 22, weight=700)
@@ -94,7 +135,9 @@ def _stat_card(draw, x, y, w, h, number, label):
 
 def make_banner(w: int, h: int, centered: bool, tag: str | None = None) -> Image.Image:
     bg = _background(w, h)
+    bg = _track_outline(bg, w, h)
     bg = _curves(bg, w, h)
+    bg = _tire_wall(bg, w, h)
     bg = _grid(bg, w, h)
     img = bg.convert("RGB")
     draw = ImageDraw.Draw(img, "RGBA")
