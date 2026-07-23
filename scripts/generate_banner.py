@@ -1,17 +1,14 @@
 """Render the README banner and GitHub social-preview image directly with
 Pillow (no cairosvg/rsvg-convert/Inkscape available in this environment).
 
-Pixel-mosaic background: chunky rectangular blocks (not just squares) tile
-the *entire* canvas -- no gaps, no reserved panel -- in a flowing dark-blue
--> purple -> light-blue gradient. Each block's own colour is then alpha-
-blended toward white by a radial vignette centred on the canvas (vivid in
-the middle, fading to white toward all four edges equally) -- deliberately
-NOT anchored to the text position, since a text-anchored fade always reads
-as a lopsided "colour on one side, white on the other" split no matter how
-soft the edge is. Text gets only a minimal, tight safety clearing (a few
-pixels) so glyphs stay crisp, not a wide dissolve halo. Both raster images
-share one drawing routine parameterised by size and layout, so the banner
-and the social preview never visually drift apart. Run:
+Pixel-mosaic background, split by the rectangle's own diagonal into two
+right triangles: the upper-right triangle (most of the right side, plus a
+chunk of the middle) is tiled with chunky rectangular mosaic blocks in a
+flowing dark-blue -> purple -> light-blue gradient; the lower-left triangle
+(where the title text sits) is plain white. Text still gets a minimal, tight
+safety clearing in case a block's corner grazes the boundary near it. Both
+raster images share one drawing routine parameterised by size and layout, so
+the banner and the social preview never visually drift apart. Run:
 
     python scripts/generate_banner.py
 """
@@ -28,10 +25,7 @@ FONTS = ROOT / "assets" / "fonts"
 OUT = ROOT / "assets"
 
 DARK_BLUE = (10, 14, 46)     # deep navy-indigo
-LIGHT_BLUE = (36, 140, 224)  # punchy azure -- NOT pale, so it doesn't vanish
-                              # into the white vignette faster than the other
-                              # two anchor colours do (a paler blue here was
-                              # the real cause of "colour left, white right")
+LIGHT_BLUE = (36, 140, 224)  # punchy azure
 PURPLE = (124, 58, 237)      # vivid violet
 RED = (225, 6, 0)
 WHITE = (255, 255, 255)
@@ -39,7 +33,7 @@ INK = (18, 20, 28)           # near-black text on the white ground
 INK_SOFT = (74, 78, 92)
 
 SEED = 20260723
-CELL = 26
+CELL = 36
 SHAPES = (
     (1, 1), (1, 1), (1, 1),
     (2, 1), (1, 2), (2, 1), (1, 2),
@@ -69,18 +63,13 @@ def _lerp(a: tuple[int, int, int], b: tuple[int, int, int], t: float) -> tuple[i
     return tuple(int(a[i] + (b[i] - a[i]) * t) for i in range(3))
 
 
-def _gradient_color(angle: float) -> tuple[int, int, int]:
-    """3-stop gradient (dark blue -> purple -> light blue) that rotates
-    around the canvas centre by angle (radians, 0..2*pi) instead of running
-    left-to-right -- a directional (u, v) gradient combined with a centred
-    whiteness vignette is what made colour pool on one side and white on the
-    other; a rotational hue has no left/right bias to begin with."""
-    t = (angle % (2 * math.pi)) / (2 * math.pi)
-    if t < 1 / 3:
-        return _lerp(DARK_BLUE, PURPLE, t / (1 / 3))
-    if t < 2 / 3:
-        return _lerp(PURPLE, LIGHT_BLUE, (t - 1 / 3) / (1 / 3))
-    return _lerp(LIGHT_BLUE, DARK_BLUE, (t - 2 / 3) / (1 / 3))
+def _gradient_color(u: float, v: float) -> tuple[int, int, int]:
+    """3-stop diagonal gradient (dark blue -> purple -> light blue), flowing
+    across the pixel triangle from its boundary edge toward the far corner."""
+    t = max(0.0, min(1.0, u * 0.6 + v * 0.4))
+    if t < 0.5:
+        return _lerp(DARK_BLUE, PURPLE, t / 0.5)
+    return _lerp(PURPLE, LIGHT_BLUE, (t - 0.5) / 0.5)
 
 
 def _smoothstep(t: float) -> float:
@@ -106,21 +95,22 @@ def _whiteness_at(x: float, y: float, voids: list[Void]) -> float:
     return whiteness
 
 
-def _vignette_whiteness(x: float, y: float, w: float, h: float) -> float:
-    """Radial gradient centred on the canvas: 0 (full colour) in the middle,
-    fading to ~0.85 white at the edges/corners -- symmetric in every
-    direction, so it never reads as a one-sided split."""
-    d = math.hypot((x - w / 2) / (w * 0.6), (y - h / 2) / (h * 0.9))
-    return max(0.0, min(0.85, _smoothstep(d)))
+def _diagonal_whiteness(x: float, y: float, w: float, h: float) -> float:
+    """Split the rectangle along its own diagonal (top-left to bottom-right)
+    into two right triangles: 0 (full colour) in the upper-right triangle,
+    1 (white) in the lower-left one where the title text lives. A few
+    pixels of antialiasing at the boundary, not a wide fade -- this is meant
+    to read as a clean triangle, not a gradient."""
+    boundary_y = x * (h / w)
+    return 0.0 if y < boundary_y - 3 else (1.0 if y > boundary_y + 3 else (y - (boundary_y - 3)) / 6)
 
 
 def _tile_blocks(w: int, h: int, voids: list[Void], cell: int = CELL) -> list[tuple[int, int, int, int, tuple[int, int, int]]]:
     """Pack varying-size rectangles (1-3 cells) over the *entire* canvas --
-    full coverage, no gaps -- then blend each block's colour toward white by
-    a centred radial vignette (plus a tight text-clearing safety margin), so
-    the pixels-to-white transition is a smooth colour gradient instead of a
-    hole in the mosaic or a text-anchored dissolve. Returns (x, y, w, h,
-    color) in pixels."""
+    full coverage, no gaps -- then flip each block to white if it falls in
+    the lower-left triangle (plus a tight text-clearing safety margin),
+    leaving the upper-right triangle as solid mosaic colour. Returns
+    (x, y, w, h, color) in pixels."""
     rng = random.Random(SEED)
     cols, rows = math.ceil(w / cell), math.ceil(h / cell)
     occupied = [[False] * cols for _ in range(rows)]
@@ -145,11 +135,10 @@ def _tile_blocks(w: int, h: int, voids: list[Void], cell: int = CELL) -> list[tu
             px0, py0 = c * cell, r * cell
             pw, ph = bw * cell, bh * cell
             cx, cy = px0 + pw / 2, py0 + ph / 2
-            angle = math.atan2((cy - h / 2) / h, (cx - w / 2) / w)
-            col = _gradient_color(angle)
+            col = _gradient_color(cx / w, cy / h)
             jitter = rng.uniform(-0.08, 0.08)
             col = tuple(max(0, min(255, int(ch * (1 + jitter)))) for ch in col)
-            whiteness = max(_vignette_whiteness(cx, cy, w, h), _whiteness_at(cx, cy, voids))
+            whiteness = max(_diagonal_whiteness(cx, cy, w, h), _whiteness_at(cx, cy, voids))
             col = _lerp(col, WHITE, whiteness)
             blocks.append((px0, py0, pw, ph, col))
             break
