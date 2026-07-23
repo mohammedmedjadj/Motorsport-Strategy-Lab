@@ -591,7 +591,7 @@ motorsport-strategy-lab/
     wec/                # phase 0-4 reports
     methodology.md      # F1 mini-paper
   README.md
-  LICENSE               # MIT
+  LICENSE               # CC BY-NC-SA 4.0
   pyproject.toml
   requirements.txt      # top-level deps; requirements.lock pins exact versions
 ```
@@ -688,8 +688,15 @@ like NSGA-II would buy nothing.
 
 ## License & attribution
 
-The code in this repository is released under the **MIT License** — see
-[`LICENSE`](LICENSE). Copyright Mohammed Reda Medjadj, 2026.
+This repository — code, derived data, reports and notebooks — is released
+under **CC BY-NC-SA 4.0** (Attribution-NonCommercial-ShareAlike) — see
+[`LICENSE`](LICENSE). Copyright Mohammed Reda Medjadj, 2026. In short: reuse
+and adaptation are welcome with credit, but not for commercial purposes, and
+any derivative must carry the same license. (This project was MIT-licensed
+earlier; MIT's permissive terms allowed unattributed commercial reuse, which
+no longer matches the intent now that the work is published more widely —
+CC BY-NC-SA keeps it open for research and learning while requiring
+attribution and blocking commercial appropriation.)
 
 F1 data is accessed through [FastF1](https://github.com/theOehrly/Fast-F1),
 which sources official Formula 1 live-timing data; this project is
@@ -700,3 +707,6 @@ Face and itself released under the MIT License); this project is
 unaffiliated with IMSA, the FIA World Endurance Championship, or any
 competing team. All data is used for independent research and analysis; no
 proprietary or non-public information is used anywhere in this project.
+FastF1 and the upstream WEC/IMSA dataset remain under their own MIT terms;
+this license applies to this project's own code, models, and derived
+output.
