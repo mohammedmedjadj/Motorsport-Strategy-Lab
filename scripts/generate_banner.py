@@ -4,13 +4,14 @@ Pillow (no cairosvg/rsvg-convert/Inkscape available in this environment).
 Pixel-mosaic background: chunky rectangular blocks (not just squares) tile
 the *entire* canvas -- no gaps, no reserved panel -- in a flowing dark-blue
 -> purple -> light-blue gradient. Each block's own colour is then alpha-
-blended toward white by how close it sits to the title/subtitle/stat text,
-using a smooth radial falloff. That makes the pixels-to-white transition an
-actual colour gradient (saturated mosaic far from the text, fading through
-pale tints, white right at the text) rather than a hard panel or a binary
-"block here / gap there" pattern. Both raster images share one drawing
-routine parameterised by size and layout, so the banner and the social
-preview never visually drift apart. Run:
+blended toward white by a radial vignette centred on the canvas (vivid in
+the middle, fading to white toward all four edges equally) -- deliberately
+NOT anchored to the text position, since a text-anchored fade always reads
+as a lopsided "colour on one side, white on the other" split no matter how
+soft the edge is. Text gets only a minimal, tight safety clearing (a few
+pixels) so glyphs stay crisp, not a wide dissolve halo. Both raster images
+share one drawing routine parameterised by size and layout, so the banner
+and the social preview never visually drift apart. Run:
 
     python scripts/generate_banner.py
 """
@@ -82,13 +83,14 @@ def _smoothstep(t: float) -> float:
     return t * t * (3 - 2 * t)
 
 
-DEADZONE = 10  # px of guaranteed-pure-white just beyond a void's core rect,
-                # so no fade-tinted pixel ever sits under the text itself
+DEADZONE = 8  # px of guaranteed-pure-white just beyond a void's core rect,
+               # so no fade-tinted pixel ever sits under the text itself
+TEXT_CLEAR_RADIUS = 14  # tight -- a safety margin, not a dissolve halo
 
 
 def _whiteness_at(x: float, y: float, voids: list[Void]) -> float:
-    """0 = full-strength mosaic colour, 1 = pure white. Smallest (most-white)
-    value wins across overlapping voids."""
+    """0 = full-strength mosaic colour, 1 = pure white, from proximity to a
+    text-clearing void. Smallest (most-white) value wins across overlaps."""
     whiteness = 0.0
     for x0, y0, x1, y1, radius in voids:
         dx = max(x0 - x, 0.0, x - x1)
@@ -99,12 +101,21 @@ def _whiteness_at(x: float, y: float, voids: list[Void]) -> float:
     return whiteness
 
 
+def _vignette_whiteness(x: float, y: float, w: float, h: float) -> float:
+    """Radial gradient centred on the canvas: 0 (full colour) in the middle,
+    fading to ~0.85 white at the edges/corners -- symmetric in every
+    direction, so it never reads as a one-sided split."""
+    d = math.hypot((x - w / 2) / (w * 0.6), (y - h / 2) / (h * 0.9))
+    return max(0.0, min(0.85, _smoothstep(d)))
+
+
 def _tile_blocks(w: int, h: int, voids: list[Void], cell: int = CELL) -> list[tuple[int, int, int, int, tuple[int, int, int]]]:
     """Pack varying-size rectangles (1-3 cells) over the *entire* canvas --
     full coverage, no gaps -- then blend each block's colour toward white by
-    its distance from a void (text/stats), so the pixels-to-white transition
-    is a smooth colour gradient instead of a hole in the mosaic. Returns
-    (x, y, w, h, color) in pixels."""
+    a centred radial vignette (plus a tight text-clearing safety margin), so
+    the pixels-to-white transition is a smooth colour gradient instead of a
+    hole in the mosaic or a text-anchored dissolve. Returns (x, y, w, h,
+    color) in pixels."""
     rng = random.Random(SEED)
     cols, rows = math.ceil(w / cell), math.ceil(h / cell)
     occupied = [[False] * cols for _ in range(rows)]
@@ -133,7 +144,8 @@ def _tile_blocks(w: int, h: int, voids: list[Void], cell: int = CELL) -> list[tu
             col = _gradient_color(u, v)
             jitter = rng.uniform(-0.08, 0.08)
             col = tuple(max(0, min(255, int(ch * (1 + jitter)))) for ch in col)
-            whiteness = _whiteness_at(px0 + pw / 2, py0 + ph / 2, voids)
+            cx, cy = px0 + pw / 2, py0 + ph / 2
+            whiteness = max(_vignette_whiteness(cx, cy, w, h), _whiteness_at(cx, cy, voids))
             col = _lerp(col, WHITE, whiteness)
             blocks.append((px0, py0, pw, ph, col))
             break
@@ -191,29 +203,29 @@ def make_banner(w: int, h: int, centered: bool, tag: str | None = None) -> Image
         sb = draw.textbbox((0, 0), subtitle, font=subtitle_font)
         # separate voids per text line -- lets the mosaic show through the
         # gap between title and subtitle instead of one big blank rectangle
-        voids.append((0, top - 4, margin + (tb[2] - tb[0]), top + title_size + 2, 90))
+        voids.append((0, top - 4, margin + (tb[2] - tb[0]), top + title_size + 2, TEXT_CLEAR_RADIUS))
         sub_top = top + title_size + 14
-        voids.append((0, sub_top - 2, margin + (sb[2] - sb[0]), sub_top + 22, 90))
+        voids.append((0, sub_top - 2, margin + (sb[2] - sb[0]), sub_top + 22, TEXT_CLEAR_RADIUS))
 
         stats = [("3", "SERIES"), ("140+", "TESTS"), ("5", "AUDITED RACES")]
         start_y = top + title_size + 14 + 46
         stat_xs, stat_ws = _stat_layout(draw, stats, w - margin)
         for sx, sw in zip(stat_xs, stat_ws):
-            voids.append((sx - 6, start_y - 6, sx + sw + 6, start_y + 46, 65))
+            voids.append((sx - 6, start_y - 6, sx + sw + 6, start_y + 46, TEXT_CLEAR_RADIUS))
     else:
         tb = draw.textbbox((0, 0), title, font=title_font)
         tw = tb[2] - tb[0]
         sb = draw.textbbox((0, 0), subtitle, font=subtitle_font)
         sw = sb[2] - sb[0]
         top = h * 0.36
-        voids.append(((w - tw) / 2, top - 4, (w + tw) / 2, top + title_size + 2, 95))
+        voids.append(((w - tw) / 2, top - 4, (w + tw) / 2, top + title_size + 2, TEXT_CLEAR_RADIUS))
         sub_top = top + title_size + 22
-        voids.append(((w - sw) / 2, sub_top - 2, (w + sw) / 2, sub_top + 24, 95))
+        voids.append(((w - sw) / 2, sub_top - 2, (w + sw) / 2, sub_top + 24, TEXT_CLEAR_RADIUS))
         if tag:
             tag_font = _font(JBMONO, 14, weight=500)
             tgb = draw.textbbox((0, 0), tag, font=tag_font)
             tgw = tgb[2] - tgb[0]
-            voids.append(((w - tgw) / 2, h - 50, (w + tgw) / 2, h - 30, 60))
+            voids.append(((w - tgw) / 2, h - 50, (w + tgw) / 2, h - 30, TEXT_CLEAR_RADIUS))
 
     blocks = _tile_blocks(w, h, voids)
     _draw_blocks(img, blocks)
@@ -262,14 +274,14 @@ def make_banner_svg(w: int, h: int) -> str:
     sb = dummy.textbbox((0, 0), subtitle_plain, font=_font(INTER, 19, weight=400))
 
     top = h * 0.30
-    voids: list[Void] = [(0, top - 4, margin + (tb[2] - tb[0]), top + title_size + 2, 90)]
+    voids: list[Void] = [(0, top - 4, margin + (tb[2] - tb[0]), top + title_size + 2, TEXT_CLEAR_RADIUS)]
     sub_top = top + title_size + 14
-    voids.append((0, sub_top - 2, margin + (sb[2] - sb[0]), sub_top + 22, 90))
+    voids.append((0, sub_top - 2, margin + (sb[2] - sb[0]), sub_top + 22, TEXT_CLEAR_RADIUS))
     stats_labels = [("3", "SERIES"), ("140+", "TESTS"), ("5", "AUDITED RACES")]
     start_y = top + title_size + 14 + 46
     stat_xs, stat_ws = _stat_layout(dummy, stats_labels, w - margin)
     for sx, sw in zip(stat_xs, stat_ws):
-        voids.append((sx - 6, start_y - 6, sx + sw + 6, start_y + 46, 65))
+        voids.append((sx - 6, start_y - 6, sx + sw + 6, start_y + 46, TEXT_CLEAR_RADIUS))
 
     blocks = _tile_blocks(w, h, voids)
     rects = "".join(
