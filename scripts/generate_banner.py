@@ -28,7 +28,10 @@ FONTS = ROOT / "assets" / "fonts"
 OUT = ROOT / "assets"
 
 DARK_BLUE = (10, 14, 46)     # deep navy-indigo
-LIGHT_BLUE = (130, 209, 255) # bright sky blue
+LIGHT_BLUE = (36, 140, 224)  # punchy azure -- NOT pale, so it doesn't vanish
+                              # into the white vignette faster than the other
+                              # two anchor colours do (a paler blue here was
+                              # the real cause of "colour left, white right")
 PURPLE = (124, 58, 237)      # vivid violet
 RED = (225, 6, 0)
 WHITE = (255, 255, 255)
@@ -66,16 +69,18 @@ def _lerp(a: tuple[int, int, int], b: tuple[int, int, int], t: float) -> tuple[i
     return tuple(int(a[i] + (b[i] - a[i]) * t) for i in range(3))
 
 
-def _gradient_color(u: float, v: float) -> tuple[int, int, int]:
-    """3-stop diagonal gradient (dark blue -> purple -> light blue) with a
-    gentle sinusoidal wobble so the bands flow instead of running dead
-    straight."""
-    diag = (u * 0.75 + v * 0.25)
-    wobble = 0.07 * math.sin(v * math.pi * 2.2 + u * 1.5)
-    t = max(0.0, min(1.0, diag + wobble))
-    if t < 0.5:
-        return _lerp(DARK_BLUE, PURPLE, t / 0.5)
-    return _lerp(PURPLE, LIGHT_BLUE, (t - 0.5) / 0.5)
+def _gradient_color(angle: float) -> tuple[int, int, int]:
+    """3-stop gradient (dark blue -> purple -> light blue) that rotates
+    around the canvas centre by angle (radians, 0..2*pi) instead of running
+    left-to-right -- a directional (u, v) gradient combined with a centred
+    whiteness vignette is what made colour pool on one side and white on the
+    other; a rotational hue has no left/right bias to begin with."""
+    t = (angle % (2 * math.pi)) / (2 * math.pi)
+    if t < 1 / 3:
+        return _lerp(DARK_BLUE, PURPLE, t / (1 / 3))
+    if t < 2 / 3:
+        return _lerp(PURPLE, LIGHT_BLUE, (t - 1 / 3) / (1 / 3))
+    return _lerp(LIGHT_BLUE, DARK_BLUE, (t - 2 / 3) / (1 / 3))
 
 
 def _smoothstep(t: float) -> float:
@@ -139,12 +144,11 @@ def _tile_blocks(w: int, h: int, voids: list[Void], cell: int = CELL) -> list[tu
                     occupied[rr][cc] = True
             px0, py0 = c * cell, r * cell
             pw, ph = bw * cell, bh * cell
-            u = (px0 + pw / 2) / w
-            v = (py0 + ph / 2) / h
-            col = _gradient_color(u, v)
+            cx, cy = px0 + pw / 2, py0 + ph / 2
+            angle = math.atan2((cy - h / 2) / h, (cx - w / 2) / w)
+            col = _gradient_color(angle)
             jitter = rng.uniform(-0.08, 0.08)
             col = tuple(max(0, min(255, int(ch * (1 + jitter)))) for ch in col)
-            cx, cy = px0 + pw / 2, py0 + ph / 2
             whiteness = max(_vignette_whiteness(cx, cy, w, h), _whiteness_at(cx, cy, voids))
             col = _lerp(col, WHITE, whiteness)
             blocks.append((px0, py0, pw, ph, col))
