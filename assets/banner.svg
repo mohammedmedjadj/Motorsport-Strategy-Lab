@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="300" viewBox="0 0 1200 300" role="img"
+     aria-label="Motorsport Strategy Lab -- Bayesian and Monte Carlo race strategy research across F1, WEC and IMSA">
+  <title>Motorsport Strategy Lab</title>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0B0E14"/>
+      <stop offset="100%" stop-color="#05080C"/>
+    </linearGradient>
+    <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M 48 0 L 0 0 0 48" fill="none" stroke="#2A2F3A" stroke-width="1" opacity="0.18"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="300" fill="url(#bg)"/>
+  <rect width="1200" height="300" fill="url(#grid)"/>
+
+  <!-- degradation / distribution style curves, low-opacity watermark -->
+  <g fill="none" stroke="#00D9FF" stroke-width="2">
+    <path opacity="0.22" d="M0,90 C150,40 300,140 450,90 S750,40 900,90 S1150,130 1200,90"/>
+    <path opacity="0.18" d="M0,150 C180,190 320,110 480,150 S760,200 920,150 S1150,110 1200,150"/>
+    <path opacity="0.14" d="M0,200 C160,160 340,230 500,190 S780,150 940,200 S1150,230 1200,190"/>
+    <path opacity="0.10" d="M0,240 C200,260 350,210 520,240 S800,270 950,240 S1150,210 1200,240"/>
+  </g>
+
+  <!-- start-lights accent bar -->
+  <rect x="60" y="76" width="90" height="4" fill="#E10600"/>
+
+  <text x="60" y="140" font-family="Space Grotesk, Arial, sans-serif" font-weight="700"
+        font-size="46" fill="#F5F5F5" letter-spacing="0.5">MOTORSPORT STRATEGY LAB</text>
+
+  <text x="60" y="172" font-family="Inter, Arial, sans-serif" font-weight="400"
+        font-size="19" fill="#A8AEBC">Bayesian &amp; Monte Carlo Race Strategy Research — F1 · WEC · IMSA</text>
+
+  <!-- stat cards -->
+  <g font-family="JetBrains Mono, Consolas, monospace">
+    <g>
+      <rect x="658" y="200" width="150" height="78" fill="#12151D" stroke="#2A2F3A"/>
+      <text x="672" y="228" font-size="22" font-weight="700" fill="#E10600">3</text>
+      <text x="672" y="264" font-size="11" fill="#A8AEBC">SERIES</text>
+    </g>
+    <g>
+      <rect x="824" y="200" width="150" height="78" fill="#12151D" stroke="#2A2F3A"/>
+      <text x="838" y="228" font-size="22" font-weight="700" fill="#E10600">140+</text>
+      <text x="838" y="264" font-size="11" fill="#A8AEBC">TESTS</text>
+    </g>
+    <g>
+      <rect x="990" y="200" width="150" height="78" fill="#12151D" stroke="#2A2F3A"/>
+      <text x="1004" y="228" font-size="22" font-weight="700" fill="#E10600">5</text>
+      <text x="1004" y="264" font-size="11" fill="#A8AEBC">AUDITED RACES</text>
+    </g>
+  </g>
+</svg>

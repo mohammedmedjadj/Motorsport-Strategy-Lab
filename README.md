@@ -1,6 +1,26 @@
 
 # motorsport-strategy-lab — Race Strategy Simulator & Decision Audit
 
+<p align="center">
+  <img src="assets/banner.png" alt="Motorsport Strategy Lab -- Bayesian and Monte Carlo race strategy research across F1, WEC and IMSA" width="100%">
+</p>
+
+<p align="center">
+  <a href="https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab/actions/workflows/tests.yml"><img src="https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab/actions/workflows/tests.yml/badge.svg" alt="Test suite status"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-CC%20BY--NC--SA%204.0-E10600" alt="License: CC BY-NC-SA 4.0"></a>
+  <img src="https://img.shields.io/badge/python-3.11%2B-00D9FF" alt="Python 3.11+">
+  <img src="https://img.shields.io/badge/tests-140%2B%20passing-2ea44f" alt="140+ tests passing">
+  <img src="https://img.shields.io/badge/series-F1%20%C2%B7%20WEC%20%C2%B7%20IMSA-FFB800" alt="Series: F1, WEC, IMSA">
+</p>
+
+<p align="center">
+  <a href="reports/methodology.md">Methodology</a> ·
+  <a href="#key-findings">Key Findings</a> ·
+  <a href="reports/f1/audit_cases.md">Audit Cases</a> ·
+  <a href="#setup">Installation</a> ·
+  <a href="CONTRIBUTING.md">Contributing</a>
+</p>
+
 A motorsport race-strategy research project: a three-layer decision-support
 system — tyre degradation model, safety-car probability model, Monte Carlo
 strategy simulator — plus a retrospective audit that replays real strategy
@@ -19,6 +39,27 @@ written methodology). WEC and IMSA cover the equivalent modelling phases
 methodology write-up — see the limitations under each series.
 Jump to: [Formula 1](#formula-1) · [WEC](#wec) · [IMSA](#imsa) ·
 [Methods](#mathematical-methods).
+
+## Key Findings
+
+> **Monaco's "guaranteed" safety car, measured rather than assumed —**
+> **P = 0.44** [0.14, 0.77]. Only 3 of 7 editions since 2018 actually saw a
+> Safety Car — notably less certain than the circuit's reputation suggests.
+> ([`reports/f1/safety_car_phase3.md`](reports/f1/safety_car_phase3.md))
+
+> **A caught bug: a degradation fit off by an order of magnitude —**
+> **−0.53 s/lap, 13.9s RMSE → −0.0689 s/lap, 1.19s RMSE.** Road America
+> 2024's first fit was nonsense: a field-wide standing-start effect on laps
+> 2-3 was masquerading as tyre wear. Root-caused, fixed with a field-wide
+> filter ahead of the per-car one, regression-tested against the real race.
+> ([`reports/imsa/degradation_phase2.md`](reports/imsa/degradation_phase2.md))
+
+> **What actually transfers across seasons — almost nothing, except one circuit —**
+> **R² ≈ +0.21** at Bahrain (WEC), the one circuit in either series where a
+> slope fit on two seasons predicts a third. Everywhere else checked, F1
+> included, within-stint R² goes negative out of sample — the reason every
+> coefficient in this project is carried as a distribution, never a point
+> value. ([`reports/wec/degradation_phase2.md`](reports/wec/degradation_phase2.md))
 
 ## Why this project
 
@@ -42,6 +83,37 @@ IMSA data come from a community-maintained dataset (details under
 [WEC](#wec) and [IMSA](#imsa)). Nothing is invented to fill a gap — if a
 source doesn't have something, that's stated as a limitation, not patched
 over.
+
+## How it fits together
+
+```mermaid
+flowchart LR
+    A[Data Ingestion<br/>FastF1 · WEC/IMSA dataset] --> B[Modeling<br/>Tyre Degradation]
+    A --> C[Modeling<br/>Bayesian Neutralisation Risk]
+    B --> D[Simulation<br/>Monte Carlo Strategy Engine]
+    C --> D
+    D --> E[Retrospective Audit<br/>replay real strategy calls]
+```
+
+```mermaid
+flowchart LR
+    subgraph F1["Formula 1"]
+        direction LR
+        f0["0 Data<br/>availability"] --> f1["1 Data<br/>quality"] --> f2["2 Degradation"] --> f3["3 SC/VSC"] --> f4["4 Simulator"] --> f5["5 Prediction"] --> f6["6 Racecraft"] --> f7["7 Audit"]
+    end
+    subgraph END["WEC & IMSA"]
+        direction LR
+        e0["0 Data<br/>availability"] --> e1["1 Data<br/>quality"] --> e2["2 Degradation"] --> e3["3 Neutralisation"] --> e4["4 Simulator"]
+    end
+    classDef done fill:#2ea44f,stroke:#1a7f37,color:#fff
+    classDef partial fill:#FFB800,stroke:#b58600,color:#1a1a1a
+    class f0,f1,f2,f3,f4,f5,f6,f7 done
+    class e0,e1,e2,e3,e4 done
+```
+
+F1 runs the full pipeline through phase 7 (audit + written methodology); WEC
+and IMSA currently stop at phase 4 (simulator) — see each series' own
+"known limitations" for what an audit phase would need.
 
 ## Repository map
 
@@ -579,19 +651,28 @@ motorsport-strategy-lab/
     simulator/          # engine.py (F1, vectorised + optional Sobol QMC),
                         #   recommend.py (Pareto front); endurance.py (WEC/IMSA)
     audit/              # F1 retrospective audit scripts
-  notebooks/            # exploration only — never the source of truth
+  notebooks/            # kaggle_demo.ipynb -- validated end-to-end demo,
+                        #   published to Kaggle; never the source of truth
+                        #   for a reported number, which always lives in
+                        #   reports/ + the pytest artifact drift guards
   scripts/              # run_ingestion.py, run_degradation.py, run_safety_car.py,
                         #   run_simulator_demo.py (F1); run_endurance_flags.py +
                         #   run_endurance_models.py (WEC/IMSA data + model
-                        #   artifacts); demo_extensions.py
+                        #   artifacts); demo_extensions.py; generate_banner.py
   tests/                # pytest, all three series, 140+ tests
   reports/
     f1/                 # phase 0-4 reports, audit cases, figures
     imsa/               # phase 0-4 reports
     wec/                # phase 0-4 reports
     methodology.md      # F1 mini-paper
+  assets/               # banner.png/svg, social-preview.png, fonts/ (OFL-licensed)
+  .github/
+    workflows/          # tests.yml, post-race-refresh.yml
+    ISSUE_TEMPLATE/      # bug report + feature request
   README.md
   LICENSE               # CC BY-NC-SA 4.0
+  CONTRIBUTING.md
+  CITATION.cff
   pyproject.toml
   requirements.txt      # top-level deps; requirements.lock pins exact versions
 ```
