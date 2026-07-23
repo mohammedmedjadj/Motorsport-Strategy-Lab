@@ -1,14 +1,18 @@
 """Render the README banner and GitHub social-preview image directly with
 Pillow (no cairosvg/rsvg-convert/Inkscape available in this environment).
 
-Both images share one drawing routine parameterised by size and layout, so the
-banner and the social preview never visually drift apart. Run:
+Pixel-mosaic style background (chunky quantised tiles along a flowing
+diagonal gradient, dark blue -> purple -> light blue), inspired by the
+"Mistral" mosaic-gradient look but in this project's own palette. Both
+raster images share one drawing routine parameterised by size and layout,
+so the banner and the social preview never visually drift apart. Run:
 
     python scripts/generate_banner.py
 """
 from __future__ import annotations
 
 import math
+import random
 from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFont
@@ -17,14 +21,14 @@ ROOT = Path(__file__).resolve().parent.parent
 FONTS = ROOT / "assets" / "fonts"
 OUT = ROOT / "assets"
 
-BG_TOP = (11, 14, 20)       # #0B0E14
-BG_BOTTOM = (5, 7, 12)
-GRID = (42, 47, 58)         # #2A2F3A
-CYAN = (0, 217, 255)        # #00D9FF
-RED = (225, 6, 0)           # #E10600
-AMBER = (255, 184, 0)       # #FFB800
-WHITE = (245, 245, 245)     # #F5F5F5
-GREY_TEXT = (168, 174, 188)
+DARK_BLUE = (10, 14, 46)     # deep navy-indigo
+LIGHT_BLUE = (130, 209, 255) # bright sky blue
+PURPLE = (124, 58, 237)      # vivid violet
+RED = (225, 6, 0)
+WHITE = (245, 245, 245)
+GREY_TEXT = (222, 226, 236)
+
+SEED = 20260723
 
 
 def _font(path: Path, size: int, weight: float | None = None) -> ImageFont.FreeTypeFont:
@@ -39,107 +43,83 @@ INTER = FONTS / "Inter-Regular.ttf"
 JBMONO = FONTS / "JetBrainsMono-Bold.ttf"
 
 
-def _background(w: int, h: int) -> Image.Image:
-    img = Image.new("RGB", (w, h), BG_TOP)
+def _lerp(a: tuple[int, int, int], b: tuple[int, int, int], t: float) -> tuple[int, int, int]:
+    t = max(0.0, min(1.0, t))
+    return tuple(int(a[i] + (b[i] - a[i]) * t) for i in range(3))
+
+
+def _gradient_color(u: float, v: float) -> tuple[int, int, int]:
+    """3-stop diagonal gradient (dark blue -> purple -> light blue) with a
+    gentle sinusoidal wobble so the bands flow instead of running dead
+    straight."""
+    diag = (u * 0.75 + v * 0.25)
+    wobble = 0.07 * math.sin(v * math.pi * 2.2 + u * 1.5)
+    t = max(0.0, min(1.0, diag + wobble))
+    if t < 0.5:
+        return _lerp(DARK_BLUE, PURPLE, t / 0.5)
+    return _lerp(PURPLE, LIGHT_BLUE, (t - 0.5) / 0.5)
+
+
+def _pixel_mosaic(w: int, h: int, tile: int = 18) -> Image.Image:
+    rng = random.Random(SEED)
+    img = Image.new("RGB", (w, h))
     px = img.load()
-    for y in range(h):
-        t = y / max(h - 1, 1)
-        r = int(BG_TOP[0] + (BG_BOTTOM[0] - BG_TOP[0]) * t)
-        g = int(BG_TOP[1] + (BG_BOTTOM[1] - BG_TOP[1]) * t)
-        b = int(BG_TOP[2] + (BG_BOTTOM[2] - BG_TOP[2]) * t)
-        for x in range(w):
-            px[x, y] = (r, g, b)
+    for ty in range(0, h, tile):
+        for tx in range(0, w, tile):
+            u = (tx + tile / 2) / w
+            v = (ty + tile / 2) / h
+            r, g, b = _gradient_color(u, v)
+            jitter = rng.uniform(-0.08, 0.08)
+            r = max(0, min(255, int(r * (1 + jitter))))
+            g = max(0, min(255, int(g * (1 + jitter))))
+            b = max(0, min(255, int(b * (1 + jitter))))
+            for y in range(ty, min(ty + tile, h)):
+                for x in range(tx, min(tx + tile, w)):
+                    px[x, y] = (r, g, b)
     return img
 
 
-def _grid(base: Image.Image, w: int, h: int, step: int = 48) -> Image.Image:
+def _scrim_left(base: Image.Image, w: int, h: int, extent: float = 0.6) -> Image.Image:
+    """Dark gradient overlay, opaque on the left fading to transparent, so
+    left-aligned title text stays legible over the mosaic."""
     overlay = Image.new("RGBA", (w, h), (0, 0, 0, 0))
-    od = ImageDraw.Draw(overlay)
-    for x in range(0, w, step):
-        od.line([(x, 0), (x, h)], fill=(*GRID, 40), width=1)
-    for y in range(0, h, step):
-        od.line([(0, y), (w, y)], fill=(*GRID, 25), width=1)
+    px = overlay.load()
+    cut = int(w * extent)
+    for x in range(w):
+        if x < cut:
+            alpha = int(200 * (1 - x / cut) ** 1.3)
+        else:
+            alpha = 0
+        for y in range(h):
+            px[x, y] = (0, 0, 0, alpha)
     return Image.alpha_composite(base.convert("RGBA"), overlay)
 
 
-def _curves(base: Image.Image, w: int, h: int, n: int = 4) -> Image.Image:
-    """Degradation/distribution-style curves in cyan, low opacity, as watermark."""
+def _scrim_radial(base: Image.Image, w: int, h: int, cx: float, cy: float, radius: float) -> Image.Image:
     overlay = Image.new("RGBA", (w, h), (0, 0, 0, 0))
-    od = ImageDraw.Draw(overlay)
-    rng_seed = [0.6, 1.3, 2.1, 0.9]
-    for i in range(n):
-        phase = rng_seed[i % len(rng_seed)]
-        amp = h * (0.10 + 0.04 * i)
-        base_y = h * (0.25 + 0.18 * i)
-        alpha = int(255 * (0.22 - 0.03 * i))
-        alpha = max(alpha, 20)
-        pts = []
-        for x in range(0, w + 1, 4):
-            t = x / w
-            # decaying-exponential-ish curve modulated by a slow sine, like a
-            # tyre-degradation trace riding a lap-time distribution
-            y = base_y - amp * math.exp(-2.2 * t) * math.sin(2 * math.pi * (t * 1.4 + phase))
-            pts.append((x, y))
-        od.line(pts, fill=(*CYAN, alpha), width=2)
-    return Image.alpha_composite(base.convert("RGBA"), overlay)
-
-
-def _track_outline(base: Image.Image, w: int, h: int) -> Image.Image:
-    """Abstract closed racetrack-style loop (invented shape, not a real circuit),
-    very low opacity, as a second layer of racing-inspired background texture."""
-    overlay = Image.new("RGBA", (w, h), (0, 0, 0, 0))
-    od = ImageDraw.Draw(overlay)
-    cx, cy = w * 0.62, h * 0.5
-    rx, ry = w * 0.46, h * 0.62
-    pts = []
-    for i in range(0, 361, 6):
-        a = math.radians(i)
-        # base ellipse perturbed by two "chicane" kinks so it doesn't read as
-        # a perfect oval
-        r = 1.0
-        r -= 0.14 * math.exp(-((a - 1.1) ** 2) / 0.05)
-        r -= 0.10 * math.exp(-((a - 4.2) ** 2) / 0.08)
-        x = cx + rx * r * math.cos(a)
-        y = cy + ry * r * math.sin(a)
-        pts.append((x, y))
-    od.line(pts + [pts[0]], fill=(*CYAN, 26), width=2)
-    return Image.alpha_composite(base.convert("RGBA"), overlay)
-
-
-def _tire_wall(base: Image.Image, w: int, h: int) -> Image.Image:
-    """Row of tire cross-sections (concentric rings), cropped by the top edge,
-    evoking a pit-lane tire wall without depicting any real tire brand."""
-    overlay = Image.new("RGBA", (w, h), (0, 0, 0, 0))
-    od = ImageDraw.Draw(overlay)
-    spacing = 92
-    radius = 46
-    cy = -14
-    x = 40
-    while x < w + radius:
-        for ring, alpha in ((radius, 30), (radius * 0.68, 22), (radius * 0.36, 16)):
-            od.ellipse(
-                [x - ring, cy - ring, x + ring, cy + ring],
-                outline=(*GREY_TEXT, alpha), width=2,
-            )
-        x += spacing
+    px = overlay.load()
+    for y in range(h):
+        for x in range(w):
+            d = math.hypot((x - cx) / radius, (y - cy) / (radius * 0.55))
+            alpha = int(190 * max(0.0, 1 - d))
+            px[x, y] = (0, 0, 0, alpha)
     return Image.alpha_composite(base.convert("RGBA"), overlay)
 
 
 def _stat_card(draw, x, y, w, h, number, label):
-    draw.rectangle([x, y, x + w, y + h], outline=(*GRID,), width=1, fill=(18, 21, 29))
+    draw.rectangle([x, y, x + w, y + h], outline=(255, 255, 255, 60), width=1, fill=(8, 10, 20, 210))
     num_font = _font(JBMONO, 22, weight=700)
     lbl_font = _font(JBMONO, 11, weight=500)
-    draw.text((x + 14, y + 10), number, font=num_font, fill=RED)
+    draw.text((x + 14, y + 10), number, font=num_font, fill=WHITE)
     draw.text((x + 14, y + h - 26), label, font=lbl_font, fill=GREY_TEXT)
 
 
 def make_banner(w: int, h: int, centered: bool, tag: str | None = None) -> Image.Image:
-    bg = _background(w, h)
-    bg = _track_outline(bg, w, h)
-    bg = _curves(bg, w, h)
-    bg = _tire_wall(bg, w, h)
-    bg = _grid(bg, w, h)
-    img = bg.convert("RGB")
+    bg = _pixel_mosaic(w, h)
+    if centered:
+        img = _scrim_radial(bg, w, h, cx=w / 2, cy=h * 0.44, radius=w * 0.42)
+    else:
+        img = _scrim_left(bg, w, h, extent=0.62)
     draw = ImageDraw.Draw(img, "RGBA")
 
     title = "MOTORSPORT STRATEGY LAB"
@@ -180,7 +160,58 @@ def make_banner(w: int, h: int, centered: bool, tag: str | None = None) -> Image
     accent_w = 90 if not centered else 220
     draw.rectangle([accent_x0, accent_y, accent_x0 + accent_w, accent_y + 4], fill=RED)
 
-    return img
+    return img.convert("RGB")
+
+
+def make_banner_svg(w: int, h: int, tile: int = 18) -> str:
+    """Vector source counterpart of make_banner(w, h, centered=False): same
+    tile grid, same RNG seed, so it can't visually drift from the PNG."""
+    rng = random.Random(SEED)
+    tiles = []
+    for ty in range(0, h, tile):
+        for tx in range(0, w, tile):
+            u = (tx + tile / 2) / w
+            v = (ty + tile / 2) / h
+            r, g, b = _gradient_color(u, v)
+            jitter = rng.uniform(-0.08, 0.08)
+            r = max(0, min(255, int(r * (1 + jitter))))
+            g = max(0, min(255, int(g * (1 + jitter))))
+            b = max(0, min(255, int(b * (1 + jitter))))
+            tiles.append(f'<rect x="{tx}" y="{ty}" width="{tile}" height="{tile}" fill="#{r:02x}{g:02x}{b:02x}"/>')
+
+    title = "MOTORSPORT STRATEGY LAB"
+    subtitle = "Bayesian &amp; Monte Carlo Race Strategy Research — F1 · WEC · IMSA"
+    margin = 60
+
+    return f'''<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" viewBox="0 0 {w} {h}" role="img"
+     aria-label="Motorsport Strategy Lab -- Bayesian and Monte Carlo race strategy research across F1, WEC and IMSA">
+  <title>Motorsport Strategy Lab</title>
+  <defs>
+    <linearGradient id="scrim" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#000000" stop-opacity="0.78"/>
+      <stop offset="62%" stop-color="#000000" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <g>{"".join(tiles)}</g>
+  <rect width="{w}" height="{h}" fill="url(#scrim)"/>
+  <rect x="{margin}" y="76" width="90" height="4" fill="#E10600"/>
+  <text x="{margin}" y="140" font-family="Space Grotesk, Arial, sans-serif" font-weight="700"
+        font-size="46" fill="#F5F5F5" letter-spacing="0.5">{title}</text>
+  <text x="{margin}" y="172" font-family="Inter, Arial, sans-serif" font-weight="400"
+        font-size="19" fill="#DEE2EC">{subtitle}</text>
+  <g font-family="JetBrains Mono, Consolas, monospace">
+    <g><rect x="658" y="200" width="150" height="78" fill="#080a14" fill-opacity="0.82" stroke="#ffffff" stroke-opacity="0.24"/>
+      <text x="672" y="228" font-size="22" font-weight="700" fill="#F5F5F5">3</text>
+      <text x="672" y="264" font-size="11" fill="#DEE2EC">SERIES</text></g>
+    <g><rect x="824" y="200" width="150" height="78" fill="#080a14" fill-opacity="0.82" stroke="#ffffff" stroke-opacity="0.24"/>
+      <text x="838" y="228" font-size="22" font-weight="700" fill="#F5F5F5">140+</text>
+      <text x="838" y="264" font-size="11" fill="#DEE2EC">TESTS</text></g>
+    <g><rect x="990" y="200" width="150" height="78" fill="#080a14" fill-opacity="0.82" stroke="#ffffff" stroke-opacity="0.24"/>
+      <text x="1004" y="228" font-size="22" font-weight="700" fill="#F5F5F5">5</text>
+      <text x="1004" y="264" font-size="11" fill="#DEE2EC">AUDITED RACES</text></g>
+  </g>
+</svg>
+'''
 
 
 def main() -> None:
@@ -192,8 +223,10 @@ def main() -> None:
         tag="github.com/mohammedmedjadj/Motorsport-Strategy-Lab",
     )
     social.save(OUT / "social-preview.png")
+    (OUT / "banner.svg").write_text(make_banner_svg(1200, 300), encoding="utf-8")
     print("wrote", OUT / "banner.png", banner.size)
     print("wrote", OUT / "social-preview.png", social.size)
+    print("wrote", OUT / "banner.svg")
 
 
 if __name__ == "__main__":
