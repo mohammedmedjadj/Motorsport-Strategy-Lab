@@ -1,5 +1,5 @@
 
-# motorsport-strategy-lab — Race Strategy Simulator & Decision Audit
+# Motorsport Strategy Lab — Race Strategy Simulator & Decision Audit
 
 <p align="center">
   <img src="assets/banner.png" alt="Motorsport Strategy Lab -- Bayesian and Monte Carlo race strategy research across F1, WEC and IMSA" width="100%">
@@ -634,7 +634,7 @@ says so rather than picking a winner anyway.
 ## Repository structure
 
 ```
-motorsport-strategy-lab/
+Motorsport-Strategy-Lab/
   data/
     cache/              # FastF1 cache (gitignored)
     derived/
@@ -680,8 +680,8 @@ motorsport-strategy-lab/
 ## Setup
 
 ```bash
-git clone <repo-url>
-cd motorsport-strategy-lab
+git clone https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab.git
+cd Motorsport-Strategy-Lab
 python -m venv .venv
 .venv/Scripts/activate          # Windows; use .venv/bin/activate on Unix
 pip install -r requirements.txt # or requirements.lock for exact pins
