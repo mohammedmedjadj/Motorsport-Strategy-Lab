@@ -104,7 +104,7 @@ def make_banner(w: int, h: int, centered: bool, focus_y: float, tag: str | None 
     draw = ImageDraw.Draw(img)
 
     title = "MOTORSPORT STRATEGY LAB"
-    subtitle = "Bayesian & Monte Carlo Race Strategy Research — F1 · WEC · IMSA"
+    subtitle = "Race Strategy Simulator & Decision Audit — F1 · WEC · IMSA"
 
     title_size = 46 if not centered else 52
     title_font = _font(SPACE_GROTESK, title_size, weight=700)

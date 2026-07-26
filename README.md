@@ -1,7 +1,7 @@
 # Motorsport Strategy Lab — Race Strategy Simulator & Decision Audit
 
 <p align="center">
-  <img src="assets/banner.png" alt="Motorsport Strategy Lab -- Bayesian and Monte Carlo race strategy research across F1, WEC and IMSA" width="100%">
+  <img src="assets/banner.png" alt="Motorsport Strategy Lab -- Race strategy simulator and decision audit across F1, WEC and IMSA" width="100%">
 </p>
 
 <p align="center">
