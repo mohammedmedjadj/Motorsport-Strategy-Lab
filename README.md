@@ -20,7 +20,7 @@
   <a href="CONTRIBUTING.md">Contributing</a>
 </p>
 
-A motorsport race-strategy research project: a three-layer decision-support
+A motorsport race and strategy research project: a three-layer decision-support
 system — tyre degradation model, safety-car probability model, Monte Carlo
 strategy simulator — plus a retrospective audit that replays real strategy
 calls through the simulator and checks what it would have recommended.
