@@ -41,7 +41,7 @@ Jump to: [Formula 1](#formula-1) · [WEC](#wec) · [IMSA](#imsa) ·
 
 ## Why this project
 
-Most public F1 data projects stop at "predict the pit-stop lap," a regression
+Most public F1 data projects (and racing data projects in general) stop at "predict the pit-stop lap," a regression
 that already exists in dozens of notebooks. Three things set this one apart:
 
 1. Every output is a **distribution**, not a number. A pit window is a range
