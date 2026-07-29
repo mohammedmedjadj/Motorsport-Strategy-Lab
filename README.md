@@ -1,4 +1,4 @@
-# Motorsport Strategy Lab — Race Strategy Simulator & Decision Audit
+# Motorsport Strategy Lab — Race Strategy Simulator & Decision Audit (by Mohammed Reda Medjadj)
 
 <p align="center">
   <img src="assets/banner.png" alt="Motorsport Strategy Lab -- Race strategy simulator and decision audit across F1, WEC and IMSA" width="100%">
