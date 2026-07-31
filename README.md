@@ -1,4 +1,4 @@
-# Motorsport Strategy Lab — Race Strategy Simulator & Decision Audit
+# Motorsport Strategy Lab — Race Strategy Simulator & Decision Audit (by Mohammed Reda Medjadj)
 
 <p align="center">
   <img src="assets/banner.png" alt="Motorsport Strategy Lab -- Race strategy simulator and decision audit across F1, WEC and IMSA" width="100%">
@@ -30,7 +30,7 @@ It started on **Formula 1** (via FastF1) and has since been extended to
 needed a new ingestion path and their own fitted models, built to the same
 standard as the F1 work: verified data availability, a cross-validated
 degradation model, a Bayesian neutralisation model, a Monte Carlo simulator,
-each with its own report and its own test suite.
+each with its own report and its own test suite. Other racing series may be added to the research program in the next month.
 
 **Status:** F1 is complete end to end (phases 0-7, including the audit and a
 written methodology). WEC and IMSA cover the equivalent modelling phases
