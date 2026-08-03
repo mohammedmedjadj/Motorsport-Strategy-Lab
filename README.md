@@ -81,17 +81,19 @@ flowchart LR
     end
     subgraph END["WEC & IMSA"]
         direction LR
-        e0["0 Data<br/>availability"] --> e1["1 Data<br/>quality"] --> e2["2 Degradation"] --> e3["3 Neutralisation"] --> e4["4 Simulator"]
+        e0["0 Data<br/>availability"] --> e1["1 Data<br/>quality"] --> e2["2 Degradation"] --> e3["3 Neutralisation"] --> e4["4 Simulator"] --> e5["5 Audit"]
     end
     classDef done fill:#2ea44f,stroke:#1a7f37,color:#fff
     classDef partial fill:#FFB800,stroke:#b58600,color:#1a1a1a
     class f0,f1,f2,f3,f4,f5,f6,f7 done
-    class e0,e1,e2,e3,e4 done
+    class e0,e1,e2,e3,e4,e5 done
 ```
 
 F1 runs the full pipeline through phase 7 (audit + written methodology); WEC
-and IMSA currently stop at phase 4 (simulator) — see each series' own
-"known limitations" for what an audit phase would need.
+and IMSA now have their own phase 5 (a per-decision audit, plus the
+cross-race fuel-limited audit), but stop short of F1's phases 6-7 — a
+written methodology report and final packaging for each series remains
+outstanding.
 
 ## Repository map
 
@@ -383,12 +385,14 @@ stint, not the tyre stint.
 | 2. Tyre degradation   | `src/degradation/endurance.py`                                            | Bahrain's slope holds steady across three seasons (mean R² +0.21) — the one circuit, in either series, where degradation genuinely transfers |
 | 3. Neutralisations    | `src/safety_car/endurance.py`                                             | A real Safety Car procedure exists alongside FCY and is used more often, at every scoped circuit (Spa: P=0.79 SC vs P=0.50 FCY)                |
 | 4. Strategy simulator | `src/simulator/endurance.py`                                              | Both hazards sampled independently, F1's SC/VSC pattern; at Spa it's the fuel tank, not tyre wear, that ends up deciding the stop              |
+| 5. Decision audit     | `src/audit/endurance_cases.py`                                            | Three real stop decisions replayed; opportunistic SC-onset stops confirmed at both Bahrain and the anomalous-slope Imola                       |
 
 Reports: [data availability](reports/wec/data_availability_phase0.md) ·
 [data quality](reports/wec/data_quality_phase1.md) ·
 [degradation](reports/wec/degradation_phase2.md) ·
 [neutralisations](reports/wec/safety_car_phase3.md) ·
-[simulator](reports/wec/simulator_phase4.md)
+[simulator](reports/wec/simulator_phase4.md) ·
+[decision audit](reports/wec/audit_cases.md)
 
 ### Key results
 
@@ -436,6 +440,7 @@ numbers too, most visibly at Imola.
 | 2. Degradation       | [`reports/wec/degradation_phase2.md`](reports/wec/degradation_phase2.md) + `src/degradation/endurance_validation.py` + tests | Net slope per circuit-season with CIs; leave-one-season-out and leave-one-circuit-out both run and clearly distinguished; the fuel/degradation split reported only as a diagnostic |
 | 3. Neutralisations   | [`reports/wec/safety_car_phase3.md`](reports/wec/safety_car_phase3.md) + tests                                                 | Per-circuit and series-wide Beta-Binomial/Gamma-Poisson posteriors on 33 races; SC and FCY told apart empirically, not assumed                                                     |
 | 4. Simulator         | [`reports/wec/simulator_phase4.md`](reports/wec/simulator_phase4.md) + tests                                                   | Both neutralisation kinds modelled, fuel-range constraint enforced, one demo scenario per circuit, reproducible                                                                    |
+| 5. Decision audit    | [`reports/wec/audit_cases.md`](reports/wec/audit_cases.md) + `src/audit/endurance_cases.py` + tests                          | Three real stop decisions, states rebuilt from committed laps, replayed through the single-stop engine and compared quantitatively                                                 |
 
 ### WEC known limitations
 
@@ -457,8 +462,17 @@ numbers too, most visibly at Imola.
   corroborating the multi-stop model's headline — that no scoped race is
   tyre-limited on stop count, which holds 21/21 circuits — against what teams
   actually did; the exceptions plausibly reflect neutralisation-shortened
-  stints. A per-decision replay like
-  F1's remains a natural next step.
+  stints.
+- A **per-decision audit, the WEC analogue of F1's Phase 5, now exists**
+  ([`reports/wec/audit_cases.md`](reports/wec/audit_cases.md)): three real
+  stop decisions (an opportunistic Safety Car-onset stop at Bahrain, a
+  routine green-flag stop at Bahrain, an opportunistic SC stop at the
+  anomalous-slope Imola) replayed through the single-stop engine. Both
+  opportunistic SC stops land inside the model's window (P(best) 0.84 and
+  0.91); the routine Bahrain stop is technically "outside" but by 4.33s
+  against an 819s p10-p90 spread — noise at endurance race-time scale, the
+  audit's own stated caveat about its 0.5s window tolerance (inherited
+  unchanged from F1) being a much stricter bar here.
 
 ---
 
@@ -512,12 +526,14 @@ full weather coverage, two have none.
 | 2. Tyre degradation   | `src/degradation/endurance.py`                                              | Leave-one-season-out shows near-zero transfer at every circuit; Road America is significantly negative in all three of its editions   |
 | 3. Neutralisations    | `src/safety_car/endurance.py`                                               | Full Course Yellow in 90-93% of races at every scoped circuit; zero Safety Car events across 63 races — genuinely different from WEC |
 | 4. Strategy simulator | `src/simulator/endurance.py`                                                | Confidence tracks the degradation signal directly: decisive at Road America, honestly flat (under 2s spread) at Mosport               |
+| 5. Decision audit     | `src/audit/endurance_cases.py`                                              | Three real stop decisions replayed; model confidence at the recommended lap orders exactly as Road America > Watkins Glen > Mosport   |
 
 Reports: [data availability](reports/imsa/data_availability_phase0.md) ·
 [data quality](reports/imsa/data_quality_phase1.md) ·
 [degradation](reports/imsa/degradation_phase2.md) ·
 [neutralisations](reports/imsa/safety_car_phase3.md) ·
-[simulator](reports/imsa/simulator_phase4.md)
+[simulator](reports/imsa/simulator_phase4.md) ·
+[decision audit](reports/imsa/audit_cases.md)
 
 ### Key results
 
@@ -569,6 +585,7 @@ says so rather than picking a winner anyway.
 | 2. Degradation       | [`reports/imsa/degradation_phase2.md`](reports/imsa/degradation_phase2.md) + `src/degradation/endurance_validation.py` + tests | Net slope per circuit-season with CIs; leave-one-season-out and leave-one-circuit-out both run and clearly distinguished; the fuel/degradation split reported only as a diagnostic |
 | 3. Neutralisations   | [`reports/imsa/safety_car_phase3.md`](reports/imsa/safety_car_phase3.md) + tests                                                 | Per-circuit and series-wide Beta-Binomial/Gamma-Poisson posteriors on 63 races; the zero-Safety-Car case handled by the Jeffreys prior rather than hard-coded                      |
 | 4. Simulator         | [`reports/imsa/simulator_phase4.md`](reports/imsa/simulator_phase4.md) + tests                                                   | Fuel-range constraint enforced, one demo scenario per circuit, reproducible                                                                                                        |
+| 5. Decision audit    | [`reports/imsa/audit_cases.md`](reports/imsa/audit_cases.md) + `src/audit/endurance_cases.py` + tests                          | Three real stop decisions, states rebuilt from committed laps, replayed through the single-stop engine and compared quantitatively                                                 |
 
 ### IMSA known limitations
 
@@ -585,8 +602,18 @@ says so rather than picking a winner anyway.
   genuine open question rather than something smoothed over.
 - A **retrospective audit of real winners now exists** across IMSA and WEC
   ([`reports/endurance_audit.md`](reports/endurance_audit.md)) — real winning
-  stint lengths versus each circuit's fuel range. A per-decision replay like
-  F1's remains a natural next step.
+  stint lengths versus each circuit's fuel range.
+- A **per-decision audit, the IMSA analogue of F1's Phase 5, now exists**
+  ([`reports/imsa/audit_cases.md`](reports/imsa/audit_cases.md)): three real
+  stop decisions (an opportunistic FCY-onset stop at Watkins Glen, a routine
+  green-flag stop at Road America, an opportunistic FCY stop at the flat-
+  signal Mosport) replayed through the single-stop engine. Model confidence
+  at the recommended lap tracks the strength of each circuit's own
+  degradation signal exactly as Phase 4's demo scenarios found — decisive at
+  Road America (P(best) 0.92), still decisive at Watkins Glen (0.79), and
+  honestly uncertain at Mosport (0.34 on a 581s spread), where the "outside
+  the window" verdict is a real but low-confidence preference rather than a
+  confident correction.
 
 ## Key findings across all three series
 
@@ -673,7 +700,8 @@ Motorsport-Strategy-Lab/
     safety_car/         # model.py (F1 SC/VSC); endurance.py (WEC FCY+SC, IMSA FCY)
     simulator/          # engine.py (F1, vectorised + optional Sobol QMC),
                         #   recommend.py (Pareto front); endurance.py (WEC/IMSA)
-    audit/              # F1 retrospective audit scripts
+    audit/              # F1 decision audit; endurance_cases.py (WEC/IMSA per-decision),
+                        #   endurance_state.py (WEC/IMSA winner-vs-fuel-range audit)
   notebooks/            # kaggle_demo.ipynb -- validated end-to-end demo,
                         #   published to Kaggle; never the source of truth
                         #   for a reported number, which always lives in
@@ -685,8 +713,8 @@ Motorsport-Strategy-Lab/
   tests/                # pytest, all three series, 140+ tests
   reports/
     f1/                 # phase 0-4 reports, audit cases, figures
-    imsa/               # phase 0-4 reports
-    wec/                # phase 0-4 reports
+    imsa/               # phase 0-4 reports, audit cases
+    wec/                # phase 0-4 reports, audit cases
     methodology.md      # F1 mini-paper
   assets/               # banner.png/svg, social-preview.png, fonts/ (OFL-licensed)
   .github/
