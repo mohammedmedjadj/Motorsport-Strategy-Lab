@@ -1,4 +1,4 @@
-# Motorsport Strategy Lab — Race Strategy Simulator & Decision Audit
+# Motorsport Strategy Lab — Race Strategy Simulator & Decision Audit (by Mohammed Reda Medjadj)
 
 <p align="center">
   <img src="assets/banner.png" alt="Motorsport Strategy Lab -- Race strategy simulator and decision audit across F1, WEC and IMSA" width="100%">
@@ -20,7 +20,7 @@
   <a href="CONTRIBUTING.md">Contributing</a>
 </p>
 
-A motorsport race-strategy research project: a three-layer decision-support
+A motorsport race and strategy research project: a three-layer decision-support
 system — tyre degradation model, safety-car probability model, Monte Carlo
 strategy simulator — plus a retrospective audit that replays real strategy
 calls through the simulator and checks what it would have recommended.
@@ -30,7 +30,7 @@ It started on **Formula 1** (via FastF1) and has since been extended to
 needed a new ingestion path and their own fitted models, built to the same
 standard as the F1 work: verified data availability, a cross-validated
 degradation model, a Bayesian neutralisation model, a Monte Carlo simulator,
-each with its own report and its own test suite.
+each with its own report and its own test suite. Other racing series may be added to the research program in the next month.
 
 **Status:** F1 is complete end to end (phases 0-7, including the audit and a
 written methodology). WEC and IMSA cover the equivalent modelling phases
@@ -41,7 +41,7 @@ Jump to: [Formula 1](#formula-1) · [WEC](#wec) · [IMSA](#imsa) ·
 
 ## Why this project
 
-Most public F1 data projects stop at "predict the pit-stop lap," a regression
+Most public F1 data projects (and racing data projects in general) stop at "predict the pit-stop lap," a regression
 that already exists in dozens of notebooks. Three things set this one apart:
 
 1. Every output is a **distribution**, not a number. A pit window is a range
