@@ -34,8 +34,8 @@ each with its own report and its own test suite. Other racing series may be adde
 
 **Status:** F1 is complete end to end (phases 0-7, including the audit and a
 written methodology). WEC and IMSA cover the equivalent modelling phases
-(0-4) but don't yet have an audit of real strategy calls or their own
-methodology write-up — see the limitations under each series.
+(0-5, now including a per-decision audit of real stop calls) but don't yet
+have their own methodology write-up — see the limitations under each series.
 Jump to: [Formula 1](#formula-1) · [WEC](#wec) · [IMSA](#imsa) ·
 [Methods](#mathematical-methods).
 
