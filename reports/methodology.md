@@ -47,10 +47,58 @@ is the combination, on public data, of:
    failures are quantified, including a measured bias attributable to a
    documented modelling gap.
 
-We cite no academic literature because none was consulted or used; the
-methods employed (fixed-effects OLS, Jeffreys-prior Beta-Binomial and
-Gamma-Poisson models, Monte Carlo simulation with common random numbers)
-are textbook-standard and are described fully below.
+Five recent works occupy the same problem space and are the closest
+comparisons, all F1-specific:
+
+Aguad & Thraves (2024, *European Journal of Operational Research*) formulate
+pit-stop strategy as a zero-sum feedback Stackelberg game solved by dynamic
+programming — the race leader decides first, the follower reacts — and find
+that ignoring the opponent's reaction costs a driver roughly 15% of their
+win probability. Our own simulator carries a directly comparable
+reaction-aware component (`src/simulator/adversarial.py::duel`): a rival
+that observes the ego car's stop and chooses its own best-response cover or
+overcut, with `cost_of_ignoring_the_cover` quantifying the same kind of loss
+their paper reports — but evaluated across three series rather than one,
+and checked against the retrospective audit rather than left as a pure
+optimisation result.
+
+Three works optimise or predict the pit-stop decision directly from data
+with learned models rather than interpretable statistics: a deep-learning
+decision-support system trained on raw telemetry across five architectures
+(Bi-LSTM, TCN-GRU, GRU, InceptionTime, CNN-BiLSTM) to predict the optimal
+stop lap (*Frontiers in Artificial Intelligence*, 2025); a joint
+reinforcement-learning framework over energy management, tyre wear and
+pit timing (arXiv:2512.21570, Dec. 2025); and an explainable RL agent
+developed with Mercedes-AMG PETRONAS reporting an 8.6s average improvement
+over fixed strategies (Thomas et al., arXiv:2501.04068, 2025). These
+systems are more powerful function approximators than the fixed-effects
+OLS and conjugate Bayesian models used here, at the cost of interpretability
+— a reader cannot ask *why* a recommendation changed the way they can ask
+of a coefficient with a confidence interval, which is the trade this project
+deliberately makes in the other direction.
+
+The closest work in spirit is Pitwall (arXiv:2607.06495, 2026), a
+production system pairing a calibrated real-time Monte Carlo engine with
+natural-language strategy briefings, validated against seven scored F1
+seasons (2018-2025). It shares this project's commitment to calibrated
+probabilities over point predictions but is, again, single-series and
+oriented at live race-day output rather than at the question this project
+asks: *does a model fitted this way generalise*, and *does it agree with
+what real strategists decided*.
+
+None of the five tests whether a fitted quantity (degradation, pit loss,
+neutralisation risk) transfers across seasons or across series, and none
+confronts its output against real human strategic decisions the way §4.3's
+audit does. Both gaps are addressed here, and a third, broader test —
+whether *any* fitted quantity in this project generalises, not just
+degradation — is reported separately in
+[`reports/generalization_audit.md`](generalization_audit.md), which extends
+this same leave-one-race-out protocol to pit loss and neutralisation
+occurrence across F1, WEC and IMSA.
+
+Beyond these five, the methods themselves (fixed-effects OLS, Jeffreys-prior
+Beta-Binomial and Gamma-Poisson models, Monte Carlo simulation with common
+random numbers) are textbook-standard and are described fully below.
 
 ## 2. Data
 
@@ -166,21 +214,66 @@ audits of real decisions fair; (ii) decision quality and outcome are
 distinct (D); (iii) a documented qualitative limitation became a
 measurable bias (C).
 
-## 5. Limitations
+## 5. Threats to validity
 
-- **No bunching, no track-position value, no red flags** — the simulator
-  optimises expected race time; Case C measures what this costs where it
-  matters most (SC windows at the front).
-- **Degradation slopes are not stable across seasons** (§4.1); any
-  in-race application would need online re-estimation from live laps.
-- **Small SC samples**: 6-8 editions per circuit; the constant-hazard
-  assumption understates lap-1 risk (deployment laps cluster early).
-- **Compound allocation is not random** (teams fit HARD for long stints),
-  so per-compound slopes are descriptive, not causal.
-- **Rivals are frozen to history** in the audit; counterfactual reactions
-  are not simulated.
-- Classical homoscedastic standard errors in Phase 2; lap noise is
-  heteroscedastic in reality.
+The leave-one-race-out protocol in §3.1 was fixed before any held-out
+result was inspected — the same code path scores every fold, so no
+threshold or degree choice here was tuned against the number it was later
+judged by. That discipline bounds *how* the following limitations can bias
+the reported numbers, but does not remove them; each is stated against the
+class of validity it actually threatens, rather than as an undifferentiated
+list.
+
+**Internal validity** — could the reported effect be an artefact of the
+estimation itself, not the phenomenon it claims to measure?
+
+- **Compound allocation is not random**: teams fit HARD tyres when they
+  plan long stints, so per-compound degradation slopes are descriptive of
+  observed usage, not a causal effect of compound choice isolated from
+  strategy intent.
+- **Classical homoscedastic standard errors** are used throughout Phase 2;
+  lap-time noise is heteroscedastic in reality (traffic, fuel-load
+  variance, track evolution), so reported confidence intervals are an
+  approximation, not exact coverage.
+- **The constant-hazard assumption** in the SC/VSC model understates
+  lap-1 risk specifically — real deployments cluster in the opening laps
+  (accidents, first-corner incidents) — a known mis-specification, not an
+  assumption believed to be exactly true.
+
+**External validity** — how far do the fitted numbers travel beyond the
+races they were fitted on?
+
+- **Degradation slopes are not stable across seasons** (§4.1, within-stint
+  R² frequently negative out of sample): a slope fitted on two editions of
+  a race routinely fails to predict a third. Any in-race application would
+  need online re-estimation from live laps, not a frozen historical
+  coefficient. A companion audit
+  ([`reports/generalization_audit.md`](generalization_audit.md)) extends
+  this exact test to pit loss and neutralisation occurrence across all
+  three series in this project and finds the answer depends on the
+  quantity: pit loss, closer to a fixed procedural constant, transfers
+  far better than either fitted trend.
+- **Small SC samples** (6-8 editions per circuit) mean the reported
+  posteriors are honestly wide rather than falsely precise, but a wide
+  interval is still a limit on what the point estimate alone can support.
+
+**Construct validity** — does the simulator's objective, and the audit's
+comparison, actually capture "good strategy," or a narrower proxy for it?
+
+- **No bunching, no track-position value, no red flags**: the simulator
+  optimises expected race time under green-flag racing, not finishing
+  position or the value of clean air; Case C measures the size of this
+  gap directly (a ~6-7s bias at SC windows near the front, where track
+  position matters most and the omission is largest).
+- **Rivals are frozen to their historical plans** in the audit: a
+  recommendation is scored against what actually happened, not against
+  how a rival would have adapted to a different ego decision. The audit
+  therefore measures "was this decision good given what rivals in fact
+  did," a narrower and more answerable question than "was this decision
+  game-theoretically optimal" — the latter is what
+  `src/simulator/adversarial.py`'s reactive-rival model (§1) targets
+  separately, and even that model's rival is limited to a pit-lap-and-
+  compound response, not a full re-plan.
 
 ## 6. Future work
 
@@ -193,8 +286,11 @@ is first-order); rival reaction policies; extension to more circuits.
 Python 3.13, dependencies pinned in `requirements.lock` (fastf1 3.8.3,
 pandas 2.3.3, numpy 2.5.1, scipy 1.18.0). FastF1 cache under
 `data/cache/` (gitignored); derived datasets committed under
-`data/derived/`. All stochastic code is seeded. 62 pytest tests cover
-ingestion, both models, the engine and the audit tooling, including
-synthetic ground-truth recovery and leakage assertions. Each phase's full
-output is a committed report in `reports/`.
+`data/derived/`. All stochastic code is seeded. The F1 layer this report
+covers is tested by a dedicated subset of the project's 229 pytest tests
+(ingestion, both models, the engine and the audit tooling, including
+synthetic ground-truth recovery and leakage assertions); the remaining
+tests cover the WEC/IMSA extension described in the top-level README, out
+of scope for this report. Each phase's full output is a committed report
+in `reports/`.
 
