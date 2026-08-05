@@ -59,8 +59,12 @@ def green_median_pace(laps: pd.DataFrame) -> float:
     return float(laps.loc[laps["is_pace_lap"], "lap_time_s"].median())
 
 
-def estimate_pit_loss(laps: pd.DataFrame, circuit: str) -> PitLossEstimate:
-    """Measure green-flag pit loss from in/out lap pairs."""
+def raw_pit_loss_events(laps: pd.DataFrame) -> np.ndarray:
+    """Every clean green-flag in/out pit-loss observation (s), untrimmed and
+    unaggregated -- includes non-routine outliers (damage, penalties served
+    in the box) that are not what "pit loss" means anywhere else in this
+    project. Prefer :func:`trimmed_pit_loss_events` unless you specifically
+    want the untrimmed pool."""
     df = laps.copy()
     status = _status_series(df)
     green = status == "1"
@@ -86,12 +90,29 @@ def estimate_pit_loss(laps: pd.DataFrame, circuit: str) -> PitLossEstimate:
             if pd.isna(t_in) or pd.isna(t_out):
                 continue
             losses.append(float(t_in + t_out - 2.0 * pace))
+    return np.array(losses, dtype=float)
 
-    arr = np.array(losses, dtype=float)
-    # Trim clearly non-routine stops (damage, penalties served in the box):
-    # anything beyond 2x the median loss is not a normal stop.
-    if len(arr):
-        arr = arr[arr <= 2.0 * np.median(arr)]
+
+#: A stop costing more than this multiple of the pool's own median is treated
+#: as non-routine (damage, a penalty served in the box) and dropped.
+NONROUTINE_FACTOR = 2.0
+
+
+def trimmed_pit_loss_events(laps: pd.DataFrame) -> np.ndarray:
+    """:func:`raw_pit_loss_events`, with non-routine stops trimmed at
+    ``NONROUTINE_FACTOR`` x the pool's own median -- the same routine-stop
+    population :func:`estimate_pit_loss` summarises, exposed as an array so
+    the leave-one-race-out validator can score held-out events against it on
+    a like-for-like basis."""
+    arr = raw_pit_loss_events(laps)
+    if len(arr) == 0:
+        return arr
+    return arr[arr <= NONROUTINE_FACTOR * np.median(arr)]
+
+
+def estimate_pit_loss(laps: pd.DataFrame, circuit: str) -> PitLossEstimate:
+    """Measure green-flag pit loss from in/out lap pairs."""
+    arr = trimmed_pit_loss_events(laps)
     if len(arr) == 0:
         raise ValueError(f"{circuit}: no clean green-flag pit events found")
     q75, q25 = np.percentile(arr, [75, 25])

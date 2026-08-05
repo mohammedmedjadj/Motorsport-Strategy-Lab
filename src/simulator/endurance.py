@@ -96,13 +96,11 @@ class EnduranceRaceModel:
     fuel_range_laps: int
 
 
-def estimate_pit_loss(laps: pd.DataFrame) -> tuple[float, float, int]:
-    """Green-flag pit loss (s): in-lap + out-lap minus twice the car's pace.
-
-    Restricted to stops where both the pit lap and the following lap ran green,
-    so neutralised stops (which are cheaper by construction) do not contaminate
-    the green-flag reference. Returns (median, IQR, n).
-    """
+def raw_pit_loss_events(laps: pd.DataFrame) -> np.ndarray:
+    """Every clean green-flag pit-loss observation (s), untrimmed -- includes
+    genuine repair/driver-change outliers that are not what "pit loss" means
+    anywhere else in this project. Prefer :func:`trimmed_pit_loss_events`
+    unless you specifically want the untrimmed pool."""
     work = laps.sort_values(["car", "lap"], kind="stable").copy()
     baseline = green_lap_times(work).groupby("car")["lap_time_s"].median()
     work["t_next"] = work.groupby("car", sort=False)["lap_time_s"].shift(-1)
@@ -119,10 +117,31 @@ def estimate_pit_loss(laps: pd.DataFrame) -> tuple[float, float, int]:
         stops["lap_time_s"] + stops["t_next"] - 2.0 * stops["car"].map(baseline)
     )
     losses = stops["loss"].dropna().to_numpy(dtype=float)
-    losses = losses[losses > 0]
+    return losses[losses > 0]
+
+
+def trimmed_pit_loss_events(laps: pd.DataFrame) -> np.ndarray:
+    """:func:`raw_pit_loss_events`, with non-routine stops (repairs, driver
+    changes gone long) trimmed at ``PIT_LOSS_TRIM`` x the pool's own median --
+    the same routine-stop population :func:`estimate_pit_loss` summarises,
+    exposed as an array so the leave-one-race-out validator can score
+    individual held-out events against it on a like-for-like basis."""
+    losses = raw_pit_loss_events(laps)
+    if losses.size == 0:
+        return losses
+    return losses[losses <= PIT_LOSS_TRIM * np.median(losses)]
+
+
+def estimate_pit_loss(laps: pd.DataFrame) -> tuple[float, float, int]:
+    """Green-flag pit loss (s): in-lap + out-lap minus twice the car's pace.
+
+    Restricted to stops where both the pit lap and the following lap ran green,
+    so neutralised stops (which are cheaper by construction) do not contaminate
+    the green-flag reference. Returns (median, IQR, n).
+    """
+    losses = trimmed_pit_loss_events(laps)
     if losses.size == 0:
         raise ValueError("no clean green-flag pit stops found")
-    losses = losses[losses <= PIT_LOSS_TRIM * np.median(losses)]
     q75, q25 = np.percentile(losses, [75, 25])
     return float(np.median(losses)), float(q75 - q25), int(losses.size)
 
