@@ -2,7 +2,7 @@
 
 The multi-stop models conclude every scoped endurance race is **fuel-limited on stop count** (see the [WEC](wec/simulator_phase4.md) / [IMSA](imsa/simulator_phase4.md) reports). This audit tests that against **what the race winners actually did**: their real fuel-stint lengths, reconstructed from the committed laps, compared to each circuit's measured fuel range. No number is quoted from memory.
 
-**49 of 61 audited winners ran fuel-limited** — at least one stint within 3 laps of the full fuel range, and a longest stint reaching it. Real winning behaviour corroborates the model's headline.
+**49 of 61 audited winners ran fuel-limited** — at least one stint within 3 laps of the full fuel range, and a longest stint reaching it. Real winning behaviour corroborates the model's headline. **This exact share depends on that 3-lap tolerance** — 63.9% at the strictest possible reading (0 laps, exact reach only) up to 96.7% at a lenient 10-lap reading; the qualitative conclusion (a clear majority, in both series) holds throughout, but the precise percentage should not be quoted alone — see [`fuel_limited_sensitivity.md`](fuel_limited_sensitivity.md) for the full sweep, including the per-series breakdown (IMSA moves more than WEC).
 
 | Series | Circuit | Year | Winner | Fuel range | Longest stint | Full stints | Verdict |
 |---|---|---|---|---|---|---|---|

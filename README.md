@@ -617,7 +617,7 @@ says so rather than picking a winner anyway.
 
 ## Key findings across all three series
 
-Having gone through F1, WEC and IMSA individually above, six results stood
+Having gone through F1, WEC and IMSA individually above, seven results stood
 out enough to pull back up here — each one measured, sourced, and (where it
 matters) later corrected rather than quietly kept:
 
@@ -640,6 +640,17 @@ matters) later corrected rather than quietly kept:
 > coefficient in this project is carried as a distribution, never a point
 > value. ([`reports/wec/degradation_phase2.md`](reports/wec/degradation_phase2.md))
 
+> **"Nothing generalises" was itself an overclaim — it depends what "nothing" is —**
+> the same leave-one-out test applied to **pit loss** (never run before this
+> pass) shows it transfers well almost everywhere (relative RMSE 0.13-0.54
+> at 19 of 21 circuits) — the opposite conclusion from degradation, because
+> pit loss is closer to a fixed procedural quantity than a fitted trend.
+> The one large exception, **WEC COTA** (relative RMSE 1.10), traces to a
+> real race-format change — 120 laps in 2025 versus 183 in 2024 — and is
+> also the single worst-transferring circuit for degradation (R² −6.33):
+> two independent estimators flagging the same circuit-season pair.
+> ([`reports/generalization_audit.md`](reports/generalization_audit.md))
+
 > **Two endurance series, two different hazards entirely —**
 > IMSA sees a Full Course Yellow in **P = 0.96** of races series-wide (every
 > scoped circuit individually between 90-93%) and has **never** shown a
@@ -656,7 +667,10 @@ matters) later corrected rather than quietly kept:
 
 > **The retrospective audit corroborates the simulator's headline finding —**
 > **49 of 61** audited race winners across WEC and IMSA ran a fuel-limited
-> longest stint, matching what the multi-stop model independently concludes
+> longest stint (at the 3-lap tolerance the audit uses — a majority holds
+> anywhere from 64% at the strictest reading to 97% at the most lenient one
+> tested, see the [sensitivity sweep](reports/fuel_limited_sensitivity.md)),
+> matching what the multi-stop model independently concludes
 > for every scoped circuit: strategy is fuel-limited, not tyre-limited, in
 > both endurance series. ([`reports/endurance_audit.md`](reports/endurance_audit.md))
 

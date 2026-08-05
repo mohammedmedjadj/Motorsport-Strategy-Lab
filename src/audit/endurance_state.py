@@ -41,6 +41,13 @@ def stint_lengths(laps: pd.DataFrame, car) -> list[int]:
     return lengths
 
 
+#: Default slack (laps) a stint may fall short of the fuel range and still
+#: count as "full" — chosen once, never re-examined until the sensitivity
+#: sweep in scripts/run_fuel_limited_sensitivity.py. See that script's report
+#: for whether the headline finding actually depends on this choice.
+DEFAULT_TOLERANCE_LAPS = 3
+
+
 @dataclass(frozen=True)
 class FuelLimitedAudit:
     """Whether a race winner's real stints ran near the fuel maximum."""
@@ -51,14 +58,18 @@ class FuelLimitedAudit:
     car: str
     fuel_range_laps: int
     longest_stint: int
-    n_full_stints: int      # stints within 3 laps of the fuel range
+    n_full_stints: int      # stints within tolerance_laps of the fuel range
     n_stints: int
+    tolerance_laps: int = DEFAULT_TOLERANCE_LAPS
 
     @property
     def ran_fuel_limited(self) -> bool:
         """The winner ran at least one full-range stint and its longest stint
         reaches the fuel range — i.e. it was fuel- not tyre-limited."""
-        return self.n_full_stints >= 1 and self.longest_stint >= self.fuel_range_laps - 3
+        return (
+            self.n_full_stints >= 1
+            and self.longest_stint >= self.fuel_range_laps - self.tolerance_laps
+        )
 
     def row(self) -> dict:
         return {
@@ -70,12 +81,13 @@ class FuelLimitedAudit:
 
 
 def audit_fuel_limited(series: str, circuit: str, year: int, slug: str,
-                       fuel_range_laps: int) -> FuelLimitedAudit:
+                       fuel_range_laps: int,
+                       tolerance_laps: int = DEFAULT_TOLERANCE_LAPS) -> FuelLimitedAudit:
     """Reconstruct the winner's stints and test them against the fuel range."""
     laps = load_endurance_laps(series, slug)
     car = winning_car(laps)
     lengths = stint_lengths(laps, car)
     longest = max(lengths) if lengths else 0
-    n_full = int(np.sum(np.array(lengths) >= fuel_range_laps - 3))
+    n_full = int(np.sum(np.array(lengths) >= fuel_range_laps - tolerance_laps))
     return FuelLimitedAudit(series, circuit, year, str(car), fuel_range_laps,
-                            longest, n_full, len(lengths))
+                            longest, n_full, len(lengths), tolerance_laps)

@@ -49,6 +49,45 @@ def test_fuel_limited_flag_logic() -> None:
     assert b.ran_fuel_limited is False
 
 
+@pytest.mark.skipif(
+    not (ENDURANCE_DERIVED_DIR / "multistop_plans.csv").exists(),
+    reason="multistop artifact not generated",
+)
+def test_fuel_limited_verdict_survives_the_strictest_tolerance() -> None:
+    """Regression guard for the sensitivity sweep
+    (scripts/run_fuel_limited_sensitivity.py): the headline 3-lap-tolerance
+    number moves a lot across tolerances (64%-97%), but the *qualitative*
+    claim -- a clear majority ran fuel-limited, in both series -- must hold
+    even at the strictest possible reading (0 laps, exact reach only). If a
+    future data refresh ever drops this below a majority, the report's
+    "the qualitative claim is not sensitive" line becomes false and must be
+    rewritten, not silently left stale."""
+    from src.audit.endurance_state import audit_fuel_limited
+    from src.data.endurance_loader import slugify
+    from src.data.endurance_scope import scoped_race_seasons
+
+    plans = pd.read_csv(ENDURANCE_DERIVED_DIR / "multistop_plans.csv")
+    ranges = {(r["series"], r["circuit"]): int(r["fuel_range_laps"]) for _, r in plans.iterrows()}
+
+    rows = []
+    for series, event, car_class, season in scoped_race_seasons():
+        circuit = slugify(event)
+        fuel_range = ranges.get((series, circuit))
+        if fuel_range is None:
+            continue
+        slug = f"{season}_{circuit}_{car_class.lower()}"
+        try:
+            audit = audit_fuel_limited(series, circuit, season, slug, fuel_range, tolerance_laps=0)
+        except FileNotFoundError:
+            continue
+        rows.append({"series": series, "ran_fuel_limited": audit.ran_fuel_limited})
+
+    art = pd.DataFrame(rows)
+    assert art["ran_fuel_limited"].mean() > 0.5
+    by_series = art.groupby("series")["ran_fuel_limited"].mean()
+    assert (by_series > 0.5).all()
+
+
 @pytest.mark.skipif(not _ARTIFACT.exists(), reason="audit artifact not generated")
 def test_committed_audit_most_winners_ran_fuel_limited() -> None:
     """The real-data corroboration, pinned: a clear majority of scoped-race

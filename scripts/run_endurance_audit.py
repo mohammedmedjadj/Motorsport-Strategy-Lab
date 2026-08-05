@@ -73,7 +73,15 @@ def main() -> None:
         "",
         f"**{n_confirm} of {n} audited winners ran fuel-limited** — at least one "
         "stint within 3 laps of the full fuel range, and a longest stint reaching "
-        "it. Real winning behaviour corroborates the model's headline.",
+        "it. Real winning behaviour corroborates the model's headline. **This "
+        "exact share depends on that 3-lap tolerance** — 63.9% at the strictest "
+        "possible reading (0 laps, exact reach only) up to 96.7% at a lenient "
+        "10-lap reading; the qualitative conclusion (a clear majority, in both "
+        "series) holds throughout, but the precise percentage should not be "
+        "quoted alone — see "
+        "[`fuel_limited_sensitivity.md`](fuel_limited_sensitivity.md) for the "
+        "full sweep, including the per-series breakdown (IMSA moves more than "
+        "WEC).",
         "",
         "| Series | Circuit | Year | Winner | Fuel range | Longest stint | Full stints | Verdict |",
         "|---|---|---|---|---|---|---|---|",
