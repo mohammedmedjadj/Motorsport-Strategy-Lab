@@ -193,9 +193,11 @@ def estimate_tyre_change_premium(laps: pd.DataFrame) -> TyreChangePremium:
     tyres **while** refuelling (parallel), so a tyre change adds little; WEC
     forbids touching the tyres until the fuel hose is out (sequential), so a
     tyre change adds the full tyre-service time on top. Measured on the two
-    series it comes out ~+7 s (IMSA) vs ~+23 s (WEC) — a 3x difference from the
-    rulebook alone, and a real strategic cost: in WEC, fitting tyres is far more
-    expensive relative to a fuel-only splash.
+    series (pooled across every scoped race, `reports/wec/simulator_phase4.md`
+    / `reports/imsa/simulator_phase4.md`) it comes out ~+9 s (IMSA) vs ~+22 s
+    (WEC) — a ~2.5x difference from the rulebook alone, and a real strategic
+    cost: in WEC, fitting tyres is far more expensive relative to a fuel-only
+    splash.
 
     Garage/repair outliers are trimmed at ``PIT_LOSS_TRIM`` x the median, as in
     ``estimate_pit_loss``.

@@ -636,7 +636,7 @@ problem they solve is specific to endurance racing and has no F1 analogue:
   climatology). The honest answer: **per circuit they do not beat the base
   rate** — 6-8 F1 and 3-11 endurance editions are too few, so the point
   estimates are little more than the series rate. A built-in positive control
-  (endurance FCY grouped by *series*, IMSA ~0.97 vs WEC ~0.73) does show clear
+  (endurance FCY grouped by *series*, IMSA ~0.97 vs WEC ~0.27) does show clear
   skill, proving the harness detects real signal and rejects noise rather than
   always returning zero. A limitation the project measures about its own
   simulator. See [`reports/prediction/calibration.md`](reports/prediction/calibration.md).

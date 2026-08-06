@@ -16,11 +16,11 @@ negative means it is *worse* than knowing nothing.
 | Target | Level | Races | Base rate | Brier | Brier (base rate) | Skill | Verdict |
 |---|---|---|---|---|---|---|---|
 | IMSA FCY | circuit | 63 | 0.97 | 0.046 | 0.031 | -0.505 | no better than base rate |
-| WEC FCY | circuit | 33 | 0.73 | 0.217 | 0.198 | -0.095 | no better than base rate |
-| WEC Safety Car | circuit | 33 | 0.70 | 0.244 | 0.211 | -0.158 | no better than base rate |
+| WEC FCY | circuit | 33 | 0.27 | 0.305 | 0.198 | -0.538 | no better than base rate |
+| WEC Safety Car | circuit | 33 | 0.58 | 0.278 | 0.244 | -0.139 | no better than base rate |
 | F1 Safety Car | circuit | 27 | 0.52 | 0.320 | 0.250 | -0.281 | no better than base rate |
 | F1 VSC | circuit | 27 | 0.30 | 0.259 | 0.208 | -0.244 | no better than base rate |
-| Endurance FCY (by series) | series | 96 | 0.89 | 0.093 | 0.102 | +0.081 | beats base rate |
+| Endurance FCY (by series) | series | 96 | 0.73 | 0.093 | 0.198 | +0.528 | beats base rate |
 
 ## What this says (and it is not the flattering answer)
 
@@ -32,7 +32,7 @@ let you out-predict the series-wide rate of a Safety Car.
 
 **The harness is not rigged to fail, though — it finds signal where signal
 exists.** The positive control (endurance FCY grouped by *series*) has clearly
-positive skill, because IMSA (~0.97 FCY) and WEC (~0.73) genuinely differ. A
+positive skill, because IMSA (~0.97 FCY) and WEC (~0.27) genuinely differ. A
 backtest that only ever returned zero would be untestable; this one
 distinguishes a real effect (series) from noise (circuit), which is the whole
 point of scoring a prediction instead of admiring a fit.

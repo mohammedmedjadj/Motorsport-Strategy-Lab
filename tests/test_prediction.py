@@ -118,10 +118,30 @@ def test_endurance_race_table_is_one_row_per_race_with_binary_flags() -> None:
         "session_id": [1] * 4,
         "lap": [1, 2, 3, 4],
         "flags": ["GF", "FCY", "SF", "GF"],
+        "car_laps": [40, 40, 40, 40],  # unanimous every lap -> each flag is modal
     })
     tab = endurance_race_table(laps)
     assert len(tab) == 1
     assert tab.iloc[0]["fcy"] == 1.0 and tab.iloc[0]["sc"] == 1.0
+
+
+def test_endurance_race_table_ignores_a_non_modal_transient_flag() -> None:
+    """A single car reporting FCY while the rest of the field is still green
+    must not count as the race being neutralised -- this is the exact bug
+    that inflated WEC's FCY rate from a true 9/33 races to 24/33 before
+    endurance_race_table started reusing race_timeline's modal collapse."""
+    laps = pd.DataFrame({
+        "series_code": ["wec"] * 2,
+        "event": ["Spa"] * 2,
+        "year": [2024] * 2,
+        "session_id": [1] * 2,
+        "lap": [1, 1],
+        "flags": ["GF", "FCY"],
+        "car_laps": [39, 1],  # 39 cars green, 1 car transiently flagged FCY
+    })
+    tab = endurance_race_table(laps)
+    assert len(tab) == 1
+    assert tab.iloc[0]["fcy"] == 0.0 and tab.iloc[0]["sc"] == 0.0
 
 
 # --- committed artifact: drift guard + the scientific finding ---------------

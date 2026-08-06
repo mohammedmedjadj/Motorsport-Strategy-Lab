@@ -86,6 +86,9 @@ def _run() -> tuple[pd.DataFrame, pd.DataFrame]:
 
 
 def _report(summary: pd.DataFrame) -> str:
+    imsa_fcy_rate = summary.loc[summary["target"] == "IMSA FCY", "base_rate"].iloc[0]
+    wec_fcy_rate = summary.loc[summary["target"] == "WEC FCY", "base_rate"].iloc[0]
+
     def fmt(r):
         verdict = "beats base rate" if r["skill"] > 0 else "no better than base rate"
         return (f"| {r['target']} | {r['level']} | {r['n_races']} | {r['base_rate']:.2f} "
@@ -123,7 +126,8 @@ def _report(summary: pd.DataFrame) -> str:
         "",
         "**The harness is not rigged to fail, though — it finds signal where signal",
         "exists.** The positive control (endurance FCY grouped by *series*) has clearly",
-        "positive skill, because IMSA (~0.97 FCY) and WEC (~0.73) genuinely differ. A",
+        f"positive skill, because IMSA (~{imsa_fcy_rate:.2f} FCY) and WEC "
+        f"(~{wec_fcy_rate:.2f}) genuinely differ. A",
         "backtest that only ever returned zero would be untestable; this one",
         "distinguishes a real effect (series) from noise (circuit), which is the whole",
         "point of scoring a prediction instead of admiring a fit.",

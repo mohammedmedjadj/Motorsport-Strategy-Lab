@@ -71,13 +71,13 @@ A third fitted quantity already had a leave-one-race-out test before this report
 | Target | Level | Races | Base rate | Skill vs climatology |
 |---|---|---|---|---|
 | IMSA FCY | circuit | 63 | 0.968 | -0.5054 |
-| WEC FCY | circuit | 33 | 0.727 | -0.0949 |
-| WEC Safety Car | circuit | 33 | 0.697 | -0.1578 |
+| WEC FCY | circuit | 33 | 0.273 | -0.5384 |
+| WEC Safety Car | circuit | 33 | 0.576 | -0.1389 |
 | F1 Safety Car | circuit | 27 | 0.518 | -0.2806 |
 | F1 VSC | circuit | 27 | 0.296 | -0.2441 |
-| Endurance FCY (by series) | series | 96 | 0.885 | +0.0809 |
+| Endurance FCY (by series) | series | 96 | 0.729 | +0.5278 |
 
-Five of six targets score **negative** skill -- a per-circuit base rate does not beat the series-wide average out of sample, the same qualitative conclusion as degradation (does not transfer) rather than pit loss (does). The lone exception, Endurance FCY pooled *by series* rather than by circuit (skill +0.0809), is itself evidence for the same idea pit loss vs. degradation already established: pooling at the right level (series, not circuit, for a quantity this rare) recovers signal that per-circuit fitting throws away to noise -- the same logic behind pooling toward Bahrain's precision would fix if extended, and the same logic Section 7 of the Activity #3 roadmap's hierarchical-Bayesian proposal targets directly.
+Five of six targets score **negative** skill -- a per-circuit base rate does not beat the series-wide average out of sample, the same qualitative conclusion as degradation (does not transfer) rather than pit loss (does). The lone exception, Endurance FCY pooled *by series* rather than by circuit (skill +0.5278), is itself evidence for the same idea pit loss vs. degradation already established: pooling at the right level (series, not circuit, for a quantity this rare) recovers signal that per-circuit fitting throws away to noise -- the same logic behind pooling toward Bahrain's precision would fix if extended, and the same logic Section 7 of the Activity #3 roadmap's hierarchical-Bayesian proposal targets directly.
 
 ## Reading all three quantities together
 

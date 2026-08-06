@@ -252,6 +252,7 @@ def main() -> int:
         "|---|---|---|---|---|",
     ]
     calib_path = PREDICTION_DERIVED_DIR / "neutralisation_calibration.csv"
+    series_fcy_skill = None
     if calib_path.exists():
         calib = pd.read_csv(calib_path)
         for _, r in calib.iterrows():
@@ -259,13 +260,16 @@ def main() -> int:
                 f"| {r['target']} | {r['level']} | {int(r['n_races'])} | "
                 f"{r['base_rate']:.3f} | {r['skill']:+.4f} |"
             )
+        series_fcy_skill = calib.loc[
+            calib["target"] == "Endurance FCY (by series)", "skill"
+        ].iloc[0]
     lines += [
         "",
         "Five of six targets score **negative** skill -- a per-circuit base "
         "rate does not beat the series-wide average out of sample, the same "
         "qualitative conclusion as degradation (does not transfer) rather "
         "than pit loss (does). The lone exception, Endurance FCY pooled *by "
-        "series* rather than by circuit (skill +0.0809), is itself evidence "
+        f"series* rather than by circuit (skill {series_fcy_skill:+.4f}), is itself evidence "
         "for the same idea pit loss vs. degradation already established: "
         "pooling at the right level (series, not circuit, for a quantity "
         "this rare) recovers signal that per-circuit fitting throws away to "

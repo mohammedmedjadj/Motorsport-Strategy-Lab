@@ -26,6 +26,8 @@ from dataclasses import dataclass
 import numpy as np
 import pandas as pd
 
+from src.safety_car.endurance import race_timeline
+
 from .scoring import (
     ReliabilityBin,
     brier_score,
@@ -112,8 +114,23 @@ def outcomes_by(table: pd.DataFrame, outcome_col: str, group_col: str) -> dict[s
 
 def endurance_race_table(flags: pd.DataFrame) -> pd.DataFrame:
     """Collapse the per-lap flag table to one row per race with binary FCY / SC
-    columns (did that neutralisation ever fly?), keyed by series and circuit."""
-    hit = flags.assign(fcy=flags["flags"].eq(FCY_FLAG), sc=flags["flags"].eq(SC_FLAG))
+    columns (did that neutralisation kind become the race-level *modal* flag
+    on at least one lap?), keyed by series and circuit.
+
+    ``flags`` is one row per (race, lap, flag) *car-lap count* — several cars
+    can report different flags for the same lap while a neutralisation is
+    starting or ending. Checking ``.any()`` directly against that raw table
+    (as this function used to) counts a single car's transient off-flag
+    reading as the whole race being neutralised, which silently inflated
+    WEC's FCY rate from a true 9/33 races to 24/33 the one time this was
+    checked against ``reports/wec/safety_car_phase3.md``'s own number (which
+    goes through the modal collapse correctly). Reusing
+    :func:`src.safety_car.endurance.race_timeline` -- the same modal-flag
+    collapse Phase 3 uses -- keeps this backtest scoring the same race-level
+    events Phase 3 reports, rather than a noisier, uncollapsed proxy for them.
+    """
+    timeline = race_timeline(flags)
+    hit = timeline.assign(fcy=timeline["flags"].eq(FCY_FLAG), sc=timeline["flags"].eq(SC_FLAG))
     per_race = (
         hit.groupby(["series_code", "event", "year", "session_id"])[["fcy", "sc"]]
         .any()
