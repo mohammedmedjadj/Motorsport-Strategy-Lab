@@ -13,6 +13,7 @@ from src.simulator.endurance import EnduranceRaceModel
 from src.simulator.multistop import (
     TrafficModel,
     _stint_time,
+    deterministic_time,
     evaluate_plan,
     min_stops_plan,
     optimal_stop_plan,
@@ -55,9 +56,28 @@ def test_optimum_never_beaten_by_the_min_stops_baseline() -> None:
     args = dict(green_pace_s=93.0, net_slope_s=0.0135, pit_loss_s=79.0)
     opt = optimal_stop_plan(213, fuel_range_laps=42, **args)
     naive = min_stops_plan(213, 42)
-    naive_time = sum(_stint_time(L, args["green_pace_s"], args["net_slope_s"])
-                     for L in naive.stint_lengths) + naive.n_stops * args["pit_loss_s"]
-    assert opt.deterministic_time_s <= naive_time + 1e-6
+    assert opt.deterministic_time_s <= deterministic_time(naive, **args) + 1e-6
+
+
+def test_deterministic_time_reproduces_the_dp_objective() -> None:
+    """Scoring the optimum by hand must return exactly what the DP minimised —
+    otherwise the baseline is being compared on a different objective than the
+    one it is supposed to lose to."""
+    args = dict(green_pace_s=93.0, net_slope_s=0.0135, pit_loss_s=79.0)
+    opt = optimal_stop_plan(213, fuel_range_laps=42, **args)
+    assert deterministic_time(opt, **args) == pytest.approx(opt.deterministic_time_s)
+
+
+def test_an_unscored_plan_says_so_instead_of_claiming_zero() -> None:
+    """``min_stops_plan`` has no pace inputs, so it cannot know its own time.
+
+    Pinned because the previous placeholder was ``0.0``: comparing a baseline
+    against the optimum by that field silently reported the baseline as
+    finishing the race instantly, i.e. as beating every real plan.
+    """
+    naive = min_stops_plan(213, 42)
+    assert naive.deterministic_time_s is None
+    assert deterministic_time(naive, 93.0, 0.0135, 79.0) > 0.0
 
 
 def test_more_degradation_never_reduces_the_stop_count() -> None:

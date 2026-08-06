@@ -53,11 +53,17 @@ class TrafficModel:
 
 @dataclass(frozen=True)
 class StopPlan:
-    """A full-race stop sequence and its deterministic (expected-pace) time."""
+    """A full-race stop sequence, optionally with its deterministic time."""
 
     stop_laps: tuple[int, ...]        # laps after which the car pits
     stint_lengths: tuple[int, ...]    # green laps per stint, sums to race_laps
-    deterministic_time_s: float
+    #: Expected-pace race time, or ``None`` for a plan built without the pace
+    #: inputs needed to score one (``min_stops_plan`` knows the stint structure
+    #: but not the lap times). ``None`` rather than ``0.0`` on purpose: an
+    #: unscored plan compared against a scored one used to look like a plan
+    #: that finishes the race instantly. Use :func:`deterministic_time` to
+    #: score any plan against a given car.
+    deterministic_time_s: float | None
 
     @property
     def n_stops(self) -> int:
@@ -68,6 +74,19 @@ def _stint_time(length: int, green_pace_s: float, net_slope_s: float) -> float:
     """Running time of one stint of ``length`` laps on fresh tyres (ages
     0..length-1), degradation applied lap by lap: sum of an arithmetic series."""
     return length * green_pace_s + net_slope_s * (length * (length - 1) / 2.0)
+
+
+def deterministic_time(
+    plan: StopPlan, green_pace_s: float, net_slope_s: float, pit_loss_s: float
+) -> float:
+    """Expected-pace race time of any plan: stint running time + stops.
+
+    The same objective :func:`optimal_stop_plan` minimises, exposed so an
+    arbitrary plan (a team's real strategy, the fuel-minimum baseline) can be
+    scored on identical terms rather than compared by eye.
+    """
+    running = sum(_stint_time(n, green_pace_s, net_slope_s) for n in plan.stint_lengths)
+    return running + plan.n_stops * pit_loss_s
 
 
 def optimal_stop_plan(
@@ -171,10 +190,12 @@ def evaluate_plan(
 
 
 def _plan_from_lengths(lengths: tuple[int, ...]) -> StopPlan:
-    """A hand-built plan (for comparison against the optimum), time left at 0."""
+    """A hand-built plan (for comparison against the optimum), left unscored:
+    the stint structure is known here, the car's pace is not. Score it with
+    :func:`deterministic_time`."""
     stops = tuple(int(s) for s in np.cumsum(lengths)[:-1])
     return StopPlan(stop_laps=stops, stint_lengths=tuple(lengths),
-                    deterministic_time_s=0.0)
+                    deterministic_time_s=None)
 
 
 def min_stops_plan(race_laps: int, fuel_range_laps: int) -> StopPlan:
