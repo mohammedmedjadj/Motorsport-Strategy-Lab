@@ -16,6 +16,7 @@
   <a href="reports/methodology.md">Methodology</a> ·
   <a href="#key-findings-across-all-three-series">Key Findings</a> ·
   <a href="reports/f1/audit_cases.md">Audit Cases</a> ·
+  <a href="demo/README.md">Live Demo</a> ·
   <a href="#setup">Installation</a> ·
   <a href="CONTRIBUTING.md">Contributing</a>
 </p>
