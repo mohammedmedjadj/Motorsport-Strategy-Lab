@@ -20,10 +20,11 @@ sprint- and endurance-length formats and a spread of circuit types:
 | Mosport | 120 | 9 | 18 | 162 min | 100% | 143 | 29 | 29 |
 | Road America | 80 | 10 | 20 | 163 min | 100% | 27 | 19 | 19 |
 
-96 GTP-class races are available across IMSA 2021-2026 in total (used in full
+63 GTP-class races are available across IMSA 2021-2026 in total (used in full
 for the Phase 2 neutralisation model, which needs the largest sample it can
-get); these 4 were selected for degradation/simulator work to span a 2h40
-sprint (Road America), two ~2h40-3h format races (Mosport, Watkins Glen) and a
+get — see [`safety_car_phase3.md`](safety_car_phase3.md), "63 races pooled");
+these 4 were selected for degradation/simulator work to span a 2h40 sprint
+(Road America), two ~2h40-3h format races (Mosport, Watkins Glen) and a
 12-hour enduro (Sebring).
 
 ## Two traps found by verification (both handled and regression-tested)

@@ -8,7 +8,7 @@
   <a href="https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab/actions/workflows/tests.yml"><img src="https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab/actions/workflows/tests.yml/badge.svg" alt="Test suite status"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-CC%20BY--NC--SA%204.0-E10600" alt="License: CC BY-NC-SA 4.0"></a>
   <img src="https://img.shields.io/badge/python-3.11%2B-00D9FF" alt="Python 3.11+">
-  <img src="https://img.shields.io/badge/tests-140%2B%20passing-2ea44f" alt="140+ tests passing">
+  <img src="https://img.shields.io/badge/tests-247%20passing-2ea44f" alt="247 tests passing">
   <img src="https://img.shields.io/badge/series-F1%20%C2%B7%20WEC%20%C2%B7%20IMSA-FFB800" alt="Series: F1, WEC, IMSA">
 </p>
 
@@ -38,6 +38,7 @@ written methodology). WEC and IMSA cover the equivalent modelling phases
 (0-5, now including a per-decision audit of real stop calls) but don't yet
 have their own methodology write-up — see the limitations under each series.
 Jump to: [Formula 1](#formula-1) · [WEC](#wec) · [IMSA](#imsa) ·
+[Cross-series extensions](#modelling-extensions-across-all-three-series) ·
 [Methods](#mathematical-methods).
 
 ## Why this project
@@ -78,7 +79,7 @@ flowchart LR
 flowchart LR
     subgraph F1["Formula 1"]
         direction LR
-        f0["0 Data<br/>availability"] --> f1["1 Data<br/>quality"] --> f2["2 Degradation"] --> f3["3 SC/VSC"] --> f4["4 Simulator"] --> f5["5 Prediction"] --> f6["6 Racecraft"] --> f7["7 Audit"]
+        f0["0 Data<br/>availability"] --> f1["1 Data<br/>quality"] --> f2["2 Degradation"] --> f3["3 SC/VSC"] --> f4["4 Simulator"] --> f5["5 Audit"] --> f6["6 Methodology"] --> f7["7 Packaging"]
     end
     subgraph END["WEC & IMSA"]
         direction LR
@@ -201,55 +202,9 @@ written justification in [`reports/f1/`](reports/f1/):
   on green laps, per circuit. Monaco holds an adjacent rival with ~0.94
   probability over 15 laps vs ~0.57 at Barcelona. Unlike degradation it is
   **stable season to season** (it is track geometry), so it is a trustworthy
-  circuit constant — and it is the racecraft primitive the adversarial rival
-  model (next) is built on. See [`reports/f1/track_position.md`](reports/f1/track_position.md).
-- **Adversarial rival**, for **all three series** (`simulator.adversarial` for
-  F1, `simulator.adversarial_endurance` for WEC/IMSA, sharing one game-solving
-  core) — the pit stop as a two-player game: the rival **reacts**, covering your
-  undercut instead of following a frozen plan. Both cars run head-to-head lap by
-  lap, the pit exchange is resolved, the lead locked in with the measured
-  track-position stickiness, and the game solved (rival best-response,
-  Stackelberg optimum). It quantifies what a frozen-rival simulator hides:
-  in F1, assuming the rival won't cover overstates an undercut by ~8-9 points
-  and the undercut is worth more at Monaco (sticky) than Barcelona (fluid); in
-  endurance, the overstatement **scales with degradation** — up to ~0.44 at
-  steep-wear Bahrain, ~0.08 at flat Watkins Glen. See
-  [`reports/f1/adversarial_rival.md`](reports/f1/adversarial_rival.md) and the
-  endurance simulator reports.
-- **Inter-class traffic cost** (`simulator.traffic`, WEC/IMSA only —
-  endurance's unique problem) — a prototype is forever lapping slower-class
-  cars, and each one costs it time. Measured from the multi-class field by
-  comparing start/finish crossing times (which solves the lapping problem
-  without positions), now across **every in-scope season** (21 race-seasons,
-  materialised reproducibly by `scripts/materialise_endurance_fields.py`) with a
-  cross-season stability check: a HYPERCAR at Spa loses **~0.58 s/lap** in
-  traffic vs clear air averaged over 2023-2025 (a single season swings 0.25-0.95
-  — the earlier "+0.95" was Spa's steepest year alone), ~0.21 s per GT car
-  directly ahead. Honestly non-uniform across circuits *and* seasons, with the
-  spread now quantified rather than hidden. See the endurance simulator reports.
-- **Multi-stop strategy**, WEC/IMSA (`simulator.multistop`) — the single-stop
-  engine plans the *next* stop; a 6-24 h race needs 2-10. An exact dynamic
-  program finds the minimum-time stop sequence under the hard fuel-tank
-  constraint traded against tyre degradation, then runs it through the same
-  neutralisation sampling for a full-race time distribution. The honest headline:
-  **no measured endurance race is tyre-limited — every one is fuel-limited on
-  stop count**, and the *break-even slope* says how much steeper degradation
-  would have to be to change that (×4.3 at Bahrain, ×76 at Sebring). The measured
-  traffic spread folds in here as calibrated, zero-mean race-time variance — it
-  widens the uncertainty band without biasing which plan wins. See the endurance
-  simulator reports.
-- **Out-of-sample calibration**, for **all three series** (`src.prediction`) —
-  the simulator prices every lap with a per-circuit Safety Car / Full Course
-  Yellow probability; this asks whether those numbers actually *forecast*. Each
-  race edition is left out, its probability formed from the other editions only,
-  and graded with proper scoring rules (Brier, log-loss, Brier skill vs
-  climatology). The honest answer: **per circuit they do not beat the base
-  rate** — 6-8 F1 and 3-11 endurance editions are too few, so the point
-  estimates are little more than the series rate. A built-in positive control
-  (endurance FCY grouped by *series*, IMSA ~0.97 vs WEC ~0.73) does show clear
-  skill, proving the harness detects real signal and rejects noise rather than
-  always returning zero. A limitation the project measures about its own
-  simulator. See [`reports/prediction/calibration.md`](reports/prediction/calibration.md).
+  circuit constant — and it is the racecraft primitive the adversarial-rival
+  model is built on (see "Modelling extensions across all three series" below).
+  See [`reports/f1/track_position.md`](reports/f1/track_position.md).
 
 ### Data scope (MVP)
 
@@ -393,7 +348,8 @@ Reports: [data availability](reports/wec/data_availability_phase0.md) ·
 [degradation](reports/wec/degradation_phase2.md) ·
 [neutralisations](reports/wec/safety_car_phase3.md) ·
 [simulator](reports/wec/simulator_phase4.md) ·
-[decision audit](reports/wec/audit_cases.md)
+[decision audit](reports/wec/audit_cases.md) ·
+[reliability/attrition](reports/wec/reliability.md)
 
 ### Key results
 
@@ -474,6 +430,13 @@ numbers too, most visibly at Imola.
   against an 819s p10-p90 spread — noise at endurance race-time scale, the
   audit's own stated caveat about its 0.5s window tolerance (inherited
   unchanged from F1) being a much stricter bar here.
+- A **reliability/attrition layer, WEC's analogue of the F1 breadth layer's
+  finding**, now exists ([`reports/wec/reliability.md`](reports/wec/reliability.md)):
+  results-level Kaggle history (3035 car-entries, 2011-2023, all classes) gives
+  the classified-finish rate by class and by race duration. HYPERCAR finishes
+  87.6% of the time; the falsifiable positive control (finish rate should drop
+  as races get longer) holds — 24h races finish at 71.2% against 90.5-94.4%
+  for 4-8h races.
 
 ---
 
@@ -499,9 +462,11 @@ sprint and endurance formats:
 | Mosport      | **2023 only** | 162 min       | GTP, the current top prototype class, raced here only in 2023 — see below |
 | Road America | 2023, 2024, 2025    | 163 min       | Short sprint; surfaced a real data-quality bug, covered below              |
 
-96 GTP-class races are available across IMSA 2021-2026 in total, and all went
-into the neutralisation model. The 10 race-seasons above (3+3+1+3) were
-selected for degradation and simulator work.
+63 GTP-class races are available across IMSA 2021-2026 in total, and all went
+into the neutralisation model (matching the "63 races pooled" in
+[`reports/imsa/safety_car_phase3.md`](reports/imsa/safety_car_phase3.md)). The
+10 race-seasons above (3+3+1+3) were selected for degradation and simulator
+work.
 
 Mosport's single season isn't a gap in this pipeline — it's a verified fact
 about the calendar. Checked directly against the source: Mosport ran DPi
@@ -616,6 +581,68 @@ says so rather than picking a winner anyway.
   the window" verdict is a real but low-confidence preference rather than a
   confident correction.
 
+---
+
+## Modelling extensions across all three series
+
+Four more extensions sit outside any single series section on purpose —
+either because they are explicitly built to cover all three, or because the
+problem they solve is specific to endurance racing and has no F1 analogue:
+
+- **Adversarial rival**, for **all three series** (`simulator.adversarial` for
+  F1, `simulator.adversarial_endurance` for WEC/IMSA, sharing one game-solving
+  core) — the pit stop as a two-player game: the rival **reacts**, covering your
+  undercut instead of following a frozen plan. Both cars run head-to-head lap by
+  lap, the pit exchange is resolved, the lead locked in with the measured
+  track-position stickiness (see F1's [track-position value](#formula-1)
+  above), and the game solved (rival best-response, Stackelberg optimum). It
+  quantifies what a frozen-rival simulator hides: in F1, assuming the rival
+  won't cover overstates an undercut by ~8-9 points and the undercut is worth
+  more at Monaco (sticky) than Barcelona (fluid); in endurance, the
+  overstatement **scales with degradation** — up to ~0.44 at steep-wear
+  Bahrain, ~0.08 at flat Watkins Glen. See
+  [`reports/f1/adversarial_rival.md`](reports/f1/adversarial_rival.md) and the
+  endurance simulator reports.
+- **Inter-class traffic cost** (`simulator.traffic`, **WEC/IMSA only** —
+  endurance's unique problem, since F1 has no multi-class field) — a prototype
+  is forever lapping slower-class cars, and each one costs it time. Measured
+  from the multi-class field by comparing start/finish crossing times (which
+  solves the lapping problem without positions), now across **every in-scope
+  season** (21 race-seasons, materialised reproducibly by
+  `scripts/materialise_endurance_fields.py`) with a cross-season stability
+  check: a HYPERCAR at Spa loses **~0.58 s/lap** in traffic vs clear air
+  averaged over 2023-2025 (a single season swings 0.25-0.95 — the earlier
+  "+0.95" was Spa's steepest year alone), ~0.21 s per GT car directly ahead.
+  Honestly non-uniform across circuits *and* seasons, with the spread now
+  quantified rather than hidden. See the endurance simulator reports.
+- **Multi-stop strategy**, **WEC/IMSA only** (`simulator.multistop`) — the
+  single-stop engine plans the *next* stop; a 6-24 h race needs 2-10. An exact
+  dynamic program finds the minimum-time stop sequence under the hard
+  fuel-tank constraint traded against tyre degradation, then runs it through
+  the same neutralisation sampling for a full-race time distribution. The
+  honest headline: **no measured endurance race is tyre-limited — every one is
+  fuel-limited on stop count**, and the *break-even slope* says how much
+  steeper degradation would have to be to change that — from ×1.8 at IMSA's
+  Laguna Seca (the tightest margin found) to ×205 at IMSA's Sebring (the most
+  fuel-secure), with WEC's own range sitting in between (×4.9 at Bahrain to
+  ×67.7 at Sebring). The measured traffic spread folds in here as calibrated, zero-mean
+  race-time variance — it widens the uncertainty band without biasing which
+  plan wins. See the endurance simulator reports.
+- **Out-of-sample calibration**, for **all three series** (`src.prediction`) —
+  the simulator prices every lap with a per-circuit Safety Car / Full Course
+  Yellow probability; this asks whether those numbers actually *forecast*. Each
+  race edition is left out, its probability formed from the other editions only,
+  and graded with proper scoring rules (Brier, log-loss, Brier skill vs
+  climatology). The honest answer: **per circuit they do not beat the base
+  rate** — 6-8 F1 and 3-11 endurance editions are too few, so the point
+  estimates are little more than the series rate. A built-in positive control
+  (endurance FCY grouped by *series*, IMSA ~0.97 vs WEC ~0.73) does show clear
+  skill, proving the harness detects real signal and rejects noise rather than
+  always returning zero. A limitation the project measures about its own
+  simulator. See [`reports/prediction/calibration.md`](reports/prediction/calibration.md).
+
+---
+
 ## Key findings across all three series
 
 Having gone through F1, WEC and IMSA individually above, seven results stood
@@ -644,7 +671,7 @@ matters) later corrected rather than quietly kept:
 > **"Nothing generalises" was itself an overclaim — it depends what "nothing" is —**
 > the same leave-one-out test applied to **pit loss** (never run before this
 > pass) shows it transfers well almost everywhere (relative RMSE 0.13-0.54
-> at 19 of 21 circuits) — the opposite conclusion from degradation, because
+> at 20 of 21 circuits) — the opposite conclusion from degradation, because
 > pit loss is closer to a fixed procedural quantity than a fitted trend.
 > The one large exception, **WEC COTA** (relative RMSE 1.10), traces to a
 > real race-format change — 120 laps in 2025 versus 183 in 2024 — and is
@@ -721,16 +748,24 @@ Motorsport-Strategy-Lab/
                         #   published to Kaggle; never the source of truth
                         #   for a reported number, which always lives in
                         #   reports/ + the pytest artifact drift guards
+  demo/                 # app.py -- Streamlit UI over the real simulator (F1 only)
   scripts/              # run_ingestion.py, run_degradation.py, run_safety_car.py,
                         #   run_simulator_demo.py (F1); run_endurance_flags.py +
                         #   run_endurance_models.py (WEC/IMSA data + model
-                        #   artifacts); demo_extensions.py; generate_banner.py
-  tests/                # pytest, all three series, 140+ tests
+                        #   artifacts); run_generalization_audit.py,
+                        #   run_fuel_limited_sensitivity.py,
+                        #   run_sc_contamination_check.py (adversarial audit
+                        #   pass); demo_extensions.py; generate_banner.py
+  tests/                # pytest, all three series, 247 tests
   reports/
-    f1/                 # phase 0-4 reports, audit cases, figures
-    imsa/               # phase 0-4 reports, audit cases
-    wec/                # phase 0-4 reports, audit cases
-    methodology.md      # F1 mini-paper
+    f1/                 # phase 0-5 reports + extensions (breadth layer,
+                        #   adversarial rival, track position), audit cases, figures
+    imsa/               # phase 0-5 reports, audit cases
+    wec/                # phase 0-5 reports, audit cases
+    prediction/         # cross-series calibration backtest
+    methodology.md      # F1 mini-paper (also phase 6 for F1)
+    generalization_audit.md, endurance_audit.md, fuel_limited_sensitivity.md,
+    sc_contamination_check.md  # cross-series adversarial audit pass
   assets/               # banner.png/svg, social-preview.png, fonts/ (OFL-licensed)
   .github/
     workflows/          # tests.yml, post-race-refresh.yml
