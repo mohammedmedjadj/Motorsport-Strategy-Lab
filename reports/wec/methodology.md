@@ -281,7 +281,15 @@ per-car rows (§3.2, the bug found while writing this section).
 a tight +0.042 to +0.049 s/lap band across three real seasons, and every
 individual held-out fold scores positive (+0.227, +0.213, +0.192) — the
 strongest transfer found anywhere in this project, F1's own circuits
-included. Everywhere else, the pattern from F1 repeats: slopes move too
+included. **A measurement-basis note, since the same nominal quantity
+appears twice in this project with different values**: the +0.209 above is
+the mean over the frozen 2023-2025 degradation scope (3 folds), matching
+`degradation_phase2.md`. The widened `ENDURANCE_SCOPE` artifact
+(`data/derived/endurance/endurance_degradation_loro.csv`, feeding
+[`reports/generalization_audit.md`](../generalization_audit.md)) adds a
+2022 fold (+0.133) and therefore reports **+0.191** over 4 folds. Neither
+is wrong; they are different fold sets, and the qualitative finding —
+every Bahrain fold positive, unique in either series — holds under both. Everywhere else, the pattern from F1 repeats: slopes move too
 much between editions of the same race for a fitted trend to predict a
 held-out season better than a flat line. A separate leave-one-circuit-out
 test (one season each, holding out an entire track) gives a negative mean
@@ -423,8 +431,10 @@ correction.
 
 Extending the leave-one-out protocol to pit loss (never tested before this
 project's generalization audit) gives a strikingly different answer from
-degradation: relative RMSE sits at **0.18-0.54 for 8 of WEC's 9 testable
-circuits**, closer to a fixed procedural quantity than a fitted trend. The
+degradation: relative RMSE sits at **0.18-0.54 for 7 of WEC's 8 testable
+circuits** (Bahrain 0.18, Interlagos 0.23, Le Mans 0.28, Fuji 0.28, Sebring
+0.29, Spa 0.41, Imola 0.54), closer to a fixed procedural quantity than a
+fitted trend. The
 one outlier, **WEC COTA (relative RMSE 1.10)** — worse than anywhere else in
 either series — traces to a checked, not assumed, cause: the 2025 race was
 **120 laps versus 183 in 2024, same 18 cars**. COTA is also the single
@@ -447,6 +457,40 @@ WEC share stays a clear majority at every tolerance tested, from 75.0% at
 the strictest reading (exact reach only) to 100.0% at a 7-lap tolerance —
 flatter and more robust to the tolerance choice than IMSA's own sweep
 (54.5% to 93.9% over the same range).
+
+### 4.10 Reliability and attrition: a complementary results-level layer
+
+Every layer above is lap-level. One strategy-relevant quantity is not
+available at lap level at all and is better served by results history:
+**the probability a car reaches the classified finish**.
+[`reports/wec/reliability.md`](reliability.md) measures it over **3,035
+car-entries, 2011-2023**, all classes, using the same Jeffreys
+`Beta(0.5, 0.5)` smoother as the calibration backtest so a thinly-sampled
+class gets a wide interval rather than a false 0% or 100%.
+
+| Class | Entries | Finish rate | 95% CI |
+|---|---|---|---|
+| LMP1 | 491 | 0.822 | [0.787, 0.855] |
+| LMP2 | 977 | 0.852 | [0.829, 0.874] |
+| LMGTE Am | 843 | 0.867 | [0.843, 0.889] |
+| **HYPERCAR** | 140 | **0.876** | [0.817, 0.925] |
+| LMGTE Pro | 579 | 0.892 | [0.866, 0.916] |
+
+The falsifiable check this layer was built around: **attrition should rise
+with race length**, so a 24h finish rate must sit below a 4h one, or the
+measurement is wrong. It holds — **0.712** [0.680, 0.744] at 24h against
+**0.944** [0.876, 0.986] at 4h. Worth stating plainly that the middle of
+that range is not monotonic (6h 0.905, 8h 0.935): the 8h finish rate sits
+slightly *above* the 6h one, on overlapping intervals and a much smaller
+sample (253 vs 1,929 entries), so the honest reading is that the control
+fires on the endpoints and the intermediate ordering is not resolved by
+this data.
+
+This layer deliberately does **not** feed the degradation or neutralisation
+models — it has no per-lap resolution, so it cannot say *when* in a race a
+car failed, only whether it was classified. It is a complementary prior,
+reported separately rather than folded into the simulator, and IMSA has no
+equivalent in this project (the Kaggle results history covers WEC only).
 
 ## 5. Threats to validity
 
@@ -489,6 +533,11 @@ races they were fitted on?
   that "does this generalise" and "is the source data comparable across
   editions" are different questions, and this project answers both rather
   than assuming the first once the second looks fine.
+- **The reliability layer's class comparison spans a regulation era it does
+  not model** (§4.10): 2011-2023 covers LMP1's peak and its replacement by
+  HYPERCAR, so a cross-class finish-rate ranking mixes eras as well as
+  classes. HYPERCAR's own 140 entries are the thinnest sample in that
+  table, and its interval says so.
 
 **Construct validity** — do the simulator's objective and the audit's
 comparison actually capture "good strategy," or a narrower proxy for it?
