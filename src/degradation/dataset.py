@@ -46,16 +46,21 @@ def load_circuit_laps(circuit: str, seasons: tuple[int, ...] = SEASONS) -> pd.Da
     ``SEASONS`` grows automatically every calendar year (see
     ``src/ingestion/config.py``), so it can legitimately include a season
     that has not actually been ingested yet -- the season hasn't started,
-    or a scheduled ingestion run failed (both real: FastF1 loads have
-    failed outright from GitHub's hosted runners on at least one post-race-
-    refresh run). Such seasons are skipped with a warning rather than
-    raising, so the pipeline degrades to "the seasons we actually have"
-    instead of crashing the moment the calendar rolls over -- this is what
-    keeps the post-race-refresh workflow's documented no-op behaviour
-    (`.github/workflows/post-race-refresh.yml`) actually true. A season
-    that is explicitly requested and still missing is exactly the kind of
-    silent gap this project does not paper over elsewhere, hence the
-    warning rather than a silent skip.
+    or ingestion could not reach the timing API (both real: no 2026 F1 race
+    has been ingestible from GitHub's hosted runners, see the KNOWN ISSUE
+    note in ``.github/workflows/post-race-refresh.yml``). Such seasons are
+    skipped with a warning rather than raising, so this step degrades to
+    "the seasons we actually have" instead of crashing the moment the
+    calendar rolls over. A season that is explicitly requested and still
+    missing is exactly the kind of silent gap this project does not paper
+    over elsewhere, hence the warning rather than a silent skip.
+
+    Note the deliberate asymmetry with ``src/ingestion/pipeline.py``, which
+    *refuses* to write when it ingests nothing: there, an empty result would
+    overwrite good committed data, so failing loudly is the safe move; here,
+    the committed data is being read rather than replaced, so continuing
+    with fewer seasons costs nothing and keeps the rest of the pipeline
+    runnable.
     """
     frames = []
     missing = []

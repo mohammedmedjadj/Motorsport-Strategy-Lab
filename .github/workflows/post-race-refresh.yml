@@ -5,15 +5,26 @@ name: Post-race data refresh
 # actually changed. Scheduled for Monday mornings, after a race weekend, plus a
 # manual trigger.
 #
-# IMPORTANT — this is a genuine no-op until the data scope moves forward.
-# The pipeline is deterministic over the frozen scope in
-# src/ingestion/config.py (SEASONS). Re-running it produces byte-identical
-# output, so `git diff` is empty and nothing is committed. It only starts
-# producing commits once a new season/round enters that scope (see the README's
-# note on making SEASONS rolling). The endurance (WEC/IMSA) side is deliberately
-# NOT refreshed here: its committed reports and several tests are pinned to
-# exact race counts (e.g. "96 races"), so an automatic data pull would fail the
-# test gate below by design — refreshing it is a manual, reviewed change.
+# SEASONS in src/ingestion/config.py is rolling (2023 .. current year), so this
+# workflow's scope extends itself every 1 January. The pipeline is deterministic
+# over races that are already ingested: re-running reproduces byte-identical
+# output, `git diff` is empty, and nothing is committed. It only commits when a
+# round genuinely new to the scope is successfully ingested.
+#
+# KNOWN ISSUE (as of 2026-08): the ingest step cannot reach the F1 timing API
+# from GitHub-hosted runners. FastF1's primary endpoint errors here, it falls
+# back to its livetiming mirror (in-progress sessions only), and every race
+# fails with SessionNotAvailableError -- including 2023 races ingested long ago.
+# FASTF1_DEBUG=1 below is what surfaces that; without it FastF1 reports only a
+# generic "Failed to load X data!". run_all() refuses to write anything on a
+# total failure (see src/ingestion/pipeline.py), so a run in this state fails
+# loudly at the ingest step and leaves committed data untouched -- which is the
+# intended behaviour, not a secondary bug.
+#
+# The endurance (WEC/IMSA) side is deliberately NOT refreshed here: its
+# committed reports and several tests are pinned to exact race counts (e.g.
+# IMSA's "63 races"), so an automatic data pull would fail the test gate below
+# by design -- refreshing it is a manual, reviewed change.
 
 on:
   schedule:

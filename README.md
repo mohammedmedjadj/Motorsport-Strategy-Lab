@@ -811,16 +811,35 @@ actually change** — figures excluded, since matplotlib's PNG timestamps would
 otherwise diff on every run.
 
 There is an honest tension worth naming: the rest of this project is built on
-*reproducibility* — a frozen data scope, deterministic outputs, tests that
-assert exact numbers. A live-refresh pipeline pulls the other way. So the
-workflow is deliberately a **no-op until the scope moves forward**: over the
-frozen `SEASONS` in `src/ingestion/config.py` the pipeline regenerates
-byte-identical output and commits nothing. It starts producing real,
-calendar-aligned commits once a new season enters scope (make `SEASONS`
-include the live year to enable that). The WEC/IMSA side is intentionally left
-out of the automation: its reports and several tests are pinned to exact race
-counts, so an automatic data pull would fail the workflow's own test gate by
-design — refreshing endurance data stays a manual, reviewed step.
+*reproducibility* — deterministic outputs, tests that assert exact numbers. A
+live-refresh pipeline pulls the other way. The resolution is that `SEASONS`
+in `src/ingestion/config.py` is **rolling** (`2023 … current year`), so the
+scope extends itself on 1 January each year and the refresh only ever commits
+when regenerating actually changes a byte. Over a scope whose races are all
+already ingested, the pipeline reproduces its own output exactly and commits
+nothing.
+
+**Current status, stated plainly: no 2026 F1 data has been ingested.** The
+scheduled refresh has not been able to reach the timing API from GitHub's
+hosted runners — FastF1's primary endpoint returns an error there, it falls
+back to its livetiming mirror (which only serves in-progress sessions), and
+every race then fails with `SessionNotAvailableError`, including seasons
+finished years ago. That is an access problem outside this repository, not a
+pipeline bug, and it is why `data/derived/f1/` still ends at 2025. The
+pipeline is built to survive it rather than paper over it: a season with no
+ingested data is skipped with a warning instead of crashing the degradation
+step (`src/degradation/dataset.py`), and a *total* ingest failure now refuses
+to write at all rather than overwriting good committed data with an empty
+result (`src/ingestion/pipeline.py`). Both behaviours are regression-tested;
+the second exists because the workflow did once auto-commit exactly that
+regression, which was caught and reverted.
+
+The WEC/IMSA side is intentionally left out of the automation: its reports
+and several tests are pinned to exact race counts, so an automatic data pull
+would fail the workflow's own test gate by design — refreshing endurance data
+stays a manual, reviewed step. (This is also why WEC and IMSA *do* have 2026
+races committed while F1 does not: their ingestion never depended on the F1
+timing API.)
 
 ## Mathematical methods
 
