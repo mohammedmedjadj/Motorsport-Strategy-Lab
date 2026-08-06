@@ -65,7 +65,12 @@ SEASONS: tuple[int, ...] = tuple(range(_FIRST_SEASON, date.today().year + 1))
 #: +0.131 -> +0.066 s/lap) and flips the cross-validated degree selection, which
 #: is what prompted this split. Circuit *geometry* is unaffected by a
 #: regulation change, so the safety-car layer deliberately does not use this
-#: boundary (see scripts/run_safety_car.py's own window).
+#: boundary (see scripts/run_safety_car.py's own window). This constant is
+#: **F1-only** on purpose: WEC's HYPERCAR and IMSA's GTP rulesets run
+#: continuously through this window with no comparable reset, so the endurance
+#: scope (src/data/endurance_scope.py) pools its own 2026 races normally. The
+#: boundary marks a real discontinuity in one series, not a project-wide
+#: policy of distrusting recent data.
 REGULATION_ERA_START = 2026
 #: The regulation-stable window the reported degradation coefficients are fit on.
 PRE_ERA_SEASONS: tuple[int, ...] = tuple(s for s in SEASONS if s < REGULATION_ERA_START)
