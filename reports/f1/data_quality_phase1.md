@@ -21,5 +21,12 @@ stint contains a red flag (tyre sets may change without a pit stop).
 | 2025_singapore | 1229 | 1106 | 90.0% | 23 | 25 | 0 | 66 | 0 | 40 | 0 | 19 | 0 |
 | 2025_barcelona | 1203 | 980 | 81.5% | 55 | 55 | 1 | 213 | 0 | 115 | 0 | 9 | 0 |
 | 2025_suzuka | 1059 | 989 | 93.4% | 21 | 21 | 0 | 62 | 0 | 0 | 0 | 8 | 0 |
+| 2026_monaco | 1452 | 1136 | 78.2% | 89 | 87 | 37 | 275 | 0 | 247 | 0 | 25 | 32 |
+| 2026_suzuka | 1107 | 913 | 82.5% | 30 | 29 | 21 | 184 | 0 | 140 | 0 | 6 | 0 |
 
-**Overall: 12091/14342 laps kept for pace analysis (84.3%).**
+**Overall: 14140/16901 laps kept for pace analysis (83.7%).**
+
+## Races skipped (not available at ingest time)
+
+- 2026_singapore: DataNotLoadedError: The data you are trying to access has not been loaded yet. See `Session.load`
+- 2026_barcelona: DataNotLoadedError: The data you are trying to access has not been loaded yet. See `Session.load`
