@@ -8,7 +8,7 @@
   <a href="https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab/actions/workflows/tests.yml"><img src="https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab/actions/workflows/tests.yml/badge.svg" alt="Test suite status"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-CC%20BY--NC--SA%204.0-E10600" alt="License: CC BY-NC-SA 4.0"></a>
   <img src="https://img.shields.io/badge/python-3.11%2B-00D9FF" alt="Python 3.11+">
-  <img src="https://img.shields.io/badge/tests-247%20passing-2ea44f" alt="247 tests passing">
+  <img src="https://img.shields.io/badge/tests-249%20passing-2ea44f" alt="249 tests passing">
   <img src="https://img.shields.io/badge/series-F1%20%C2%B7%20WEC%20%C2%B7%20IMSA-FFB800" alt="Series: F1, WEC, IMSA">
 </p>
 
@@ -35,8 +35,10 @@ each with its own report and its own test suite. Other racing series may be adde
 
 **Status:** F1 is complete end to end (phases 0-7, including the audit and a
 written methodology). WEC and IMSA cover the equivalent modelling phases
-(0-5, now including a per-decision audit of real stop calls) but don't yet
-have their own methodology write-up — see the limitations under each series.
+(0-6: data through the per-decision audit, now each with its own written
+methodology report — [`reports/wec/methodology.md`](reports/wec/methodology.md),
+[`reports/imsa/methodology.md`](reports/imsa/methodology.md)) but stop short
+of F1's phase 7 (final packaging) — see the limitations under each series.
 Jump to: [Formula 1](#formula-1) · [WEC](#wec) · [IMSA](#imsa) ·
 [Cross-series extensions](#modelling-extensions-across-all-three-series) ·
 [Methods](#mathematical-methods).
@@ -83,19 +85,18 @@ flowchart LR
     end
     subgraph END["WEC & IMSA"]
         direction LR
-        e0["0 Data<br/>availability"] --> e1["1 Data<br/>quality"] --> e2["2 Degradation"] --> e3["3 Neutralisation"] --> e4["4 Simulator"] --> e5["5 Audit"]
+        e0["0 Data<br/>availability"] --> e1["1 Data<br/>quality"] --> e2["2 Degradation"] --> e3["3 Neutralisation"] --> e4["4 Simulator"] --> e5["5 Audit"] --> e6["6 Methodology"]
     end
     classDef done fill:#2ea44f,stroke:#1a7f37,color:#fff
     classDef partial fill:#FFB800,stroke:#b58600,color:#1a1a1a
     class f0,f1,f2,f3,f4,f5,f6,f7 done
-    class e0,e1,e2,e3,e4,e5 done
+    class e0,e1,e2,e3,e4,e5,e6 done
 ```
 
-F1 runs the full pipeline through phase 7 (audit + written methodology); WEC
-and IMSA now have their own phase 5 (a per-decision audit, plus the
-cross-race fuel-limited audit), but stop short of F1's phases 6-7 — a
-written methodology report and final packaging for each series remains
-outstanding.
+F1 runs the full pipeline through phase 7 (final packaging); WEC and IMSA
+now each have their own phase 6 (a written methodology report, mirroring
+F1's), but stop short of F1's phase 7 — final packaging for each series
+remains outstanding.
 
 ## Repository map
 
@@ -349,7 +350,8 @@ Reports: [data availability](reports/wec/data_availability_phase0.md) ·
 [neutralisations](reports/wec/safety_car_phase3.md) ·
 [simulator](reports/wec/simulator_phase4.md) ·
 [decision audit](reports/wec/audit_cases.md) ·
-[reliability/attrition](reports/wec/reliability.md)
+[reliability/attrition](reports/wec/reliability.md) ·
+[methodology](reports/wec/methodology.md)
 
 ### Key results
 
@@ -398,6 +400,7 @@ numbers too, most visibly at Imola.
 | 3. Neutralisations   | [`reports/wec/safety_car_phase3.md`](reports/wec/safety_car_phase3.md) + tests                                                 | Per-circuit and series-wide Beta-Binomial/Gamma-Poisson posteriors on 33 races; SC and FCY told apart empirically, not assumed                                                     |
 | 4. Simulator         | [`reports/wec/simulator_phase4.md`](reports/wec/simulator_phase4.md) + tests                                                   | Both neutralisation kinds modelled, fuel-range constraint enforced, one demo scenario per circuit, reproducible                                                                    |
 | 5. Decision audit    | [`reports/wec/audit_cases.md`](reports/wec/audit_cases.md) + `src/audit/endurance_cases.py` + tests                          | Three real stop decisions, states rebuilt from committed laps, replayed through the single-stop engine and compared quantitatively                                                 |
+| 6. Methodology       | [`reports/wec/methodology.md`](reports/wec/methodology.md)                                                                     | Full write-up — motivation, method, results, threats to validity, future work — every number traceable to project output, WEC-only, never pooled with IMSA                       |
 
 ### WEC known limitations
 
@@ -499,7 +502,8 @@ Reports: [data availability](reports/imsa/data_availability_phase0.md) ·
 [degradation](reports/imsa/degradation_phase2.md) ·
 [neutralisations](reports/imsa/safety_car_phase3.md) ·
 [simulator](reports/imsa/simulator_phase4.md) ·
-[decision audit](reports/imsa/audit_cases.md)
+[decision audit](reports/imsa/audit_cases.md) ·
+[methodology](reports/imsa/methodology.md)
 
 ### Key results
 
@@ -552,6 +556,7 @@ says so rather than picking a winner anyway.
 | 3. Neutralisations   | [`reports/imsa/safety_car_phase3.md`](reports/imsa/safety_car_phase3.md) + tests                                                 | Per-circuit and series-wide Beta-Binomial/Gamma-Poisson posteriors on 63 races; the zero-Safety-Car case handled by the Jeffreys prior rather than hard-coded                      |
 | 4. Simulator         | [`reports/imsa/simulator_phase4.md`](reports/imsa/simulator_phase4.md) + tests                                                   | Fuel-range constraint enforced, one demo scenario per circuit, reproducible                                                                                                        |
 | 5. Decision audit    | [`reports/imsa/audit_cases.md`](reports/imsa/audit_cases.md) + `src/audit/endurance_cases.py` + tests                          | Three real stop decisions, states rebuilt from committed laps, replayed through the single-stop engine and compared quantitatively                                                 |
+| 6. Methodology       | [`reports/imsa/methodology.md`](reports/imsa/methodology.md)                                                                     | Full write-up — motivation, method, results, threats to validity, future work — every number traceable to project output, IMSA-only, never pooled with WEC                       |
 
 ### IMSA known limitations
 
@@ -756,14 +761,14 @@ Motorsport-Strategy-Lab/
                         #   run_fuel_limited_sensitivity.py,
                         #   run_sc_contamination_check.py (adversarial audit
                         #   pass); demo_extensions.py; generate_banner.py
-  tests/                # pytest, all three series, 247 tests
+  tests/                # pytest, all three series, 249 tests
   reports/
     f1/                 # phase 0-5 reports + extensions (breadth layer,
                         #   adversarial rival, track position), audit cases, figures
-    imsa/               # phase 0-5 reports, audit cases
-    wec/                # phase 0-5 reports, audit cases
+    imsa/               # phase 0-6 reports, audit cases, methodology.md
+    wec/                # phase 0-6 reports, audit cases, reliability.md, methodology.md
     prediction/         # cross-series calibration backtest
-    methodology.md      # F1 mini-paper (also phase 6 for F1)
+    methodology.md      # F1 mini-paper (F1's own phase 6)
     generalization_audit.md, endurance_audit.md, fuel_limited_sensitivity.md,
     sc_contamination_check.md  # cross-series adversarial audit pass
   assets/               # banner.png/svg, social-preview.png, fonts/ (OFL-licensed)
