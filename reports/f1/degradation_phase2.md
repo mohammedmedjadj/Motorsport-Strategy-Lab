@@ -140,17 +140,14 @@ through the *identical* leave-one-race-out within-stint protocol. On the same
 demeaned metric the GP reduces to a 1-D curve in tyre age, so it can bend
 freely where a polynomial cannot.
 
-Result (12 folds, 4 circuits x 3 seasons):
+Result (12 folds across 4 circuits, monaco, singapore, barcelona, suzuka):
 
 | Model | Mean CV RMSE (s) | Folds won | Out-of-sample R² |
 |---|---|---|---|
-| OLS (fixed effects, degree 1) | 0.844 | 4 / 12 | mostly ≤ 0 |
-| Gaussian process (nonparametric) | 0.838 | 8 / 12 | mostly ≤ 0 |
+| OLS (fixed effects, degree 1) | 0.844 | 4 / 12 | 8 / 12 folds <= 0 |
+| Gaussian process (nonparametric) | 0.838 | 8 / 12 | 9 / 12 folds <= 0 |
 
-The GP is **statistically indistinguishable** from OLS: a 0.006 s/lap mean
-improvement on a 0.84 s/lap error (mean absolute per-fold difference 0.025 s),
-and it stays at or below zero R² out of sample on the same folds. Added
-functional flexibility does **not** recover cross-season predictability.
+The GP is **statistically indistinguishable** from OLS: a +0.006 s/lap mean improvement on a 0.84 s/lap error (mean absolute per-fold difference 0.025 s), and both stay at or below zero R² out of sample on most folds. Added functional flexibility does **not** recover cross-season predictability.
 
 **Conclusion:** the instability is a property of the *data* — the true
 degradation slope genuinely moves between seasons — not of the OLS functional
@@ -168,14 +165,15 @@ counterpart: a local-linear-trend Kalman filter over state `[level, slope]`,
 observing the pace offset each lap, returning the posterior slope and its
 standard deviation after every lap.
 
-On a real stint (Alonso, HARD, 27 laps, Suzuka 2023) the online slope converges
-to the whole-stint OLS slope while its uncertainty collapses as laps arrive:
+On a real stint (ALO, HARD, 27 laps, Suzuka 2023) the online slope converges toward the
+whole-stint OLS slope (+0.071 s/lap) while its uncertainty collapses
+as laps arrive:
 
-| After | Kalman slope (s/lap) | Whole-stint OLS |
-|---|---|---|
-| 5 laps | +0.062 ± 0.202 | |
-| 10 laps | +0.046 ± 0.071 | +0.071 |
-| 27 laps | +0.072 ± 0.019 | |
+| After | Kalman slope (s/lap) |
+|---|---|
+| 5 laps | +0.062 ± 0.202 |
+| 10 laps | +0.046 ± 0.071 |
+| 27 laps | +0.072 ± 0.019 |
 
 Unlike the static fit, the filter can also track a mid-stint change in the
 degradation rate (the "cliff") rather than assuming one constant slope — see
