@@ -88,6 +88,33 @@ def run_all(races: tuple[RaceId, ...] = RACES) -> list[QualityRow]:
             }
         )
 
+    existing_sessions_path = F1_DERIVED_DIR / "sessions.csv"
+    previously_ingested = (
+        len(pd.read_csv(existing_sessions_path)) if existing_sessions_path.exists() else 0
+    )
+    if not quality_rows and previously_ingested:
+        # Every single race failed to load, *and* there is already-committed
+        # data on disk -- qualitatively different from the normal "this
+        # season's later rounds aren't run yet" partial skip the docstring
+        # above describes (that case has nothing on disk yet either).
+        # Observed for real (2026-08-06): FastF1 silently fell back to its
+        # livetiming mirror (which only serves in-progress sessions) and
+        # returned SessionNotAvailableError for every race, including
+        # seasons finished years ago -- indistinguishable by exception type
+        # from a legitimately-not-yet-run race. Writing sessions.csv /
+        # data_quality_phase1.md here would overwrite good, already-committed
+        # data with an empty result, and the post-race-refresh workflow would
+        # then auto-commit that regression the moment its test-suite gate
+        # happened not to catch it (it didn't, once: commit 1ae78a4, reverted
+        # in 0ddce0c). Raising instead of writing leaves every derived file
+        # untouched and fails the workflow step outright, so nothing
+        # downstream can commit a partial-failure state.
+        raise RuntimeError(
+            f"0 of {len(races)} races loaded, but {previously_ingested} were "
+            "already ingested -- refusing to overwrite committed derived data "
+            f"with an empty result. Skip reasons: {skipped}"
+        )
+
     pd.DataFrame(session_meta).to_csv(F1_DERIVED_DIR / "sessions.csv", index=False)
     report = to_markdown(quality_rows)
     if skipped:
