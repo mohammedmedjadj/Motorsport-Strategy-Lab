@@ -15,6 +15,7 @@ what was excluded, mirroring the Phase 1 accounting discipline.
 
 from __future__ import annotations
 
+import warnings
 from dataclasses import dataclass
 
 import pandas as pd
@@ -40,13 +41,41 @@ class FrameDiagnostics:
 
 
 def load_circuit_laps(circuit: str, seasons: tuple[int, ...] = SEASONS) -> pd.DataFrame:
-    """Concatenate the derived lap files for one circuit across seasons."""
+    """Concatenate the derived lap files for one circuit across seasons.
+
+    ``SEASONS`` grows automatically every calendar year (see
+    ``src/ingestion/config.py``), so it can legitimately include a season
+    that has not actually been ingested yet -- the season hasn't started,
+    or a scheduled ingestion run failed (both real: FastF1 loads have
+    failed outright from GitHub's hosted runners on at least one post-race-
+    refresh run). Such seasons are skipped with a warning rather than
+    raising, so the pipeline degrades to "the seasons we actually have"
+    instead of crashing the moment the calendar rolls over -- this is what
+    keeps the post-race-refresh workflow's documented no-op behaviour
+    (`.github/workflows/post-race-refresh.yml`) actually true. A season
+    that is explicitly requested and still missing is exactly the kind of
+    silent gap this project does not paper over elsewhere, hence the
+    warning rather than a silent skip.
+    """
     frames = []
+    missing = []
     for season in seasons:
-        df = pd.read_csv(F1_DERIVED_DIR / f"laps_{season}_{circuit}.csv")
+        path = F1_DERIVED_DIR / f"laps_{season}_{circuit}.csv"
+        if not path.exists():
+            missing.append(season)
+            continue
+        df = pd.read_csv(path)
         df["race"] = f"{season}_{circuit}"
         df["season"] = season
         frames.append(df)
+    if missing:
+        warnings.warn(
+            f"{circuit}: season(s) {missing} not ingested yet -- skipped "
+            "(not held yet, or the last ingestion run failed)",
+            stacklevel=2,
+        )
+    if not frames:
+        raise ValueError(f"{circuit}: no ingested data for any of {seasons}")
     return pd.concat(frames, ignore_index=True)
 
 

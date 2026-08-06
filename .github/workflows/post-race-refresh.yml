@@ -58,6 +58,12 @@ jobs:
 
       # --- Reproducible F1 pipeline, in dependency order ------------------
       - name: Ingest laps and track status (FastF1)
+        # DEBUG surfaces the real cause of a failed load (e.g. a rate limit)
+        # instead of FastF1's generic "Failed to load X data!" -- every
+        # scheduled run so far has ingested 0 races and this is currently the
+        # only way to tell why. Not a project-wide default (see run_ingestion.py).
+        env:
+          FASTF1_DEBUG: "1"
         run: python scripts/run_ingestion.py
 
       - name: Fit tyre-degradation model
