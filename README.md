@@ -209,11 +209,19 @@ written justification in [`reports/f1/`](reports/f1/):
 
 ### Data scope (MVP)
 
-**Seasons 2023-2025** — the three most recent completed seasons, all inside
-the 2022-2025 ground-effect regulation era so car and tyre behaviour stays
-comparable across the set. 2022 itself is left out on purpose: early
-ground-effect cars suffered porpoising that would add noise unrelated to
-tyre wear, though it's a plausible robustness check for later.
+**Modelling seasons 2023-2025** — all inside the 2022-2025 ground-effect
+regulation era, so car and tyre behaviour stays comparable across the set.
+2022 itself is left out on purpose: early ground-effect cars suffered
+porpoising that would add noise unrelated to tyre wear, though it's a
+plausible robustness check for later.
+
+**Ingestion, separately, is rolling and already includes 2026** (Suzuka and
+Monaco; Barcelona and Singapore fall later in the reshuffled 2026 calendar
+and are picked up automatically once run). Ingestion is deliberately
+era-blind — a race is collected the same way whichever formula it was run
+under — while every *fitted* quantity stops at the 2026 regulation boundary
+and treats the new era as a held-out test set instead. See "2026 is walled
+off" under the limitations below.
 
 **Four circuits, chosen to contrast the two things the system models:**
 
@@ -287,9 +295,22 @@ See [`reports/f1/degradation_history.md`](reports/f1/degradation_history.md),
   `TyreLife` / `FreshTyre` columns.
 - **Track evolution and traffic** are absorbed into the whole-race fuel/evolution
   term the breadth layer isolates; driver pace is a fixed effect.
-- **2026 is walled off.** The new regulations (power unit, active aero + Manual
-  Override Mode, lighter/narrower cars, less fuel, narrower tyres) are their own
-  era; no pre-2026 fit transfers, and the Kaggle source stops at 2024.
+- **2026 is walled off — and now measured rather than asserted.** The new
+  regulations (power unit, active aero + Manual Override Mode, lighter/narrower
+  cars, less fuel, narrower tyres) are their own era, so no fitted coefficient
+  pools across the boundary (`REGULATION_ERA_START` in
+  `src/ingestion/config.py`): degradation, the simulator's circuit constants
+  and the overtaking constant are all fit on 2023-2025 only. That is not
+  fussiness — pooling 2026 into Suzuka's fit *halves* its tyre-age slope
+  (HARD +0.131 → +0.066 s/lap) and flips the cross-validated degree selection.
+  With Suzuka 2026 and Monaco 2026 now ingested, the wall itself is testable
+  for the first time, and the answer is split: a pre-era fit predicts Suzuka
+  2026 **better** than it predicts any pre-era Suzuka season, and Monaco 2026
+  **worse** than any pre-era Monaco season. Two races is far too few to
+  conclude anything about the new formula; it is already enough to justify not
+  pooling the coefficients. See the era-transfer table in
+  [`reports/f1/degradation_phase2.md`](reports/f1/degradation_phase2.md).
+  (The Kaggle breadth layer is unaffected — its source stops at 2024.)
 
 ---
 

@@ -114,14 +114,23 @@ fabricated anywhere in the pipeline; gaps are reported as gaps.
 - **SC/VSC scope:** the same four events extended to 2018-2025 — 27
   editions, the only exclusions being five COVID cancellations, each
   listed with its rejection reason (`reports/safety_car_phase3.md`).
-- **Cleaning:** flag-based, no silent row drops. Of 14,342 laps, 12,091
-  (84.3%) qualify as pace laps; every exclusion is accounted for by reason
+- **Cleaning:** flag-based, no silent row drops. Over the 12 modelled races
+  above, 14,342 laps yield 12,091 pace laps
+  (84.3%); every exclusion is accounted for by reason
   (in/out laps, inaccurate timing, wet compounds, non-green track status,
   deleted times) in `reports/data_quality_phase1.md`.
 - A loader guard validates FastF1's fuzzy event resolution: requesting the
   cancelled 2020 Monaco GP otherwise silently returns a different race
   (observed: the Italian GP), which contaminated a first extraction run
   and is now a tested failure mode.
+- **Ingestion runs ahead of the modelling scope, on purpose.** It is
+  era-blind and rolling, so the committed data also holds the 2026 races run
+  so far (Suzuka, Monaco — 16,901 laps and 14,140 pace laps across all 14
+  ingested races). No fitted quantity in this report uses them: the 2026
+  regulation change (power unit, active aero, narrower cars and tyres) is
+  treated as an era boundary that coefficients must not pool across, and the
+  new era is instead held out as a test set. §4.1 reports what that test
+  says.
 
 ## 3. Method
 
@@ -191,6 +200,21 @@ pipeline scores ~0.85 at the noise floor on synthetic data — degradation
 slopes genuinely move between editions of the same race. Consequence:
 coefficients are only ever used as distributions.
 
+**Does a pre-2026 fit survive the regulation change?** With the first
+new-era races ingested this stops being a caveat and becomes a measurement:
+train strictly on 2023-2025, predict a 2026 race, score on the same
+within-stint demeaned residual as the folds above. The result is genuinely
+split — Suzuka 2026 scores R² −0.008 against a pre-era fold range of −0.582
+to −0.043 (better than *any* old-era season), Monaco 2026 scores −0.177
+against −0.071 to +0.322 (worse than any). So the boundary shows up sharply
+in the *coefficients* — pooling 2026 into Suzuka's fit halves its tyre-age
+slope and flips the selected polynomial degree, which is why the fits above
+exclude it — but not, on two races, in *predictive transfer*. That is
+consistent with §4.1's own finding that slopes move between any two seasons,
+regulation change or not. Two races at two circuits cannot settle whether
+the new formula is harder to predict; they are enough to justify not
+pooling coefficients across it.
+
 ### 4.2 SC/VSC (Phase 3)
 
 Singapore has the highest per-lap SC rate, 0.020 [0.009, 0.037] — about
@@ -206,7 +230,7 @@ precision inside them are unsupported.
 | A. Barcelona 2024, Verstappen lap-17 cover | Won | +3.2s median vs optimum, **but** highest P(best) (0.43) and P(ahead) 0.70 vs 0.64 — vindicated by the distributions |
 | B. Barcelona 2024, Norris extended stint | Lost by 2.2s | P(ahead) flat at 0.30-0.32 across all stop laps — the race was not lost on stop timing |
 | C. Singapore 2023, Sainz SC stop lap 20 | Won | Model calls it +6.5s worse than staying out — **the model is wrong**: the missing bunching mechanism, now quantified as a ~6-7s bias |
-| D. Singapore 2023, Russell VSC stop lap 44 | Crashed while attacking | Endorsed: better than staying out on median (1913.8 vs 1915.5s) and P(ahead SAI) (0.47 vs 0.42) — a near coin-flip for the win at ~zero cost |
+| D. Singapore 2023, Russell VSC stop lap 44 | Crashed while attacking | Endorsed: better than staying out on median (1913.3 vs 1915.0s) and P(ahead SAI) (0.48 vs 0.44) — a near coin-flip for the win at ~zero cost |
 | E. Monaco 2024, nobody stops | Leclerc won | Model independently selects no-stop (P(best) 0.69): Monaco's degradation never repays a 19.1s pit loss |
 
 Cross-case: (i) distribution outputs — not the median — are what make
