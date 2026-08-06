@@ -35,7 +35,10 @@ jobs:
           cache: pip
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        # demo/requirements.txt pulls in requirements.txt and adds Streamlit,
+        # which tests/test_demo_app.py needs: without it that module skips
+        # itself and the demo goes back to being the one untested surface.
+        run: pip install -r demo/requirements.txt
 
       - name: Run test suite
         run: pytest -q

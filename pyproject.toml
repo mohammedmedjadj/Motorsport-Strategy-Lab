@@ -15,6 +15,9 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = ["pytest", "hypothesis"]
+# tests/test_demo_app.py drives demo/app.py headlessly, so Streamlit is a test
+# dependency as well as a demo one; CI installs demo/requirements.txt.
+demo = ["streamlit>=1.60"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

@@ -774,7 +774,9 @@ Motorsport-Strategy-Lab/
                         #   published to Kaggle; never the source of truth
                         #   for a reported number, which always lives in
                         #   reports/ + the pytest artifact drift guards
-  demo/                 # app.py -- Streamlit UI over the real simulator (F1 only)
+  demo/                 # app.py -- Streamlit UI over the real simulators;
+                        #   one separate panel per series (F1 / WEC / IMSA),
+                        #   driven headlessly by tests/test_demo_app.py
   scripts/              # run_ingestion.py, run_degradation.py, run_safety_car.py,
                         #   run_simulator_demo.py (F1); run_endurance_flags.py +
                         #   run_endurance_models.py (WEC/IMSA data + model
@@ -782,7 +784,8 @@ Motorsport-Strategy-Lab/
                         #   run_fuel_limited_sensitivity.py,
                         #   run_sc_contamination_check.py (adversarial audit
                         #   pass); demo_extensions.py; generate_banner.py
-  tests/                # pytest, all three series, 249 tests
+  tests/                # pytest, all three series, 260 tests (incl. the demo,
+                        #   driven headlessly by tests/test_demo_app.py)
   reports/
     f1/                 # phase 0-5 reports + extensions (breadth layer,
                         #   adversarial rival, track position), audit cases, figures
