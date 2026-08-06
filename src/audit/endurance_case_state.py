@@ -8,13 +8,12 @@ that F1 never has. ``state_at`` mirrors the exact ``fuel_stint`` /
 uses, so a case's reconstructed state is defined identically to how the model
 itself defines it.
 
-``build_case_model`` builds an ``EnduranceRaceModel`` the same way
-``scripts/run_multistop.py::_build_model`` does: net degradation slope fit on
-this one race, but FCY/SC hazards drawn from the **series-wide** posterior
-(``fit_neutralisation_models``, not the per-circuit one) — the convention used
-everywhere else in this project an ``EnduranceRaceModel`` is assembled, because
-a single circuit-season rarely has enough neutralisation events on its own to
-estimate a rate from.
+``build_case_model`` is a thin alias for
+``src/simulator/endurance_models.py::load_race_model``: net degradation slope
+fit on this one race, but FCY/SC hazards drawn from the **series-wide**
+posterior. It used to spell that recipe out here, which meant the audit could
+drift away from what ``scripts/run_multistop.py`` built for the same race
+without either one failing.
 """
 
 from __future__ import annotations
@@ -23,15 +22,8 @@ from dataclasses import dataclass
 
 import pandas as pd
 
-from src.data.endurance_loader import EnduranceLoader
-from src.degradation.endurance import build_endurance_frame, fit_endurance_degradation
-from src.safety_car.endurance import (
-    extract_events,
-    fit_neutralisation_models,
-    load_race_flags,
-    race_timeline,
-)
-from src.simulator.endurance import EnduranceRaceModel, build_race_model
+from src.simulator.endurance import EnduranceRaceModel
+from src.simulator.endurance_models import load_race_laps, load_race_model
 
 
 @dataclass(frozen=True)
@@ -46,7 +38,7 @@ class EnduranceDriverState:
 
 def load_case_laps(series: str, year: int, event: str, car_class: str) -> pd.DataFrame:
     """Normalised laps for one real race (offline, from the committed CSV)."""
-    return EnduranceLoader(series).load_laps(year, event, car_class)
+    return load_race_laps(series, year, event, car_class)
 
 
 def state_at(laps: pd.DataFrame, car: str, lap: int) -> EnduranceDriverState:
@@ -88,18 +80,9 @@ def race_length(laps: pd.DataFrame, car: str) -> int:
 
 
 def build_case_model(series: str, year: int, event: str, car_class: str) -> EnduranceRaceModel:
-    """Build the ``EnduranceRaceModel`` for one real race, exactly as
-    ``scripts/run_multistop.py::_build_model`` does."""
-    laps = load_case_laps(series, year, event, car_class)
-    fit = fit_endurance_degradation(build_endurance_frame(laps))
-    timeline = race_timeline(load_race_flags())
-    events = extract_events(timeline)
-    post = {(m.series, m.kind): m for m in fit_neutralisation_models(timeline, events)}
-    fcy, sc = post[(series, "FCY")], post[(series, "SC")]
-    fcy_dur = tuple(e.duration_laps for e in events if e.series == series and e.kind == "FCY")
-    sc_dur = tuple(e.duration_laps for e in events if e.series == series and e.kind == "SC")
-    return build_race_model(
-        laps, fit.net_slope.value, fit.net_slope.se,
-        fcy.n_events + 0.5, fcy.laps_exposure, fcy_dur, fit.rmse_s,
-        sc_alpha=sc.n_events + 0.5, sc_exposure=sc.laps_exposure, sc_durations=sc_dur,
-    )
+    """The ``EnduranceRaceModel`` for one real race.
+
+    Kept as a named entry point because the audit reads better for it, but it
+    is deliberately not a second implementation — see the module docstring.
+    """
+    return load_race_model(series, year, event, car_class)

@@ -24,19 +24,11 @@ import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from src.data.endurance_loader import EnduranceLoader  # noqa: E402
-from src.degradation.endurance import (  # noqa: E402
-    build_endurance_frame,
-    fit_endurance_degradation,
-)
 from src.ingestion.config import ENDURANCE_DERIVED_DIR  # noqa: E402
-from src.safety_car.endurance import (  # noqa: E402
-    extract_events,
-    fit_neutralisation_models,
-    load_race_flags,
-    race_timeline,
+from src.simulator.endurance_models import (  # noqa: E402
+    load_race_model,
+    race_distance,
 )
-from src.simulator.endurance import build_race_model  # noqa: E402
 from src.simulator.multistop import (  # noqa: E402
     TrafficModel,
     evaluate_plan,
@@ -71,21 +63,13 @@ CIRCUIT_CANDIDATES = _circuit_candidates()
 
 
 def _build_model(series: str, year: int, event: str, car_class: str):
-    laps = EnduranceLoader(series).load_laps(year, event, car_class)
-    fit = fit_endurance_degradation(build_endurance_frame(laps))
-    timeline = race_timeline(load_race_flags())
-    events = extract_events(timeline)
-    post = {(m.series, m.kind): m for m in fit_neutralisation_models(timeline, events)}
-    fcy, sc = post[(series, "FCY")], post[(series, "SC")]
-    fcy_dur = tuple(e.duration_laps for e in events if e.series == series and e.kind == "FCY")
-    sc_dur = tuple(e.duration_laps for e in events if e.series == series and e.kind == "SC")
-    model = build_race_model(
-        laps, fit.net_slope.value, fit.net_slope.se,
-        fcy.n_events + 0.5, fcy.laps_exposure, fcy_dur, fit.rmse_s,
-        sc_alpha=sc.n_events + 0.5, sc_exposure=sc.laps_exposure, sc_durations=sc_dur,
-    )
-    race_laps = int(laps.groupby("car")["lap"].max().median())
-    return model, race_laps
+    """The race model plus this race's distance in laps.
+
+    The model itself comes from the shared builder so this script, the audit
+    and the demo cannot disagree about what "the Bahrain 2024 model" is.
+    """
+    model = load_race_model(series, year, event, car_class)
+    return model, race_distance(series, year, event, car_class)
 
 
 def _breakeven_slope(race_laps: int, model, base_stops: int,
