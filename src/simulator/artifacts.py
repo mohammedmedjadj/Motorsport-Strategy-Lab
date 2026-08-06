@@ -20,7 +20,7 @@ from dataclasses import dataclass
 
 import pandas as pd
 
-from src.ingestion.config import F1_DERIVED_DIR, SEASONS
+from src.ingestion.config import F1_DERIVED_DIR, PRE_ERA_SEASONS
 from src.simulator.pit_loss import (
     PaceRatios,
     PitLossEstimate,
@@ -74,10 +74,23 @@ def _gaussian(mean: float, ci_low: float, ci_high: float) -> GaussianCoef:
 
 
 def _load_all_laps() -> dict[str, pd.DataFrame]:
+    """Committed laps per circuit, restricted to the regulation-stable window.
+
+    The simulator's circuit constants (green pace, pit loss, SC/VSC pace
+    ratios, lap noise) are consumed by the Phase 5 audit, which replays real
+    2023-2024 decisions. Estimating them from ``SEASONS`` -- which rolls into
+    the ``REGULATION_ERA_START`` era -- would judge those decisions using data
+    from cars that did not exist yet, breaking this project's own no-leakage
+    rule, and it visibly moves the numbers (adding 2026 shifted Monaco's
+    measured SC pace ratio 1.42 -> 1.17 and its pit loss 19.1s -> 19.7s).
+    ``PRE_ERA_SEASONS`` keeps the audit interpretable; new-era races are
+    ingested and reported separately (see run_degradation.py's era-transfer
+    section) rather than silently folded into constants fit for another era.
+    """
     laps_by_circuit: dict[str, pd.DataFrame] = {}
     for path in sorted(F1_DERIVED_DIR.glob("laps_*.csv")):
         season, circuit = path.stem.removeprefix("laps_").split("_", 1)
-        if int(season) not in SEASONS:
+        if int(season) not in PRE_ERA_SEASONS:
             continue
         df = pd.read_csv(path)
         df["race"] = f"{season}_{circuit}"

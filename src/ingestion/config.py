@@ -55,6 +55,23 @@ class RaceId:
 _FIRST_SEASON = 2023
 SEASONS: tuple[int, ...] = tuple(range(_FIRST_SEASON, date.today().year + 1))
 
+#: First season of the new F1 regulation era (power unit, active aero + Manual
+#: Override Mode, lighter/narrower cars, less fuel, narrower tyres). Ingestion
+#: is deliberately era-blind -- a 2026 race is data like any other and is
+#: collected the same way -- but any model whose *coefficients* describe car or
+#: tyre behaviour must not pool across this boundary without saying so, since a
+#: single fitted slope spanning it describes neither era. Measured, not
+#: assumed: pooling 2026 into Suzuka's fit halves its tyre-age slope (HARD
+#: +0.131 -> +0.066 s/lap) and flips the cross-validated degree selection, which
+#: is what prompted this split. Circuit *geometry* is unaffected by a
+#: regulation change, so the safety-car layer deliberately does not use this
+#: boundary (see scripts/run_safety_car.py's own window).
+REGULATION_ERA_START = 2026
+#: The regulation-stable window the reported degradation coefficients are fit on.
+PRE_ERA_SEASONS: tuple[int, ...] = tuple(s for s in SEASONS if s < REGULATION_ERA_START)
+#: Seasons in the new era, kept separate and used as a held-out transfer test.
+ERA_SEASONS: tuple[int, ...] = tuple(s for s in SEASONS if s >= REGULATION_ERA_START)
+
 _CIRCUITS: tuple[tuple[str, str], ...] = (
     ("Monaco", "monaco"),
     ("Singapore", "singapore"),

@@ -10,7 +10,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from src.ingestion.config import F1_DERIVED_DIR
+from src.ingestion.config import F1_DERIVED_DIR, PRE_ERA_SEASONS, REGULATION_ERA_START
 from src.simulator.track_position import (
     adjacent_swap_rate,
     adjacent_swap_rate_endurance,
@@ -91,10 +91,19 @@ def test_endurance_reconstructs_position_from_cumulative_time() -> None:
     assert n == 1 and rate == pytest.approx(1 / 3)
 
 
-def _real(circuit: str) -> dict[str, pd.DataFrame]:
+def _real(circuit: str, seasons: tuple[int, ...] = PRE_ERA_SEASONS) -> dict[str, pd.DataFrame]:
+    """Committed laps for one circuit, on the regulation-stable window.
+
+    Defaults to ``PRE_ERA_SEASONS`` because that is the window
+    ``scripts/run_track_position.py`` fits the committed artifact on -- a
+    drift guard has to recompute the same thing the script computed, or it
+    fails for a reason that has nothing to do with drift.
+    """
     return {
-        p.split("_")[1]: pd.read_csv(p)
+        season: pd.read_csv(p)
         for p in glob.glob(str(F1_DERIVED_DIR / f"laps_*_{circuit}.csv"))
+        for season in [p.replace("\\", "/").split("laps_")[1].split("_")[0]]
+        if int(season) in seasons
     }
 
 
@@ -109,12 +118,50 @@ def test_monaco_is_stickier_than_barcelona_on_real_data() -> None:
 
 def test_overtaking_difficulty_is_stable_across_seasons() -> None:
     """The headline finding: unlike degradation, overtaking difficulty transfers
-    between seasons (it is set by track geometry). SD across races is tiny."""
+    between seasons (it is set by track geometry). SD across races is tiny.
+
+    Suzuka is deliberately absent from this list: its regulation-stable
+    seasons run 0.0348 / 0.0502 / 0.0136, a 3.7x spread, so it does *not*
+    support the stability claim and the report says so explicitly rather
+    than the test quietly asserting something untrue of it.
+    """
     for circuit in ("monaco", "barcelona", "singapore"):
         diff = measure_circuit(_real(circuit), circuit)
         assert diff.n_races >= 3
         # Season-to-season spread is a small fraction of the level itself.
         assert diff.sd < 0.5 * diff.swap_rate + 0.005
+
+
+def test_committed_constant_excludes_the_new_regulation_era() -> None:
+    """The committed constant must be fit on the regulation-stable window only.
+
+    The 2026 rules narrowed the cars and added active aero specifically to
+    change overtaking, and this constant feeds a strategy layer that audits
+    pre-2026 races -- so pooling the eras would both mix a regulated quantity
+    across a rule change and let future data judge past decisions. Pinned as
+    a test because the failure mode is silent: the number simply shifts (the
+    Suzuka constant moves 0.0329 -> 0.0364 when 2026 is pooled in) and
+    nothing else complains.
+    """
+    committed = pd.read_csv(F1_DERIVED_DIR / "overtaking_difficulty.csv").set_index("circuit")
+    era_races = {
+        c: _real(c, seasons=(REGULATION_ERA_START,))
+        for c in committed.index
+    }
+    if not any(era_races.values()):
+        pytest.skip(f"no {REGULATION_ERA_START}+ race ingested yet")
+
+    for circuit, races in era_races.items():
+        if not races:
+            continue
+        pooled = measure_circuit(_real(circuit) | races, circuit)
+        # The committed value is the pre-era one, so pooling must disagree
+        # wherever the new era actually moves the measurement.
+        pre_era = measure_circuit(_real(circuit), circuit)
+        assert committed.loc[circuit, "adj_swap_rate"] == pytest.approx(
+            round(pre_era.swap_rate, 4), abs=1e-4
+        ), f"{circuit}: committed constant is not the pre-era measurement"
+        assert pooled.n_races > pre_era.n_races
 
 
 def test_committed_artifact_matches_a_fresh_measurement() -> None:

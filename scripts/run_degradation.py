@@ -35,7 +35,13 @@ from src.degradation.kalman import filter_stint  # noqa: E402
 from src.degradation.model import FitResult, fit_circuit, predict_shape  # noqa: E402
 from src.degradation.plots import degradation_figure  # noqa: E402
 from src.degradation.validation import FoldResult, leave_one_race_out, mean_rmse  # noqa: E402
-from src.ingestion.config import F1_DERIVED_DIR, F1_REPORTS_DIR  # noqa: E402
+from src.ingestion.config import (  # noqa: E402
+    ERA_SEASONS,
+    F1_DERIVED_DIR,
+    F1_REPORTS_DIR,
+    PRE_ERA_SEASONS,
+    REGULATION_ERA_START,
+)
 
 CIRCUITS = ("monaco", "singapore", "barcelona", "suzuka")
 DEGREES = (1, 2)
@@ -94,7 +100,10 @@ def gp_robustness_section(circuits: tuple[str, ...]) -> list[str]:
     ols_wins = 0
 
     for circuit in circuits:
-        laps = load_circuit_laps(circuit)
+        # Same regulation-stable window as the fits this is a robustness check
+        # on -- otherwise the GP and OLS would be compared on a pooled
+        # cross-era dataset neither model above is fit to.
+        laps = load_circuit_laps(circuit, seasons=PRE_ERA_SEASONS)
         for held_out in sorted(laps["race"].unique()):
             train_laps = laps[laps["race"] != held_out]
             test_laps = laps[laps["race"] == held_out]
@@ -172,6 +181,99 @@ def gp_robustness_section(circuits: tuple[str, ...]) -> list[str]:
     ]
 
 
+def era_transfer_section(circuits: tuple[str, ...]) -> list[str]:
+    """Does a fit from the old regulations predict the new era's races?
+
+    The project has always *asserted* that the 2026 regulation change (power
+    unit, active aero, lighter/narrower cars, narrower tyres) walls off its
+    own era. With real 2026 races ingested this becomes a measurable claim
+    rather than a stated caveat: train strictly on ``PRE_ERA_SEASONS``, test
+    on each new-era race, score on the same within-stint demeaned residual
+    used everywhere else so the number is comparable to the ordinary
+    leave-one-race-out folds above.
+    """
+    rows: list[str] = []
+    for circuit in circuits:
+        try:
+            train_laps = load_circuit_laps(circuit, seasons=PRE_ERA_SEASONS)
+        except ValueError:
+            continue
+        for season in ERA_SEASONS:
+            try:
+                test_laps = load_circuit_laps(circuit, seasons=(season,))
+            except ValueError:
+                continue  # that race has not been run (or ingested) yet
+            train, _ = build_modelling_frame(train_laps, circuit)
+            test, _ = build_modelling_frame(test_laps, circuit)
+            if train.empty or test.empty:
+                continue
+
+            folds = {d: leave_one_race_out(train, circuit, degree=d) for d in DEGREES}
+            selected = min(DEGREES, key=lambda d: mean_rmse(folds[d]))
+            in_era_r2 = [f.r2_within for f in folds[selected]]
+            fit = fit_circuit(train, circuit, degree=selected)
+            pred = predict_shape(fit, test)
+            valid = pred.notna()
+            if not valid.any():
+                continue
+
+            actual = _demean(test.loc[valid, "lap_time_s"], test.loc[valid, "stint_id"])
+            predicted = _demean(pred[valid], test.loc[valid, "stint_id"])
+            err = actual - predicted
+            ss_res, ss_tot = float((err**2).sum()), float((actual**2).sum())
+            r2 = 1.0 - ss_res / ss_tot if ss_tot > 0 else float("nan")
+            rmse = float(np.sqrt((err**2).mean()))
+            verdict = (
+                "better than every pre-era fold"
+                if r2 > max(in_era_r2)
+                else "worse than every pre-era fold"
+                if r2 < min(in_era_r2)
+                else "inside the pre-era range"
+            )
+            rows.append(
+                f"| {circuit} | {season} | {rmse:.3f} | {r2:+.3f} | "
+                f"{min(in_era_r2):+.3f} to {max(in_era_r2):+.3f} | {verdict} |"
+            )
+
+    if not rows:
+        return []
+
+    return [
+        f"## Does a pre-{REGULATION_ERA_START} fit predict the {REGULATION_ERA_START} era?",
+        "",
+        f"The {REGULATION_ERA_START} regulations (power unit, active aero + Manual Override",
+        "Mode, lighter/narrower cars, less fuel, narrower tyres) are a genuine",
+        "discontinuity, so the coefficients above are fit on "
+        f"{'/'.join(str(s) for s in PRE_ERA_SEASONS)} only and the new era is held out",
+        "entirely rather than pooled in. That turns a stated caveat into a measured",
+        "one: train on the old regulations, predict a new-era race, score on the same",
+        "within-stint demeaned residual as the CV folds above, so the numbers are",
+        "directly comparable to them.",
+        "",
+        "| Circuit | Season | RMSE (s) | within-stint R² | pre-era fold range | Verdict |",
+        "|---|---|---|---|---|---|",
+        *rows,
+        "",
+        "The last two columns are the point: a new-era R² is only meaningful next to",
+        "how well the same model predicts *pre-era* seasons it also never saw, and by",
+        "that standard the result is genuinely split rather than uniformly bad. So the",
+        "era boundary shows up far more clearly in the **coefficients** than in",
+        "**predictive transfer**: pooling the new era into Suzuka's fit halves its",
+        "tyre-age slope (HARD +0.131 -> +0.066 s/lap) and flips the cross-validated",
+        "degree selection, which is why the fits above hold it out — yet the held-out",
+        "new-era race is not reliably harder to predict than another unseen old-era",
+        "season. That is consistent with this project's central finding that slopes",
+        "are unstable season to season regardless of regulation change.",
+        "",
+        "Stated as a limitation rather than a conclusion: this is two races at two",
+        "circuits, one season into a new formula. It is enough to justify not pooling",
+        "coefficients across the boundary; it is not enough to claim the new era is",
+        "either harder or easier to predict, and this table will answer that properly",
+        "only once several new-era seasons exist.",
+        "",
+    ]
+
+
 def kalman_section(circuit: str = KALMAN_DEMO_CIRCUIT, season: int = KALMAN_DEMO_SEASON) -> list[str]:
     """Online Kalman-filter counterpart, demonstrated on one real stint.
 
@@ -238,7 +340,11 @@ def main() -> int:
     all_coef_rows: list[dict[str, object]] = []
 
     for circuit in CIRCUITS:
-        laps = load_circuit_laps(circuit)
+        # Fit on the regulation-stable window only. Pooling the 2026 era in
+        # would silently average a tyre-age slope across a regulation
+        # boundary; the new era is instead held out and tested explicitly
+        # (see era_transfer_section).
+        laps = load_circuit_laps(circuit, seasons=PRE_ERA_SEASONS)
         frame, diag = build_modelling_frame(laps, circuit)
         print(f"{circuit}: {diag.after_min_stint} laps, {diag.n_stints} stints", flush=True)
 
@@ -305,6 +411,7 @@ def main() -> int:
         "  audited as if the true degradation slope had been knowable in-race.",
         "",
     ]
+    report += era_transfer_section(CIRCUITS)
     report += gp_robustness_section(CIRCUITS)
     report += kalman_section()
     report += [

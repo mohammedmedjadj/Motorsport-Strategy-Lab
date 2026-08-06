@@ -21,19 +21,19 @@ disagreement is the finding.
 
 **Model output** (pit_lap 0 = no further stop):
 
-- Best median pit lap: **26** — recommended window (medians within 0.5s): **[24, 25, 26, 27, 28]**.
-- Outcome spread at the best lap (p10-p90): 260.5s — this is the honest uncertainty of any single-race outcome.
-- vs NOR: P(ahead) = 0.64 at lap 26; maximised at lap 21 (0.73).
-- **Verdict:** Real choice (lap 17): median cost +3.23s vs the model optimum (lap 26); OUTSIDE the recommended window.
+- Best median pit lap: **26** — recommended window (medians within 0.5s): **[23, 24, 25, 26, 27]**.
+- Outcome spread at the best lap (p10-p90): 260.6s — this is the honest uncertainty of any single-race outcome.
+- vs NOR: P(ahead) = 0.64 at lap 26; maximised at lap 21 (0.74).
+- **Verdict:** Real choice (lap 17): median cost +3.20s vs the model optimum (lap 26); OUTSIDE the recommended window.
 
 | pit_lap | median_s | mean_s | p10_s | p90_s | p_best | p_ahead_NOR |
 |---|---|---|---|---|---|---|
-| 17 <- real | 4025.19 | 4092.29 | 3997.09 | 4261.68 | 0.43 | 0.70 |
-| 24 | 4022.16 | 4092.91 | 4001.50 | 4262.83 | 0.04 | 0.70 |
-| 25 | 4021.99 | 4093.20 | 4002.09 | 4263.07 | 0.04 | 0.68 |
-| 26 | 4021.95 | 4093.54 | 4002.77 | 4263.29 | 0.03 | 0.64 |
-| 27 | 4022.17 | 4093.96 | 4003.44 | 4263.63 | 0.03 | 0.61 |
-| 28 | 4022.39 | 4094.44 | 4004.15 | 4264.39 | 0.03 | 0.58 |
+| 17 <- real | 4025.17 | 4094.63 | 3997.28 | 4261.65 | 0.42 | 0.71 |
+| 23 | 4022.24 | 4094.93 | 4001.19 | 4262.01 | 0.04 | 0.72 |
+| 24 | 4022.16 | 4095.21 | 4001.86 | 4262.62 | 0.03 | 0.70 |
+| 25 | 4022.04 | 4095.54 | 4002.41 | 4262.96 | 0.04 | 0.67 |
+| 26 | 4021.97 | 4095.90 | 4003.06 | 4263.65 | 0.03 | 0.64 |
+| 27 | 4022.17 | 4096.30 | 4003.75 | 4263.95 | 0.03 | 0.61 |
 
 ## Case B: Barcelona 2024 — Norris's extended stint (failed overcut)
 
@@ -45,20 +45,19 @@ disagreement is the finding.
 
 **Model output** (pit_lap 0 = no further stop):
 
-- Best median pit lap: **28** — recommended window (medians within 0.5s): **[25, 26, 27, 28, 29, 30]**.
+- Best median pit lap: **27** — recommended window (medians within 0.5s): **[25, 26, 27, 28, 29]**.
 - Outcome spread at the best lap (p10-p90): 260.1s — this is the honest uncertainty of any single-race outcome.
-- vs VER: P(ahead) = 0.32 at lap 28; maximised at lap 27 (0.32).
-- **Verdict:** Real choice (lap 23): median cost +1.45s vs the model optimum (lap 28); OUTSIDE the recommended window.
+- vs VER: P(ahead) = 0.32 at lap 27; maximised at lap 26 (0.32).
+- **Verdict:** Real choice (lap 23): median cost +1.17s vs the model optimum (lap 27); OUTSIDE the recommended window.
 
 | pit_lap | median_s | mean_s | p10_s | p90_s | p_best | p_ahead_VER |
 |---|---|---|---|---|---|---|
-| 23 <- real | 4020.85 | 4091.08 | 3999.21 | 4260.72 | 0.04 | 0.30 |
-| 25 | 4019.88 | 4091.21 | 4000.17 | 4261.30 | 0.04 | 0.32 |
-| 26 | 4019.61 | 4091.33 | 4000.60 | 4261.29 | 0.03 | 0.32 |
-| 27 | 4019.44 | 4091.54 | 4001.20 | 4261.32 | 0.04 | 0.32 |
-| 28 | 4019.40 | 4091.81 | 4001.67 | 4261.74 | 0.04 | 0.32 |
-| 29 | 4019.50 | 4092.16 | 4002.24 | 4262.58 | 0.04 | 0.31 |
-| 30 | 4019.73 | 4092.56 | 4002.77 | 4263.22 | 0.03 | 0.31 |
+| 23 <- real | 4020.45 | 4093.35 | 3999.67 | 4260.48 | 0.04 | 0.31 |
+| 25 | 4019.76 | 4093.52 | 4000.47 | 4260.91 | 0.04 | 0.32 |
+| 26 | 4019.53 | 4093.66 | 4000.91 | 4261.28 | 0.05 | 0.32 |
+| 27 | 4019.28 | 4093.85 | 4001.44 | 4261.56 | 0.04 | 0.32 |
+| 28 | 4019.41 | 4094.15 | 4002.01 | 4261.78 | 0.04 | 0.31 |
+| 29 | 4019.60 | 4094.49 | 4002.54 | 4262.16 | 0.03 | 0.31 |
 
 ## Case C: Singapore 2023 — Sainz boxes under the lap-20 safety car
 
@@ -70,23 +69,19 @@ disagreement is the finding.
 
 **Model output** (pit_lap 0 = no further stop):
 
-- Best median pit lap: **37** — recommended window (medians within 0.5s): **[33, 34, 35, 36, 37, 38, 39, 40]**.
-- Outcome spread at the best lap (p10-p90): 342.8s — this is the honest uncertainty of any single-race outcome.
-- vs RUS: P(ahead) = 0.94 at lap 37; maximised at lap 35 (0.94).
-- vs NOR: P(ahead) = 0.96 at lap 37; maximised at lap 36 (0.96).
-- **Verdict:** Real choice (lap 20): median cost +6.54s vs the model optimum (lap 37); OUTSIDE the recommended window.
+- Best median pit lap: **37** — recommended window (medians within 0.5s): **[35, 36, 37, 38]**.
+- Outcome spread at the best lap (p10-p90): 347.4s — this is the honest uncertainty of any single-race outcome.
+- vs RUS: P(ahead) = 0.94 at lap 37; maximised at lap 36 (0.94).
+- vs NOR: P(ahead) = 0.96 at lap 37; maximised at lap 35 (0.96).
+- **Verdict:** Real choice (lap 20): median cost +6.55s vs the model optimum (lap 37); OUTSIDE the recommended window.
 
 | pit_lap | median_s | mean_s | p10_s | p90_s | p_best | p_ahead_RUS | p_ahead_NOR |
 |---|---|---|---|---|---|---|---|
-| 20 <- real | 4481.97 | 4509.34 | 4356.63 | 4697.49 | 0.00 | 0.81 | 0.86 |
-| 33 | 4475.89 | 4503.50 | 4350.66 | 4693.04 | 0.02 | 0.93 | 0.96 |
-| 34 | 4475.53 | 4503.19 | 4350.39 | 4693.08 | 0.03 | 0.94 | 0.96 |
-| 35 | 4475.50 | 4502.99 | 4350.27 | 4692.79 | 0.05 | 0.94 | 0.96 |
-| 36 | 4475.53 | 4502.91 | 4350.26 | 4693.06 | 0.10 | 0.94 | 0.96 |
-| 37 | 4475.42 | 4502.91 | 4350.29 | 4693.13 | 0.12 | 0.94 | 0.96 |
-| 38 | 4475.49 | 4502.96 | 4350.31 | 4693.02 | 0.09 | 0.94 | 0.96 |
-| 39 | 4475.49 | 4503.13 | 4350.50 | 4693.39 | 0.04 | 0.94 | 0.96 |
-| 40 | 4475.76 | 4503.41 | 4350.68 | 4693.41 | 0.02 | 0.93 | 0.95 |
+| 20 <- real | 4483.86 | 4511.77 | 4355.46 | 4699.89 | 0.00 | 0.82 | 0.86 |
+| 35 | 4477.80 | 4505.54 | 4348.68 | 4696.07 | 0.04 | 0.94 | 0.96 |
+| 36 | 4477.47 | 4505.46 | 4348.57 | 4696.13 | 0.11 | 0.94 | 0.96 |
+| 37 | 4477.31 | 4505.46 | 4348.51 | 4695.93 | 0.13 | 0.94 | 0.96 |
+| 38 | 4477.67 | 4505.51 | 4348.67 | 4696.03 | 0.08 | 0.94 | 0.96 |
 
 ## Case D: Singapore 2023 — Mercedes' VSC gamble (Russell, lap 44)
 
@@ -99,17 +94,17 @@ disagreement is the finding.
 **Model output** (pit_lap 0 = no further stop):
 
 - Best median pit lap: **46** — recommended window (medians within 0.5s): **[45, 46]**.
-- Outcome spread at the best lap (p10-p90): 187.2s — this is the honest uncertainty of any single-race outcome.
-- vs SAI: P(ahead) = 0.29 at lap 46; maximised at lap 45 (0.51).
-- vs NOR: P(ahead) = 0.39 at lap 46; maximised at lap 45 (0.60).
-- **Verdict:** Real choice (lap 44): median cost +1.13s vs the model optimum (lap 46); OUTSIDE the recommended window.
+- Outcome spread at the best lap (p10-p90): 191.8s — this is the honest uncertainty of any single-race outcome.
+- vs SAI: P(ahead) = 0.30 at lap 46; maximised at lap 45 (0.53).
+- vs NOR: P(ahead) = 0.40 at lap 46; maximised at lap 45 (0.63).
+- **Verdict:** Real choice (lap 44): median cost +1.02s vs the model optimum (lap 46); OUTSIDE the recommended window.
 
 | pit_lap | median_s | mean_s | p10_s | p90_s | p_best | p_ahead_SAI | p_ahead_NOR |
 |---|---|---|---|---|---|---|---|
-| 44 <- real | 1913.79 | 1955.85 | 1891.42 | 2080.46 | 0.00 | 0.47 | 0.57 |
-| 45 | 1913.15 | 1955.25 | 1890.76 | 2079.95 | 0.49 | 0.51 | 0.60 |
-| 46 | 1912.66 | 1958.64 | 1895.71 | 2082.89 | 0.17 | 0.29 | 0.39 |
-| 0 | 1915.48 | 1956.21 | 1894.30 | 2076.21 | 0.28 | 0.42 | 0.54 |
+| 44 <- real | 1913.29 | 1954.51 | 1891.02 | 2087.82 | 0.00 | 0.48 | 0.59 |
+| 45 | 1912.65 | 1953.91 | 1890.36 | 2087.35 | 0.51 | 0.53 | 0.63 |
+| 46 | 1912.28 | 1957.39 | 1895.29 | 2087.08 | 0.16 | 0.30 | 0.40 |
+| 0 | 1914.96 | 1954.92 | 1893.85 | 2082.37 | 0.28 | 0.44 | 0.56 |
 
 ## Case E: Monaco 2024 — Leclerc mid-race (the model's blind spot)
 
@@ -122,13 +117,13 @@ disagreement is the finding.
 **Model output** (pit_lap 0 = no further stop):
 
 - Best median pit lap: **0** — recommended window (medians within 0.5s): **[0]**.
-- Outcome spread at the best lap (p10-p90): 159.5s — this is the honest uncertainty of any single-race outcome.
+- Outcome spread at the best lap (p10-p90): 158.8s — this is the honest uncertainty of any single-race outcome.
 - vs PIA: P(ahead) = 0.54 at lap 0; maximised at lap 0 (0.54).
 - **Verdict:** Real choice (no further stop): median cost +0.00s vs the model optimum (lap 0); INSIDE the recommended window.
 
 | pit_lap | median_s | mean_s | p10_s | p90_s | p_best | p_ahead_PIA |
 |---|---|---|---|---|---|---|
-| 0 <- real | 2918.81 | 2944.29 | 2886.25 | 3045.73 | 0.69 | 0.54 |
+| 0 <- real | 2919.28 | 2944.06 | 2886.34 | 3045.18 | 0.69 | 0.54 |
 
 ## Cross-case analysis (the audit's findings)
 

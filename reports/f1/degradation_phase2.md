@@ -130,6 +130,38 @@ CV folds (degree 2):
 - **Consequence for Phase 5:** real strategists' decisions must not be
   audited as if the true degradation slope had been knowable in-race.
 
+## Does a pre-2026 fit predict the 2026 era?
+
+The 2026 regulations (power unit, active aero + Manual Override
+Mode, lighter/narrower cars, less fuel, narrower tyres) are a genuine
+discontinuity, so the coefficients above are fit on 2023/2024/2025 only and the new era is held out
+entirely rather than pooled in. That turns a stated caveat into a measured
+one: train on the old regulations, predict a new-era race, score on the same
+within-stint demeaned residual as the CV folds above, so the numbers are
+directly comparable to them.
+
+| Circuit | Season | RMSE (s) | within-stint R² | pre-era fold range | Verdict |
+|---|---|---|---|---|---|
+| monaco | 2026 | 1.203 | -0.177 | -0.071 to +0.322 | worse than every pre-era fold |
+| suzuka | 2026 | 0.594 | -0.008 | -0.582 to -0.043 | better than every pre-era fold |
+
+The last two columns are the point: a new-era R² is only meaningful next to
+how well the same model predicts *pre-era* seasons it also never saw, and by
+that standard the result is genuinely split rather than uniformly bad. So the
+era boundary shows up far more clearly in the **coefficients** than in
+**predictive transfer**: pooling the new era into Suzuka's fit halves its
+tyre-age slope (HARD +0.131 -> +0.066 s/lap) and flips the cross-validated
+degree selection, which is why the fits above hold it out — yet the held-out
+new-era race is not reliably harder to predict than another unseen old-era
+season. That is consistent with this project's central finding that slopes
+are unstable season to season regardless of regulation change.
+
+Stated as a limitation rather than a conclusion: this is two races at two
+circuits, one season into a new formula. It is enough to justify not pooling
+coefficients across the boundary; it is not enough to claim the new era is
+either harder or easier to predict, and this table will answer that properly
+only once several new-era seasons exist.
+
 ## Is the instability an OLS artefact? A GP robustness check
 
 A natural objection: the negative out-of-sample R² might be an artefact of
