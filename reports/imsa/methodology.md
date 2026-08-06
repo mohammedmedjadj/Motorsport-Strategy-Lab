@@ -320,13 +320,23 @@ single season, cannot support a leave-one-out fold) — inside the "transfers
 reasonably well" band this project's generalization audit establishes, and
 nowhere near WEC COTA's 1.10 outlier. Degradation LORO within-stint R²
 across the same 9 circuits stays close to zero throughout (−0.004 to
-+0.029), consistent with §4.1's within-series result. **A note on pit-loss
-numbers specifically**: the LORO training medians used for this test
-(e.g. Sebring 69.2s, Road America 68.0s) are computed differently from
++0.029), consistent with §4.1's within-series result.
+
+**Two measurement-basis notes, both instances of the discipline §3.3
+commits to.** First, on pit loss: the LORO training medians used for this
+test (e.g. Sebring 69.2s, Road America 68.0s) are computed differently from
 §3.3's single-2023-fit demo values (Sebring 72.1s, Road America 76.7s) —
-both are correct for what they measure (a multi-season pooled median vs a
-single race-season fit) and neither should be read as "the" IMSA pit loss
-for a circuit without naming which one.
+both correct for what they measure (a multi-season pooled median vs a single
+race-season fit), and neither should be read as "the" IMSA pit loss for a
+circuit without naming which one. Second, on degradation: this section's
+R² range comes from the **widened** `ENDURANCE_SCOPE` artifact
+(`data/derived/endurance/endurance_degradation_loro.csv`, 9 circuits
+including 2026 seasons), while §4.1's per-circuit table comes from the
+**frozen** 4-circuit degradation scope. The two agree closely at Sebring
+(−0.001 both ways) and Road America (+0.005 both ways) but not at Watkins
+Glen (−0.011 frozen vs +0.003 widened), where the widened scope adds a
+2026 fold. Both round to "indistinguishable from zero," which is the
+finding; the difference between them is fold set, not disagreement.
 
 ### 4.7 Decision audit: three real stop calls
 
