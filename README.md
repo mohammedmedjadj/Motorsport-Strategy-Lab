@@ -8,7 +8,7 @@
   <a href="https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab/actions/workflows/tests.yml"><img src="https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab/actions/workflows/tests.yml/badge.svg" alt="Test suite status"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-CC%20BY--NC--SA%204.0-E10600" alt="License: CC BY-NC-SA 4.0"></a>
   <img src="https://img.shields.io/badge/python-3.11%2B-00D9FF" alt="Python 3.11+">
-  <img src="https://img.shields.io/badge/tests-249%20passing-2ea44f" alt="249 tests passing">
+  <img src="https://img.shields.io/badge/tests-260%20passing-2ea44f" alt="260 tests passing">
   <img src="https://img.shields.io/badge/series-F1%20%C2%B7%20WEC%20%C2%B7%20IMSA-FFB800" alt="Series: F1, WEC, IMSA">
 </p>
 
@@ -33,12 +33,14 @@ standard as the F1 work: verified data availability, a cross-validated
 degradation model, a Bayesian neutralisation model, a Monte Carlo simulator,
 each with its own report and its own test suite. Other racing series may be added to the research program in the next month.
 
-**Status:** F1 is complete end to end (phases 0-7, including the audit and a
-written methodology). WEC and IMSA cover the equivalent modelling phases
-(0-6: data through the per-decision audit, now each with its own written
-methodology report — [`reports/wec/methodology.md`](reports/wec/methodology.md),
-[`reports/imsa/methodology.md`](reports/imsa/methodology.md)) but stop short
-of F1's phase 7 (final packaging) — see the limitations under each series.
+**Status:** all three series are complete end to end, phases 0-7 — data,
+models, simulator, per-decision audit, a written methodology and a packaging
+report. WEC and IMSA keep their own documents at every phase
+([methodology](reports/wec/methodology.md) ·
+[packaging](reports/wec/packaging_phase7.md) for WEC;
+[methodology](reports/imsa/methodology.md) ·
+[packaging](reports/imsa/packaging_phase7.md) for IMSA), never merged into a
+single "endurance" write-up. Known limitations are listed under each series.
 Jump to: [Formula 1](#formula-1) · [WEC](#wec) · [IMSA](#imsa) ·
 [Cross-series extensions](#modelling-extensions-across-all-three-series) ·
 [Methods](#mathematical-methods).
@@ -85,18 +87,19 @@ flowchart LR
     end
     subgraph END["WEC & IMSA"]
         direction LR
-        e0["0 Data<br/>availability"] --> e1["1 Data<br/>quality"] --> e2["2 Degradation"] --> e3["3 Neutralisation"] --> e4["4 Simulator"] --> e5["5 Audit"] --> e6["6 Methodology"]
+        e0["0 Data<br/>availability"] --> e1["1 Data<br/>quality"] --> e2["2 Degradation"] --> e3["3 Neutralisation"] --> e4["4 Simulator"] --> e5["5 Audit"] --> e6["6 Methodology"] --> e7["7 Packaging"]
     end
     classDef done fill:#2ea44f,stroke:#1a7f37,color:#fff
     classDef partial fill:#FFB800,stroke:#b58600,color:#1a1a1a
     class f0,f1,f2,f3,f4,f5,f6,f7 done
-    class e0,e1,e2,e3,e4,e5,e6 done
+    class e0,e1,e2,e3,e4,e5,e6,e7 done
 ```
 
-F1 runs the full pipeline through phase 7 (final packaging); WEC and IMSA
-now each have their own phase 6 (a written methodology report, mirroring
-F1's), but stop short of F1's phase 7 — final packaging for each series
-remains outstanding.
+All three series now run the full pipeline through phase 7. WEC and IMSA
+each have their own methodology report (phase 6) and their own packaging
+report (phase 7) — separate documents throughout, because they are separate
+series: WEC's committed data holds 44 Safety Cars against 18 full-course
+yellows, IMSA's holds 293 full-course yellows and no Safety Car at all.
 
 ## Repository map
 
@@ -422,6 +425,7 @@ numbers too, most visibly at Imola.
 | 4. Simulator         | [`reports/wec/simulator_phase4.md`](reports/wec/simulator_phase4.md) + tests                                                   | Both neutralisation kinds modelled, fuel-range constraint enforced, one demo scenario per circuit, reproducible                                                                    |
 | 5. Decision audit    | [`reports/wec/audit_cases.md`](reports/wec/audit_cases.md) + `src/audit/endurance_cases.py` + tests                          | Three real stop decisions, states rebuilt from committed laps, replayed through the single-stop engine and compared quantitatively                                                 |
 | 6. Methodology       | [`reports/wec/methodology.md`](reports/wec/methodology.md)                                                                     | Full write-up — motivation, method, results, threats to validity, future work — every number traceable to project output, WEC-only, never pooled with IMSA                       |
+| 7. Packaging         | [`reports/wec/packaging_phase7.md`](reports/wec/packaging_phase7.md)                                                           | Runs from a fresh clone (104 endurance-scoped tests, offline); WEC's own reproduction commands; upstream contribution ideas written up for the endurance data community           |
 
 ### WEC known limitations
 
@@ -578,6 +582,7 @@ says so rather than picking a winner anyway.
 | 4. Simulator         | [`reports/imsa/simulator_phase4.md`](reports/imsa/simulator_phase4.md) + tests                                                   | Fuel-range constraint enforced, one demo scenario per circuit, reproducible                                                                                                        |
 | 5. Decision audit    | [`reports/imsa/audit_cases.md`](reports/imsa/audit_cases.md) + `src/audit/endurance_cases.py` + tests                          | Three real stop decisions, states rebuilt from committed laps, replayed through the single-stop engine and compared quantitatively                                                 |
 | 6. Methodology       | [`reports/imsa/methodology.md`](reports/imsa/methodology.md)                                                                     | Full write-up — motivation, method, results, threats to validity, future work — every number traceable to project output, IMSA-only, never pooled with WEC                       |
+| 7. Packaging         | [`reports/imsa/packaging_phase7.md`](reports/imsa/packaging_phase7.md)                                                           | Runs from a fresh clone (104 endurance-scoped tests, offline); IMSA's own reproduction commands; upstream contribution ideas, including the one question worth asking the source  |
 
 ### IMSA known limitations
 
@@ -789,8 +794,10 @@ Motorsport-Strategy-Lab/
   reports/
     f1/                 # phase 0-5 reports + extensions (breadth layer,
                         #   adversarial rival, track position), audit cases, figures
-    imsa/               # phase 0-6 reports, audit cases, methodology.md
-    wec/                # phase 0-6 reports, audit cases, reliability.md, methodology.md
+    imsa/               # phase 0-7 reports, audit cases, methodology.md,
+                        #   packaging_phase7.md (IMSA-only, never merged with WEC)
+    wec/                # phase 0-7 reports, audit cases, reliability.md,
+                        #   methodology.md, packaging_phase7.md (WEC-only)
     prediction/         # cross-series calibration backtest
     methodology.md      # F1 mini-paper (F1's own phase 6)
     generalization_audit.md, endurance_audit.md, fuel_limited_sensitivity.md,
