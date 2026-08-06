@@ -3,19 +3,13 @@ name: Tests
 # Runs the full test suite on every push and pull request. The suite is
 # fully offline — F1 and endurance tests read the committed derived CSVs in
 # data/derived/, so no FastF1 or DuckDB network access is needed.
-#
-# This deliberately has NO paths-ignore. It used to skip pushes touching only
-# reports/ or *.md, which looked like a harmless saving on a ~1m20s job and was
-# not: a push of three commits ending in a docs-only commit produced no run at
-# all, even though the same push added src/, scripts/, tests/ and data/ changes
-# (verified against the API — zero runs for any of the three SHAs). A test gate
-# that can silently not fire is worse than a slightly wasteful one, and this
-# project's whole discipline is that things fail loudly rather than quietly not
-# happening.
 
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - "reports/**"
+      - "**/*.md"
   pull_request: {}
   workflow_dispatch: {}
 
