@@ -57,11 +57,27 @@ Hypercar do not. That makes the amateur-driver effect measurable, which is the
 same question ELMS's LMP2 Pro/Am split raises
 ([`reports/elms/data_availability_phase0.md`](elms/data_availability_phase0.md)).
 
-**Caveat to check before phase 1, not after:** GT3 racing is governed by
-Balance of Performance adjusted *during* a season. A degradation coefficient
-fitted across a BoP change describes neither side of it — the same class of
-error as F1's 2026 regulation boundary and ELMS's LMP2 relabelling. This has
-not been checked yet and must be, before any pooled fit.
+**Balance of Performance — checked, and the first version of this caveat was
+too strong.** GT3 is governed by BoP adjusted *during* a season, which looks
+at first like F1's 2026 regulation boundary: a coefficient fitted across the
+change describing neither side of it. Reading the model structure rather than
+assuming, that is not the case here.
+
+The endurance degradation model fits **one race at a time**
+(`fit_endurance_degradation` takes a single race's frame), and the pooled
+leave-one-race-out fit qualifies every fixed effect by the race key
+(`endurance_validation.py::_fit_net_slope`), so each race-car-driver carries
+its own intercept. A BoP adjustment shifts a car's pace *level*, and a
+per-race intercept absorbs a level shift completely. There is no channel by
+which it contaminates a slope.
+
+What remains is real but is a finding rather than a defect: BoP changes weight
+and power, which can move the tyre-wear *slope* itself. When it does, the
+slope genuinely differs between races — which is exactly the quantity the
+leave-one-race-out transfer analysis already measures and reports. GT3 would
+then be the series where that instability has a *nameable* cause, instead of
+the unexplained season-to-season variation measured everywhere else. That is
+an argument for adding it, not a hazard to guard against.
 
 ## IndyCar — declined, on evidence
 
