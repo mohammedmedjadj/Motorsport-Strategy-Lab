@@ -70,6 +70,29 @@ ENDURANCE_SCOPE: dict[str, tuple[CircuitScope, ...]] = {
         CircuitScope("Road Atlanta", "GTP", (2023, 2024, 2025)),
         CircuitScope("Sebring", "GTP", (2023, 2024, 2025, 2026)),
         CircuitScope("Watkins Glen", "GTP", (2023, 2024, 2025, 2026)),
+        # --- GT3 (GTD): IMSA's Pro/Am GT class. Scoped as its own class, never
+        # pooled with GTP: different cars, different pit procedure, and a
+        # mandatory amateur-rated driver. All 60 race-seasons cleared the
+        # phase-0 eligibility floor (reports/new_series_survey_phase0.md).
+        # Note "Mosport"/"Canadian Tire Motorsport Park" and the three Watkins
+        # Glen strings are the source's names for two tracks, resolved by
+        # CIRCUIT_ALIASES above -- 16 event strings, 14 circuits.
+        CircuitScope("Belle Isle", "GTD", (2022,)),
+        CircuitScope("Canadian Tire Motorsport Park", "GTD", (2026,)),
+        CircuitScope("Daytona", "GTD", (2021, 2022, 2023, 2024, 2025, 2026)),
+        CircuitScope("Indianapolis", "GTD", (2023, 2024, 2025)),
+        CircuitScope("Laguna Seca", "GTD", (2021, 2022, 2023, 2024, 2025, 2026)),
+        CircuitScope("Lime Rock", "GTD", (2021, 2022, 2023)),
+        CircuitScope("Long Beach", "GTD", (2021, 2022, 2023, 2024, 2025, 2026)),
+        CircuitScope("Mid-Ohio", "GTD", (2021, 2022)),
+        CircuitScope("Mosport", "GTD", (2022, 2023, 2024, 2025)),
+        CircuitScope("Road America", "GTD", (2021, 2022, 2023, 2024, 2025)),
+        CircuitScope("Road Atlanta", "GTD", (2021, 2022, 2023, 2024, 2025)),
+        CircuitScope("Sebring", "GTD", (2021, 2022, 2023, 2024, 2025, 2026)),
+        CircuitScope("VIR", "GTD", (2021, 2022, 2023, 2024, 2025)),
+        CircuitScope("Watkins Glen", "GTD", (2022, 2023, 2024, 2025, 2026)),
+        CircuitScope("Watkins Glen 240", "GTD", (2021,)),
+        CircuitScope("Watkins Glen 6 Hours", "GTD", (2021,)),
     ),
     "wec": (
         CircuitScope("Bahrain", "HYPERCAR", (2022, 2023, 2024, 2025)),

@@ -145,42 +145,37 @@ def test_traffic_adds_variance_without_shifting_the_median() -> None:
 
 @pytest.mark.skipif(not (ENDURANCE_DERIVED_DIR / "multistop_plans.csv").exists(),
                     reason="multistop artifact not generated")
-def test_almost_every_measured_race_is_fuel_limited_on_stop_count() -> None:
-    """The headline finding, pinned — and it has one exception.
+def test_prototypes_are_fuel_limited_but_gt3_is_not() -> None:
+    """The headline finding, and how adding a class changed it.
 
-    At all but one in-scope circuit the optimum takes exactly the fuel-minimum
-    number of stops: measured tyre degradation is not steep enough to out-weigh
-    a pit stop, and the break-even slope sits a median 7x above the measured
-    one. The exception is IMSA Laguna Seca, whose 10.4 s pit loss is by far the
-    cheapest measured anywhere (the next is 28.5 s at Daytona); there a third
-    stop beats the fuel minimum of two.
+    Across the prototype classes the optimum takes exactly the fuel-minimum
+    number of stops almost everywhere: WEC HYPERCAR at every circuit, IMSA GTP
+    at every circuit but Laguna Seca, whose 10.4 s pit loss is the cheapest
+    measured anywhere. Tyre degradation is not steep enough to pay for a stop.
 
-    This test used to assert *no* exceptions, and that was true of the slopes
-    as they were then estimated — the per-car traffic trim was selecting on
-    lap time and flattening every slope by up to a quarter (see
-    ``tests/test_endurance_degradation.py``). Laguna Seca crossed over when
-    the bias was removed, which is the honest reading: the old claim was an
-    artefact at exactly one circuit, and a marginal one even now (break-even
-    0.024 against a measured 0.0241 s/lap).
+    GT3 is a different car and behaves like one. IMSA GTD is tyre-limited at
+    five circuits — Indianapolis, Laguna Seca, Lime Rock, Mosport and VIR — and
+    at Laguna Seca the optimum takes six stops against a fuel minimum of two.
+    They are the short sprint rounds, where a stop is cheap and a heavier car
+    on harder-worked rubber has more to gain from fresh tyres.
+
+    This is why the class was added rather than more prototype data: "every
+    measured race is fuel-limited" was never a fact about endurance racing, it
+    was a fact about prototypes, and nothing in the previous scope could have
+    revealed the difference.
     """
     art = pd.read_csv(ENDURANCE_DERIVED_DIR / "multistop_plans.csv")
-    extra = art[art["optimal_stops"] != art["min_stops"]]
-    assert set(extra["circuit"]) <= {"laguna_seca"}, (
-        f"a new circuit became tyre-limited: {sorted(set(extra['circuit']))}"
-    )
     assert (art["optimal_stops"] >= art["min_stops"]).all()
-    # Everywhere the optimum still equals the fuel minimum, break-even sits
-    # above the measured slope — that inequality is what "fuel-limited" means.
-    # At Laguna Seca it is the other way round (break-even 0.024 vs a measured
-    # 0.0241), which is not a violation but the definition of the exception.
-    fuel_limited = art[
-        (art["net_slope_s"] > 0) & (art["optimal_stops"] == art["min_stops"])
-    ]
-    assert (fuel_limited["breakeven_slope_s"] > fuel_limited["net_slope_s"]).all()
-    assert (art[art["net_slope_s"] > 0]["slope_headroom_x"] >= 1.0).all()
-    # ... and comfortably so nearly everywhere, which is what makes the one
-    # exception worth naming rather than a sign the margin was always thin.
-    assert art[art["net_slope_s"] > 0]["slope_headroom_x"].median() > 2.0
+
+    tyre_limited = art[art["optimal_stops"] != art["min_stops"]]
+    by_class = tyre_limited.groupby("car_class")["circuit"].apply(set).to_dict()
+    assert "HYPERCAR" not in by_class, "WEC prototypes became tyre-limited"
+    assert by_class.get("GTP", set()) <= {"laguna_seca"}
+    assert len(by_class.get("GTD", set())) >= 4, "GT3 should be tyre-limited widely"
+
+    # Prototypes keep a wide margin; GT3 does not, which is the contrast.
+    proto = art[(art["car_class"] != "GTD") & (art["net_slope_s"] > 0)]
+    assert proto["slope_headroom_x"].median() > 2.0
 
 
 @pytest.mark.skipif(not (ENDURANCE_DERIVED_DIR / "multistop_plans.csv").exists(),

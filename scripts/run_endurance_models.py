@@ -123,25 +123,34 @@ def main() -> int:
                     "r2_within": round(mean_r2(folds), 4), "rmse_s": "", "n_laps": "",
                 })
 
-    # Pit-stop procedure: pool every scoped race per series (a series-level
-    # rulebook property, not a per-circuit one) and measure the tyre-change
-    # premium — IMSA services tyres in parallel with fuel, WEC in sequence.
+    # Pit-stop procedure: the tyre-change premium, per series **and class**.
+    #
+    # The rulebook is a series-level property — IMSA services tyres in parallel
+    # with fuel, WEC in sequence — but the premium's *magnitude* belongs to the
+    # car: a GT3 machine and an LMDh prototype differ in tyre service time and
+    # fuel fill rate. Pooling classes was harmless while each series had
+    # exactly one in scope, and became a silent averaging error the moment
+    # IMSA's GTD joined GTP. The rulebook comparison is unchanged — compare
+    # like classes across series — and GTD is now its own row instead of
+    # contamination in GTP's.
     pit_procedure: list[dict[str, object]] = []
     for series, circuits in ENDURANCE_SCOPE.items():
         loader = EnduranceLoader(series)
-        pooled = pd.concat(
-            [loader.load_laps(yr, cs.event, cs.car_class)
-             for cs in circuits for yr in cs.seasons],
-            ignore_index=True,
-        )
-        p = estimate_tyre_change_premium(pooled)
-        pit_procedure.append({
-            "series": series,
-            "fuel_only_median_s": round(p.fuel_only_median_s, 1),
-            "tyre_change_median_s": round(p.tyre_change_median_s, 1),
-            "tyre_change_premium_s": round(p.premium_s, 1),
-            "n_fuel_only": p.n_fuel_only, "n_tyre_change": p.n_tyre_change,
-        })
+        by_class: dict[str, list] = {}
+        for cs in circuits:
+            by_class.setdefault(cs.car_class, []).extend(
+                loader.load_laps(yr, cs.event, cs.car_class) for yr in cs.seasons
+            )
+        for car_class, frames in sorted(by_class.items()):
+            pooled = pd.concat(frames, ignore_index=True)
+            p = estimate_tyre_change_premium(pooled)
+            pit_procedure.append({
+                "series": series, "car_class": car_class,
+                "fuel_only_median_s": round(p.fuel_only_median_s, 1),
+                "tyre_change_median_s": round(p.tyre_change_median_s, 1),
+                "tyre_change_premium_s": round(p.premium_s, 1),
+                "n_fuel_only": p.n_fuel_only, "n_tyre_change": p.n_tyre_change,
+            })
 
     # Track-position value (overtaking difficulty), per circuit, position
     # reconstructed from cumulative time within the class.

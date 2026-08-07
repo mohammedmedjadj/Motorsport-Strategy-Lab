@@ -44,30 +44,34 @@ def test_committed_fits_match_a_fresh_recomputation(fits) -> None:
 
 
 def test_separability_claim_matches_the_report(fits) -> None:
-    """The exceptions to non-separability are at Sebring — its 12 h format has
-    enough fuel-only splash stops to weaken the usual fuel/tyre collinearity —
-    and they show at both editions measured (2025, 2026). Every WEC race stays
-    non-separable.
+    """The fuel/degradation split is identified almost nowhere, and where it is,
+    the reason is the race format rather than the car.
 
-    Indianapolis 2024 also clears the bar, at a correlation of 0.897 against a
-    0.90 cutoff. It is named here as what it is: a race sitting 0.003 the right
-    side of a threshold, which is a coincidence of where the line was drawn
-    rather than a second finding. Sebring's 0.826/0.820 is the real one. (It
-    appeared when the traffic trim stopped selecting on lap time; before that
-    correction it sat marginally on the other side.)
+    Stated per class, because the claim is about *races* and a class is part of
+    what a race is: pooling GTP and GTD Sebring rows would have made "Sebring
+    is separable at both editions" read as four editions of one thing.
+
+    IMSA GTP: Sebring 2025 and 2026, whose 12 h format has enough fuel-only
+    splash stops to weaken the usual fuel/tyre collinearity, plus Indianapolis
+    2024 sitting 0.003 the right side of a 0.90 cutoff — named as the threshold
+    coincidence it is, not as a second finding. Every WEC race stays
+    non-separable.
     """
-    imsa = fits[fits["series"] == "imsa"]
+    gtp = fits[(fits["series"] == "imsa") & (fits["car_class"] == "GTP")]
     wec = fits[fits["series"] == "wec"]
-    separable_imsa = imsa[imsa["separable"]]
-    assert set(separable_imsa["event"]) == {"Sebring", "Indianapolis"}
-    # Sebring is separable at both editions, and clearly rather than marginally.
-    sebring = separable_imsa[separable_imsa["event"] == "Sebring"]
+    separable_gtp = gtp[gtp["separable"]]
+    assert set(separable_gtp["event"]) == {"Sebring", "Indianapolis"}
+    sebring = separable_gtp[separable_gtp["event"] == "Sebring"]
     assert len(sebring) == 2
     assert (sebring["fuel_deg_corr"] < 0.85).all()
-    # Indianapolis is the borderline one and must be read as such.
-    indy = separable_imsa[separable_imsa["event"] == "Indianapolis"]
+    indy = separable_gtp[separable_gtp["event"] == "Indianapolis"]
     assert len(indy) == 1 and (indy["fuel_deg_corr"] > 0.89).all()
     assert (~wec["separable"]).all()
+
+    # GT3 is reported in its own right; the collinearity is the norm there too.
+    gtd = fits[(fits["series"] == "imsa") & (fits["car_class"] == "GTD")]
+    assert len(gtd) > 50
+    assert gtd["separable"].mean() < 0.25, "GT3 should be mostly non-separable too"
 
 
 def test_loro_backs_the_bahrain_exception(loro) -> None:
@@ -109,17 +113,28 @@ def test_endurance_overtaking_difficulty_is_measured_and_stable() -> None:
 def test_pit_procedure_confirms_the_wec_sequential_rule() -> None:
     """WEC changes tyres only after the fuel hose is out (sequential), IMSA does
     both at once (parallel), so WEC's tyre-change premium must be far larger.
-    Both a data-backed claim and a drift guard on the committed artifact."""
-    proc = pd.read_csv(ENDURANCE_DERIVED_DIR / "endurance_pit_procedure.csv").set_index("series")
-    imsa_prem = float(proc.loc["imsa", "tyre_change_premium_s"])
-    wec_prem = float(proc.loc["wec", "tyre_change_premium_s"])
+    Both a data-backed claim and a drift guard on the committed artifact.
+
+    Compared **like class against like class** — WEC HYPERCAR against IMSA
+    GTP, both top prototypes. The premium is a rulebook effect in kind but a
+    car property in magnitude, so pooling IMSA's GTD in with its GTP would
+    average a GT3 tyre service into a prototype's and answer a question nobody
+    asked. That pooling was invisible while each series had one class in scope.
+    """
+    proc = pd.read_csv(ENDURANCE_DERIVED_DIR / "endurance_pit_procedure.csv")
+    assert "car_class" in proc.columns, "the premium must be reported per class"
+    prem = proc.set_index(["series", "car_class"])["tyre_change_premium_s"]
+    imsa_prem = float(prem[("imsa", "GTP")])
+    wec_prem = float(prem[("wec", "HYPERCAR")])
     assert 0 < imsa_prem < 15          # tyres largely hidden behind the fuel fill
     assert wec_prem > 18               # full tyre service added on top
     # Bound loosened on the widened scope (2.5x -> 2.0x): the pooled ratio is
-    # now ~2.5x on 33 IMSA + 28 WEC races (was ~3.4x on a handful), still a
-    # clear, real procedural gap — not the same-magnitude overclaim a tighter
-    # bound tuned to the small sample would keep asserting.
+    # ~2.5x on 33 IMSA + 28 WEC prototype races, still a clear procedural gap.
     assert wec_prem > 2.0 * imsa_prem  # the procedural difference, quantified
+
+    # GTD is measured in its own right rather than folded into GTP.
+    assert ("imsa", "GTD") in prem.index
+    assert float(prem[("imsa", "GTD")]) > 0
 
 
 # --- class identity, now carried rather than assumed away --------------------
@@ -163,41 +178,37 @@ def test_every_artifact_row_is_uniquely_keyed_with_the_class() -> None:
     assert not plans.duplicated(plan_key).any()
 
 
-def test_aliased_event_names_never_overlap_in_seasons() -> None:
-    """Two source names for one track are fine; two *for the same season* are not.
+def test_scope_has_no_literally_duplicated_entry() -> None:
+    """The real invariant, arrived at after getting it wrong twice.
 
-    ``CircuitScope.event`` is a source lookup key — it has to match whatever
-    string the upstream data uses — while circuit *identity* for validation is
-    ``canonical_circuit(event)``. Those are different things, and conflating
-    them is how the first version of this test went wrong: it forbade any two
-    event strings mapping to one circuit, which blocks the legitimate case it
-    was written to enable. Covering IMSA's 2026 round at Canadian Tire
-    Motorsport Park means scoping that string alongside ``Mosport`` (2023),
-    because the source renamed the track; the seasons are disjoint and the two
-    entries describe one circuit across time.
+    The first version forbade any two event strings mapping to one circuit.
+    That blocks a *rename*: covering Canadian Tire Motorsport Park (2026)
+    means scoping it beside Mosport, because the source renamed the track.
 
-    What must never happen is two names for the same circuit in the *same*
-    season: that is a duplicated race, and it would enter a leave-one-circuit-
-    out fold twice — training and testing on the same laps.
+    The second version allowed renames but forbade two names for one circuit
+    in the same season, on the theory that this meant a duplicated race. It
+    does not: IMSA ran two races at Watkins Glen in 2021, and the source names
+    them separately — ``Watkins Glen 240`` is 57 laps and 12 cars, ``Watkins
+    Glen 6 Hours`` is 179 laps and 14. Two distinct races at one track in one
+    year, both legitimate.
+
+    Both versions encoded a *supposed consequence* instead of the invariant.
+    The invariant was never "one name per circuit-season"; it is that
+    validation folds group on the **canonical circuit**, which
+    ``circuit_canonical`` in every artifact now carries and
+    ``test_artifacts_carry_a_canonical_circuit_identity`` checks. What is left
+    to assert here is only that no entry is literally repeated — the same
+    series, event and class scoped twice, which would load the same laps twice
+    for no reason.
     """
-    from collections import defaultdict
+    from src.data.endurance_scope import ENDURANCE_SCOPE
 
-    from src.data.endurance_scope import ENDURANCE_SCOPE, canonical_circuit
-
-    seasons_by_circuit: dict[tuple[str, str, str], list[tuple[str, int]]] = defaultdict(list)
+    seen: set[tuple[str, str, str]] = set()
     for series, circuits in ENDURANCE_SCOPE.items():
         for cs in circuits:
-            key = (series, canonical_circuit(cs.event), cs.car_class)
-            seasons_by_circuit[key].extend((cs.event, y) for y in cs.seasons)
-
-    for key, entries in seasons_by_circuit.items():
-        years = [y for _, y in entries]
-        duplicated = {y for y in years if years.count(y) > 1}
-        assert not duplicated, (
-            f"{key} is scoped under more than one event name in season(s) "
-            f"{sorted(duplicated)}: {sorted(set(entries))}. One circuit-season "
-            "would enter a leave-one-circuit-out fold twice."
-        )
+            key = (series, cs.event, cs.car_class)
+            assert key not in seen, f"{key} is scoped more than once"
+            seen.add(key)
 
 
 def test_artifacts_carry_a_canonical_circuit_identity() -> None:
