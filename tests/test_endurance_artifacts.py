@@ -163,33 +163,38 @@ def test_every_artifact_row_is_uniquely_keyed_with_the_class() -> None:
     assert not plans.duplicated(plan_key).any()
 
 
-def test_no_two_scoped_events_are_the_same_physical_circuit() -> None:
-    """Leave-one-circuit-out folds must be independent.
+def test_aliased_event_names_never_overlap_in_seasons() -> None:
+    """Two source names for one track are fine; two *for the same season* are not.
 
-    The source uses more than one event string for some tracks — ``Mosport``
-    and ``Canadian Tire Motorsport Park`` are the same circuit, renamed in
-    2026, and 2021 split Watkins Glen across three names. Scoping two of them
-    would let a model train on one and test on the other while reporting the
-    result as generalisation to an unseen circuit: leakage that *inflates* the
-    headline transfer number rather than failing visibly, which is the worst
-    way for a validation to be wrong.
+    ``CircuitScope.event`` is a source lookup key — it has to match whatever
+    string the upstream data uses — while circuit *identity* for validation is
+    ``canonical_circuit(event)``. Those are different things, and conflating
+    them is how the first version of this test went wrong: it forbade any two
+    event strings mapping to one circuit, which blocks the legitimate case it
+    was written to enable. Covering IMSA's 2026 round at Canadian Tire
+    Motorsport Park means scoping that string alongside ``Mosport`` (2023),
+    because the source renamed the track; the seasons are disjoint and the two
+    entries describe one circuit across time.
 
-    Guards the widening this project is heading for (IMSA GTD scopes 60
-    race-seasons across 16 event strings but only 14 tracks) rather than
-    today's scope, which was checked and is clean.
+    What must never happen is two names for the same circuit in the *same*
+    season: that is a duplicated race, and it would enter a leave-one-circuit-
+    out fold twice — training and testing on the same laps.
     """
     from collections import defaultdict
 
     from src.data.endurance_scope import ENDURANCE_SCOPE, canonical_circuit
 
-    seen: dict[tuple[str, str, str], set[str]] = defaultdict(set)
+    seasons_by_circuit: dict[tuple[str, str, str], list[tuple[str, int]]] = defaultdict(list)
     for series, circuits in ENDURANCE_SCOPE.items():
         for cs in circuits:
-            seen[(series, canonical_circuit(cs.event), cs.car_class)].add(cs.event)
+            key = (series, canonical_circuit(cs.event), cs.car_class)
+            seasons_by_circuit[key].extend((cs.event, y) for y in cs.seasons)
 
-    aliased = {k: sorted(v) for k, v in seen.items() if len(v) > 1}
-    assert not aliased, (
-        f"two event strings for one physical circuit are scoped together: {aliased}. "
-        "Leave-one-circuit-out would treat them as independent folds. Merge them "
-        "or extend CIRCUIT_ALIASES in src/data/endurance_scope.py."
-    )
+    for key, entries in seasons_by_circuit.items():
+        years = [y for _, y in entries]
+        duplicated = {y for y in years if years.count(y) > 1}
+        assert not duplicated, (
+            f"{key} is scoped under more than one event name in season(s) "
+            f"{sorted(duplicated)}: {sorted(set(entries))}. One circuit-season "
+            "would enter a leave-one-circuit-out fold twice."
+        )
