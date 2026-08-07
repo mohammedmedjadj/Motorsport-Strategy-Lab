@@ -15,8 +15,15 @@ different stints start at different lap numbers with fresh tyres. This is
 also why the fixed effect is per driver-race, NOT per stint — stint-level
 intercepts would destroy that identification.
 
-Estimation is plain OLS via least squares; standard errors use the classical
-homoscedastic formula (limitation documented in the Phase 2 report).
+Estimation is plain OLS via least squares. Standard errors are **cluster-robust
+by driver-race**, not classical: laps inside one car's race are strongly
+correlated (traffic, fuel phase, track evolution, a driver having an off
+stint), and a car whose tyres genuinely degrade faster than average degrades
+faster on every lap of the stint. Treating those laps as independent counts
+the same information repeatedly. Measured on this project's own data, the
+classical formula understates these standard errors by 1.4x to 4.5x, in the
+same direction at every circuit and for every coefficient — see
+``src/degradation/robust.py`` and ``reports/f1/degradation_phase2.md``.
 """
 
 from __future__ import annotations
@@ -26,23 +33,36 @@ from dataclasses import dataclass
 import numpy as np
 import pandas as pd
 
-Z95 = 1.96  # normal approximation, n is in the thousands
+from src.degradation.robust import cluster_robust_se, critical_value
+
+Z95 = 1.96  # normal approximation, kept for the pre-cluster comparison only
 
 
 @dataclass(frozen=True)
 class Coefficient:
-    """One estimated coefficient with its 95% confidence interval."""
+    """One estimated coefficient with its 95% confidence interval.
+
+    ``n_clusters`` is the number of driver-races the estimate rests on. It is
+    carried rather than discarded because it sets the reference distribution:
+    cluster-robust inference is ``t(G-1)``, not normal, and the difference is
+    what stops a five-car class from looking as precise as a full grid.
+    """
 
     value: float
     se: float
+    n_clusters: int | None = None
+
+    @property
+    def _critical(self) -> float:
+        return Z95 if self.n_clusters is None else critical_value(self.n_clusters)
 
     @property
     def ci_low(self) -> float:
-        return self.value - Z95 * self.se
+        return self.value - self._critical * self.se
 
     @property
     def ci_high(self) -> float:
-        return self.value + Z95 * self.se
+        return self.value + self._critical * self.se
 
 
 @dataclass(frozen=True)
@@ -93,14 +113,18 @@ def fit_circuit(df: pd.DataFrame, circuit: str, degree: int = 1) -> FitResult:
     X, names = _design_matrix(df, compounds, degree)
     y = df["lap_time_s"].to_numpy(dtype=float)
 
-    beta, _, rank, _ = np.linalg.lstsq(X, y, rcond=None)
+    beta, _, _, _ = np.linalg.lstsq(X, y, rcond=None)
     residuals = y - X @ beta
-    dof = max(len(y) - rank, 1)
-    sigma2 = float(residuals @ residuals) / dof
-    # pinv tolerates rank deficiency (e.g. a driver-race seen on one compound only)
-    se = np.sqrt(np.clip(np.diag(np.linalg.pinv(X.T @ X)) * sigma2, 0.0, None))
+    # Cluster by driver-race: the same unit the fixed effect absorbs, and the
+    # coarsest level at which residuals are plainly correlated. Clustering by
+    # stint instead gives smaller standard errors, which is the wrong way to
+    # resolve a doubt about how far correlation reaches.
+    se, n_clusters = cluster_robust_se(X, y, beta, df["driver_race"].to_numpy())
 
-    by_name = {n: Coefficient(float(b), float(s)) for n, b, s in zip(names, beta, se)}
+    by_name = {
+        n: Coefficient(float(b), float(s), n_clusters)
+        for n, b, s in zip(names, beta, se)
+    }
     deg_coefs = {
         c: tuple(by_name[f"deg::{c}::p{p}"] for p in range(1, degree + 1))
         for c in compounds

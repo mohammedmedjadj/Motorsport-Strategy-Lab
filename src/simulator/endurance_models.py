@@ -119,4 +119,8 @@ def load_race_model(
         # positive rate instead of an impossible exact zero.
         fcy.n_events + 0.5, fcy.laps_exposure, fcy_dur, fit.rmse_s,
         sc_alpha=sc.n_events + 0.5, sc_exposure=sc.laps_exposure, sc_durations=sc_dur,
+        # Carry the cluster count through as t degrees of freedom, so a race
+        # fit on 5 cars produces a visibly wider race-time distribution than
+        # one fit on 20 rather than silently the same.
+        net_slope_df=(fit.net_slope.n_clusters or 1) - 1,
     )

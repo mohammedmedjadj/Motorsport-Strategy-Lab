@@ -44,17 +44,29 @@ def test_committed_fits_match_a_fresh_recomputation(fits) -> None:
 
 
 def test_separability_claim_matches_the_report(fits) -> None:
-    """On the widened scope, the exceptions to non-separability are **both** at
-    Sebring — its 12 h format has enough fuel-only splash stops to weaken the
-    usual fuel/tyre collinearity, and it now shows at both editions measured
-    (2025, 2026), a stronger, more consistent finding than the original
-    single-season exception. Every other IMSA circuit and all of WEC stay
-    non-separable."""
+    """The exceptions to non-separability are at Sebring — its 12 h format has
+    enough fuel-only splash stops to weaken the usual fuel/tyre collinearity —
+    and they show at both editions measured (2025, 2026). Every WEC race stays
+    non-separable.
+
+    Indianapolis 2024 also clears the bar, at a correlation of 0.897 against a
+    0.90 cutoff. It is named here as what it is: a race sitting 0.003 the right
+    side of a threshold, which is a coincidence of where the line was drawn
+    rather than a second finding. Sebring's 0.826/0.820 is the real one. (It
+    appeared when the traffic trim stopped selecting on lap time; before that
+    correction it sat marginally on the other side.)
+    """
     imsa = fits[fits["series"] == "imsa"]
     wec = fits[fits["series"] == "wec"]
     separable_imsa = imsa[imsa["separable"]]
-    assert set(separable_imsa["event"]) == {"Sebring"}
-    assert len(separable_imsa) == 2
+    assert set(separable_imsa["event"]) == {"Sebring", "Indianapolis"}
+    # Sebring is separable at both editions, and clearly rather than marginally.
+    sebring = separable_imsa[separable_imsa["event"] == "Sebring"]
+    assert len(sebring) == 2
+    assert (sebring["fuel_deg_corr"] < 0.85).all()
+    # Indianapolis is the borderline one and must be read as such.
+    indy = separable_imsa[separable_imsa["event"] == "Indianapolis"]
+    assert len(indy) == 1 and (indy["fuel_deg_corr"] > 0.89).all()
     assert (~wec["separable"]).all()
 
 

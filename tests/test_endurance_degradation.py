@@ -56,6 +56,53 @@ def test_recovers_a_known_net_slope() -> None:
     assert fit.net_slope.ci_low <= TRUE_NET <= fit.net_slope.ci_high
 
 
+def _mean_recovered_slope(noise_s: float, n_seeds: int = 25) -> float:
+    """Average fitted slope over independent races — a bias has to be measured
+    across replications, never read off one seed."""
+    slopes = [
+        fit_endurance_degradation(
+            build_endurance_frame(make_synthetic(noise_s=noise_s, seed=seed))
+        ).net_slope.value
+        for seed in range(n_seeds)
+    ]
+    return float(np.mean(slopes))
+
+
+def test_the_traffic_trim_does_not_flatten_the_degradation_curve() -> None:
+    """The trim must not select on the quantity being estimated.
+
+    Trimming the slowest 10% of a car's *raw lap times* removes the
+    oldest-tyre laps preferentially — within a stint, slow and old are the
+    same laps — and shaves the top off the very curve being fitted. Measured
+    over 25 synthetic races per noise level, that version of the trim
+    recovered a true +0.080 s/lap slope as +0.072 / +0.065 / +0.060 at noise
+    0.3 / 0.6 / 1.0 s: a 9% to 25% attenuation that grows with noise, because
+    a noisier field pushes the 90th percentile deeper into the signal.
+
+    Trimming the first-pass *residual* instead recovers +0.0800 / +0.0801 /
+    +0.0802. Endurance traffic noise is large by nature — that is the whole
+    reason the trim exists — so this is the operating regime, not a corner.
+    """
+    for noise_s in (0.3, 0.6, 1.0):
+        recovered = _mean_recovered_slope(noise_s)
+        assert recovered == pytest.approx(TRUE_NET, rel=0.03), (
+            f"noise {noise_s}: recovered {recovered:.5f} vs true {TRUE_NET}"
+        )
+
+
+def test_the_trim_no_longer_prefers_old_tyres() -> None:
+    """The mechanism itself, checked directly rather than through its effect:
+    the laps the trim removes must not be systematically older than the laps
+    it keeps."""
+    laps = make_synthetic(noise_s=1.0, seed=5)
+    kept = build_endurance_frame(laps)
+    all_green = laps[laps["is_green"] & ~laps["is_pit_lap"]]
+    removed_age = (
+        all_green["tyre_age"].sum() - kept["tyre_age"].sum()
+    ) / (len(all_green) - len(kept))
+    assert removed_age == pytest.approx(kept["tyre_age"].mean(), rel=0.25)
+
+
 def test_frame_drops_non_green_and_pit_laps_and_resets_fuel_counter() -> None:
     laps = make_synthetic(n_cars=2, stints=3)
     # Neutralise a handful of laps; they must not reach the fit.

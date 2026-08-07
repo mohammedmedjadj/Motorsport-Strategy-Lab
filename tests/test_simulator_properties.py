@@ -13,7 +13,7 @@ import numpy as np
 from hypothesis import assume, given, settings
 from hypothesis import strategies as st
 
-from src.simulator.artifacts import CircuitModel, GaussianCoef, HazardPosterior
+from src.simulator.artifacts import CircuitModel, CoefPosterior, HazardPosterior
 from src.simulator.engine import GREEN, SC, VSC, Scenario, _sample_status, simulate
 from src.simulator.pit_loss import PaceRatios, PitLossEstimate
 
@@ -27,10 +27,10 @@ durations = st.lists(st.integers(min_value=1, max_value=8), min_size=1, max_size
 
 
 @st.composite
-def coefs(draw: st.DrawFn) -> GaussianCoef:
+def coefs(draw: st.DrawFn) -> CoefPosterior:
     mean = draw(st.floats(min_value=-0.5, max_value=0.5, allow_nan=False))
     sd = draw(st.floats(min_value=0.0, max_value=0.05, allow_nan=False))
-    return GaussianCoef(mean=mean, sd=sd)
+    return CoefPosterior(mean=mean, sd=sd)
 
 
 @st.composite

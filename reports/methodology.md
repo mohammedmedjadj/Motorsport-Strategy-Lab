@@ -19,10 +19,12 @@ We then replay five real strategy decisions from the 2023-2024 seasons
 through the simulator and compare its recommendations with what the
 strategists actually did. The audit yields three findings: median race
 time alone mis-ranks real decisions (Verstappen's Barcelona 2024 covering
-stop costs +3.2s in median time yet holds the highest P(best) = 0.43 and
-the best P(ahead) = 0.70); a known qualitative limitation — the absence of
-field bunching behind the safety car — is converted into a measured ~6-7s
-bias for SC-window decisions at the front of the field; and the most
+stop costs +4.97s in median time, holds the highest P(best) of any
+candidate at 0.416, and is beaten on P(ahead of Norris) by lap 22, 0.659
+against 0.731 — three summaries, three rankings); a known qualitative
+limitation — the absence of field bunching behind the safety car — is
+converted into a measured ~6s bias for SC-window decisions at the front of
+the field; and the most
 criticised-by-outcome gamble in the set (Mercedes, Singapore 2023) was the
 right bet by expected time and win probability. Cross-season validation
 shows degradation slopes are not stable between editions of the same race
@@ -227,11 +229,11 @@ precision inside them are unsupported.
 
 | Case | Real decision | Model verdict |
 |---|---|---|
-| A. Barcelona 2024, Verstappen lap-17 cover | Won | +3.2s median vs optimum, **but** highest P(best) (0.43) and P(ahead) 0.70 vs 0.64 — vindicated by the distributions |
-| B. Barcelona 2024, Norris extended stint | Lost by 2.2s | P(ahead) flat at 0.30-0.32 across all stop laps — the race was not lost on stop timing |
-| C. Singapore 2023, Sainz SC stop lap 20 | Won | Model calls it +6.5s worse than staying out — **the model is wrong**: the missing bunching mechanism, now quantified as a ~6-7s bias |
-| D. Singapore 2023, Russell VSC stop lap 44 | Crashed while attacking | Endorsed: better than staying out on median (1913.3 vs 1915.0s) and P(ahead SAI) (0.48 vs 0.44) — a near coin-flip for the win at ~zero cost |
-| E. Monaco 2024, nobody stops | Leclerc won | Model independently selects no-stop (P(best) 0.69): Monaco's degradation never repays a 19.1s pit loss |
+| A. Barcelona 2024, Verstappen lap-17 cover | Won | +4.97s median vs optimum, **but** the highest P(best) of any candidate (0.416 vs 0.025); on P(ahead of Norris) lap 22 beats it (0.731 vs 0.659) — the three metrics rank it differently, which is the finding |
+| B. Barcelona 2024, Norris extended stint | Lost by 2.2s | P(ahead) never reaches 0.5 at any stop lap (0.145-0.369) — no available choice makes him favourite, so the race was not lost on stop timing |
+| C. Singapore 2023, Sainz SC stop lap 20 | Won | Model calls it +5.91s worse than the lap-35 optimum — **the model is wrong**: the missing bunching mechanism, now quantified as a ~6s bias |
+| D. Singapore 2023, Russell VSC stop lap 44 | Crashed while attacking | Endorsed: better than staying out on median (1913.3 vs 1914.9s), within 1.11s of the optimum, and P(ahead SAI) 0.477 — a near coin-flip for the win at ~zero cost |
+| E. Monaco 2024, nobody stops | Leclerc won | Model independently selects no-stop (P(best) 0.581): Monaco's degradation never repays a 19.1s pit loss — but it has no track-position term, so this is the right answer for the wrong reason |
 
 Cross-case: (i) distribution outputs — not the median — are what make
 audits of real decisions fair; (ii) decision quality and outcome are
@@ -311,7 +313,7 @@ Python 3.13, dependencies pinned in `requirements.lock` (fastf1 3.8.3,
 pandas 2.3.3, numpy 2.5.1, scipy 1.18.0). FastF1 cache under
 `data/cache/` (gitignored); derived datasets committed under
 `data/derived/`. All stochastic code is seeded. The F1 layer this report
-covers is tested by a dedicated subset of the project's 260 pytest tests
+covers is tested by a dedicated subset of the project's 268 pytest tests
 (ingestion, both models, the engine and the audit tooling, including
 synthetic ground-truth recovery and leakage assertions); the remaining
 tests cover the WEC/IMSA extension described in the top-level README, out

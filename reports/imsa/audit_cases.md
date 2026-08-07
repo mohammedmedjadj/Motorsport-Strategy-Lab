@@ -6,7 +6,7 @@ Reading guide: the model optimises **expected race time** to the next stop only,
 
 ## Case I-A: Watkins Glen 2024 — car 01's FCY-onset stop (lap 90)
 
-**State (measured from data):** end of lap 89/148, car 01 on tyre age 14, 17 laps since last refuel (fuel range 32 laps; net slope +0.0139 s/lap).
+**State (measured from data):** end of lap 89/148, car 01 on tyre age 14, 17 laps since last refuel (fuel range 32 laps; net slope +0.0172 s/lap).
 
 **Real decision:** Car 01 (the class winner) pitted lap 90 — the exact lap the flag turned from GF to FCY — its fourth of eight stops.
 
@@ -14,18 +14,21 @@ Reading guide: the model optimises **expected race time** to the next stop only,
 
 **Model output** (pit_lap 0 = run to the flag without stopping, where feasible):
 
-- Best median pit lap: **104** — recommended window (medians within 0.5s): **[104]**.
-- Outcome spread at the best lap (p10-p90): 1227.7s — the honest uncertainty of any single-race outcome.
-- **Verdict:** Real choice (lap 90): median cost +7.92s vs the model optimum (lap 104); OUTSIDE the recommended window.
+- Best median pit lap: **104** — recommended window (medians within 0.5s): **[100, 102, 103, 104]**.
+- Outcome spread at the best lap (p10-p90): 1225.2s — the honest uncertainty of any single-race outcome.
+- **Verdict:** Real choice (lap 90): median cost +6.72s vs the model optimum (lap 104); OUTSIDE the recommended window.
 
 | pit_lap | median_s | mean_s | p10_s | p90_s | p_best |
 |---|---|---|---|---|---|
-| 90 <- real | 6313.209 | 6380.876 | 5848.934 | 7080.446 | 0.014 |
-| 104 | 6305.285 | 6373.278 | 5844.084 | 7071.766 | 0.792 |
+| 90 <- real | 6316.962 | 6385.768 | 5854.827 | 7084.330 | 0.013 |
+| 100 | 6310.706 | 6378.392 | 5849.625 | 7076.011 | 0.017 |
+| 102 | 6310.642 | 6377.702 | 5849.090 | 7076.398 | 0.021 |
+| 103 | 6310.413 | 6377.375 | 5848.813 | 7075.040 | 0.026 |
+| 104 | 6310.240 | 6377.034 | 5848.542 | 7073.718 | 0.792 |
 
 ## Case I-B: Road America 2024 — car 10's routine green-flag stop (lap 29)
 
-**State (measured from data):** end of lap 28/62, car 10 on tyre age 20, 27 laps since last refuel (fuel range 30 laps; net slope -0.0689 s/lap).
+**State (measured from data):** end of lap 28/62, car 10 on tyre age 20, 27 laps since last refuel (fuel range 30 laps; net slope -0.0590 s/lap).
 
 **Real decision:** Car 10 (the class winner) pitted lap 29 under green flag — its first of two stops in this 62-lap sprint.
 
@@ -34,16 +37,16 @@ Reading guide: the model optimises **expected race time** to the next stop only,
 **Model output** (pit_lap 0 = run to the flag without stopping, where feasible):
 
 - Best median pit lap: **29** — recommended window (medians within 0.5s): **[29]**.
-- Outcome spread at the best lap (p10-p90): 989.8s — the honest uncertainty of any single-race outcome.
+- Outcome spread at the best lap (p10-p90): 977.0s — the honest uncertainty of any single-race outcome.
 - **Verdict:** Real choice (lap 29): median cost +0.00s vs the model optimum (lap 29); INSIDE the recommended window.
 
 | pit_lap | median_s | mean_s | p10_s | p90_s | p_best |
 |---|---|---|---|---|---|
-| 29 <- real | 4000.290 | 4227.010 | 3878.427 | 4868.191 | 0.919 |
+| 29 <- real | 4004.517 | 4232.069 | 3883.213 | 4860.194 | 0.918 |
 
 ## Case I-C: Mosport 2023 — car 10's FCY-onset stop (lap 85), the flat-signal circuit
 
-**State (measured from data):** end of lap 84/120, car 10 on tyre age 12, 15 laps since last refuel (fuel range 50 laps; net slope -0.0015 s/lap).
+**State (measured from data):** end of lap 84/120, car 10 on tyre age 12, 15 laps since last refuel (fuel range 50 laps; net slope +0.0002 s/lap).
 
 **Real decision:** Car 10 (the class winner) pitted lap 85 — the exact lap the flag turned from GF to FCY — its third of three stops.
 
@@ -52,13 +55,13 @@ Reading guide: the model optimises **expected race time** to the next stop only,
 **Model output** (pit_lap 0 = run to the flag without stopping, where feasible):
 
 - Best median pit lap: **119** — recommended window (medians within 0.5s): **[119]**.
-- Outcome spread at the best lap (p10-p90): 581.0s — the honest uncertainty of any single-race outcome.
-- **Verdict:** Real choice (lap 85): median cost +11.52s vs the model optimum (lap 119); OUTSIDE the recommended window.
+- Outcome spread at the best lap (p10-p90): 580.8s — the honest uncertainty of any single-race outcome.
+- **Verdict:** Real choice (lap 85): median cost +3.02s vs the model optimum (lap 119); OUTSIDE the recommended window.
 
 | pit_lap | median_s | mean_s | p10_s | p90_s | p_best |
 |---|---|---|---|---|---|
-| 85 <- real | 2658.981 | 2775.373 | 2560.001 | 3143.119 | 0.011 |
-| 119 | 2647.459 | 2772.611 | 2559.034 | 3140.057 | 0.339 |
+| 85 <- real | 2656.646 | 2776.311 | 2560.924 | 3143.570 | 0.009 |
+| 119 | 2653.625 | 2774.192 | 2560.252 | 3141.046 | 0.240 |
 
 ## Cross-case analysis
 

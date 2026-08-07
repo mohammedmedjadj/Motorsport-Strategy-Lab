@@ -33,11 +33,22 @@ Z95 = 1.96
 
 
 @dataclass(frozen=True)
-class GaussianCoef:
-    """A coefficient the engine resamples as Normal(mean, sd)."""
+class CoefPosterior:
+    """A coefficient the engine resamples per draw.
+
+    ``df`` is the reference distribution's degrees of freedom: ``G - 1`` for a
+    cluster-robust estimate on ``G`` driver-races, or ``inf`` when the
+    estimate carries no cluster count. It is not decoration — the engine draws
+    from ``t(df)``, so an estimate resting on few clusters contributes heavier
+    tails to the race-time distribution than one resting on many. With the
+    ~55 driver-races per F1 circuit here the t is very close to a normal; the
+    machinery matters for the small endurance classes and for any future
+    circuit with thin data.
+    """
 
     mean: float
     sd: float
+    df: float = float("inf")
 
 
 @dataclass(frozen=True)
@@ -59,8 +70,8 @@ class CircuitModel:
     circuit: str
     green_pace_s: float
     lap_noise_s: float
-    fuel_slope: GaussianCoef
-    degradation: dict[str, tuple[GaussianCoef, ...]]  # compound -> poly coefs
+    fuel_slope: CoefPosterior
+    degradation: dict[str, tuple[CoefPosterior, ...]]  # compound -> poly coefs
     sc_hazard: HazardPosterior
     vsc_hazard: HazardPosterior
     sc_durations: tuple[int, ...]
@@ -69,8 +80,18 @@ class CircuitModel:
     pace_ratios: PaceRatios
 
 
-def _gaussian(mean: float, ci_low: float, ci_high: float) -> GaussianCoef:
-    return GaussianCoef(mean=float(mean), sd=float((ci_high - ci_low) / (2 * Z95)))
+def _posterior(mean: float, se: float, n_clusters: float) -> CoefPosterior:
+    """Build the engine's per-draw coefficient distribution.
+
+    Reads the standard error straight from the artifact rather than
+    reconstructing it from the confidence interval. That reconstruction used
+    to divide the interval width by ``2 * 1.96``, which silently stopped being
+    correct the moment the intervals went cluster-robust and started using a
+    ``t(G-1)`` critical value: the recovered "sd" would have been inflated by
+    ``t/1.96`` and the degrees of freedom would have been applied twice.
+    """
+    df = float(n_clusters) - 1.0 if pd.notna(n_clusters) else float("inf")
+    return CoefPosterior(mean=float(mean), sd=float(se), df=df)
 
 
 def _load_all_laps() -> dict[str, pd.DataFrame]:
@@ -119,13 +140,12 @@ def load_circuit_models() -> dict[str, CircuitModel]:
     models: dict[str, CircuitModel] = {}
     for circuit, laps in laps_by_circuit.items():
         rows = deg[deg["circuit"] == circuit]
-        degradation: dict[str, tuple[GaussianCoef, ...]] = {}
+        degradation: dict[str, tuple[CoefPosterior, ...]] = {}
         for _, row in rows.iterrows():
-            coefs = [_gaussian(row["deg_p1"], row["deg_p1_ci_low"], row["deg_p1_ci_high"])]
+            n_clusters = row["n_clusters"]
+            coefs = [_posterior(row["deg_p1"], row["deg_p1_se"], n_clusters)]
             if row["degree"] >= 2 and pd.notna(row.get("deg_p2")):
-                coefs.append(
-                    _gaussian(row["deg_p2"], row["deg_p2_ci_low"], row["deg_p2_ci_high"])
-                )
+                coefs.append(_posterior(row["deg_p2"], row["deg_p2_se"], n_clusters))
             degradation[str(row["compound"])] = tuple(coefs)
 
         first = rows.iloc[0]
@@ -135,10 +155,10 @@ def load_circuit_models() -> dict[str, CircuitModel]:
             circuit=circuit,
             green_pace_s=green_median_pace(laps),
             lap_noise_s=float(first["cv_rmse_s"]),
-            fuel_slope=_gaussian(
+            fuel_slope=_posterior(
                 first["fuel_slope_s_per_lap"],
-                first["fuel_slope_ci_low"],
-                first["fuel_slope_ci_high"],
+                first["fuel_slope_se"],
+                first["n_clusters"],
             ),
             degradation=degradation,
             sc_hazard=HazardPosterior(

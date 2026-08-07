@@ -35,8 +35,13 @@ Two other departures from the F1 model (``src/degradation/model.py``):
 Traffic is the dominant noise source in multi-class racing (a GTP car stuck
 behind GT traffic loses seconds through no fault of its tyres), so slow laps are
 trimmed per car before fitting — the endurance analogue of the F1 pace-lap
-filter. Estimation is plain OLS via least squares with classical standard
-errors, matching the F1 model's conventions.
+filter. Estimation is plain OLS via least squares with **cluster-robust
+standard errors clustered by car**, matching the F1 model's conventions (see
+``src/degradation/robust.py`` for why, and note that clustering by car rather
+than by the car-driver fixed effect is deliberate: a driver change does not
+reset the machine). Endurance classes are small — some races field only 5-10
+cars, so 5-10 clusters — which is why intervals here use the ``t(G-1)``
+reference distribution rather than the normal.
 """
 
 from __future__ import annotations
@@ -47,8 +52,12 @@ import numpy as np
 import pandas as pd
 
 from src.data.endurance_loader import green_lap_times
-
-Z95 = 1.96
+# One Coefficient type for all three series: an interval means the same thing
+# in WEC as in F1, and two definitions of it would be two places to fix when
+# the inference changes -- as it just did, when standard errors went
+# cluster-robust.
+from src.degradation.model import Coefficient
+from src.degradation.robust import cluster_robust_se
 
 #: Laps slower than this quantile of a car's own green laps are treated as
 #: traffic-compromised and dropped before fitting.
@@ -129,22 +138,6 @@ def frame_diagnostics(laps: pd.DataFrame) -> FrameDiagnostics:
     )
 
 
-@dataclass(frozen=True)
-class Coefficient:
-    """One estimated coefficient with its 95% confidence interval."""
-
-    value: float
-    se: float
-
-    @property
-    def ci_low(self) -> float:
-        return self.value - Z95 * self.se
-
-    @property
-    def ci_high(self) -> float:
-        return self.value + Z95 * self.se
-
-
 #: Above this post-fixed-effects correlation, fuel and tyre age are treated as
 #: not separately identified and only the net slope is reported.
 SEPARABILITY_LIMIT = 0.90
@@ -182,6 +175,27 @@ class EnduranceFit:
         return bool(np.isfinite(r) and abs(r) < SEPARABILITY_LIMIT)
 
 
+def _traffic_residual(green: pd.DataFrame) -> pd.Series:
+    """Lap time net of a first-pass car-driver intercept and tyre-age effect.
+
+    Deliberately a single pooled slope rather than one per car: the point is
+    to remove the *shared* degradation shape so the trim stops selecting on
+    tyre age, not to fit each car so well that genuine traffic looks normal.
+    """
+    fe = pd.get_dummies(green["unit"]).to_numpy(dtype=float)
+    age = green["tyre_age"].to_numpy(dtype=float)
+    design = np.hstack([fe, age[:, None]])
+    y = green["lap_time_s"].to_numpy(dtype=float)
+    beta, *_ = np.linalg.lstsq(design, y, rcond=None)
+    return pd.Series(y - design @ beta, index=green.index)
+
+
+def _residual_cutoff(green: pd.DataFrame) -> pd.Series:
+    """Each car's own ``TRAFFIC_QUANTILE`` of the first-pass residual."""
+    resid = _traffic_residual(green)
+    return resid.groupby(green["car"]).transform(lambda s: s.quantile(TRAFFIC_QUANTILE))
+
+
 def build_endurance_frame(laps: pd.DataFrame) -> pd.DataFrame:
     """Green, non-pit, traffic-trimmed laps with the fuel and tyre regressors.
 
@@ -208,11 +222,28 @@ def build_endurance_frame(laps: pd.DataFrame) -> pd.DataFrame:
     lap_median = green.groupby("lap")["lap_time_s"].transform("median")
     green = green[lap_median <= FIELD_WIDE_TRIM_RATIO * overall_median]
 
-    # Trim remaining traffic-compromised laps per car.
-    cutoff = green.groupby("car")["lap_time_s"].transform(
-        lambda s: s.quantile(TRAFFIC_QUANTILE)
-    )
-    green = green[green["lap_time_s"] <= cutoff]
+    # Trim remaining traffic-compromised laps per car -- on the *residual*,
+    # not on the lap time itself.
+    #
+    # Trimming the slowest 10% of a car's raw lap times selects on the very
+    # quantity being estimated: within a stint the slowest laps are the
+    # oldest-tyre laps, so a quantile cut on lap time shaves the top off the
+    # degradation curve. Measured: on synthetic races with a known +0.080
+    # s/lap slope the raw-time trim recovers +0.071 to +0.076 (a 5-11%
+    # attenuation), and the laps it removes are 49% older than the population
+    # they are drawn from. On WEC Bahrain 2024 the removed laps are 26% older;
+    # the effect is real but race-dependent (at IMSA Sebring 2024 traffic
+    # dominates so completely that the removed laps are 6% *younger*).
+    #
+    # Traffic is a residual phenomenon -- a car is stuck behind slower classes
+    # relative to its own expected pace on that tyre age -- so the residual is
+    # what to trim. First pass absorbs the car-driver intercepts and the age
+    # effect; whatever is left and still slow is traffic.
+    #
+    # F1 deliberately does not do this: its trim (src/degradation/dataset.py)
+    # is an outlier filter at 1.10x the driver-race median that removes 0-0.9%
+    # of laps, not a quantile that removes 10% by construction.
+    green = green[_traffic_residual(green) <= _residual_cutoff(green)]
 
     # Drop cars with too little running to support an intercept.
     counts = green.groupby("car")["lap_time_s"].transform("size")
@@ -232,18 +263,24 @@ def fit_endurance_degradation(frame: pd.DataFrame) -> EnduranceFit:
     age = frame["tyre_age"].to_numpy(dtype=float)
     y = frame["lap_time_s"].to_numpy(dtype=float)
 
-    def ols(design: np.ndarray) -> tuple[np.ndarray, np.ndarray, float]:
+    # Cluster by car, not by the car-driver unit the fixed effect uses: a
+    # driver change does not reset the machine, the setup or the strategy, so
+    # residual correlation carries straight across it. Coarser clusters give
+    # larger standard errors, which is the right side to err on.
+    clusters = frame["car"].to_numpy()
+
+    def ols(design: np.ndarray) -> tuple[np.ndarray, np.ndarray, float, int]:
         beta, _, rank, _ = np.linalg.lstsq(design, y, rcond=None)
         resid = y - design @ beta
         dof = max(len(y) - rank, 1)
         s2 = float(resid @ resid) / dof
-        se = np.sqrt(np.clip(np.diag(np.linalg.pinv(design.T @ design)) * s2, 0.0, None))
-        return beta, se, s2
+        se, n_clusters = cluster_robust_se(design, y, beta, clusters)
+        return beta, se, s2, n_clusters
 
     # Headline: the identified net within-stint slope.
-    beta_net, se_net, sigma2 = ols(np.hstack([fe_mat, age[:, None]]))
+    beta_net, se_net, sigma2, n_clusters = ols(np.hstack([fe_mat, age[:, None]]))
     # Diagnostic only: the fuel/degradation split (see module docstring).
-    beta_dec, se_dec, _ = ols(np.hstack([fe_mat, fuel[:, None], age[:, None]]))
+    beta_dec, se_dec, _, _ = ols(np.hstack([fe_mat, fuel[:, None], age[:, None]]))
 
     # How separable are the two effects here? Correlate them after removing the
     # fixed effects, which is the variation the slopes are actually fitted on.
@@ -260,12 +297,12 @@ def fit_endurance_degradation(frame: pd.DataFrame) -> EnduranceFit:
         series=str(frame["series"].iloc[0]),
         event=str(frame["event"].iloc[0]),
         car_class=str(frame["car_class"].iloc[0]),
-        net_slope=Coefficient(float(beta_net[-1]), float(se_net[-1])),
+        net_slope=Coefficient(float(beta_net[-1]), float(se_net[-1]), n_clusters),
         n_laps=len(frame),
         n_cars=int(frame["car"].nunique()),
         n_units=int(fe_mat.shape[1]),
         rmse_s=float(np.sqrt(sigma2)),
         fuel_deg_correlation=corr,
-        fuel_slope=Coefficient(float(beta_dec[-2]), float(se_dec[-2])),
-        deg_slope=Coefficient(float(beta_dec[-1]), float(se_dec[-1])),
+        fuel_slope=Coefficient(float(beta_dec[-2]), float(se_dec[-2]), n_clusters),
+        deg_slope=Coefficient(float(beta_dec[-1]), float(se_dec[-1]), n_clusters),
     )

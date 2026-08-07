@@ -8,7 +8,7 @@
   <a href="https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab/actions/workflows/tests.yml"><img src="https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab/actions/workflows/tests.yml/badge.svg" alt="Test suite status"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-CC%20BY--NC--SA%204.0-E10600" alt="License: CC BY-NC-SA 4.0"></a>
   <img src="https://img.shields.io/badge/python-3.11%2B-00D9FF" alt="Python 3.11+">
-  <img src="https://img.shields.io/badge/tests-260%20passing-2ea44f" alt="260 tests passing">
+  <img src="https://img.shields.io/badge/tests-268%20passing-2ea44f" alt="268 tests passing">
   <img src="https://img.shields.io/badge/series-F1%20%C2%B7%20WEC%20%C2%B7%20IMSA-FFB800" alt="Series: F1, WEC, IMSA">
 </p>
 
@@ -128,15 +128,18 @@ pooled.
 
 ### Key results
 
-Verstappen's real lap-17 covering stop at Barcelona 2024 (Case A) cost +3.2s
-in median race time against the model's optimum, yet it held the highest
-probability of being the best strategy (0.43) and the best odds of finishing
-ahead of Norris (0.70) — a reminder that median race time alone mis-ranks
-real decisions, which is exactly why the simulator's output is a distribution
-rather than a single number.
+Verstappen's real lap-17 covering stop at Barcelona 2024 (Case A) gets three
+different verdicts from three summaries of the same simulation: it costs
++4.97s in median race time against the model's optimum, it holds the highest
+probability of being the best strategy of any candidate (0.416 against 0.025
+for the median-optimal lap), and on the odds of finishing ahead of Norris it
+is beaten by lap 22 (0.659 against 0.731). First, last-ish and middling for
+one decision — which is exactly why the simulator reports a distribution
+rather than a single number, and why no single-number verdict on that call,
+flattering or not, should be believed on its own.
 
 At Singapore 2023 (Case C), the model calls Sainz's widely-praised safety-car
-stop about 6.5 seconds "too early." That's not a bug so much as a known
+stop about 5.9 seconds "too early." That's not a bug so much as a known
 blind spot made concrete: the simulator doesn't model the field bunching up
 behind a safety car, and the audit turns that gap into a measured bias rather
 than leaving it as a caveat.
@@ -676,9 +679,33 @@ problem they solve is specific to endurance racing and has no F1 analogue:
 
 ## Key findings across all three series
 
-Having gone through F1, WEC and IMSA individually above, seven results stood
+Having gone through F1, WEC and IMSA individually above, nine results stood
 out enough to pull back up here — each one measured, sourced, and (where it
 matters) later corrected rather than quietly kept:
+
+> **The published confidence intervals were about twice too narrow —**
+> **median 2.23x wider once corrected** (range 1.48-2.93x), at every circuit
+> and for every compound. Lap times inside one car's race are not
+> independent observations, so the classical OLS standard error counted the
+> same information repeatedly. Switching to cluster-robust standard errors
+> changed no point estimate — only what was claimed about their precision.
+> Downstream the effect splits: across 48 decision points the P10-P90
+> race-time band widens by a median of just 3% (safety-car risk, not
+> coefficient uncertainty, dominates that spread) but the **recommended pit
+> lap changes in 16 of 48 cases**. The time output was never badly wrong;
+> the decision output was.
+> ([`reports/f1/degradation_phase2.md`](reports/f1/degradation_phase2.md))
+
+> **A filter that was measuring away the thing it measured —**
+> **up to 25% of the endurance degradation slope.** The traffic trim cut the
+> slowest 10% of each car's laps, and within a stint the slowest laps are
+> the oldest-tyre laps. On synthetic races with a known +0.080 s/lap slope
+> it recovered +0.060 at realistic traffic noise; trimming the first-pass
+> *residual* instead recovers +0.0802. Independent sign that the fix moves
+> estimates toward physical sense rather than merely upward: IMSA races with
+> a negative slope — tyres apparently getting faster with age — fall from 11
+> to 5. It also flipped a published finding, at exactly one circuit.
+> ([WEC](reports/wec/methodology.md) · [IMSA](reports/imsa/methodology.md))
 
 > **Monaco's "guaranteed" safety car, measured rather than assumed —**
 > **P = 0.44** [0.14, 0.77]. Only 3 of 7 editions since 2018 actually saw a
@@ -789,7 +816,7 @@ Motorsport-Strategy-Lab/
                         #   run_fuel_limited_sensitivity.py,
                         #   run_sc_contamination_check.py (adversarial audit
                         #   pass); demo_extensions.py; generate_banner.py
-  tests/                # pytest, all three series, 260 tests (incl. the demo,
+  tests/                # pytest, all three series, 268 tests (incl. the demo,
                         #   driven headlessly by tests/test_demo_app.py)
   reports/
     f1/                 # phase 0-5 reports + extensions (breadth layer,

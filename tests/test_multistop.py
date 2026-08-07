@@ -100,7 +100,11 @@ def test_rejects_nonsense_race() -> None:
 def _toy_model() -> EnduranceRaceModel:
     return EnduranceRaceModel(
         series="wec", event="Test", car_class="HYPERCAR",
-        green_pace_s=130.0, lap_noise_s=0.8, net_slope_s=0.04, net_slope_se=0.01,
+        green_pace_s=130.0, lap_noise_s=0.8,
+        # df=inf keeps this toy model's slope Gaussian: the t degrees of
+        # freedom are a property of a real fit's cluster count, and inventing
+        # one here would make the fixture assert something it does not test.
+        net_slope_s=0.04, net_slope_se=0.01, net_slope_df=float("inf"),
         pit_loss_s=60.0, pit_loss_iqr_s=5.0, n_pit_events=50,
         fcy_pace_ratio=1.8, fcy_ratio_measured=True, fcy_alpha=1.0, fcy_exposure=2000.0, fcy_durations=(4, 6),
         sc_pace_ratio=2.1, sc_ratio_measured=True, sc_alpha=1.0, sc_exposure=2000.0,
@@ -141,17 +145,42 @@ def test_traffic_adds_variance_without_shifting_the_median() -> None:
 
 @pytest.mark.skipif(not (ENDURANCE_DERIVED_DIR / "multistop_plans.csv").exists(),
                     reason="multistop artifact not generated")
-def test_every_measured_race_is_fuel_limited_on_stop_count() -> None:
-    """The headline finding, pinned: at no in-scope circuit does the optimum
-    take more stops than the fuel minimum — measured tyre degradation is never
-    steep enough to out-weigh a pit stop. The break-even slope (how much steeper
-    it would need to be) is a positive multiple of the measured slope."""
+def test_almost_every_measured_race_is_fuel_limited_on_stop_count() -> None:
+    """The headline finding, pinned — and it has one exception.
+
+    At all but one in-scope circuit the optimum takes exactly the fuel-minimum
+    number of stops: measured tyre degradation is not steep enough to out-weigh
+    a pit stop, and the break-even slope sits a median 7x above the measured
+    one. The exception is IMSA Laguna Seca, whose 10.4 s pit loss is by far the
+    cheapest measured anywhere (the next is 28.5 s at Daytona); there a third
+    stop beats the fuel minimum of two.
+
+    This test used to assert *no* exceptions, and that was true of the slopes
+    as they were then estimated — the per-car traffic trim was selecting on
+    lap time and flattening every slope by up to a quarter (see
+    ``tests/test_endurance_degradation.py``). Laguna Seca crossed over when
+    the bias was removed, which is the honest reading: the old claim was an
+    artefact at exactly one circuit, and a marginal one even now (break-even
+    0.024 against a measured 0.0241 s/lap).
+    """
     art = pd.read_csv(ENDURANCE_DERIVED_DIR / "multistop_plans.csv")
-    assert (art["optimal_stops"] == art["min_stops"]).all()
-    # Where the measured slope is positive, break-even is well above it.
-    pos = art[art["net_slope_s"] > 0]
-    assert (pos["breakeven_slope_s"] > pos["net_slope_s"]).all()
-    assert (pos["slope_headroom_x"] >= 1.0).all()
+    extra = art[art["optimal_stops"] != art["min_stops"]]
+    assert set(extra["circuit"]) <= {"laguna_seca"}, (
+        f"a new circuit became tyre-limited: {sorted(set(extra['circuit']))}"
+    )
+    assert (art["optimal_stops"] >= art["min_stops"]).all()
+    # Everywhere the optimum still equals the fuel minimum, break-even sits
+    # above the measured slope — that inequality is what "fuel-limited" means.
+    # At Laguna Seca it is the other way round (break-even 0.024 vs a measured
+    # 0.0241), which is not a violation but the definition of the exception.
+    fuel_limited = art[
+        (art["net_slope_s"] > 0) & (art["optimal_stops"] == art["min_stops"])
+    ]
+    assert (fuel_limited["breakeven_slope_s"] > fuel_limited["net_slope_s"]).all()
+    assert (art[art["net_slope_s"] > 0]["slope_headroom_x"] >= 1.0).all()
+    # ... and comfortably so nearly everywhere, which is what makes the one
+    # exception worth naming rather than a sign the margin was always thin.
+    assert art[art["net_slope_s"] > 0]["slope_headroom_x"].median() > 2.0
 
 
 @pytest.mark.skipif(not (ENDURANCE_DERIVED_DIR / "multistop_plans.csv").exists(),

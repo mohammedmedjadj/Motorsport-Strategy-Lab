@@ -103,5 +103,14 @@ def test_bahrain_is_the_one_circuit_where_the_slope_genuinely_transfers() -> Non
     assert mean_r2(folds) > 0.15
     assert all(f.r2_within > 0.1 for f in folds)
     # And the slope itself stays in a tight band, not just the R2.
+    #
+    # Measured *relative* to the slope, not in absolute seconds. The absolute
+    # 0.01 s/lap band this used to assert was calibrated against slopes that
+    # the raw-lap-time traffic trim had flattened by up to a quarter; once
+    # that bias was removed every slope roughly doubled and an absolute band
+    # necessarily broke, without anything about Bahrain having changed.
+    # Bahrain now runs 0.0462 / 0.0517 / 0.0569, a spread of 21% of its own
+    # mean — still tight, and still the exception among scoped circuits.
     slopes = [f.own_slope for f in folds]
-    assert max(slopes) - min(slopes) < 0.01
+    spread = (max(slopes) - min(slopes)) / float(np.mean(slopes))
+    assert spread < 0.25, f"Bahrain slope spread widened to {spread:.0%}"

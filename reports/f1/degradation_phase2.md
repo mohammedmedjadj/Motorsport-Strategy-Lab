@@ -13,15 +13,15 @@ Frame: 3271 pace laps -> 3271 dry -> 3241 after traffic trim -> 3211 in stints >
 
 **Selected degree: 2** (CV RMSE 1.262s vs 1.308s for degree 1). Overall fit R² = 0.616 (inflated by fixed effects; see CV).
 
-Fuel-burn proxy: -0.0526 s/lap [-0.0562, -0.0489].
+Fuel-burn proxy: -0.0526 s/lap [-0.0675, -0.0376].
 
 Degradation coefficients (s per lap of tyre age, 95% CI):
 
 | Compound | t^1 | t^2 |
 |---|---|---|
-| HARD | +0.0474 [+0.0377, +0.0572] | -0.0005 [-0.0006, -0.0004] |
-| MEDIUM | +0.0684 [+0.0563, +0.0804] | -0.0009 [-0.0011, -0.0007] |
-| SOFT | +0.0521 [-0.0149, +0.1191] | +0.0008 [-0.0018, +0.0034] |
+| HARD | +0.0474 [+0.0201, +0.0747] | -0.0005 [-0.0008, -0.0002] |
+| MEDIUM | +0.0684 [+0.0344, +0.1023] | -0.0009 [-0.0014, -0.0004] |
+| SOFT | +0.0521 [-0.1444, +0.2486] | +0.0008 [-0.0071, +0.0087] |
 
 CV folds (degree 2):
 
@@ -39,15 +39,15 @@ Frame: 3032 pace laps -> 3032 dry -> 3031 after traffic trim -> 3027 in stints >
 
 **Selected degree: 1** (CV RMSE 0.834s vs 0.859s for degree 2). Overall fit R² = 0.720 (inflated by fixed effects; see CV).
 
-Fuel-burn proxy: -0.0498 s/lap [-0.0522, -0.0474].
+Fuel-burn proxy: -0.0498 s/lap [-0.0546, -0.0451].
 
 Degradation coefficients (s per lap of tyre age, 95% CI):
 
 | Compound | t^1 |
 |---|---|
-| HARD | +0.0568 [+0.0523, +0.0613] |
-| MEDIUM | +0.0393 [+0.0349, +0.0437] |
-| SOFT | +0.0195 [+0.0101, +0.0289] |
+| HARD | +0.0568 [+0.0471, +0.0665] |
+| MEDIUM | +0.0393 [+0.0276, +0.0510] |
+| SOFT | +0.0195 [+0.0056, +0.0334] |
 
 CV folds (degree 1):
 
@@ -65,15 +65,15 @@ Frame: 3370 pace laps -> 3370 dry -> 3370 after traffic trim -> 3352 in stints >
 
 **Selected degree: 2** (CV RMSE 0.565s vs 0.568s for degree 1). Overall fit R² = 0.792 (inflated by fixed effects; see CV).
 
-Fuel-burn proxy: -0.0570 s/lap [-0.0583, -0.0556].
+Fuel-burn proxy: -0.0570 s/lap [-0.0592, -0.0548].
 
 Degradation coefficients (s per lap of tyre age, 95% CI):
 
 | Compound | t^1 | t^2 |
 |---|---|---|
-| HARD | +0.1111 [+0.0999, +0.1223] | -0.0014 [-0.0018, -0.0011] |
-| MEDIUM | +0.1119 [+0.0985, +0.1252] | -0.0016 [-0.0021, -0.0010] |
-| SOFT | +0.0875 [+0.0720, +0.1030] | -0.0002 [-0.0009, +0.0005] |
+| HARD | +0.1111 [+0.0903, +0.1319] | -0.0014 [-0.0022, -0.0006] |
+| MEDIUM | +0.1119 [+0.0887, +0.1350] | -0.0016 [-0.0023, -0.0008] |
+| SOFT | +0.0875 [+0.0569, +0.1181] | -0.0002 [-0.0016, +0.0012] |
 
 CV folds (degree 2):
 
@@ -91,15 +91,15 @@ Frame: 2418 pace laps -> 2418 dry -> 2412 after traffic trim -> 2389 in stints >
 
 **Selected degree: 2** (CV RMSE 0.635s vs 0.666s for degree 1). Overall fit R² = 0.953 (inflated by fixed effects; see CV).
 
-Fuel-burn proxy: -0.0811 s/lap [-0.0833, -0.0789].
+Fuel-burn proxy: -0.0811 s/lap [-0.0867, -0.0756].
 
 Degradation coefficients (s per lap of tyre age, 95% CI):
 
 | Compound | t^1 | t^2 |
 |---|---|---|
-| HARD | +0.1310 [+0.1174, +0.1446] | -0.0020 [-0.0025, -0.0016] |
-| MEDIUM | +0.1186 [+0.1024, +0.1348] | -0.0016 [-0.0023, -0.0010] |
-| SOFT | +0.0773 [+0.0384, +0.1163] | +0.0017 [-0.0009, +0.0042] |
+| HARD | +0.1310 [+0.0941, +0.1679] | -0.0020 [-0.0030, -0.0011] |
+| MEDIUM | +0.1186 [+0.0831, +0.1541] | -0.0016 [-0.0028, -0.0005] |
+| SOFT | +0.0773 [-0.0111, +0.1658] | +0.0017 [-0.0044, +0.0077] |
 
 CV folds (degree 2):
 
@@ -211,6 +211,52 @@ Unlike the static fit, the filter can also track a mid-stint change in the
 degradation rate (the "cliff") rather than assuming one constant slope — see
 `tests/test_kalman.py`. It complements, and does not replace, the batch model.
 
+## Standard errors: why the intervals here are cluster-robust
+
+Lap times inside one car's race are not independent observations. A car in
+traffic, in a bad fuel phase, on a hot track, or with a driver having an
+off stint produces a run of correlated residuals; and a car whose tyres
+genuinely degrade faster than the field's average degrades faster on every
+lap of the stint. The classical OLS formula assumes none of that and counts
+the same information many times over, so it returns a standard error that
+is too small. These fits therefore use cluster-robust standard errors
+clustered by driver-race, with a t(G-1) reference distribution rather than
+the normal.
+
+The correction changes no point estimate — only what is claimed about their
+precision. Measured on this run, per circuit and compound:
+
+| circuit | compound | slope (s/lap) | 95% CI | SE | driver-races |
+|---|---|---|---|---|---|
+| monaco | HARD | +0.04743 | [+0.02011, +0.07474] | 0.01362 | 55 |
+| monaco | MEDIUM | +0.06836 | [+0.03439, +0.10233] | 0.01694 | 55 |
+| monaco | SOFT | +0.05210 | [-0.14439, +0.24859] | 0.09800 | 55 |
+| singapore | HARD | +0.05681 | [+0.04711, +0.06650] | 0.00484 | 58 |
+| singapore | MEDIUM | +0.03931 | [+0.02762, +0.05101] | 0.00584 | 58 |
+| singapore | SOFT | +0.01949 | [+0.00556, +0.03341] | 0.00695 | 58 |
+| barcelona | HARD | +0.11112 | [+0.09031, +0.13192] | 0.01039 | 59 |
+| barcelona | MEDIUM | +0.11188 | [+0.08871, +0.13505] | 0.01157 | 59 |
+| barcelona | SOFT | +0.08749 | [+0.05694, +0.11805] | 0.01527 | 59 |
+| suzuka | HARD | +0.13099 | [+0.09407, +0.16791] | 0.01842 | 56 |
+| suzuka | MEDIUM | +0.11858 | [+0.08305, +0.15410] | 0.01773 | 56 |
+| suzuka | SOFT | +0.07735 | [-0.01109, +0.16579] | 0.04413 | 56 |
+
+Against the classical formula these intervals are a median 2.23x wider
+(range 1.48x to 2.93x), in the same direction at every circuit and for
+every compound — which is what a real violation of the independence
+assumption looks like, as opposed to noise. The estimator is validated by
+coverage simulation in tests/test_robust_se.py: with independent errors it
+costs nothing, and with the between-unit slope variation these data
+actually show, the classical 95% interval covers 75% of the time while the
+cluster-robust one holds 95%.
+
+Downstream, the simulator draws each coefficient from t(G-1) scaled by
+these standard errors. Across 48 decision points the P10-P90 race-time band
+widens by a median of only 3% — the race-time distribution is dominated by
+safety-car risk, not by coefficient uncertainty — but the recommended pit
+lap changes in 16 of those 48 cases. The time output was never badly wrong;
+the decision output was.
+
 ## Limitations (stated, not hidden)
 
 - **Fuel and tyre age are separated only through the fixed-effects
@@ -218,8 +264,11 @@ degradation rate (the "cliff") rather than assuming one constant slope — see
   slope is a proxy that also absorbs track evolution, which grips up
   over the race. The two cannot be fully disentangled from timing
   data alone.
-- **Classical (homoscedastic) standard errors**; lap-time noise is
-  heteroscedastic (traffic, weather drift), so CIs are approximate.
+- **Cluster-robust standard errors, clustered by driver-race** (see
+  the inference section above). They correct the understatement the
+  classical formula produced here, but they are consistent in the
+  number of *clusters*, and 55-59 driver-races per circuit is
+  comfortable rather than abundant.
 - **Track temperature is not a regressor** in the MVP; its effect is
   absorbed by race fixed effects (between races) and residual noise
   (within a race).

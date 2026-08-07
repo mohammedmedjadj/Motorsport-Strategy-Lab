@@ -12,6 +12,7 @@ Usage (from the repo root)::
 from __future__ import annotations
 
 import sys
+import textwrap
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -62,9 +63,45 @@ def verdict(rec, case: AuditCase) -> str:
     )
 
 
-def audit_case(case: AuditCase, models) -> list[str]:
+def case_facts(rec, case: AuditCase) -> dict[str, float]:
+    """The handful of numbers the cross-case narrative quotes.
+
+    Extracted from the simulation rather than typed into the prose. The
+    narrative below used to carry them as literals, which meant every one of
+    them silently went stale the moment the coefficients behind them changed
+    -- and they did, when the degradation standard errors went cluster-robust.
+    A generated report must not contain a hand-written number.
+    """
+    table = rec.table
+    real = table[table["pit_lap"] == case.real_pit_lap]
+    best = table[table["pit_lap"] == rec.best_lap].iloc[0]
+    out: dict[str, float] = {"best_lap": float(rec.best_lap)}
+    if real.empty:
+        return out
+    real = real.iloc[0]
+    out["cost_s"] = float(real["median_s"] - best["median_s"])
+    out["real_median_s"] = float(real["median_s"])
+    out["best_median_s"] = float(best["median_s"])
+    out["top_p_best"] = float(table["p_best"].max())
+    out["top_p_best_lap"] = float(table.loc[table["p_best"].idxmax(), "pit_lap"])
+    for col in table.columns:
+        if col.startswith("p_best") or col.startswith("p_ahead"):
+            out[f"real_{col}"] = float(real[col])
+            out[f"best_{col}"] = float(best[col])
+        if col.startswith("p_ahead"):
+            out[f"max_{col}"] = float(table[col].max())
+            out[f"max_{col}_lap"] = float(table.loc[table[col].idxmax(), "pit_lap"])
+            out[f"min_{col}"] = float(table[col].min())
+    if case.scenario.include_no_stop and (table["pit_lap"] == 0).any():
+        row = table[table["pit_lap"] == 0].iloc[0]
+        out["nostop_median_s"] = float(row["median_s"])
+    return out
+
+
+def audit_case(case: AuditCase, models, facts: dict[str, dict[str, float]]) -> list[str]:
     model = models[case.scenario.circuit]
     rec = summarise(case.scenario, simulate(case.scenario, model, N_DRAWS, SEED))
+    facts[case.case_id] = case_facts(rec, case)
     s = case.scenario
     ongoing = f" — {s.ongoing[0]} currently deployed" if s.ongoing else ""
     lines = [
@@ -112,82 +149,99 @@ def main() -> int:
         "disagreement is the finding.",
         "",
     ]
+    facts: dict[str, dict[str, float]] = {}
     for case in build_cases():
-        lines += audit_case(case, models)
+        lines += audit_case(case, models, facts)
 
-    lines += ANALYSIS
+    lines += analysis(facts)
     (F1_REPORTS_DIR / "audit_cases.md").write_text("\n".join(lines), encoding="utf-8")
     print("\nWrote reports/audit_cases.md")
     return 0
 
 
-#: Written after reviewing the seed-fixed outputs above; every number cited
-#: is reproducible from this script (seed 20260712, 5000 draws).
-ANALYSIS = [
-    "## Cross-case analysis (the audit's findings)",
-    "",
-    "**1. Median race time alone would mis-rank real decisions; the",
-    "distribution outputs are what make the audit fair (Case A).**",
-    "Verstappen's real lap-17 cover costs +3.2s in median race time vs the",
-    "lap-26 optimum — yet it holds the single highest P(best) (0.43 vs 0.03)",
-    "and the best P(ahead of Norris) (0.70 vs 0.64). Translation: pitting",
-    "early loses a little time in the median scenario but wins outright in",
-    "the scenarios that matter (a later SC or a faster-than-expected Norris",
-    "undercut). Red Bull paid ~3s of expected time to buy +6 points of win",
-    "probability against the live threat — the model's own multi-metric",
-    "output vindicates the call that its single-metric summary would flag",
-    "as 'too early'.",
-    "",
-    "**2. Folklore correction: Norris's extended stint did not lose him",
-    "Barcelona 2024 (Case B).** P(ahead of Verstappen) is flat at 0.30-0.32",
-    "across every candidate stop lap, real choice included. No pit-lap",
-    "choice available to Norris flips that race; his +1.45s vs optimum is",
-    "noise-level. The model's verdict: the race was decided by pace and",
-    "track position, not by the stop timing the post-race narrative",
-    "focused on.",
-    "",
-    "**3. The bunching blind spot, quantified (Case C).** The model calls",
-    "Sainz's universally-praised lap-20 SC stop 6.5s worse than staying out",
-    "to lap 37 — and here the MODEL is wrong, for a reason documented since",
-    "Phase 4: it does not model the field bunching behind the safety car.",
-    "In reality the SC had already erased Sainz's 6.4s lead, so staying out",
-    "would have gifted every rival a discounted stop while his own cushion",
-    "was gone; the model still credits him that cushion, inflating the",
-    "stay-out branch by roughly the erased lead plus queue effects. This",
-    "disagreement is the audit's most useful output: it converts a known",
-    "qualitative limitation into a measured ~6-7s bias for SC-window",
-    "decisions at the front of a bunched field.",
-    "",
-    "**4. The model endorses the boldest real gamble of the set (Case D).**",
-    "Russell's lap-44 VSC stop is within 1.1s of the model optimum and",
-    "strictly better than staying out (median 1913.8 vs 1915.5; P(ahead",
-    "Sainz) 0.47 vs 0.42; P(ahead Norris) 0.57 vs 0.54). Mercedes bought a",
-    "near coin-flip for the win at roughly zero expected-time cost. History",
-    "records the gamble failing on the last lap — the audit records that",
-    "it was the right bet. Outcome and decision quality are different",
-    "things; this case is why.",
-    "",
-    "**5. Monaco agrees for subtler reasons than expected (Case E).** The",
-    "blind-spot case was chosen expecting disagreement, but even the pure",
-    "time model keeps Leclerc out (no-stop P(best) = 0.69): Monaco's",
-    "flattening degradation curve never repays a 19.1s pit loss over the",
-    "remaining 38 laps. The genuine blind spots remain — the model does not",
-    "know the lap-1 red flag made the no-stop strategy legal, and it",
-    "assigns no value to track position — but at Monaco the physics alone",
-    "already point the same way.",
-    "",
-    "## Scope reminders for reading these verdicts",
-    "",
-    "- 'OUTSIDE the recommended window' is a statement about expected race",
-    "  time under the model's scope, not a judgement that strategists erred;",
-    "  Cases A and C show two different resolutions of that tension (the",
-    "  distributions vindicate A; a documented model limitation explains C).",
-    "- Rival behaviour is frozen to history; counterfactual rival reactions",
-    "  (e.g. Norris covering Verstappen's undercut) are not simulated.",
-    "- Phase 2 showed degradation slopes move between seasons; verdict",
-    "  margins under ~2s should be read as ties.",
-    "",
-]
+def analysis(f: dict[str, dict[str, float]]) -> list[str]:
+    """The cross-case findings, with every number computed from the run above.
+
+    This block used to be a list of literal strings written after reading one
+    set of outputs. That made it a hand-written section inside a generated
+    report: correct on the day, and silently wrong from the first time the
+    inputs moved. They did move — when the degradation standard errors went
+    cluster-robust — and it changed two of the findings below, not just their
+    decimals.
+
+    Paragraphs are written as single strings and wrapped on the way out, so
+    the prose stays readable no matter how wide a formatted number turns out
+    to be.
+    """
+    a, b, c, d, e = (f[k] for k in "ABCDE")
+    paragraphs = [
+        "**1. Three metrics, three different answers — which is the whole "
+        "argument for reporting a distribution (Case A).** "
+        f"Verstappen's real lap-17 cover costs +{a['cost_s']:.2f}s in median "
+        f"race time against the lap-{int(a['best_lap'])} optimum. On P(best) it "
+        f"is not merely competitive but the outright winner: {a['real_p_best']:.3f} "
+        f"against {a['best_p_best']:.3f} for the median-optimal lap, and the "
+        "highest of any candidate. On P(ahead of Norris) it is neither: lap 17 "
+        f"gives {a['real_p_ahead_NOR']:.3f} where lap "
+        f"{int(a['max_p_ahead_NOR_lap'])} would have given "
+        f"{a['max_p_ahead_NOR']:.3f}.",
+
+        "So the three summaries rank the same decision first, middling and "
+        "not-quite-best. Pitting early loses a little expected time, wins "
+        "outright in the scenarios that decide races (a later safety car, a "
+        "faster-than-expected Norris undercut), and is not the sharpest "
+        "available bet on the head-to-head. Any single-number verdict on this "
+        "call — including the flattering one — is an artefact of which number "
+        "was chosen.",
+
+        "**2. Folklore correction: Norris's extended stint did not lose him "
+        "Barcelona 2024 (Case B).** P(ahead of Verstappen) never reaches 0.5 "
+        f"at any candidate stop lap: it runs {b['min_p_ahead_VER']:.3f} to "
+        f"{b['max_p_ahead_VER']:.3f}, his real lap-23 choice sitting at "
+        f"{b['real_p_ahead_VER']:.3f} against a best-available "
+        f"{b['max_p_ahead_VER']:.3f} at lap {int(b['max_p_ahead_VER_lap'])}. No "
+        "pit lap available to him makes him the favourite, and his "
+        f"+{b['cost_s']:.2f}s against the optimum is small beside that. The race "
+        "was decided by pace and track position, not by the stop timing the "
+        "post-race narrative focused on.",
+
+        "**3. The bunching blind spot, quantified (Case C).** The model calls "
+        f"Sainz's universally-praised lap-20 safety-car stop {c['cost_s']:.2f}s "
+        f"worse than stopping at lap {int(c['best_lap'])} — and here the MODEL "
+        "is wrong, for a reason documented since Phase 4: it does not model the "
+        "field bunching behind the safety car. In reality the SC had already "
+        "erased Sainz's 6.4s lead, so staying out would have gifted every rival "
+        "a discounted stop while his own cushion was gone; the model still "
+        "credits him that cushion. This disagreement is the audit's most useful "
+        "output: it turns a known qualitative limitation into a measured "
+        f"~{c['cost_s']:.0f}s bias for SC-window decisions at the front of a "
+        "bunched field.",
+
+        "**4. The model endorses the boldest real gamble of the set (Case D).** "
+        f"Russell's lap-44 VSC stop is within {d['cost_s']:.2f}s of the model "
+        f"optimum and beats staying out on median time ({d['real_median_s']:.1f} "
+        f"against {d['nostop_median_s']:.1f}). It also buys the head-to-heads "
+        f"the stop was for: P(ahead of Sainz) {d['real_p_ahead_SAI']:.3f} and "
+        f"P(ahead of Norris) {d['real_p_ahead_NOR']:.3f}, both above what the "
+        f"median-optimal lap returns ({d['best_p_ahead_SAI']:.3f} and "
+        f"{d['best_p_ahead_NOR']:.3f}). Mercedes bought a near coin-flip for the "
+        "win at roughly zero expected-time cost. History records the crash; the "
+        "decision was sound.",
+
+        "**5. The declared blind spot, stated as one (Case E).** At Monaco 2024 "
+        f"the model puts the real no-stop within {e['cost_s']:.2f}s of its own "
+        "optimum and gives it the highest P(best) of any candidate "
+        f"({e['real_p_best']:.3f}). That agreement is not a success. The model "
+        "has no track-position term, and the reason nobody stopped was that "
+        "overtaking at Monaco is close to impossible — not that the lap times "
+        "happened to work out. A time-only model reaching the right answer for "
+        "the wrong reason is exactly the case that has to be read as a "
+        "limitation rather than a validation.",
+    ]
+    lines = ["## Cross-case analysis (the audit's findings)", ""]
+    for para in paragraphs:
+        lines += [textwrap.fill(para, width=75), ""]
+    return lines
 
 
 if __name__ == "__main__":

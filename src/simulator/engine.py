@@ -35,8 +35,9 @@ from dataclasses import dataclass, field
 
 import numpy as np
 from scipy.stats import norm, qmc
+from scipy.stats import t as student_t
 
-from src.simulator.artifacts import CircuitModel, GaussianCoef
+from src.simulator.artifacts import CircuitModel, CoefPosterior
 
 GREEN, SC, VSC = 0, 1, 2
 
@@ -71,6 +72,17 @@ class Scenario:
     ongoing: tuple[str, int] | None = None
     #: Adds a "no further stop" pseudo-candidate (pit_lap 0 in outputs) —
     #: required to audit races where staying out was the real strategy.
+    #:
+    #: **Precondition, which this engine cannot check**: the car has already
+    #: used two different dry-weather compounds. F1's sporting regulations
+    #: require that in a dry race, and an engine that only minimises time will
+    #: happily rank "run to the flag" first for a car that has not — a
+    #: disqualification presented as a strategy. Both audit cases that set
+    #: this flag satisfy the precondition (Russell was on his second compound
+    #: at Singapore 2023; Leclerc had changed tyres under the Monaco 2024 red
+    #: flag). ``demo/app.py`` gates the flag on a checkbox for the same
+    #: reason. Setting it for a car still on its first compound is a modelling
+    #: error, not a conservative choice.
     include_no_stop: bool = False
 
     def candidate_pit_laps(self, min_final_stint: int = 3) -> tuple[int, ...]:
@@ -97,17 +109,34 @@ class SimulationResult:
         return np.bincount(best, minlength=len(self.candidates)) / self.our_time.shape[1]
 
 
-def _sample_coef(rng: np.random.Generator, coef: GaussianCoef) -> float:
-    return float(rng.normal(coef.mean, coef.sd)) if coef.sd > 0 else coef.mean
+def _coef_noise(rng: np.random.Generator, coef: CoefPosterior, size) -> np.ndarray:
+    """Standardised draws for ``coef``: ``t(df)`` when the estimate carries a
+    cluster count, standard normal when it does not.
+
+    The reference distribution for a cluster-robust estimate is ``t(G-1)``,
+    and using it here rather than only in the reported interval is what keeps
+    the simulator's spread consistent with the inference behind its inputs.
+    For the F1 fits (G is about 55) this is all but a normal; it earns its
+    keep on thin data, where the normal would understate the tails."""
+    if np.isfinite(coef.df):
+        return rng.standard_t(coef.df, size=size)
+    return rng.normal(0.0, 1.0, size=size)
 
 
-def _sample_coef_batch(rng: np.random.Generator, coef: GaussianCoef, n: int) -> np.ndarray:
+def _sample_coef(rng: np.random.Generator, coef: CoefPosterior) -> float:
+    if coef.sd <= 0:
+        return coef.mean
+    return float(coef.mean + coef.sd * _coef_noise(rng, coef, None))
+
+
+def _sample_coef_batch(rng: np.random.Generator, coef: CoefPosterior, n: int) -> np.ndarray:
     """``n`` independent draws of ``coef``, as a column vector for broadcasting."""
-    values = rng.normal(coef.mean, coef.sd, size=n) if coef.sd > 0 else np.full(n, coef.mean)
-    return values[:, None]
+    if coef.sd <= 0:
+        return np.full(n, coef.mean)[:, None]
+    return (coef.mean + coef.sd * _coef_noise(rng, coef, n))[:, None]
 
 
-def _coef_specs(model: CircuitModel) -> list[GaussianCoef]:
+def _coef_specs(model: CircuitModel) -> list[CoefPosterior]:
     """The smooth, globally-shared coefficients, in a fixed order: fuel slope
     then each compound's polynomial coefficients (compounds sorted for
     determinism). This is the low-dimensional subspace QMC integrates over."""
@@ -149,9 +178,18 @@ def _sample_smooth_qmc(
         warnings.simplefilter("ignore")
         u = engine.random(n_draws)  # (n_draws, d) in (0, 1)
 
-    def coef_col(spec: GaussianCoef, j: int) -> np.ndarray:
+    def coef_col(spec: CoefPosterior, j: int) -> np.ndarray:
+        """Inverse-CDF map of one Sobol' column onto this coefficient.
+
+        Uses the ``t(df)`` quantile when the estimate carries a cluster count,
+        matching the plain-MC sampler exactly — the two paths must integrate
+        the same distribution or the QMC option would quietly change the
+        answer rather than only its variance.
+        """
         if spec.sd <= 0:
             return np.full((n_draws, 1), spec.mean)
+        if np.isfinite(spec.df):
+            return (spec.mean + spec.sd * student_t.ppf(u[:, j], df=spec.df))[:, None]
         return norm.ppf(u[:, j], loc=spec.mean, scale=spec.sd)[:, None]
 
     fuel = coef_col(coef_specs[0], 0)

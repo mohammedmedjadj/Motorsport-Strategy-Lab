@@ -62,9 +62,14 @@ class EnduranceRaceModel:
     car_class: str
     green_pace_s: float
     lap_noise_s: float
-    #: Net within-stint slope (s per lap of tyre age) with its standard error.
+    #: Net within-stint slope (s per lap of tyre age) with its cluster-robust
+    #: standard error and the ``t`` degrees of freedom that go with it
+    #: (``n_cars - 1``). Endurance classes are small, so the tail weight is not
+    #: a formality here: a 5-car class carries df=4, whose 95% interval is 42%
+    #: wider than the normal's, and the simulator draws it that way.
     net_slope_s: float
     net_slope_se: float
+    net_slope_df: float
     pit_loss_s: float
     pit_loss_iqr_s: float
     n_pit_events: int
@@ -279,6 +284,16 @@ def _sample_status(
     return status
 
 
+def _slope_noise(rng: np.random.Generator, df: float, size: tuple[int, ...]) -> np.ndarray:
+    """Standardised draws for the degradation slope: ``t(df)`` when the fit
+    carries a cluster count, standard normal otherwise. Mirrors the F1
+    engine's ``_coef_noise`` so both series propagate their inference the
+    same way."""
+    if np.isfinite(df):
+        return rng.standard_t(df, size=size)
+    return rng.normal(0.0, 1.0, size=size)
+
+
 def simulate(
     scenario: EnduranceScenario,
     model: EnduranceRaceModel,
@@ -300,7 +315,9 @@ def simulate(
     status = _sample_status(model, n_laps, n_draws, rng)
     is_green = status == GREEN
     # Shared per-draw realisations: degradation slope and lap noise.
-    slope = rng.normal(model.net_slope_s, model.net_slope_se, size=(n_draws, 1))
+    slope = model.net_slope_s + model.net_slope_se * _slope_noise(
+        rng, model.net_slope_df, (n_draws, 1)
+    )
     noise = rng.normal(0.0, model.lap_noise_s, size=(n_draws, n_laps))
     ratio = np.where(
         status == FCY, model.fcy_pace_ratio,
@@ -356,6 +373,7 @@ def build_race_model(
     sc_alpha: float = 0.5,
     sc_exposure: float | None = None,
     sc_durations: tuple[int, ...] = (),
+    net_slope_df: float = float("inf"),
 ) -> EnduranceRaceModel:
     """Assemble a race model, measuring pit loss / pace ratios / fuel range.
 
@@ -389,6 +407,7 @@ def build_race_model(
         lap_noise_s=lap_noise_s,
         net_slope_s=net_slope_s,
         net_slope_se=net_slope_se,
+        net_slope_df=net_slope_df,
         pit_loss_s=pit_loss,
         pit_loss_iqr_s=pit_iqr,
         n_pit_events=n_events,

@@ -492,6 +492,59 @@ car failed, only whether it was classified. It is a complementary prior,
 reported separately rather than folded into the simulator, and IMSA has no
 equivalent in this project (the Kaggle results history covers WEC only).
 
+## 4.11 Two inference corrections, and what they moved
+
+Both corrections below were applied to WEC and IMSA with the same code and
+reported separately, because they landed differently in the two series.
+
+**The traffic trim was selecting on the quantity being measured.** Phase 2
+trimmed the slowest 10% of each car's green laps as traffic-compromised.
+Within a stint, though, the slowest laps are the oldest-tyre laps, so a
+quantile cut on raw lap time shaves the top off the degradation curve it is
+supposed to measure. On synthetic races with a known +0.080 s/lap slope
+(25 replications per noise level) that trim recovered +0.072, +0.065 and
++0.060 at lap-time noise of 0.3, 0.6 and 1.0 s — a 9% to 25% attenuation
+that grows with noise, because a noisier field pushes the 90th percentile
+deeper into the signal. Endurance traffic noise is large by construction:
+that is the reason the trim exists at all.
+
+Trimming the first-pass *residual* instead — lap time net of a car-driver
+intercept and a pooled age effect — recovers +0.0800, +0.0801, +0.0802.
+Traffic is a residual phenomenon (a Hypercar held up by GT traffic is slow
+relative to its own expected pace on that tyre age), so the residual is
+what to trim. The F1 model needs no equivalent change: its trim is an
+outlier filter at 1.10x the driver-race median that removes 0-0.9% of laps,
+not a quantile that removes 10% by construction.
+
+On WEC's 28 eligible races the correction raises the median net slope from
++0.0028 to +0.0065 s/lap, with 16 of 28 races moving up. The count of
+physically odd negative slopes falls only from 10 to 9 — WEC's slopes are
+genuinely small and often statistically indistinguishable from zero, and
+the correction does not manufacture degradation that is not there.
+
+**Standard errors are now cluster-robust, clustered by car.** Laps within
+one car's race are strongly correlated, and a car whose tyres degrade
+faster than the field's does so on every lap of every stint; classical OLS
+standard errors assume neither and come back too small. Clustering by car
+rather than by the car-driver fixed effect is deliberate — a driver change
+resets neither the machine nor the setup nor the strategy. WEC's median
+interval widens 1.83x as a result.
+
+Because a Hypercar class is small (a median of 17 cars per race here),
+intervals use the ``t(G-1)`` reference distribution rather than the normal,
+and the simulator draws the slope from that same t. Tail weight is not a
+formality at this cluster count. The estimator is validated by coverage
+simulation in ``tests/test_robust_se.py``.
+
+**What survived and what did not.** Bahrain remains the one WEC circuit
+whose slope genuinely transfers between seasons, but the claim is now
+stated in relative terms: its three seasons run +0.0462 / +0.0517 /
++0.0569 s/lap, a spread of 21% of their own mean. The absolute 0.01 s/lap
+band previously asserted was calibrated against slopes the old trim had
+flattened, and every slope roughly doubling was always going to break it.
+Every WEC race remains non-separable on the fuel/degradation split, and
+every WEC circuit remains fuel-limited on stop count.
+
 ## 5. Threats to validity
 
 **Internal validity** — could a reported effect be an artefact of the
@@ -577,7 +630,7 @@ under `data/derived/wec/` and `data/derived/endurance/`, so every test in
 this report's scope runs fully offline; `scripts/run_endurance_flags.py` and
 `scripts/run_endurance_models.py` re-pull and refit only if explicitly asked
 to refresh the source. All stochastic code is seeded. This report's layer is
-covered by a dedicated subset of the project's 260 pytest tests (data
+covered by a dedicated subset of the project's 268 pytest tests (data
 loading, the endurance degradation/neutralisation/simulator models, the
 multi-stop dynamic program, traffic and adversarial-rival estimators, and
 the decision-audit state reconstruction); the remaining tests cover F1 and

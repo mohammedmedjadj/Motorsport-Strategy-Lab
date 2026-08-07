@@ -44,23 +44,23 @@ COTA's own 2024 pit-loss median (74.0s, 88 clean stops) and 2025 median (21.0s, 
 | f1 | singapore | -0.056 |
 | f1 | barcelona | +0.008 |
 | f1 | suzuka | -0.393 |
-| imsa | Daytona | +0.009 |
-| imsa | Detroit | -0.004 |
-| imsa | Indianapolis | +0.003 |
-| imsa | Laguna Seca | +0.018 |
-| imsa | Long Beach | +0.029 |
-| imsa | Road America | +0.005 |
-| imsa | Road Atlanta | +0.018 |
-| imsa | Sebring | -0.001 |
-| imsa | Watkins Glen | +0.003 |
-| wec | Bahrain | +0.191 |
-| wec | COTA | -6.330 |
-| wec | Fuji | +0.020 |
-| wec | Imola | -0.011 |
-| wec | Interlagos | -0.042 |
-| wec | Le Mans | -0.004 |
-| wec | Sebring | -0.022 |
-| wec | Spa | +0.000 |
+| imsa | Daytona | +0.029 |
+| imsa | Detroit | -0.014 |
+| imsa | Indianapolis | +0.030 |
+| imsa | Laguna Seca | +0.057 |
+| imsa | Long Beach | +0.014 |
+| imsa | Road America | +0.002 |
+| imsa | Road Atlanta | +0.037 |
+| imsa | Sebring | -0.002 |
+| imsa | Watkins Glen | +0.011 |
+| wec | Bahrain | +0.207 |
+| wec | COTA | -4.318 |
+| wec | Fuji | +0.046 |
+| wec | Imola | -0.014 |
+| wec | Interlagos | -0.087 |
+| wec | Le Mans | -0.006 |
+| wec | Sebring | +0.016 |
+| wec | Spa | +0.006 |
 
 **COTA is the worst-transferring circuit for both quantities, independently measured.** -6.330 within-stint R2 for degradation is not just negative like most circuits, it is an order of magnitude more negative than anywhere else in either series -- and the shorter 2025 race format (above) plausibly explains this too: fewer laps per stint changes the fuel-burn/degradation separation the fixed-effects model relies on, not just the pit-loss magnitude. Two independent estimators flagging the same circuit-season pair is a stronger signal than either alone that 2025 COTA is a genuinely different race, not noise in one particular model.
 

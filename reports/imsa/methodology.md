@@ -376,6 +376,57 @@ seasons) — all three are correct for their own measurement basis and are
 named here explicitly rather than merged into one number, exactly the
 discipline §3.3 commits to up front.
 
+## 4.11 Two inference corrections, and one finding that flipped
+
+Both corrections below were applied to IMSA and WEC with the same code and
+reported separately, because they landed differently in the two series —
+and only IMSA saw a headline finding change.
+
+**The traffic trim was selecting on the quantity being measured.** Phase 2
+trimmed the slowest 10% of each car's green laps as traffic-compromised.
+Within a stint the slowest laps are the oldest-tyre laps, so a quantile cut
+on raw lap time shaves the top off the degradation curve it is supposed to
+measure. On synthetic races with a known +0.080 s/lap slope (25
+replications per noise level) that trim recovered +0.072, +0.065 and +0.060
+at lap-time noise of 0.3, 0.6 and 1.0 s — a 9% to 25% attenuation that
+grows with noise. Multi-class traffic noise is large by construction: that
+is the reason the trim exists at all. Trimming the first-pass *residual*
+instead recovers +0.0800, +0.0801, +0.0802.
+
+On IMSA's 33 eligible races the correction raises the median net slope from
++0.0057 to +0.0155 s/lap, with 28 of 33 races moving up. Independent
+evidence that this moves the estimates toward physical sense rather than
+merely upward: the count of negative slopes — tyres apparently getting
+*faster* with age — falls from 11 races to 5.
+
+**The finding that flipped: Laguna Seca is tyre-limited.** Phase 4 reported
+that at every scoped circuit the optimal stop count equals the fuel
+minimum, degradation never being steep enough to pay for an extra pit
+visit. With unbiased slopes that is true at 20 of 21 circuits but no longer
+at IMSA Laguna Seca, where the optimum takes three stops against a fuel
+minimum of two. The circuit is exactly the one to expect: its measured pit
+loss is **10.4 s**, by far the cheapest anywhere in either series (the next
+is 28.5 s at Daytona), so an extra stop is nearly free. The crossing is
+marginal and is reported as such — break-even slope 0.024 s/lap against a
+measured 0.0241 — and it would flip back on a slightly different estimate.
+Everywhere else the break-even slope still sits a median 7x above the
+measured one.
+
+**Standard errors are now cluster-robust, clustered by car**, for the same
+reason as in the degradation fit: laps within one car's race are strongly
+correlated and classical standard errors assume they are not. IMSA's median
+interval widens 1.63x. GTP fields are small — a median of 11 cars per race
+here — so intervals use the ``t(G-1)`` reference distribution rather than
+the normal, and the simulator draws the slope from that same t. The
+estimator is validated by coverage simulation in
+``tests/test_robust_se.py``.
+
+**A second, weaker change.** Indianapolis 2024 now clears the
+fuel/degradation separability threshold, at a correlation of 0.897 against
+a 0.90 cutoff. It is named here as a race sitting 0.003 the right side of
+an arbitrary line, not as a second finding; Sebring, at 0.826 and 0.820
+across two editions, remains the real exception.
+
 ## 5. Threats to validity
 
 **Internal validity** — could a reported effect be an artefact of the
@@ -449,7 +500,7 @@ under `data/derived/imsa/` and `data/derived/endurance/`, so every test in
 this report's scope runs fully offline; `scripts/run_endurance_flags.py` and
 `scripts/run_endurance_models.py` re-pull and refit only if explicitly asked
 to refresh the source. All stochastic code is seeded. This report's layer is
-covered by a dedicated subset of the project's 260 pytest tests (data
+covered by a dedicated subset of the project's 268 pytest tests (data
 loading, the endurance degradation/neutralisation/simulator models
 including the field-wide standing-start filter's regression test, the
 multi-stop dynamic program, traffic estimators, and the decision-audit state

@@ -36,6 +36,7 @@ import numpy as np
 import pandas as pd
 
 from src.degradation.endurance import Coefficient
+from src.degradation.robust import cluster_robust_se
 
 
 @dataclass(frozen=True)
@@ -64,13 +65,13 @@ def _fit_net_slope(frames: dict[str, pd.DataFrame]) -> Coefficient:
     age = pooled["tyre_age"].to_numpy(dtype=float)
     y = pooled["lap_time_s"].to_numpy(dtype=float)
     design = np.hstack([fe, age[:, None]])
-    beta, _, rank, _ = np.linalg.lstsq(design, y, rcond=None)
-    resid = y - design @ beta
-    dof = max(len(y) - rank, 1)
-    se = float(np.sqrt(np.clip(
-        np.linalg.pinv(design.T @ design)[-1, -1] * (resid @ resid) / dof, 0.0, None
-    )))
-    return Coefficient(float(beta[-1]), se)
+    beta, _, _, _ = np.linalg.lstsq(design, y, rcond=None)
+    # Cluster on the pooled race::car unit, the same convention the per-race
+    # fit uses. Pooling races widens the cluster count, which is the one place
+    # in this project where the cluster-robust estimator is on comfortable
+    # ground rather than working with a handful of cars.
+    se, n_clusters = cluster_robust_se(design, y, beta, pooled["unit"].to_numpy())
+    return Coefficient(float(beta[-1]), float(se[-1]), n_clusters)
 
 
 def leave_one_race_out_endurance(

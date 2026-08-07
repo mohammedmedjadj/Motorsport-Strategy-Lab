@@ -6,7 +6,7 @@ from __future__ import annotations
 import numpy as np
 import pytest
 
-from src.simulator.artifacts import CircuitModel, GaussianCoef, HazardPosterior
+from src.simulator.artifacts import CircuitModel, CoefPosterior, HazardPosterior
 from src.simulator.engine import GREEN, SC, RivalSpec, Scenario, _sample_status, simulate
 from src.simulator.pit_loss import PaceRatios, PitLossEstimate
 from src.simulator.recommend import summarise
@@ -23,10 +23,10 @@ def make_model(
         circuit="synth",
         green_pace_s=90.0,
         lap_noise_s=lap_noise,
-        fuel_slope=GaussianCoef(-0.05, 0.002),
+        fuel_slope=CoefPosterior(-0.05, 0.002),
         degradation={
-            "SOFT": (GaussianCoef(deg_soft, 0.005),),
-            "HARD": (GaussianCoef(deg_hard, 0.005),),
+            "SOFT": (CoefPosterior(deg_soft, 0.005),),
+            "HARD": (CoefPosterior(deg_hard, 0.005),),
         },
         sc_hazard=HazardPosterior(alpha=sc_rate * 500, beta=500),
         vsc_hazard=HazardPosterior(alpha=0.005 * 500, beta=500),
