@@ -261,6 +261,21 @@ def _sample_status(
     Mirrors the F1 engine's SC/VSC sampling exactly (``engine.py::_sample_status``):
     both hazards are drawn independently per realisation, and whichever kind
     fires first governs that neutralisation's duration pool.
+
+    Performance, measured rather than assumed: this lap-by-lap loop is the
+    dominant cost of the endurance simulator — 6.5 s of ``evaluate_plan``'s
+    6.8 s at IMSA Daytona (790 laps, 2000 draws). Sampling the waiting time
+    to the next event from its Geometric distribution instead is the identical
+    process, not an approximation, and was tried: it runs **4x** faster
+    (12.2 s to 2.8 s at 4000 draws) and is statistically indistinguishable
+    from this version (two-sample KS on the per-draw neutralised fraction,
+    p = 0.28). It was rejected anyway. Because it consumes the random stream
+    in a different order it would move every seeded artifact in the project —
+    within Monte Carlo noise, so no conclusion changes, but every drift guard
+    would need re-verifying and the committed history would lose its
+    byte-identical reproducibility. A 4x gain in a batch script that runs on
+    demand does not buy that. If this ever becomes a bottleneck the change is
+    written up here and takes an afternoon; today it would be churn.
     """
     lam_fcy = rng.gamma(model.fcy_alpha, 1.0 / model.fcy_exposure, size=n_draws)
     lam_sc = rng.gamma(model.sc_alpha, 1.0 / model.sc_exposure, size=n_draws)
