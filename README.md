@@ -42,8 +42,10 @@ open. ALMS was examined and declined, with its reason recorded.
 Candidate sources beyond that are surveyed against this project's actual bar —
 per-lap flags and tyre age, not just lap times — in
 [`reports/new_series_survey_phase0.md`](reports/new_series_survey_phase0.md).
-IMSA's GT3 class (GTD) clears it on already-verified data; IndyCar is declined
-on evidence, with the check that produced the decision written down.
+**IMSA's GT3 class (GTD) has since been built out** — 60 race-seasons over
+2021-2026 across 14 circuits, scoped, fitted and written up in
+[`reports/imsa/gtd_findings.md`](reports/imsa/gtd_findings.md). IndyCar is
+declined on evidence, with the check that produced the decision written down.
 
 **Status:** all three series are complete end to end, phases 0-7 — data,
 models, simulator, per-decision audit, a written methodology and a packaging
@@ -484,6 +486,18 @@ numbers too, most visibly at Imola.
 ---
 
 ## IMSA
+
+> **GT3 (GTD) is modelled as its own class**, never pooled with GTP: 60
+> race-seasons, 2021-2026, 14 circuits, 201,249 race laps. Adding it corrected
+> a published conclusion — **"every measured race is fuel-limited" was a fact
+> about prototypes, not about endurance racing.** GTD is tyre-limited at five
+> circuits (six stops against a fuel minimum of two at Laguna Seca) where GTP
+> is at one and WEC HYPERCAR at none. It also exposed a pooling error: the
+> tyre-change premium is 17.6s for GTD against 8.7s for GTP, so measuring it
+> per *series* would have reported ~14s and destroyed the finding that IMSA
+> services tyres in parallel while WEC does it in sequence.
+> Full results: [`reports/imsa/gtd_findings.md`](reports/imsa/gtd_findings.md).
+
 
 The IMSA WeatherTech SportsCar Championship needed the same treatment as
 WEC — FastF1 doesn't cover it either. IMSA shares its loader and model code
