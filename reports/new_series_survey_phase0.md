@@ -57,6 +57,33 @@ Hypercar do not. That makes the amateur-driver effect measurable, which is the
 same question ELMS's LMP2 Pro/Am split raises
 ([`reports/elms/data_availability_phase0.md`](elms/data_availability_phase0.md)).
 
+### The "no new ingestion path" claim, tested rather than asserted
+
+Two GTD races were pulled and put through the existing endurance pipeline
+unchanged — the same `EnduranceLoader`, the same `build_endurance_frame`, the
+same `fit_endurance_degradation`, no new code and no new schema:
+
+| race | raw laps | kept | cars | car-driver units | net slope (s/lap) | 95% CI | RMSE |
+|---|---|---|---|---|---|---|---|
+| GTD Watkins Glen 2024 | 2,612 | 1,470 (56.3%) | 20 | 59 | +0.0229 | [+0.0045, +0.0413] | 1.06 s |
+| GTD Road Atlanta 2025 | 5,273 | 4,050 (76.8%) | 15 | 43 | +0.0199 | [+0.0172, +0.0225] | 0.61 s |
+
+It runs. Both slopes are positive with intervals excluding zero, and both sit
+close to IMSA GTP's median of +0.0155 s/lap, so nothing about a GT3 field
+breaks the model's assumptions.
+
+Two details worth noting from even this small slice. **Roughly three
+car-driver units per car** (59 across 20 cars) against GTP's usual two: the
+Pro/Am driver-rotation requirement gives the fixed-effects structure *more*
+intercepts to work with, not fewer. And Road Atlanta's residual RMSE of 0.61 s
+is tighter than typical GTP fits — a BoP-equalised GT3 field is more
+homogeneous in pace than a manufacturer-prototype one, which is the opposite
+of what "amateur drivers make it noisier" would predict and is worth
+explaining rather than assuming in phase 1.
+
+Cluster-robust inference behaves as designed here too: G is 20 and 15 cars, so
+these intervals already use a t(19) and t(14) reference rather than a normal.
+
 **Balance of Performance — checked, and the first version of this caveat was
 too strong.** GT3 is governed by BoP adjusted *during* a season, which looks
 at first like F1's 2026 regulation boundary: a coefficient fitted across the
