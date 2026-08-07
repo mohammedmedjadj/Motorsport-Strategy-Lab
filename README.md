@@ -834,7 +834,8 @@ Motorsport-Strategy-Lab/
     f1/                 # phase 0-5 reports + extensions (breadth layer,
                         #   adversarial rival, track position), audit cases, figures
     imsa/               # phase 0-7 reports, audit cases, methodology.md,
-                        #   packaging_phase7.md (IMSA-only, never merged with WEC)
+                        #   packaging_phase7.md (IMSA-only, never merged with WEC),
+                        #   gtd_findings.md (the GT3 class, never merged with GTP)
     wec/                # phase 0-7 reports, audit cases, reliability.md,
                         #   methodology.md, packaging_phase7.md (WEC-only)
     prediction/         # cross-series calibration backtest
