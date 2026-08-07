@@ -43,10 +43,16 @@ from src.simulator.multistop import (  # noqa: E402
 # laps to measure a pace ratio from, e.g. IMSA Laguna Seca 2025 and WEC Fuji
 # 2022. ``main()`` tries each candidate in order and moves to the next season
 # on failure, so one clean race does not drop the whole circuit.
-def _circuit_candidates() -> dict[tuple[str, str], list[tuple[str, int, str, str, str]]]:
+def _circuit_candidates() -> dict[tuple[str, str, str], list[tuple[str, int, str, str, str]]]:
+    """Keyed by (series, event, **car_class**).
+
+    The class belongs in the key: a series can run more than one class at the
+    same event (IMSA fields GTP and GTD at every round), and keying on
+    (series, event) alone silently kept whichever came last.
+    """
     from src.data.endurance_loader import derived_path, slugify
     from src.data.endurance_scope import ENDURANCE_SCOPE
-    out: dict[tuple[str, str], list[tuple[str, int, str, str, str]]] = {}
+    out: dict[tuple[str, str, str], list[tuple[str, int, str, str, str]]] = {}
     for series, circuits in ENDURANCE_SCOPE.items():
         for cs in circuits:
             candidates = [
@@ -55,7 +61,7 @@ def _circuit_candidates() -> dict[tuple[str, str], list[tuple[str, int, str, str
                 if derived_path(series, year, cs.event, cs.car_class).exists()
             ]
             if candidates:
-                out[(series, cs.event)] = candidates
+                out[(series, cs.event, cs.car_class)] = candidates
     return out
 
 
@@ -90,7 +96,7 @@ def main() -> None:
     stability = pd.read_csv(ENDURANCE_DERIVED_DIR / "endurance_traffic_stability.csv")
     rows = []
     skipped: list[str] = []
-    for (series, event), candidates in CIRCUIT_CANDIDATES.items():
+    for (series, event, scoped_class), candidates in CIRCUIT_CANDIDATES.items():
         model = race_laps = year = car_class = circuit = None
         for series, year, event, car_class, circuit in candidates:
             try:
@@ -100,8 +106,9 @@ def main() -> None:
                 print(f"  skip {series} {year} {event} (no usable model: {exc}), "
                       f"trying an earlier season")
         if model is None:
-            skipped.append(f"{series} {event}")
-            print(f"  GIVING UP on {series} {event}: no season has a usable model")
+            skipped.append(f"{series} {event} ({scoped_class})")
+            print(f"  GIVING UP on {series} {event} ({scoped_class}): "
+                  "no season has a usable model")
             continue
         opt = optimal_stop_plan(race_laps, model.green_pace_s, model.net_slope_s,
                                 model.pit_loss_s, model.fuel_range_laps)
@@ -124,7 +131,12 @@ def main() -> None:
         dist_t = (evaluate_plan(opt, race_laps, model, n_draws=4000, traffic=traffic)
                   if traffic is not None else dist)
         rows.append({
-            "series": series, "circuit": circuit, "year": year,
+            # car_class is part of the identity of a row, not decoration: a
+            # series can field two classes at the same circuit-year, and
+            # without it those rows are indistinguishable on every key a
+            # consumer would naturally merge or filter on.
+            "series": series, "circuit": circuit, "car_class": car_class,
+            "year": year,
             "race_laps": race_laps, "green_pace_s": round(model.green_pace_s, 1),
             "net_slope_s": round(model.net_slope_s, 4),
             "pit_loss_s": round(model.pit_loss_s, 1),

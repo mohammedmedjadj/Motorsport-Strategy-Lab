@@ -122,44 +122,42 @@ def test_pit_procedure_confirms_the_wec_sequential_rule() -> None:
     assert wec_prem > 2.0 * imsa_prem  # the procedural difference, quantified
 
 
-# --- the scope's uniqueness assumption, enforced rather than assumed ---------
+# --- class identity, now carried rather than assumed away --------------------
 
 
-def test_scope_holds_at_most_one_class_per_series_and_event() -> None:
-    """The endurance scope carries a ``car_class`` per circuit, so it looks
-    class-aware. Its consumers are not, and every failure is silent:
+def test_artifacts_identify_the_car_class() -> None:
+    """A race-season is not identified by (series, event, season) alone.
 
-    - ``run_multistop.py::_circuit_candidates`` keys results by
-      ``(series, event)``, so a second class at an event already in scope
-      would overwrite the first and one class would vanish with no error;
-    - ``endurance_degradation_fits.csv`` and ``multistop_plans.csv`` carry
-      ``series``/``event``/``season`` and no class column, so two classes'
-      rows for the same race-season become indistinguishable and any merge on
-      those keys silently duplicates;
-    - the drift guards above filter on ``(series, circuit)`` and take the
-      first match, so they would assert against whichever class came first.
+    A series can field more than one class at the same event — IMSA runs GTP
+    and GTD at every round — so without a class column two classes' rows are
+    indistinguishable on every key a consumer would naturally merge or filter
+    on. ``run_multistop.py`` additionally keyed its results by
+    (series, event) and would have kept only whichever class came last.
 
-    Adding IMSA's GTD class alongside GTP is the obvious next widening of this
-    project (see ``reports/new_series_survey_phase0.md``) and would trip every
-    one of those. Until the key becomes ``(series, event, car_class)`` and the
-    artifacts gain a class column, this test makes the collision loud: it
-    fails the moment a second class is scoped at an event, instead of letting
-    a set of quietly-overwritten CSVs be committed.
+    Pinned because the failure is silent in both directions: nothing errors,
+    a row simply describes a different car than the reader thinks. This is
+    the prerequisite for scoping IMSA GTD alongside GTP
+    (``reports/new_series_survey_phase0.md``).
     """
-    from collections import defaultdict
+    for name in ("endurance_degradation_fits.csv", "multistop_plans.csv",
+                 "endurance_data_quality.csv", "endurance_degradation_loro.csv",
+                 "endurance_overtaking_difficulty.csv"):
+        art = pd.read_csv(ENDURANCE_DERIVED_DIR / name)
+        assert "car_class" in art.columns, f"{name} does not identify the car class"
+        assert art["car_class"].notna().all(), f"{name} has rows with no class"
 
-    from src.data.endurance_scope import ENDURANCE_SCOPE
 
-    classes_per_event: dict[tuple[str, str], set[str]] = defaultdict(set)
-    for series, circuits in ENDURANCE_SCOPE.items():
-        for cs in circuits:
-            classes_per_event[(series, cs.event)].add(cs.car_class)
+def test_every_artifact_row_is_uniquely_keyed_with_the_class() -> None:
+    """With the class in the key, one row per (series, event, class, season).
 
-    collisions = {k: sorted(v) for k, v in classes_per_event.items() if len(v) > 1}
-    assert not collisions, (
-        "the scope now has more than one class at the same series/event: "
-        f"{collisions}. The artifacts and run_multistop key on (series, event) "
-        "and would silently drop one of them -- make the key class-aware and "
-        "add a `class` column to endurance_degradation_fits.csv and "
-        "multistop_plans.csv before scoping a second class."
-    )
+    The point of the previous test is only realised if the extended key is
+    actually unique — a class column that still leaves duplicates would look
+    like a fix while changing nothing.
+    """
+    fits = pd.read_csv(ENDURANCE_DERIVED_DIR / "endurance_degradation_fits.csv")
+    key = ["series", "event", "car_class", "season"]
+    assert not fits.duplicated(key).any(), fits[fits.duplicated(key, keep=False)][key]
+
+    plans = pd.read_csv(ENDURANCE_DERIVED_DIR / "multistop_plans.csv")
+    plan_key = ["series", "circuit", "car_class"]
+    assert not plans.duplicated(plan_key).any()

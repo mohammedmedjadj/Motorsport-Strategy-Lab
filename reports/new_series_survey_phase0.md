@@ -157,17 +157,25 @@ single class, and every failure is silent:
 | `multistop_plans.csv` | keyed by `series, circuit` | same collision |
 | `test_endurance_artifacts.py` | filters `(series, circuit)` then takes `.iloc[0]` | silently asserts against whichever class happens to be first |
 
-So the first task of GTD phase 1 is not data, it is a key: `(series, event)`
-must become `(series, event, car_class)` in the scope consumers, and `class`
-must become a column in the three artifacts above before a second class is
-added to any series. Doing it in the other order would produce a set of
-committed CSVs in which two classes had quietly overwritten each other —
-recoverable, but only by someone who noticed.
+**This has since been fixed**, before any GTD race was materialised.
+`run_multistop.py::_circuit_candidates` now keys on
+`(series, event, car_class)`, and `car_class` is a column in
+`endurance_degradation_fits.csv`, `multistop_plans.csv`,
+`endurance_data_quality.csv`, `endurance_degradation_loro.csv` and
+`endurance_overtaking_difficulty.csv`. Two tests hold it: one that every
+artifact identifies its class, and one that the extended key is actually
+unique — a class column that still left duplicates would look like a fix
+while changing nothing.
 
-This is the same shape as every other trap in this survey: a key whose
-uniqueness assumption stops holding when the data widens. It is cheap to fix
-in advance and expensive to find afterwards, which is why it is written down
-here before a single GTD race is materialised.
+The order mattered. Doing it the other way round would have produced
+committed CSVs in which two classes had quietly overwritten each other —
+recoverable, but only by someone who noticed. This is the same shape as every
+other trap in this survey: a key whose uniqueness assumption stops holding
+when the data widens, cheap to fix in advance and expensive to find
+afterwards.
+
+With that done, **GTD phase 1 is now unblocked** and the remaining work is
+materialisation plus the usual per-phase reports.
 
 ## Recommendation
 

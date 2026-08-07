@@ -75,7 +75,8 @@ def main() -> int:
                 laps = loader.load_laps(season, cs.event, cs.car_class)
                 d = frame_diagnostics(laps)
                 quality.append({
-                    "series": series, "event": cs.event, "season": season,
+                    "series": series, "event": cs.event, "car_class": cs.car_class,
+                    "season": season,
                     "total_laps": d.total_laps, "non_green_or_pit": d.non_green_or_pit,
                     "missing_tyre_age": d.missing_tyre_age,
                     "field_wide_trimmed": d.field_wide_trimmed,
@@ -85,7 +86,8 @@ def main() -> int:
                 })
                 fit = fit_endurance_degradation(frames[str(season)])
                 fits.append({
-                    "series": series, "event": cs.event, "season": season,
+                    "series": series, "event": cs.event, "car_class": cs.car_class,
+                    "season": season,
                     "n_laps": fit.n_laps, "n_cars": fit.n_cars,
                     "net_slope": round(fit.net_slope.value, 4),
                     "ci_low": round(fit.net_slope.ci_low, 4),
@@ -99,7 +101,7 @@ def main() -> int:
                 folds = leave_one_race_out_endurance(frames)
                 for f in folds:
                     loro.append({
-                        "series": series, "event": cs.event,
+                        "series": series, "event": cs.event, "car_class": cs.car_class,
                         "held_out_season": f.held_out,
                         "pooled_slope": round(f.pooled_slope, 4),
                         "own_slope": round(f.own_slope, 4),
@@ -107,7 +109,7 @@ def main() -> int:
                         "rmse_s": round(f.rmse_s, 3), "n_laps": f.n_laps,
                     })
                 loro.append({
-                    "series": series, "event": cs.event,
+                    "series": series, "event": cs.event, "car_class": cs.car_class,
                     "held_out_season": "MEAN",
                     "pooled_slope": "", "own_slope": "",
                     "r2_within": round(mean_r2(folds), 4), "rmse_s": "", "n_laps": "",
@@ -143,7 +145,7 @@ def main() -> int:
                      for yr in cs.seasons}
             o = measure_circuit(races, cs.event, rate_fn=adjacent_swap_rate_endurance)
             overtaking.append({
-                "series": series, "circuit": cs.event,
+                "series": series, "circuit": cs.event, "car_class": cs.car_class,
                 "adj_swap_rate": round(o.swap_rate, 4),
                 "sd_across_races": round(o.sd, 4),
                 "n_races": o.n_races, "n_transitions": o.n_transitions,
