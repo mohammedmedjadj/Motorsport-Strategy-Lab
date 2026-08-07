@@ -140,12 +140,43 @@ layout scraping is fragile in a way a maintained database is not, and the
 redistribution status of those documents is unclear. If either changes, the
 decision should be revisited.
 
+### The actual blocker: the scope assumes one class per series
+
+Materialising GTD was the obvious next step. Checking the scope first showed
+it must not be, and this is the concrete prerequisite for phase 1 rather than
+a vague "needs work".
+
+`src/data/endurance_scope.py` carries a `car_class` per circuit, so it *looks*
+class-aware. Its consumers are not. Every one of these assumes a series has a
+single class, and every failure is silent:
+
+| site | what it does | what happens with GTP **and** GTD |
+|---|---|---|
+| `run_multistop.py::_circuit_candidates` | keys results by `(series, event)` | GTD at Watkins Glen **overwrites** GTP at Watkins Glen; one class vanishes with no error |
+| `endurance_degradation_fits.csv` | columns are `series, event, season` — **no class** | GTP and GTD rows for the same race-season become indistinguishable, and any merge on those keys duplicates rows |
+| `multistop_plans.csv` | keyed by `series, circuit` | same collision |
+| `test_endurance_artifacts.py` | filters `(series, circuit)` then takes `.iloc[0]` | silently asserts against whichever class happens to be first |
+
+So the first task of GTD phase 1 is not data, it is a key: `(series, event)`
+must become `(series, event, car_class)` in the scope consumers, and `class`
+must become a column in the three artifacts above before a second class is
+added to any series. Doing it in the other order would produce a set of
+committed CSVs in which two classes had quietly overwritten each other —
+recoverable, but only by someone who noticed.
+
+This is the same shape as every other trap in this survey: a key whose
+uniqueness assumption stops holding when the data widens. It is cheap to fix
+in advance and expensive to find afterwards, which is why it is written down
+here before a single GTD race is materialised.
+
 ## Recommendation
 
-1. **IMSA GTD** is the highest-value next addition and the lowest-risk: it
-   clears every requirement on already-verified data, and it asks a question
-   (crew-rating effects) the current three series cannot. Its own reports, and
-   never pooled with GTP.
+1. **IMSA GTD** is the highest-value next addition: it clears every data
+   requirement on already-verified data, the pipeline runs on it unchanged,
+   and it asks a question (crew-rating effects) the current three series
+   cannot. Its own reports, and never pooled with GTP.
+   **Do the class-aware key first** — the scope's consumers currently assume
+   one class per series and would silently overwrite GTP with GTD.
 2. **ELMS LMP2** remains viable at phase 0, with the class-relabelling
    decision still open.
 3. **IndyCar** is declined until a lap-level source exists that can be
