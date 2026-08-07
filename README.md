@@ -39,6 +39,12 @@ model built without them ([`reports/elms/data_availability_phase0.md`](reports/e
 Nothing is modelled yet and the scoping decision it raises is deliberately left
 open. ALMS was examined and declined, with its reason recorded.
 
+Candidate sources beyond that are surveyed against this project's actual bar —
+per-lap flags and tyre age, not just lap times — in
+[`reports/new_series_survey_phase0.md`](reports/new_series_survey_phase0.md).
+IMSA's GT3 class (GTD) clears it on already-verified data; IndyCar is declined
+on evidence, with the check that produced the decision written down.
+
 **Status:** all three series are complete end to end, phases 0-7 — data,
 models, simulator, per-decision audit, a written methodology and a packaging
 report. WEC and IMSA keep their own documents at every phase
