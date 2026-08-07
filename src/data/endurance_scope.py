@@ -93,6 +93,26 @@ ENDURANCE_SCOPE: dict[str, tuple[CircuitScope, ...]] = {
         CircuitScope("Watkins Glen", "GTD", (2022, 2023, 2024, 2025, 2026)),
         CircuitScope("Watkins Glen 240", "GTD", (2021,)),
         CircuitScope("Watkins Glen 6 Hours", "GTD", (2021,)),
+        # --- GT3 (GTD PRO): the same GT3 cars under the same Balance of
+        # Performance as GTD, but entered with all-professional line-ups
+        # instead of GTD's mandatory bronze- or silver-rated driver. Scoped
+        # separately because that difference is the point: the class boundary
+        # *is* the crew rating, which makes the amateur effect measurable
+        # like-for-like on the same weekends at the same tracks, with no
+        # external rating data. 47 of 47 race-seasons cleared the floor.
+        CircuitScope("Canadian Tire Motorsport Park", "GTDPRO", (2026,)),
+        CircuitScope("Daytona", "GTDPRO", (2022, 2023, 2024, 2025, 2026)),
+        CircuitScope("Detroit", "GTDPRO", (2024, 2025, 2026)),
+        CircuitScope("Indianapolis", "GTDPRO", (2023, 2024, 2025)),
+        CircuitScope("Laguna Seca", "GTDPRO", (2022, 2023, 2024, 2025, 2026)),
+        CircuitScope("Lime Rock", "GTDPRO", (2022, 2023)),
+        CircuitScope("Long Beach", "GTDPRO", (2022, 2023)),
+        CircuitScope("Mosport", "GTDPRO", (2022, 2023, 2024, 2025)),
+        CircuitScope("Road America", "GTDPRO", (2022, 2023, 2024, 2025)),
+        CircuitScope("Road Atlanta", "GTDPRO", (2022, 2023, 2024, 2025)),
+        CircuitScope("Sebring", "GTDPRO", (2022, 2023, 2024, 2025, 2026)),
+        CircuitScope("VIR", "GTDPRO", (2022, 2023, 2024, 2025)),
+        CircuitScope("Watkins Glen", "GTDPRO", (2022, 2023, 2024, 2025, 2026)),
     ),
     "wec": (
         CircuitScope("Bahrain", "HYPERCAR", (2022, 2023, 2024, 2025)),

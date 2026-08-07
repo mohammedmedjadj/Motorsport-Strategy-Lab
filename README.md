@@ -496,6 +496,13 @@ numbers too, most visibly at Imola.
 > tyre-change premium is 17.6s for GTD against 8.7s for GTP, so measuring it
 > per *series* would have reported ~14s and destroyed the finding that IMSA
 > services tyres in parallel while WEC does it in sequence.
+> **GTD PRO is scoped as a third class** (47 race-seasons, all-professional
+> line-ups in the same GT3 cars under the same BoP), which makes the
+> crew-rating question answerable without external data. Result: the pit-stop
+> premium is a property of the **car, not the crew** — 17.6s GTD against 16.9s
+> GTD PRO, versus 8.7s for the prototype. On tyre wear the Pro/Am slope is
+> steeper by +0.0040 s/lap across 44 circuit-and-season-matched pairs, but at
+> p = 0.085 that is **not established**, and is reported as such.
 > Full results: [`reports/imsa/gtd_findings.md`](reports/imsa/gtd_findings.md).
 
 

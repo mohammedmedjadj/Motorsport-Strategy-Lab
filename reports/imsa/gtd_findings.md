@@ -100,23 +100,49 @@ against the endurance range this project reports elsewhere. Position is
 reconstructed from cumulative time within the class, as for every other
 endurance series.
 
-## 6. What is not here
+## 6. GTD PRO: the crew-rating comparison, measured
+
+IMSA runs **GTD PRO** alongside GTD — the same GT3 cars under the same
+Balance of Performance, entered with all-professional line-ups instead of
+GTD's mandatory bronze- or silver-rated driver. The class boundary *is* the
+crew rating, so no external rating data is needed. GTD PRO is scoped as its
+own class (47 of 47 race-seasons, 2022–2026, 13 circuits, all of which GTD
+also races) and is never pooled with GTD.
+
+**Pit stops: the difference is the car, not the crew.**
+
+| class | fuel-only stop | tyre-change premium |
+|---|---|---|
+| IMSA GTP (prototype) | 67.7 s | **8.7 s** |
+| IMSA GTD (GT3, Pro/Am) | 60.2 s | **17.6 s** |
+| IMSA GTD PRO (GT3, all-pro) | 60.2 s | **16.9 s** |
+
+Holding the car fixed and changing only the crew moves the premium by 0.7 s;
+changing the car moves it by roughly nine. The GT3-versus-prototype gap
+reported in §4 is therefore a property of the machine and its service, not of
+who is driving it. Same fuel-only stop to two significant figures (60.2 s in
+both GT3 classes) makes the comparison as clean as this data allows.
+
+**Degradation: suggestive, and not established.** Paired on circuit *and*
+season — 44 pairs where GTD and GTD PRO raced the same event in the same
+year — the Pro/Am slope is steeper by a median **+0.0040 s/lap** (GTD 0.0231,
+GTD PRO 0.0200), in 27 of the 44 pairs. A paired Wilcoxon test gives
+**p = 0.085**.
+
+That is not significant at the conventional level and is reported as what it
+is: a difference in the expected direction that 44 pairs cannot separate from
+chance. The temptation with a result like this is to call it "a trend
+towards" and move on; the honest statement is that **this analysis does not
+establish an amateur effect on tyre wear.** It does establish the design —
+same car, same BoP, same weekends, same tracks — so the question is now
+answerable with more seasons rather than merely askable.
+
+## 7. What is not here
 
 - **No per-decision audit.** GTP and WEC each have one; GTD does not yet.
-- **No crew-rating analysis yet — but the claim that it needs an external
-  mapping was wrong.** This section previously said the source does not carry
-  driver ratings, so measuring the amateur effect would need data from
-  elsewhere. It does not. IMSA runs **GTD PRO** alongside GTD: the same GT3
-  cars under the same Balance of Performance, entered with all-professional
-  line-ups instead of a mandatory bronze- or silver-rated driver. That is a
-  natural experiment for exactly this question, sitting in the same table, and
-  it was missed by treating "GT3" as one class.
-
-  GTD PRO clears the eligibility floor at **47 of 47 race-seasons** over
-  2022–2026 across 13 circuits — every one of which GTD also races, so the
-  comparison is like-for-like on the same weekends at the same tracks. It is
-  being scoped as its own class; nothing here pools it with GTD, for the same
-  reason nothing pools GTD with GTP.
+- **No established amateur effect on degradation** — see §6. The design is in
+  place and the measurement is inconclusive at 44 pairs, which is a different
+  thing from an effect that is not there.
 - **No Balance-of-Performance term.** BoP shifts a car's pace level and the
   per-race intercepts absorb that completely (see
   [`reports/new_series_survey_phase0.md`](../new_series_survey_phase0.md) §GT3);
