@@ -211,9 +211,14 @@ not from string similarity.
 **The existing work is unaffected**, checked rather than assumed: the current
 IMSA GTP scope contains `Mosport` and not `Canadian Tire Motorsport Park`, and
 only the plain `Watkins Glen`. No fold in any published result pairs two names
-for one track. What it does reveal is a small coverage gap — the 2026 CTMP
-round is simply absent from the GTP scope, because it arrived under a new
-name.
+for one track.
+
+An earlier version of this section went further and claimed the rename had
+also left a coverage gap — a 2026 GTP round at CTMP missing from the scope.
+That was an inference, and querying it shows it is wrong: the source carries
+**no GTP race at Canadian Tire Motorsport Park in any year**, only `Mosport`
+2023. GTD raced there in 2026; GTP did not. There is no gap to close, and the
+alias hazard is real for GTD alone.
 
 ## Recommendation
 
