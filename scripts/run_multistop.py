@@ -24,6 +24,8 @@ import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
+from src.data.endurance_loader import slugify  # noqa: E402
+from src.data.endurance_scope import canonical_circuit  # noqa: E402
 from src.ingestion.config import ENDURANCE_DERIVED_DIR  # noqa: E402
 from src.simulator.endurance_models import (  # noqa: E402
     load_race_model,
@@ -135,8 +137,13 @@ def main() -> None:
             # series can field two classes at the same circuit-year, and
             # without it those rows are indistinguishable on every key a
             # consumer would naturally merge or filter on.
-            "series": series, "circuit": circuit, "car_class": car_class,
-            "year": year,
+            "series": series, "circuit": circuit,
+            # The canonical circuit is the identity a validation fold must
+            # group on; `circuit` stays the source's own slug so a row can
+            # still be traced back to the file it came from. They differ only
+            # where a track was renamed upstream (see CIRCUIT_ALIASES).
+            "circuit_canonical": slugify(canonical_circuit(event)),
+            "car_class": car_class, "year": year,
             "race_laps": race_laps, "green_pace_s": round(model.green_pace_s, 1),
             "net_slope_s": round(model.net_slope_s, 4),
             "pit_loss_s": round(model.pit_loss_s, 1),

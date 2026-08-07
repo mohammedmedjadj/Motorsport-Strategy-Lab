@@ -198,3 +198,31 @@ def test_aliased_event_names_never_overlap_in_seasons() -> None:
             f"{sorted(duplicated)}: {sorted(set(entries))}. One circuit-season "
             "would enter a leave-one-circuit-out fold twice."
         )
+
+
+def test_artifacts_carry_a_canonical_circuit_identity() -> None:
+    """Validation folds must group on the circuit, not on the source's string.
+
+    ``circuit``/``event`` stays the name the upstream data uses, so a row can
+    still be traced to the file it came from; ``circuit_canonical`` is the
+    identity a leave-one-circuit-out fold has to group on. They differ only
+    where a track was renamed upstream — today nowhere, which is why this can
+    be added without moving a single number, and exactly why it should be
+    added now rather than in the same change that first scopes an alias.
+    """
+    from src.data.endurance_scope import canonical_circuit
+
+    for name, src in (("endurance_degradation_fits.csv", "event"),
+                      ("endurance_data_quality.csv", "event"),
+                      ("endurance_degradation_loro.csv", "event"),
+                      ("endurance_overtaking_difficulty.csv", "circuit"),
+                      ("multistop_plans.csv", "circuit")):
+        art = pd.read_csv(ENDURANCE_DERIVED_DIR / name)
+        assert "circuit_canonical" in art.columns, f"{name} has no canonical circuit"
+        assert art["circuit_canonical"].notna().all()
+
+    # And it must actually be the canonical map's output, not a copy of the
+    # source column that would silently stop tracking it.
+    fits = pd.read_csv(ENDURANCE_DERIVED_DIR / "endurance_degradation_fits.csv")
+    expected = fits["event"].map(canonical_circuit)
+    assert (fits["circuit_canonical"] == expected).all()

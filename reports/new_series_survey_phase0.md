@@ -174,7 +174,8 @@ other trap in this survey: a key whose uniqueness assumption stops holding
 when the data widens, cheap to fix in advance and expensive to find
 afterwards.
 
-With that done, **GTD phase 1 is now unblocked** and the remaining work is
+With that done, plus a circuit-alias map and a canonical circuit identity in
+every artifact, **GTD phase 1 is unblocked** and the remaining work is
 materialisation plus the usual per-phase reports.
 
 ### A third trap, found while listing the GTD scope: circuit aliases
