@@ -16,6 +16,35 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 
+#: Event strings the source uses for the SAME physical circuit, mapped to one
+#: canonical name. Built from knowledge of the championship, not from string
+#: similarity — the two are different, and the difference matters:
+#:
+#: - ``Mosport`` and ``Canadian Tire Motorsport Park`` are one track; the
+#:   source renamed it in 2026.
+#: - ``Watkins Glen``, ``Watkins Glen 240`` and ``Watkins Glen 6 Hours`` are
+#:   one track under three event names used in 2021.
+#: - ``Belle Isle`` and ``Detroit`` look like the same pattern and are **not**:
+#:   IMSA moved from the Belle Isle park circuit to the downtown Detroit
+#:   street course in 2023. They stay separate on purpose.
+#:
+#: This exists because leave-one-circuit-out validation is only meaningful if
+#: its folds are independent. Two names for one track would let a model train
+#: on Mosport, test on Canadian Tire Motorsport Park, and report the result as
+#: generalisation to an unseen circuit — leakage that inflates the headline
+#: transfer number instead of failing visibly.
+CIRCUIT_ALIASES: dict[str, str] = {
+    "Canadian Tire Motorsport Park": "Mosport",
+    "Watkins Glen 240": "Watkins Glen",
+    "Watkins Glen 6 Hours": "Watkins Glen",
+}
+
+
+def canonical_circuit(event: str) -> str:
+    """The canonical circuit name for a source event string."""
+    return CIRCUIT_ALIASES.get(event, event)
+
+
 @dataclass(frozen=True)
 class CircuitScope:
     """One circuit's coverage within a series."""

@@ -161,3 +161,35 @@ def test_every_artifact_row_is_uniquely_keyed_with_the_class() -> None:
     plans = pd.read_csv(ENDURANCE_DERIVED_DIR / "multistop_plans.csv")
     plan_key = ["series", "circuit", "car_class"]
     assert not plans.duplicated(plan_key).any()
+
+
+def test_no_two_scoped_events_are_the_same_physical_circuit() -> None:
+    """Leave-one-circuit-out folds must be independent.
+
+    The source uses more than one event string for some tracks — ``Mosport``
+    and ``Canadian Tire Motorsport Park`` are the same circuit, renamed in
+    2026, and 2021 split Watkins Glen across three names. Scoping two of them
+    would let a model train on one and test on the other while reporting the
+    result as generalisation to an unseen circuit: leakage that *inflates* the
+    headline transfer number rather than failing visibly, which is the worst
+    way for a validation to be wrong.
+
+    Guards the widening this project is heading for (IMSA GTD scopes 60
+    race-seasons across 16 event strings but only 14 tracks) rather than
+    today's scope, which was checked and is clean.
+    """
+    from collections import defaultdict
+
+    from src.data.endurance_scope import ENDURANCE_SCOPE, canonical_circuit
+
+    seen: dict[tuple[str, str, str], set[str]] = defaultdict(set)
+    for series, circuits in ENDURANCE_SCOPE.items():
+        for cs in circuits:
+            seen[(series, canonical_circuit(cs.event), cs.car_class)].add(cs.event)
+
+    aliased = {k: sorted(v) for k, v in seen.items() if len(v) > 1}
+    assert not aliased, (
+        f"two event strings for one physical circuit are scoped together: {aliased}. "
+        "Leave-one-circuit-out would treat them as independent folds. Merge them "
+        "or extend CIRCUIT_ALIASES in src/data/endurance_scope.py."
+    )

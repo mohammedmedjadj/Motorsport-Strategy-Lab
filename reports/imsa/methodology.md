@@ -500,7 +500,7 @@ under `data/derived/imsa/` and `data/derived/endurance/`, so every test in
 this report's scope runs fully offline; `scripts/run_endurance_flags.py` and
 `scripts/run_endurance_models.py` re-pull and refit only if explicitly asked
 to refresh the source. All stochastic code is seeded. This report's layer is
-covered by a dedicated subset of the project's 273 pytest tests (data
+covered by a dedicated subset of the project's 274 pytest tests (data
 loading, the endurance degradation/neutralisation/simulator models
 including the field-wide standing-start filter's regression test, the
 multi-stop dynamic program, traffic estimators, and the decision-audit state
