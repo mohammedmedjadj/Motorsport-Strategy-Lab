@@ -81,6 +81,48 @@ def cluster_robust_se(
     return np.sqrt(np.clip(np.diag(cov), 0.0, None)), n_clusters
 
 
+def classical_se(X: np.ndarray, y: np.ndarray, beta: np.ndarray) -> np.ndarray:
+    """Textbook homoscedastic OLS standard errors.
+
+    Kept not because anything should use them, but because the size of the
+    correction is itself a reported result: a claim that clustering matters
+    has to be checked against the thing it replaced, on this run, rather than
+    quoted from the day it was measured.
+    """
+    X = np.asarray(X, dtype=float)
+    resid = np.asarray(y, dtype=float) - X @ beta
+    rank = int(np.linalg.matrix_rank(X))
+    sigma2 = float(resid @ resid) / max(X.shape[0] - rank, 1)
+    return np.sqrt(np.clip(np.diag(np.linalg.pinv(X.T @ X)) * sigma2, 0.0, None))
+
+
+def t_degrees_of_freedom(n_clusters: float | None) -> float:
+    """Degrees of freedom for the ``t`` a sampler should draw from: ``G - 1``.
+
+    One place for the conversion because the arithmetic has two traps and
+    both are silent. ``G - 1`` with ``G = 1`` gives ``df = 0``, which
+    ``numpy.random.Generator.standard_t`` rejects at the point of use, far
+    from the cause. And a missing cluster count is not the same as an
+    abundant one: ``None`` returns ``inf`` (draw a normal — this estimate
+    carries no cluster information at all), whereas ``G = 1`` is an error,
+    because :func:`cluster_robust_se` has already returned NaN there and a
+    caller reaching this function with it is asking to sample from nothing.
+
+    ``G = 2`` legitimately returns ``df = 1``: a Cauchy. The quantiles exist
+    and are enormous, which is the honest description of what two clusters
+    tell you, not a defect to clamp away.
+    """
+    if n_clusters is None:
+        return float("inf")
+    n = float(n_clusters)
+    if n < 2:
+        raise ValueError(
+            f"n_clusters={n_clusters!r} cannot support a cluster-robust "
+            "reference distribution; at least 2 clusters are needed"
+        )
+    return n - 1.0
+
+
 def critical_value(n_clusters: int, level: float = 0.95) -> float:
     """Two-sided ``t(G-1)`` critical value for a cluster-robust interval.
 

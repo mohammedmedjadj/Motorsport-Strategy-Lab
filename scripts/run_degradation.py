@@ -69,6 +69,7 @@ def coefficients_rows(fit: FitResult, cv_rmse_s: float) -> list[dict[str, object
             "cv_rmse_s": cv_rmse_s,  # lap-level noise scale for the simulator
             "fuel_slope_s_per_lap": fit.fuel_slope.value,
             "fuel_slope_se": fit.fuel_slope.se,
+            "fuel_slope_classical_se": fit.fuel_slope.classical_se,
             "fuel_slope_ci_low": fit.fuel_slope.ci_low,
             "fuel_slope_ci_high": fit.fuel_slope.ci_high,
             "n_laps": fit.n_laps,
@@ -78,6 +79,7 @@ def coefficients_rows(fit: FitResult, cv_rmse_s: float) -> list[dict[str, object
         for power, coef in enumerate(coefs, start=1):
             row[f"deg_p{power}"] = coef.value
             row[f"deg_p{power}_se"] = coef.se
+            row[f"deg_p{power}_classical_se"] = coef.classical_se
             row[f"deg_p{power}_ci_low"] = coef.ci_low
             row[f"deg_p{power}_ci_high"] = coef.ci_high
         rows.append(row)
@@ -196,8 +198,12 @@ def gp_robustness_section(circuits: tuple[str, ...]) -> list[str]:
 def inference_section(rows: list[dict[str, object]]) -> list[str]:
     """How wide the intervals are, and why they are wider than they were.
 
-    Generated rather than written, because the whole point of the section is
-    that a number in a report has to move when its input moves.
+    The table and the correction ratios are computed from this run, because
+    the whole point of the section is that a number in a report has to move
+    when its input moves. Two figures come from experiments recorded
+    elsewhere (a coverage simulation and a 48-point simulator sweep); the
+    prose says so where it quotes them rather than passing them off as this
+    run's output.
     """
     df = pd.DataFrame(rows)
     lines = [
@@ -220,41 +226,51 @@ def inference_section(rows: list[dict[str, object]]) -> list[str]:
         textwrap.fill(
             "The correction changes no point estimate — only what is claimed "
             "about their precision. Measured on this run, per circuit and "
-            "compound:",
+            "compound (SE_cl is the classical standard error this replaced):",
             width=75,
         ),
         "",
-        "| circuit | compound | slope (s/lap) | 95% CI | SE | driver-races |",
-        "|---|---|---|---|---|---|",
+        "| circuit | compound | slope (s/lap) | 95% CI | SE | SE_cl | driver-races |",
+        "|---|---|---|---|---|---|---|",
     ]
     for _, r in df.iterrows():
         lines.append(
             f"| {r['circuit']} | {r['compound']} | {r['deg_p1']:+.5f} | "
             f"[{r['deg_p1_ci_low']:+.5f}, {r['deg_p1_ci_high']:+.5f}] | "
-            f"{r['deg_p1_se']:.5f} | {int(r['n_clusters'])} |"
+            f"{r['deg_p1_se']:.5f} | {r['deg_p1_classical_se']:.5f} | "
+            f"{int(r['n_clusters'])} |"
         )
+    ratio = (df["deg_p1_se"] / df["deg_p1_classical_se"]).dropna()
+    same_sign = bool((ratio > 1.0).all())
     lines += [
         "",
         textwrap.fill(
-            "Against the classical formula these intervals are a median 2.23x "
-            "wider (range 1.48x to 2.93x), in the same direction at every "
-            "circuit and for every compound — which is what a real violation "
-            "of the independence assumption looks like, as opposed to noise. "
-            "The estimator is validated by coverage simulation in "
-            "tests/test_robust_se.py: with independent errors it costs "
-            "nothing, and with the between-unit slope variation these data "
-            "actually show, the classical 95% interval covers 75% of the time "
-            "while the cluster-robust one holds 95%.",
+            f"Against the classical formula these standard errors are a median "
+            f"{ratio.median():.2f}x larger (range {ratio.min():.2f}x to "
+            f"{ratio.max():.2f}x)"
+            + (
+                ", and larger at every circuit and for every compound — which "
+                "is what a real violation of the independence assumption looks "
+                "like, as opposed to noise."
+                if same_sign
+                else ", though not uniformly, which weakens the reading below."
+            ),
             width=75,
         ),
         "",
         textwrap.fill(
-            "Downstream, the simulator draws each coefficient from t(G-1) "
-            "scaled by these standard errors. Across 48 decision points the "
-            "P10-P90 race-time band widens by a median of only 3% — the "
-            "race-time distribution is dominated by safety-car risk, not by "
-            "coefficient uncertainty — but the recommended pit lap changes in "
-            "16 of those 48 cases. The time output was never badly wrong; the "
+            "Two figures quoted from experiments recorded elsewhere rather "
+            "than recomputed on this run, and marked as such. The estimator is "
+            "validated by coverage simulation in tests/test_robust_se.py: with "
+            "independent errors it costs nothing, and with the between-unit "
+            "slope variation these data show, the classical 95% interval "
+            "covers 75% of the time while the cluster-robust one holds 95%. "
+            "And downstream, where the simulator draws each coefficient from "
+            "t(G-1) scaled by these standard errors, a sweep of 48 decision "
+            "points found the P10-P90 race-time band widening by a median of "
+            "only 3% — that spread is dominated by safety-car risk, not by "
+            "coefficient uncertainty — while the recommended pit lap changed "
+            "in 16 of the 48. The time output was never badly wrong; the "
             "decision output was.",
             width=75,
         ),

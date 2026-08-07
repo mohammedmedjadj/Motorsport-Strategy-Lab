@@ -224,38 +224,40 @@ clustered by driver-race, with a t(G-1) reference distribution rather than
 the normal.
 
 The correction changes no point estimate — only what is claimed about their
-precision. Measured on this run, per circuit and compound:
+precision. Measured on this run, per circuit and compound (SE_cl is the
+classical standard error this replaced):
 
-| circuit | compound | slope (s/lap) | 95% CI | SE | driver-races |
-|---|---|---|---|---|---|
-| monaco | HARD | +0.04743 | [+0.02011, +0.07474] | 0.01362 | 55 |
-| monaco | MEDIUM | +0.06836 | [+0.03439, +0.10233] | 0.01694 | 55 |
-| monaco | SOFT | +0.05210 | [-0.14439, +0.24859] | 0.09800 | 55 |
-| singapore | HARD | +0.05681 | [+0.04711, +0.06650] | 0.00484 | 58 |
-| singapore | MEDIUM | +0.03931 | [+0.02762, +0.05101] | 0.00584 | 58 |
-| singapore | SOFT | +0.01949 | [+0.00556, +0.03341] | 0.00695 | 58 |
-| barcelona | HARD | +0.11112 | [+0.09031, +0.13192] | 0.01039 | 59 |
-| barcelona | MEDIUM | +0.11188 | [+0.08871, +0.13505] | 0.01157 | 59 |
-| barcelona | SOFT | +0.08749 | [+0.05694, +0.11805] | 0.01527 | 59 |
-| suzuka | HARD | +0.13099 | [+0.09407, +0.16791] | 0.01842 | 56 |
-| suzuka | MEDIUM | +0.11858 | [+0.08305, +0.15410] | 0.01773 | 56 |
-| suzuka | SOFT | +0.07735 | [-0.01109, +0.16579] | 0.04413 | 56 |
+| circuit | compound | slope (s/lap) | 95% CI | SE | SE_cl | driver-races |
+|---|---|---|---|---|---|---|
+| monaco | HARD | +0.04743 | [+0.02011, +0.07474] | 0.01362 | 0.00497 | 55 |
+| monaco | MEDIUM | +0.06836 | [+0.03439, +0.10233] | 0.01694 | 0.00615 | 55 |
+| monaco | SOFT | +0.05210 | [-0.14439, +0.24859] | 0.09800 | 0.03417 | 55 |
+| singapore | HARD | +0.05681 | [+0.04711, +0.06650] | 0.00484 | 0.00230 | 58 |
+| singapore | MEDIUM | +0.03931 | [+0.02762, +0.05101] | 0.00584 | 0.00226 | 58 |
+| singapore | SOFT | +0.01949 | [+0.00556, +0.03341] | 0.00695 | 0.00479 | 58 |
+| barcelona | HARD | +0.11112 | [+0.09031, +0.13192] | 0.01039 | 0.00571 | 59 |
+| barcelona | MEDIUM | +0.11188 | [+0.08871, +0.13505] | 0.01157 | 0.00681 | 59 |
+| barcelona | SOFT | +0.08749 | [+0.05694, +0.11805] | 0.01527 | 0.00791 | 59 |
+| suzuka | HARD | +0.13099 | [+0.09407, +0.16791] | 0.01842 | 0.00695 | 56 |
+| suzuka | MEDIUM | +0.11858 | [+0.08305, +0.15410] | 0.01773 | 0.00827 | 56 |
+| suzuka | SOFT | +0.07735 | [-0.01109, +0.16579] | 0.04413 | 0.01988 | 56 |
 
-Against the classical formula these intervals are a median 2.23x wider
-(range 1.48x to 2.93x), in the same direction at every circuit and for
-every compound — which is what a real violation of the independence
-assumption looks like, as opposed to noise. The estimator is validated by
+Against the classical formula these standard errors are a median 2.18x
+larger (range 1.45x to 2.87x), and larger at every circuit and for every
+compound — which is what a real violation of the independence assumption
+looks like, as opposed to noise.
+
+Two figures quoted from experiments recorded elsewhere rather than
+recomputed on this run, and marked as such. The estimator is validated by
 coverage simulation in tests/test_robust_se.py: with independent errors it
-costs nothing, and with the between-unit slope variation these data
-actually show, the classical 95% interval covers 75% of the time while the
-cluster-robust one holds 95%.
-
-Downstream, the simulator draws each coefficient from t(G-1) scaled by
-these standard errors. Across 48 decision points the P10-P90 race-time band
-widens by a median of only 3% — the race-time distribution is dominated by
-safety-car risk, not by coefficient uncertainty — but the recommended pit
-lap changes in 16 of those 48 cases. The time output was never badly wrong;
-the decision output was.
+costs nothing, and with the between-unit slope variation these data show,
+the classical 95% interval covers 75% of the time while the cluster-robust
+one holds 95%. And downstream, where the simulator draws each coefficient
+from t(G-1) scaled by these standard errors, a sweep of 48 decision points
+found the P10-P90 race-time band widening by a median of only 3% — that
+spread is dominated by safety-car risk, not by coefficient uncertainty —
+while the recommended pit lap changed in 16 of the 48. The time output was
+never badly wrong; the decision output was.
 
 ## Limitations (stated, not hidden)
 

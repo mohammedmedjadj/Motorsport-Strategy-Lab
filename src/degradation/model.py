@@ -33,7 +33,7 @@ from dataclasses import dataclass
 import numpy as np
 import pandas as pd
 
-from src.degradation.robust import cluster_robust_se, critical_value
+from src.degradation.robust import classical_se, cluster_robust_se, critical_value
 
 Z95 = 1.96  # normal approximation, kept for the pre-cluster comparison only
 
@@ -51,6 +51,10 @@ class Coefficient:
     value: float
     se: float
     n_clusters: int | None = None
+    #: The classical (homoscedastic) standard error this replaced, carried so
+    #: the size of the correction stays a measured quantity in the report
+    #: rather than a number remembered from the day it was measured.
+    classical_se: float | None = None
 
     @property
     def _critical(self) -> float:
@@ -120,10 +124,11 @@ def fit_circuit(df: pd.DataFrame, circuit: str, degree: int = 1) -> FitResult:
     # stint instead gives smaller standard errors, which is the wrong way to
     # resolve a doubt about how far correlation reaches.
     se, n_clusters = cluster_robust_se(X, y, beta, df["driver_race"].to_numpy())
+    plain = classical_se(X, y, beta)
 
     by_name = {
-        n: Coefficient(float(b), float(s), n_clusters)
-        for n, b, s in zip(names, beta, se)
+        n: Coefficient(float(b), float(s), n_clusters, float(p))
+        for n, b, s, p in zip(names, beta, se, plain)
     }
     deg_coefs = {
         c: tuple(by_name[f"deg::{c}::p{p}"] for p in range(1, degree + 1))

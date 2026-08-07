@@ -20,6 +20,7 @@ from dataclasses import dataclass
 
 import pandas as pd
 
+from src.degradation.robust import t_degrees_of_freedom
 from src.ingestion.config import F1_DERIVED_DIR, PRE_ERA_SEASONS
 from src.simulator.pit_loss import (
     PaceRatios,
@@ -90,7 +91,7 @@ def _posterior(mean: float, se: float, n_clusters: float) -> CoefPosterior:
     ``t(G-1)`` critical value: the recovered "sd" would have been inflated by
     ``t/1.96`` and the degrees of freedom would have been applied twice.
     """
-    df = float(n_clusters) - 1.0 if pd.notna(n_clusters) else float("inf")
+    df = t_degrees_of_freedom(n_clusters if pd.notna(n_clusters) else None)
     return CoefPosterior(mean=float(mean), sd=float(se), df=df)
 
 

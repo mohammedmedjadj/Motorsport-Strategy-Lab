@@ -313,7 +313,7 @@ Python 3.13, dependencies pinned in `requirements.lock` (fastf1 3.8.3,
 pandas 2.3.3, numpy 2.5.1, scipy 1.18.0). FastF1 cache under
 `data/cache/` (gitignored); derived datasets committed under
 `data/derived/`. All stochastic code is seeded. The F1 layer this report
-covers is tested by a dedicated subset of the project's 268 pytest tests
+covers is tested by a dedicated subset of the project's 271 pytest tests
 (ingestion, both models, the engine and the audit tooling, including
 synthetic ground-truth recovery and leakage assertions); the remaining
 tests cover the WEC/IMSA extension described in the top-level README, out

@@ -35,6 +35,7 @@ from src.safety_car.endurance import (
     load_race_flags,
     race_timeline,
 )
+from src.degradation.robust import t_degrees_of_freedom
 from src.simulator.endurance import EnduranceRaceModel, build_race_model
 
 
@@ -122,5 +123,5 @@ def load_race_model(
         # Carry the cluster count through as t degrees of freedom, so a race
         # fit on 5 cars produces a visibly wider race-time distribution than
         # one fit on 20 rather than silently the same.
-        net_slope_df=(fit.net_slope.n_clusters or 1) - 1,
+        net_slope_df=t_degrees_of_freedom(fit.net_slope.n_clusters),
     )

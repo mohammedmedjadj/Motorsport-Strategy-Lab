@@ -174,14 +174,52 @@ def analysis(f: dict[str, dict[str, float]]) -> list[str]:
     to be.
     """
     a, b, c, d, e = (f[k] for k in "ABCDE")
+    # The narrative quotes each real choice's own table row. ``case_facts``
+    # returns only ``best_lap`` when that row is off-table -- a branch
+    # ``verdict()`` handles explicitly -- so name the case that broke rather
+    # than dying on a KeyError three frames deeper.
+    for case_id, facts in zip("ABCDE", (a, b, c, d, e)):
+        if "cost_s" not in facts:
+            raise RuntimeError(
+                f"Case {case_id}: the real pit lap is outside the modelled "
+                "candidate set, so the cross-case narrative cannot quote it. "
+                "Fix the case definition rather than the report."
+            )
+    for case_id, facts in (("D", d), ("E", e)):
+        if "nostop_median_s" not in facts:
+            raise RuntimeError(
+                f"Case {case_id}: the narrative compares against staying out, "
+                "but this scenario no longer includes the no-stop candidate."
+            )
+
+    # Claims that could stop being true are decided from the numbers rather
+    # than from memory of one run -- the same discipline as the figures.
+    a_p_best_phrase = (
+        "it is not merely competitive but the outright winner"
+        if a["real_p_best"] >= a["top_p_best"] - 1e-9
+        else f"it is beaten by lap {int(a['top_p_best_lap'])} ({a['top_p_best']:.3f})"
+    )
+    b_phrase = (
+        "never reaches 0.5 at any candidate stop lap"
+        if b["max_p_ahead_VER"] < 0.5
+        else "now reaches 0.5 at some candidate stop lap, which it did not "
+             "when this finding was first written"
+    )
+    d_phrase = (
+        "both above"
+        if d["real_p_ahead_SAI"] > d["best_p_ahead_SAI"]
+        and d["real_p_ahead_NOR"] > d["best_p_ahead_NOR"]
+        else "against"
+    )
+
     paragraphs = [
         "**1. Three metrics, three different answers — which is the whole "
         "argument for reporting a distribution (Case A).** "
         f"Verstappen's real lap-17 cover costs +{a['cost_s']:.2f}s in median "
-        f"race time against the lap-{int(a['best_lap'])} optimum. On P(best) it "
-        f"is not merely competitive but the outright winner: {a['real_p_best']:.3f} "
-        f"against {a['best_p_best']:.3f} for the median-optimal lap, and the "
-        "highest of any candidate. On P(ahead of Norris) it is neither: lap 17 "
+        f"race time against the lap-{int(a['best_lap'])} optimum. On P(best) "
+        f"{a_p_best_phrase}: {a['real_p_best']:.3f} against "
+        f"{a['best_p_best']:.3f} for the median-optimal lap. On P(ahead of "
+        "Norris) it is neither: lap 17 "
         f"gives {a['real_p_ahead_NOR']:.3f} where lap "
         f"{int(a['max_p_ahead_NOR_lap'])} would have given "
         f"{a['max_p_ahead_NOR']:.3f}.",
@@ -195,8 +233,8 @@ def analysis(f: dict[str, dict[str, float]]) -> list[str]:
         "was chosen.",
 
         "**2. Folklore correction: Norris's extended stint did not lose him "
-        "Barcelona 2024 (Case B).** P(ahead of Verstappen) never reaches 0.5 "
-        f"at any candidate stop lap: it runs {b['min_p_ahead_VER']:.3f} to "
+        f"Barcelona 2024 (Case B).** P(ahead of Verstappen) {b_phrase}: it "
+        f"runs {b['min_p_ahead_VER']:.3f} to "
         f"{b['max_p_ahead_VER']:.3f}, his real lap-23 choice sitting at "
         f"{b['real_p_ahead_VER']:.3f} against a best-available "
         f"{b['max_p_ahead_VER']:.3f} at lap {int(b['max_p_ahead_VER_lap'])}. No "
@@ -222,7 +260,7 @@ def analysis(f: dict[str, dict[str, float]]) -> list[str]:
         f"optimum and beats staying out on median time ({d['real_median_s']:.1f} "
         f"against {d['nostop_median_s']:.1f}). It also buys the head-to-heads "
         f"the stop was for: P(ahead of Sainz) {d['real_p_ahead_SAI']:.3f} and "
-        f"P(ahead of Norris) {d['real_p_ahead_NOR']:.3f}, both above what the "
+        f"P(ahead of Norris) {d['real_p_ahead_NOR']:.3f}, {d_phrase} what the "
         f"median-optimal lap returns ({d['best_p_ahead_SAI']:.3f} and "
         f"{d['best_p_ahead_NOR']:.3f}). Mercedes bought a near coin-flip for the "
         "win at roughly zero expected-time cost. History records the crash; the "
@@ -230,8 +268,9 @@ def analysis(f: dict[str, dict[str, float]]) -> list[str]:
 
         "**5. The declared blind spot, stated as one (Case E).** At Monaco 2024 "
         f"the model puts the real no-stop within {e['cost_s']:.2f}s of its own "
-        "optimum and gives it the highest P(best) of any candidate "
-        f"({e['real_p_best']:.3f}). That agreement is not a success. The model "
+        f"optimum and gives it P(best) {e['real_p_best']:.3f}, "
+        f"{'the highest of any candidate' if e['real_p_best'] >= e['top_p_best'] - 1e-9 else 'behind lap ' + str(int(e['top_p_best_lap']))}"
+        ". That agreement is not a success. The model "
         "has no track-position term, and the reason nobody stopped was that "
         "overtaking at Monaco is close to impossible — not that the lap times "
         "happened to work out. A time-only model reaching the right answer for "

@@ -66,11 +66,18 @@ def _fit_net_slope(frames: dict[str, pd.DataFrame]) -> Coefficient:
     y = pooled["lap_time_s"].to_numpy(dtype=float)
     design = np.hstack([fe, age[:, None]])
     beta, _, _, _ = np.linalg.lstsq(design, y, rcond=None)
-    # Cluster on the pooled race::car unit, the same convention the per-race
-    # fit uses. Pooling races widens the cluster count, which is the one place
-    # in this project where the cluster-robust estimator is on comfortable
-    # ground rather than working with a handful of cars.
-    se, n_clusters = cluster_robust_se(design, y, beta, pooled["unit"].to_numpy())
+    # Cluster on race::car -- NOT on ``unit``, which is race::car::driver.
+    # The per-race fit deliberately clusters by car rather than by the
+    # car-driver fixed effect, because a driver change resets neither the
+    # machine, the setup nor the strategy and residual correlation carries
+    # straight across it. Clustering on ``unit`` here would roughly triple the
+    # cluster count for a Hypercar entry and understate both the standard
+    # error and the t critical value. Pooling races is still the one place in
+    # this project where the estimator has a comfortable number of clusters.
+    race_car = (
+        pooled["unit"].astype(str).str.rsplit("::", n=1).str[0]
+    ).to_numpy()
+    se, n_clusters = cluster_robust_se(design, y, beta, race_car)
     return Coefficient(float(beta[-1]), float(se[-1]), n_clusters)
 
 

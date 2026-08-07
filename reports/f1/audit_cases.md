@@ -138,9 +138,8 @@ disagreement is the finding.
 for reporting a distribution (Case A).** Verstappen's real lap-17 cover
 costs +4.97s in median race time against the lap-25 optimum. On P(best) it
 is not merely competitive but the outright winner: 0.416 against 0.025 for
-the median-optimal lap, and the highest of any candidate. On P(ahead of
-Norris) it is neither: lap 17 gives 0.659 where lap 22 would have given
-0.731.
+the median-optimal lap. On P(ahead of Norris) it is neither: lap 17 gives
+0.659 where lap 22 would have given 0.731.
 
 So the three summaries rank the same decision first, middling and not-
 quite-best. Pitting early loses a little expected time, wins outright in
@@ -177,7 +176,7 @@ cost. History records the crash; the decision was sound.
 
 **5. The declared blind spot, stated as one (Case E).** At Monaco 2024 the
 model puts the real no-stop within 0.65s of its own optimum and gives it
-the highest P(best) of any candidate (0.581). That agreement is not a
+P(best) 0.581, the highest of any candidate. That agreement is not a
 success. The model has no track-position term, and the reason nobody
 stopped was that overtaking at Monaco is close to impossible — not that the
 lap times happened to work out. A time-only model reaching the right answer

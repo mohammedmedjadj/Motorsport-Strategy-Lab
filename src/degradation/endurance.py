@@ -59,8 +59,11 @@ from src.data.endurance_loader import green_lap_times
 from src.degradation.model import Coefficient
 from src.degradation.robust import cluster_robust_se
 
-#: Laps slower than this quantile of a car's own green laps are treated as
-#: traffic-compromised and dropped before fitting.
+#: Laps whose first-pass *residual* exceeds this quantile of the car's own
+#: residuals are treated as traffic-compromised and dropped before fitting.
+#: Deliberately not a quantile of raw lap time: within a stint the slowest
+#: laps are the oldest-tyre laps, so cutting on lap time flattens the very
+#: curve being measured (see ``_keep_after_traffic_trim``).
 TRAFFIC_QUANTILE = 0.90
 
 #: A car needs at least this many usable green laps to carry a fixed effect.
@@ -101,6 +104,9 @@ def frame_diagnostics(laps: pd.DataFrame) -> FrameDiagnostics:
     final total."""
     total = len(laps)
     work = laps.sort_values(["car", "lap"], kind="stable").copy()
+    # The residual trim needs the same car-driver key the frame builder uses;
+    # this function mirrors that pipeline, so it has to build it too.
+    work["unit"] = work["car"].astype(str) + "::" + work["driver"].astype(str)
 
     green = green_lap_times(work)
     non_green_or_pit = total - len(green)
@@ -117,9 +123,13 @@ def frame_diagnostics(laps: pd.DataFrame) -> FrameDiagnostics:
     green = green[lap_median <= FIELD_WIDE_TRIM_RATIO * overall_median]
     field_wide_trimmed = before - len(green)
 
-    cutoff = green.groupby("car")["lap_time_s"].transform(lambda s: s.quantile(TRAFFIC_QUANTILE))
+    # The same residual-based trim build_endurance_frame applies. This used to
+    # quantile raw lap time here while the frame builder had moved on to the
+    # residual: the two happen to remove the same *number* of laps (both are
+    # per-car rank cuts at the same quantile), so no test noticed, and the
+    # accounting silently described a filter the model no longer used.
     before = len(green)
-    green = green[green["lap_time_s"] <= cutoff]
+    green = green[_keep_after_traffic_trim(green)]
     per_car_trimmed = before - len(green)
 
     counts = green.groupby("car")["lap_time_s"].transform("size")
@@ -190,10 +200,16 @@ def _traffic_residual(green: pd.DataFrame) -> pd.Series:
     return pd.Series(y - design @ beta, index=green.index)
 
 
-def _residual_cutoff(green: pd.DataFrame) -> pd.Series:
-    """Each car's own ``TRAFFIC_QUANTILE`` of the first-pass residual."""
+def _keep_after_traffic_trim(green: pd.DataFrame) -> pd.Series:
+    """Boolean mask of laps surviving the per-car residual traffic trim.
+
+    Returns the mask rather than the cutoff so the first-pass regression is
+    solved once per call; splitting it across a residual function and a cutoff
+    function fitted the same model twice for every race.
+    """
     resid = _traffic_residual(green)
-    return resid.groupby(green["car"]).transform(lambda s: s.quantile(TRAFFIC_QUANTILE))
+    cutoff = resid.groupby(green["car"]).transform(lambda s: s.quantile(TRAFFIC_QUANTILE))
+    return resid <= cutoff
 
 
 def build_endurance_frame(laps: pd.DataFrame) -> pd.DataFrame:
@@ -243,7 +259,7 @@ def build_endurance_frame(laps: pd.DataFrame) -> pd.DataFrame:
     # F1 deliberately does not do this: its trim (src/degradation/dataset.py)
     # is an outlier filter at 1.10x the driver-race median that removes 0-0.9%
     # of laps, not a quantile that removes 10% by construction.
-    green = green[_traffic_residual(green) <= _residual_cutoff(green)]
+    green = green[_keep_after_traffic_trim(green)]
 
     # Drop cars with too little running to support an intercept.
     counts = green.groupby("car")["lap_time_s"].transform("size")

@@ -174,11 +174,29 @@ def test_road_america_2024_no_longer_an_outlier() -> None:
     assert abs(fit.net_slope.value) < 0.15
 
 
-def test_frame_diagnostics_accounts_for_every_lap() -> None:
+@pytest.mark.parametrize(
+    ("series", "season", "event", "car_class"),
+    [
+        ("imsa", 2023, "Watkins Glen", "GTP"),
+        # WEC Bahrain 2023 and Fuji 2022/2023 are the three races (of 61) where
+        # a raw-lap-time trim and the residual trim the model actually uses
+        # remove *different* laps rather than merely the same count. When
+        # frame_diagnostics still quantiled raw lap time, this test passed on
+        # Watkins Glen alone and the reported "kept" disagreed with the model's
+        # real sample size at exactly these three.
+        ("wec", 2023, "Bahrain", "HYPERCAR"),
+        ("wec", 2022, "Fuji", "HYPERCAR"),
+        ("wec", 2023, "Fuji", "HYPERCAR"),
+    ],
+)
+def test_frame_diagnostics_accounts_for_every_lap(
+    series: str, season: int, event: str, car_class: str
+) -> None:
     """Every excluded lap must be attributed to exactly one stage: the stage
     counts plus what's kept must reconstruct the raw total (the data-quality
-    reports quote these numbers directly, so the identity must hold exactly)."""
-    laps = EnduranceLoader("imsa").load_laps(2023, "Watkins Glen", "GTP")
+    reports quote these numbers directly, so the identity must hold exactly),
+    and ``kept`` must equal the frame the model is actually fitted on."""
+    laps = EnduranceLoader(series).load_laps(season, event, car_class)
     d = frame_diagnostics(laps)
     assert d.total_laps == len(laps)
     accounted = (

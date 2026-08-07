@@ -38,7 +38,14 @@ from dataclasses import dataclass
 
 import numpy as np
 
-from src.simulator.endurance import FCY, GREEN, SC, EnduranceRaceModel, _sample_status
+from src.simulator.endurance import (
+    FCY,
+    GREEN,
+    SC,
+    EnduranceRaceModel,
+    _sample_status,
+    _slope_noise,
+)
 
 
 @dataclass(frozen=True)
@@ -161,7 +168,13 @@ def evaluate_plan(
     is_green = status == GREEN
     ratio = np.where(status == FCY, model.fcy_pace_ratio,
                      np.where(status == SC, model.sc_pace_ratio, 1.0))
-    slope = rng.normal(model.net_slope_s, model.net_slope_se, size=(n_draws, 1))
+    # Same sampler as the single-stop engine (endurance.py::simulate). Drawing
+    # this one from a normal while that one draws from t(df) would put
+    # un-widened bands next to widened ones in the same report, from the same
+    # model -- which is how the demo shows them.
+    slope = model.net_slope_s + model.net_slope_se * _slope_noise(
+        rng, model.net_slope_df, (n_draws, 1)
+    )
     noise = rng.normal(0.0, model.lap_noise_s, size=(n_draws, race_laps))
     age = _age_from_stops(race_laps, plan.stop_laps)
 
