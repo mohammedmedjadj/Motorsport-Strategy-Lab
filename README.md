@@ -31,7 +31,13 @@ It started on **Formula 1** (via FastF1) and has since been extended to
 needed a new ingestion path and their own fitted models, built to the same
 standard as the F1 work: verified data availability, a cross-validated
 degradation model, a Bayesian neutralisation model, a Monte Carlo simulator,
-each with its own report and its own test suite. Other racing series may be added to the research program in the next month.
+each with its own report and its own test suite.
+
+A fourth series, **ELMS**, has passed phase 0 only — the source is verified and
+the scope enumerated, with two traps documented that would have corrupted a
+model built without them ([`reports/elms/data_availability_phase0.md`](reports/elms/data_availability_phase0.md)).
+Nothing is modelled yet and the scoping decision it raises is deliberately left
+open. ALMS was examined and declined, with its reason recorded.
 
 **Status:** all three series are complete end to end, phases 0-7 — data,
 models, simulator, per-decision audit, a written methodology and a packaging
