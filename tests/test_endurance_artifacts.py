@@ -120,3 +120,46 @@ def test_pit_procedure_confirms_the_wec_sequential_rule() -> None:
     # clear, real procedural gap — not the same-magnitude overclaim a tighter
     # bound tuned to the small sample would keep asserting.
     assert wec_prem > 2.0 * imsa_prem  # the procedural difference, quantified
+
+
+# --- the scope's uniqueness assumption, enforced rather than assumed ---------
+
+
+def test_scope_holds_at_most_one_class_per_series_and_event() -> None:
+    """The endurance scope carries a ``car_class`` per circuit, so it looks
+    class-aware. Its consumers are not, and every failure is silent:
+
+    - ``run_multistop.py::_circuit_candidates`` keys results by
+      ``(series, event)``, so a second class at an event already in scope
+      would overwrite the first and one class would vanish with no error;
+    - ``endurance_degradation_fits.csv`` and ``multistop_plans.csv`` carry
+      ``series``/``event``/``season`` and no class column, so two classes'
+      rows for the same race-season become indistinguishable and any merge on
+      those keys silently duplicates;
+    - the drift guards above filter on ``(series, circuit)`` and take the
+      first match, so they would assert against whichever class came first.
+
+    Adding IMSA's GTD class alongside GTP is the obvious next widening of this
+    project (see ``reports/new_series_survey_phase0.md``) and would trip every
+    one of those. Until the key becomes ``(series, event, car_class)`` and the
+    artifacts gain a class column, this test makes the collision loud: it
+    fails the moment a second class is scoped at an event, instead of letting
+    a set of quietly-overwritten CSVs be committed.
+    """
+    from collections import defaultdict
+
+    from src.data.endurance_scope import ENDURANCE_SCOPE
+
+    classes_per_event: dict[tuple[str, str], set[str]] = defaultdict(set)
+    for series, circuits in ENDURANCE_SCOPE.items():
+        for cs in circuits:
+            classes_per_event[(series, cs.event)].add(cs.car_class)
+
+    collisions = {k: sorted(v) for k, v in classes_per_event.items() if len(v) > 1}
+    assert not collisions, (
+        "the scope now has more than one class at the same series/event: "
+        f"{collisions}. The artifacts and run_multistop key on (series, event) "
+        "and would silently drop one of them -- make the key class-aware and "
+        "add a `class` column to endurance_degradation_fits.csv and "
+        "multistop_plans.csv before scoping a second class."
+    )
