@@ -103,13 +103,20 @@ endurance series.
 ## 6. What is not here
 
 - **No per-decision audit.** GTP and WEC each have one; GTD does not yet.
-- **No crew-rating analysis**, which is the question that made this class worth
-  adding: GTD mandates a bronze- or silver-rated driver, so within-race pace
-  varies by crew in a way GTP and HYPERCAR do not. The car-driver fixed effects
-  already separate drivers within a car; what is missing is the rating that
-  would turn that into a measured amateur effect. The source does not carry it,
-  so this needs an external mapping and is honest future work rather than an
-  oversight.
+- **No crew-rating analysis yet — but the claim that it needs an external
+  mapping was wrong.** This section previously said the source does not carry
+  driver ratings, so measuring the amateur effect would need data from
+  elsewhere. It does not. IMSA runs **GTD PRO** alongside GTD: the same GT3
+  cars under the same Balance of Performance, entered with all-professional
+  line-ups instead of a mandatory bronze- or silver-rated driver. That is a
+  natural experiment for exactly this question, sitting in the same table, and
+  it was missed by treating "GT3" as one class.
+
+  GTD PRO clears the eligibility floor at **47 of 47 race-seasons** over
+  2022–2026 across 13 circuits — every one of which GTD also races, so the
+  comparison is like-for-like on the same weekends at the same tracks. It is
+  being scoped as its own class; nothing here pools it with GTD, for the same
+  reason nothing pools GTD with GTP.
 - **No Balance-of-Performance term.** BoP shifts a car's pace level and the
   per-race intercepts absorb that completely (see
   [`reports/new_series_survey_phase0.md`](../new_series_survey_phase0.md) §GT3);
