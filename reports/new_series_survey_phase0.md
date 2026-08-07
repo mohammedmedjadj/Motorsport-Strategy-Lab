@@ -177,6 +177,44 @@ afterwards.
 With that done, **GTD phase 1 is now unblocked** and the remaining work is
 materialisation plus the usual per-phase reports.
 
+### A third trap, found while listing the GTD scope: circuit aliases
+
+Every one of GTD's **60 race-seasons clears the eligibility floor** — cars,
+laps and green fraction, with nothing excluded — across what the source calls
+16 events. It is not 16 circuits.
+
+| event string | source's `circuit_name` | seasons |
+|---|---|---|
+| `Mosport` | Canadian Tire Motorsport Park | 4 |
+| `Canadian Tire Motorsport Park` | *(null)* | 1 (2026) |
+| `Watkins Glen` | Watkins Glen International | 5 |
+| `Watkins Glen 240` | *(null)* | 1 (2021) |
+| `Watkins Glen 6 Hours` | *(null)* | 1 (2021) |
+
+Mosport **is** Canadian Tire Motorsport Park — the source renamed it in 2026 —
+and the three Watkins Glen strings are one track. Scoping them as written
+would give leave-one-circuit-out validation folds that are not independent:
+train on Mosport, test on CTMP, and report it as generalisation to an unseen
+circuit. That is leakage of exactly the kind the validation exists to prevent,
+and it would inflate the headline transfer result rather than break anything
+visibly.
+
+Two things make this worth stating rather than quietly fixing. The source
+*does* carry a `circuit_name` column that resolves the aliases — but it is
+null for precisely the ambiguous strings, so it cannot be relied on alone.
+And `Belle Isle` versus `Detroit` looks like the same pattern and is not:
+IMSA moved from the Belle Isle park circuit to the downtown Detroit street
+course in 2023, so those are genuinely different tracks and must stay
+separate. An alias map has to be built from knowledge of the championship,
+not from string similarity.
+
+**The existing work is unaffected**, checked rather than assumed: the current
+IMSA GTP scope contains `Mosport` and not `Canadian Tire Motorsport Park`, and
+only the plain `Watkins Glen`. No fold in any published result pairs two names
+for one track. What it does reveal is a small coverage gap — the 2026 CTMP
+round is simply absent from the GTP scope, because it arrived under a new
+name.
+
 ## Recommendation
 
 1. **IMSA GTD** is the highest-value next addition: it clears every data
