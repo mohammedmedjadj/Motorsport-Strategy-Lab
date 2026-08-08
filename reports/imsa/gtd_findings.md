@@ -19,7 +19,7 @@ This document is what the models say now that it has been.
 | Class | GTD (GT3, Pro/Am) |
 | Seasons | 2021–2026 |
 | Race-seasons | **60**, all of which cleared the eligibility floor |
-| Circuits | **14** (16 source event strings; Mosport/Canadian Tire Motorsport Park and the three Watkins Glen names are aliases) |
+| Circuits | **13** (16 source event strings; Canadian Tire Motorsport Park resolves to Mosport, and Watkins Glen 240 / 6 Hours to Watkins Glen — three aliases, so 16 - 3) |
 | Race laps | 201,249 — more than the whole of WEC across all its classes |
 | Median field | 14 cars |
 | Laps kept for modelling | 73.2% (median per race) |

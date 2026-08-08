@@ -42,8 +42,9 @@ open. ALMS was examined and declined, with its reason recorded.
 Candidate sources beyond that are surveyed against this project's actual bar —
 per-lap flags and tyre age, not just lap times — in
 [`reports/new_series_survey_phase0.md`](reports/new_series_survey_phase0.md).
-**IMSA's GT3 class (GTD) has since been built out** — 60 race-seasons over
-2021-2026 across 14 circuits, scoped, fitted and written up in
+**IMSA's two GT3 classes have since been built out**, each scoped separately:
+**GTD** (Pro/Am, 60 race-seasons over 2021-2026, 13 circuits) and **GTD PRO**
+(all-professional, 47 race-seasons over 2022-2026, 12 circuits), written up in
 [`reports/imsa/gtd_findings.md`](reports/imsa/gtd_findings.md). IndyCar is
 declined on evidence, with the check that produced the decision written down.
 
@@ -487,24 +488,25 @@ numbers too, most visibly at Imola.
 
 ## IMSA
 
-> **GT3 (GTD) is modelled as its own class**, never pooled with GTP: 60
-> race-seasons, 2021-2026, 14 circuits, 201,249 race laps. Adding it corrected
-> a published conclusion — **"every measured race is fuel-limited" was a fact
-> about prototypes, not about endurance racing.** GTD is tyre-limited at five
-> circuits (six stops against a fuel minimum of two at Laguna Seca) where GTP
-> is at one and WEC HYPERCAR at none. It also exposed a pooling error: the
-> tyre-change premium is 17.6s for GTD against 8.7s for GTP, so measuring it
-> per *series* would have reported ~14s and destroyed the finding that IMSA
-> services tyres in parallel while WEC does it in sequence.
-> **GTD PRO is scoped as a third class** (47 race-seasons, all-professional
-> line-ups in the same GT3 cars under the same BoP), which makes the
-> crew-rating question answerable without external data. Result: the pit-stop
-> premium is a property of the **car, not the crew** — 17.6s GTD against 16.9s
-> GTD PRO, versus 8.7s for the prototype. On tyre wear the Pro/Am slope is
-> steeper by +0.0040 s/lap across 44 circuit-and-season-matched pairs, but at
-> p = 0.085 that is **not established**, and is reported as such.
-> Full results: [`reports/imsa/gtd_findings.md`](reports/imsa/gtd_findings.md).
+IMSA is modelled as **three separate classes**, never pooled. They share a
+loader and model code; they share no fitted number. The split is not
+bookkeeping: the prototype and the GT3 classes **disagree on this project's
+headline endurance conclusion**. "Every measured race is fuel-limited on stop
+count" holds for GTP (one exception, Laguna Seca) and fails for GTD, which is
+tyre-limited at five circuits and takes six stops against a fuel minimum of
+two at Laguna Seca. Pooling them would have averaged that away.
 
+| class | what it is | race-seasons | circuits | seasons | median slope |
+|---|---|---|---|---|---|
+| **GTP** | manufacturer prototype (Hypercar-adjacent) | 33 | 10 | 2023–2026 | +0.0155 s/lap |
+| **GTD** | GT3, **Pro/Am** (mandatory bronze/silver driver) | 60 | 13 | 2021–2026 | +0.0202 s/lap |
+| **GTD PRO** | GT3, **all-professional** line-ups | 47 | 12 | 2022–2026 | +0.0196 s/lap |
+
+GTD and GTD PRO are the *same cars under the same Balance of Performance*.
+Keeping them apart is what makes the crew-rating question measurable at all:
+the class boundary *is* the crew rating, so no external driver-rating data is
+needed. Results in
+[`reports/imsa/gtd_findings.md`](reports/imsa/gtd_findings.md) §6.
 
 The IMSA WeatherTech SportsCar Championship needed the same treatment as
 WEC — FastF1 doesn't cover it either. IMSA shares its loader and model code
@@ -516,8 +518,11 @@ WEC's.
 
 ### Data scope
 
-**Four GTP circuits, one to three seasons each (2023-2025)**, chosen to span
-sprint and endurance formats:
+#### GTP (prototypes)
+
+**10 circuits over 2023-2026, 33 race-seasons.** The table below lists the
+four the build started from, chosen to span sprint and endurance formats; the
+scope was later widened to every eligible GTP race the source carries:
 
 | Circuit      | Seasons             | Race length   | Why it is in the set                                                       |
 | ------------ | ------------------- | ------------- | -------------------------------------------------------------------------- |
