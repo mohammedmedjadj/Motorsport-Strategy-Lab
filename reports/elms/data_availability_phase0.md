@@ -83,17 +83,49 @@ meaning changes mid-scope — and it is not cosmetic: a Pro/Am entry must run an
 amateur-rated driver, whose stint pace and consistency differ systematically
 from a professional's.
 
-Three defensible ways to handle it, none of which should be chosen by default:
+Three defensible ways to handle it:
 
 1. **Union** `LMP2` and `LMP2 Pro/Am` from 2023 to reconstruct the pre-2023
    all-comers population. Consistent across all 5 seasons; loses the crew
    distinction.
 2. **Restrict to 2023-2025** and use `LMP2` (pro-only) consistently. Three
    seasons, cleanest population, smallest sample.
-3. **Model the two classes separately.** The most interesting option, because
-   it makes the amateur-driver effect *measurable* rather than a nuisance —
-   and neither WEC's Hypercar nor IMSA's GTP offers an equivalent split, so it
-   is a question this project cannot currently ask anywhere else.
+3. **Model the two classes separately**, making the amateur-driver effect
+   measurable rather than a nuisance.
+
+### Decision: option 3, on evidence rather than preference
+
+This was left open when the section was first written. It is now settled by a
+result from elsewhere in the project rather than by taste. IMSA's GTD and GTD
+PRO pose the identical question — same cars, same Balance of Performance,
+differing only in whether an amateur-rated driver is mandatory — and scoping
+them separately produced a measurement that pooling would have destroyed: the
+tyre-change premium is 17.6 s for the Pro/Am class against 16.9 s for the
+all-professional one, while the prototype is 8.7 s. Pooling the GT3 classes
+would have reported one number and hidden that the difference is the car
+rather than the crew
+([`reports/imsa/gtd_findings.md`](../imsa/gtd_findings.md) §6).
+
+The same reasoning applies here, and ELMS adds something IMSA cannot supply on
+its own. The IMSA crew comparison on *degradation* came out inconclusive —
++0.0040 s/lap steeper for Pro/Am across 44 matched pairs, paired Wilcoxon
+p = 0.085. ELMS gives a **second, independent test of the same question** on a
+different car (LMP2, near-spec) in a different championship. Two independent
+inconclusive results still say little; two agreeing ones would say a great
+deal, and a disagreement would be more informative than either alone.
+
+Scope, both classes materialised:
+
+- **`LMP2`** — 25 of 29 race-seasons eligible, 9 circuits, 2021-2025.
+- **`LMP2 Pro/Am`** — **17 of 17** eligible, 8 circuits, 2023-2025.
+
+**One caution that must not be lost in the paired analysis.** `LMP2` is *not*
+a pro-only population across its whole range: before 2023 it is all-comers,
+and only from 2023 does it mean the professional subset. A crew comparison
+must therefore use **2023-2025 only**, where the two labels are contemporaries.
+Using the full LMP2 range against Pro/Am would compare a pro-only class
+against a mixed one on the early seasons and call the difference a crew
+effect.
 
 ## 4. ALMS is declined, for now
 
