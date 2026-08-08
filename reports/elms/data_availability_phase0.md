@@ -147,9 +147,10 @@ from the source's own event strings rather than guessed; both traps are
 identified with the numbers that reveal them; the ALMS decision is recorded
 with its reason.
 
-**Not done, on purpose:** no ELMS data is materialised, no entry has been added
-to `src/data/endurance_scope.py`, and no model has been fitted. Phase 0 is a
-gate, and the class-split question in §3 is a scoping decision that changes
-what every later phase measures. Making that choice silently, in the same pass
-that discovered it, is exactly how a project ends up with a result nobody can
-defend.
+**Where this now stands.** The class-split question in §3 is settled (option
+3, both classes scoped separately) and both classes' laps are materialised.
+What is still not done, on purpose: no entry has been added to
+`src/data/endurance_scope.py` and no model has been fitted, so no ELMS number
+appears in any artifact yet. Materialising before scoping is the deliberate
+order — an interrupted run then leaves extra data files rather than a scope
+pointing at races that are not there.
