@@ -8,7 +8,7 @@
   <a href="https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab/actions/workflows/tests.yml"><img src="https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab/actions/workflows/tests.yml/badge.svg" alt="Test suite status"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-CC%20BY--NC--SA%204.0-E10600" alt="License: CC BY-NC-SA 4.0"></a>
   <img src="https://img.shields.io/badge/python-3.11%2B-00D9FF" alt="Python 3.11+">
-  <img src="https://img.shields.io/badge/tests-280%20passing-2ea44f" alt="280 tests passing">
+  <img src="https://img.shields.io/badge/tests-282%20passing-2ea44f" alt="282 tests passing">
   <img src="https://img.shields.io/badge/series-F1%20%C2%B7%20WEC%20%C2%B7%20IMSA%20%C2%B7%20ELMS-FFB800" alt="Series: F1, WEC, IMSA, ELMS">
 </p>
 
@@ -35,7 +35,14 @@ each with its own report and its own test suite.
 
 A fourth series, **ELMS**, is now modelled — both LMP2 classes scoped
 separately ([phase 0](reports/elms/data_availability_phase0.md) ·
-[crew-rating results](reports/elms/crew_rating_findings.md)). It exists to give
+[results](reports/elms/results.md) ·
+[crew-rating](reports/elms/crew_rating_findings.md)). It also settled a
+question this project had carried since its F1 phase: degradation slopes that
+fail to transfer between seasons are **not** an artefact of BoP-adjusted
+manufacturer prototypes. ELMS's LMP2 is near-spec — same chassis and engine
+for everyone — and its slopes fail to transfer just as badly, every
+leave-one-race-out R² at or below zero. Whatever drives the instability, it is
+not the car. It exists to give
 the amateur-driver question a second, independent test, and it **disagrees with
 the first**: IMSA's GT3 comparison was inconclusive, ELMS's is significant in
 the opposite direction, so the simple "amateurs degrade tyres faster"
@@ -868,7 +875,7 @@ Motorsport-Strategy-Lab/
                         #   run_fuel_limited_sensitivity.py,
                         #   run_sc_contamination_check.py (adversarial audit
                         #   pass); demo_extensions.py; generate_banner.py
-  tests/                # pytest, across four series, 280 tests (incl. the demo,
+  tests/                # pytest, across four series, 282 tests (incl. the demo,
                         #   driven headlessly by tests/test_demo_app.py)
   reports/
     f1/                 # phase 0-5 reports + extensions (breadth layer,

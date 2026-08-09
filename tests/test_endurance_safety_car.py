@@ -146,3 +146,27 @@ def test_wec_safety_car_is_circuit_specific_not_series_wide(real_timeline) -> No
     spa_sc = models[("wec", "Spa", "SC")]
     spa_fcy = models[("wec", "Spa", "FCY")]
     assert spa_sc.occurrence.mean > spa_fcy.occurrence.mean
+
+
+def test_the_three_series_are_three_neutralisation_regimes(real_timeline) -> None:
+    """Why nothing in this project pools 'endurance' into one model.
+
+    Measured on the committed flag timeline, the three series do not differ by
+    degree — they differ in kind. IMSA records no Safety Car at all and runs
+    on full-course yellows; WEC and ELMS both use Safety Cars, ELMS most of
+    all. A pooled hazard would sit between three regimes and describe none.
+    """
+    per_race = (
+        real_timeline.groupby(RACE_KEY)
+        .agg(series=("series_code", "first"),
+             any_sc=("flags", lambda s: (s == "SF").any()),
+             any_fcy=("flags", lambda s: (s == "FCY").any()))
+    )
+    share = per_race.groupby("series")[["any_sc", "any_fcy"]].mean()
+
+    # IMSA: full-course yellows, and no Safety Car anywhere in the record.
+    assert share.loc["imsa", "any_sc"] == 0.0
+    assert share.loc["imsa", "any_fcy"] > 0.9
+    # WEC and ELMS both use Safety Cars, and ELMS leans on them hardest.
+    assert share.loc["wec", "any_sc"] > 0.4
+    assert share.loc["elms", "any_sc"] > share.loc["wec", "any_sc"]

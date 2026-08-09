@@ -241,3 +241,33 @@ def test_artifacts_carry_a_canonical_circuit_identity() -> None:
     fits = pd.read_csv(ENDURANCE_DERIVED_DIR / "endurance_degradation_fits.csv")
     expected = fits["event"].map(canonical_circuit)
     assert (fits["circuit_canonical"] == expected).all()
+
+
+def test_a_near_spec_field_does_not_rescue_slope_transfer(loro) -> None:
+    """The control experiment ELMS was scoped to run, and its negative result.
+
+    Phase 0 predicted this would be decisive either way. The season-to-season
+    instability of degradation slopes, measured everywhere in this project
+    since its F1 phase, had an obvious candidate cause: heterogeneous
+    manufacturer prototypes equalised by a Balance of Performance that moves
+    between races. ELMS's LMP2 is close to a one-make formula — same Oreca 07
+    chassis, same Gibson engine for everyone — so if slopes transferred there,
+    the machinery was the explanation.
+
+    They do not. Every ELMS circuit's leave-one-race-out mean within-stint R²
+    sits at or below zero, at Portimao markedly below it. A pooled slope
+    explains none of a held-out season's variance on a field where the car is
+    the same for everyone, so whatever drives the instability is not the car.
+
+    Pinned as a finding, not as a threshold to defend: if a future season made
+    ELMS slopes transfer, that would be a real discovery and this test should
+    fail loudly rather than be quietly relaxed.
+    """
+    elms = loro[(loro["series"] == "elms") & (loro["held_out_season"] == "MEAN")]
+    assert len(elms) >= 8, "expected both ELMS classes across several circuits"
+    r2 = elms["r2_within"].astype(float)
+    assert r2.max() < 0.10, (
+        f"an ELMS circuit now transfers (max R² {r2.max():.3f}) — the near-spec "
+        "control no longer supports 'the instability is not the hardware'"
+    )
+    assert r2.median() <= 0.0
