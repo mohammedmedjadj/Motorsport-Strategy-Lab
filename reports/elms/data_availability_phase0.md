@@ -1,14 +1,17 @@
 # ELMS — Phase 0: data availability
 
-*ELMS only. If this series is ever built out, it gets its own reports at every
-phase, as WEC and IMSA do — the three endurance series are never merged into
-one write-up.*
+*ELMS only, as WEC and IMSA each have their own — the three endurance series
+are never merged into one write-up. ELMS has since been built out: see
+[`crew_rating_findings.md`](crew_rating_findings.md) for the results. This
+document is the phase-0 record and is kept as written, because what it decided
+and why is the part worth preserving.*
 
 Phase 0 answers one question before any modelling: **is the data actually
 there, and what is wrong with it?** Everything below comes from direct queries
 against the upstream DuckDB (`hf://datasets/tobil/imsa/imsa.duckdb`,
-`laps_with_metadata`, `session = 'race'`), not from assumption. Nothing has
-been modelled yet and nothing has been materialised.
+`laps_with_metadata`, `session = 'race'`), not from assumption. At the time
+this was written nothing had been materialised or modelled; both have since
+happened, and §5 records where it now stands.
 
 ## 1. Why ELMS, and why now
 
@@ -147,10 +150,13 @@ from the source's own event strings rather than guessed; both traps are
 identified with the numbers that reveal them; the ALMS decision is recorded
 with its reason.
 
-**Where this now stands.** The class-split question in §3 is settled (option
-3, both classes scoped separately) and both classes' laps are materialised.
-What is still not done, on purpose: no entry has been added to
-`src/data/endurance_scope.py` and no model has been fitted, so no ELMS number
-appears in any artifact yet. Materialising before scoping is the deliberate
-order — an interrupted run then leaves extra data files rather than a scope
-pointing at races that are not there.
+**Where this now stands.** Everything this phase deferred has since been done:
+the class-split question in §3 was settled (option 3, both classes scoped
+separately), both classes' 42 race-seasons are materialised, `LMP2` and
+`LMP2 Pro/Am` are entries in `src/data/endurance_scope.py`, and the models are
+fitted — ELMS now contributes to every endurance artifact. Results are in
+[`crew_rating_findings.md`](crew_rating_findings.md).
+
+The order was deliberate throughout: materialise, then scope, then fit. An
+interrupted run then leaves spare data files rather than a scope pointing at
+races that are not there.
