@@ -57,8 +57,20 @@ about **prototypes**.
 | class | tyre-limited circuits |
 |---|---|
 | WEC HYPERCAR | none |
+| ELMS LMP2 Pro/Am | none |
 | IMSA GTP | 1 (Laguna Seca) |
+| ELMS LMP2 | 1 (Mugello) |
+| IMSA GTD PRO | 2 (Laguna Seca, VIR) |
 | **IMSA GTD** | **5** — Indianapolis, Laguna Seca, Lime Rock, Mosport, VIR |
+
+**This table is not the finding, and reading it as one is a mistake this
+report made first.** Once ELMS and GTD PRO were added, the pattern resolved
+into a mechanism that has nothing to do with the class: tyre-limited racing
+needs a *cheap stop* (no entry above 22.5 s pit loss is tyre-limited anywhere
+in 66 entries) and *real degradation*, and conditioned on stop cost the split
+happens inside every class. GT3 dominates the list because GT3 racing is where
+cheap stops are common. See
+[`reports/when_tyres_beat_fuel.md`](../when_tyres_beat_fuel.md).
 
 At Laguna Seca the GTD optimum takes **six stops against a fuel minimum of
 two**. The five are the short sprint rounds, where the stop is cheap and a

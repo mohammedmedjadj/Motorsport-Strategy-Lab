@@ -145,37 +145,60 @@ def test_traffic_adds_variance_without_shifting_the_median() -> None:
 
 @pytest.mark.skipif(not (ENDURANCE_DERIVED_DIR / "multistop_plans.csv").exists(),
                     reason="multistop artifact not generated")
-def test_prototypes_are_fuel_limited_but_gt3_is_not() -> None:
-    """The headline finding, and how adding a class changed it.
+def test_tyre_limited_racing_needs_a_cheap_stop_and_real_degradation() -> None:
+    """The cross-series rule, replacing a narrower claim that read as a fact
+    about cars (``reports/when_tyres_beat_fuel.md``).
 
-    Across the prototype classes the optimum takes exactly the fuel-minimum
-    number of stops almost everywhere: WEC HYPERCAR at every circuit, IMSA GTP
-    at every circuit but Laguna Seca, whose 10.4 s pit loss is the cheapest
-    measured anywhere. Tyre degradation is not steep enough to pay for a stop.
+    Two conditions, both necessary and neither sufficient:
 
-    GT3 is a different car and behaves like one. IMSA GTD is tyre-limited at
-    five circuits — Indianapolis, Laguna Seca, Lime Rock, Mosport and VIR — and
-    at Laguna Seca the optimum takes six stops against a fuel minimum of two.
-    They are the short sprint rounds, where a stop is cheap and a heavier car
-    on harder-worked rubber has more to gain from fresh tyres.
+    1. **A cheap stop.** No entry with a pit loss above ~22.5 s is
+       tyre-limited anywhere in 66 circuit-class entries across four series.
+       A Hypercar stop costs 60-91 s, which buys some 2,000 laps of
+       degradation at a typical slope -- no tyre repays that.
+    2. **Degradation to escape.** Among the cheap-stop entries, the
+       tyre-limited ones carry visibly steeper slopes than the rest.
 
-    This is why the class was added rather than more prototype data: "every
-    measured race is fuel-limited" was never a fact about endurance racing, it
-    was a fact about prototypes, and nothing in the previous scope could have
-    revealed the difference.
+    This test used to assert "GT3 is tyre-limited, prototypes are not". That
+    was true of the rows and false as an explanation: condition on stop cost
+    and the split happens inside every class, GTP and LMP2 included. GT3
+    dominated the list only because GT3 racing is where cheap stops are
+    common.
     """
+    from scipy import stats
+
     art = pd.read_csv(ENDURANCE_DERIVED_DIR / "multistop_plans.csv")
+    art["tyre_limited"] = art["optimal_stops"] != art["min_stops"]
     assert (art["optimal_stops"] >= art["min_stops"]).all()
+    tyre, fuel = art[art["tyre_limited"]], art[~art["tyre_limited"]]
+    assert len(tyre) >= 5, "the finding needs some positives to be about"
 
-    tyre_limited = art[art["optimal_stops"] != art["min_stops"]]
-    by_class = tyre_limited.groupby("car_class")["circuit"].apply(set).to_dict()
-    assert "HYPERCAR" not in by_class, "WEC prototypes became tyre-limited"
-    assert by_class.get("GTP", set()) <= {"laguna_seca"}
-    assert len(by_class.get("GTD", set())) >= 4, "GT3 should be tyre-limited widely"
+    # 1. the hard edge: an expensive stop is never worth an extra visit
+    assert tyre["pit_loss_s"].max() < fuel["pit_loss_s"].max()
+    assert tyre["pit_loss_s"].median() < 0.5 * fuel["pit_loss_s"].median()
+    assert stats.mannwhitneyu(tyre["pit_loss_s"], fuel["pit_loss_s"]).pvalue < 0.01
 
-    # Prototypes keep a wide margin; GT3 does not, which is the contrast.
-    proto = art[(art["car_class"] != "GTD") & (art["net_slope_s"] > 0)]
-    assert proto["slope_headroom_x"].median() > 2.0
+    # ... and it is necessary, not sufficient
+    cheap = art[art["pit_loss_s"] <= tyre["pit_loss_s"].max()]
+    assert (~cheap["tyre_limited"]).any(), (
+        "if every cheap-stop entry were tyre-limited the stop cost would be "
+        "the whole story, and condition 2 below would be untestable"
+    )
+
+    # 2. among cheap stops, degradation decides
+    assert stats.mannwhitneyu(
+        cheap[cheap["tyre_limited"]]["net_slope_s"],
+        cheap[~cheap["tyre_limited"]]["net_slope_s"],
+    ).pvalue < 0.05
+
+    # 3. the class is a proxy, not the mechanism: the split occurs in more
+    # than one class once stop cost is held down.
+    classes_split = {
+        c for c, g in cheap.groupby("car_class") if g["tyre_limited"].any()
+    }
+    assert len(classes_split) >= 3, (
+        f"only {classes_split} split on cheap stops; if the effect collapsed "
+        "into one class the class-as-proxy reading would need revisiting"
+    )
 
 
 @pytest.mark.skipif(not (ENDURANCE_DERIVED_DIR / "multistop_plans.csv").exists(),

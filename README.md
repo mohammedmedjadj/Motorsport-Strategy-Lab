@@ -8,8 +8,8 @@
   <a href="https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab/actions/workflows/tests.yml"><img src="https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab/actions/workflows/tests.yml/badge.svg" alt="Test suite status"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-CC%20BY--NC--SA%204.0-E10600" alt="License: CC BY-NC-SA 4.0"></a>
   <img src="https://img.shields.io/badge/python-3.11%2B-00D9FF" alt="Python 3.11+">
-  <img src="https://img.shields.io/badge/tests-275%20passing-2ea44f" alt="275 tests passing">
-  <img src="https://img.shields.io/badge/series-F1%20%C2%B7%20WEC%20%C2%B7%20IMSA-FFB800" alt="Series: F1, WEC, IMSA">
+  <img src="https://img.shields.io/badge/tests-280%20passing-2ea44f" alt="280 tests passing">
+  <img src="https://img.shields.io/badge/series-F1%20%C2%B7%20WEC%20%C2%B7%20IMSA%20%C2%B7%20ELMS-FFB800" alt="Series: F1, WEC, IMSA, ELMS">
 </p>
 
 <p align="center">
@@ -42,6 +42,16 @@ the opposite direction, so the simple "amateurs degrade tyres faster"
 hypothesis is not supported. ALMS was examined and declined, with its reason
 recorded.
 
+The strongest result the fourth series bought is cross-series and could not
+have been found in any one of them:
+[**when tyres beat fuel**](reports/when_tyres_beat_fuel.md) — an extra pit
+stop is worth its cost only where the stop is *cheap* (no entry above 22.5 s
+pit loss is tyre-limited in 66 circuit-class entries, p = 0.00001) **and** the
+tyre is genuinely going away (p = 0.0013 among cheap-stop entries). Condition
+on stop cost and the car class stops mattering — GT3 dominated the earlier,
+narrower version of this finding only because GT3 racing is where cheap stops
+are common.
+
 Candidate sources beyond that are surveyed against this project's actual bar —
 per-lap flags and tyre age, not just lap times — in
 [`reports/new_series_survey_phase0.md`](reports/new_series_survey_phase0.md).
@@ -51,9 +61,10 @@ per-lap flags and tyre age, not just lap times — in
 [`reports/imsa/gtd_findings.md`](reports/imsa/gtd_findings.md). IndyCar is
 declined on evidence, with the check that produced the decision written down.
 
-**Status:** all three series are complete end to end, phases 0-7 — data,
+**Status:** F1, WEC and IMSA are complete end to end, phases 0-7 — data,
 models, simulator, per-decision audit, a written methodology and a packaging
-report. WEC and IMSA keep their own documents at every phase
+report. A fourth series, **ELMS**, is modelled but not yet carried through
+every phase. WEC and IMSA keep their own documents at every phase
 ([methodology](reports/wec/methodology.md) ·
 [packaging](reports/wec/packaging_phase7.md) for WEC;
 [methodology](reports/imsa/methodology.md) ·
@@ -113,11 +124,11 @@ flowchart LR
     class e0,e1,e2,e3,e4,e5,e6,e7 done
 ```
 
-All three series now run the full pipeline through phase 7. WEC and IMSA
-each have their own methodology report (phase 6) and their own packaging
-report (phase 7) — separate documents throughout, because they are separate
-series: WEC's committed data holds 44 Safety Cars against 18 full-course
-yellows, IMSA's holds 293 full-course yellows and no Safety Car at all.
+F1, WEC and IMSA run the full pipeline through phase 7; ELMS is modelled
+but stops short of it. Each keeps its own reports throughout, because they are
+separate series and the data says so: across their committed races, WEC sees a
+Safety Car in 19 of 33, ELMS in **23 of 29**, and IMSA in **0 of 63** — three
+neutralisation regimes that no pooled model would describe.
 
 ## Repository map
 
@@ -857,7 +868,7 @@ Motorsport-Strategy-Lab/
                         #   run_fuel_limited_sensitivity.py,
                         #   run_sc_contamination_check.py (adversarial audit
                         #   pass); demo_extensions.py; generate_banner.py
-  tests/                # pytest, all three series, 275 tests (incl. the demo,
+  tests/                # pytest, across four series, 280 tests (incl. the demo,
                         #   driven headlessly by tests/test_demo_app.py)
   reports/
     f1/                 # phase 0-5 reports + extensions (breadth layer,
