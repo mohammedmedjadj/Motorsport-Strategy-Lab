@@ -26,7 +26,11 @@ def loro() -> pd.DataFrame:
 
 def test_artifacts_cover_the_full_scope(fits) -> None:
     assert len(fits) == len(scoped_race_seasons())  # one row per circuit-season
-    assert set(fits["series"]) == {"imsa", "wec"}
+    # Asserted as a superset-of-the-known rather than an exact set: the scope
+    # grows as series and classes are added (ELMS joined IMSA and WEC), and an
+    # exact match would fail on every widening for no reason. What must hold is
+    # that nothing modelled has silently vanished.
+    assert {"imsa", "wec"} <= set(fits["series"])
 
 
 def test_committed_fits_match_a_fresh_recomputation(fits) -> None:
@@ -95,7 +99,7 @@ def test_endurance_overtaking_difficulty_is_measured_and_stable() -> None:
     )
 
     art = pd.read_csv(ENDURANCE_DERIVED_DIR / "endurance_overtaking_difficulty.csv")
-    assert set(art["series"]) == {"imsa", "wec"}
+    assert {"imsa", "wec"} <= set(art["series"])
     assert art["adj_swap_rate"].between(0.0, 0.15).all()  # physical
     assert (art["p_hold_15_laps"].between(0.0, 1.0)).all()
 

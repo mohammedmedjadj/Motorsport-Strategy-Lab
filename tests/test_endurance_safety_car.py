@@ -71,7 +71,9 @@ def test_real_data_covers_every_race(real_timeline) -> None:
     # baseline) rather than an exact count that a data refresh would break.
     n_races = real_timeline.groupby(RACE_KEY).ngroups
     assert n_races >= 96
-    assert set(real_timeline["series_code"].unique()) == {"imsa", "wec"}
+    # Same floor logic as the count above: a series can be added (ELMS was),
+    # never silently dropped.
+    assert {"imsa", "wec"} <= set(real_timeline["series_code"].unique())
     # Structural identity: every race must have at least one lap in the timeline.
     assert real_timeline.groupby(RACE_KEY)["lap"].size().min() >= 1
 

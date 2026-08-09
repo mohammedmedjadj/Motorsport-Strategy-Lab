@@ -33,11 +33,14 @@ standard as the F1 work: verified data availability, a cross-validated
 degradation model, a Bayesian neutralisation model, a Monte Carlo simulator,
 each with its own report and its own test suite.
 
-A fourth series, **ELMS**, has passed phase 0 only — the source is verified and
-the scope enumerated, with two traps documented that would have corrupted a
-model built without them ([`reports/elms/data_availability_phase0.md`](reports/elms/data_availability_phase0.md)).
-Nothing is modelled yet and the scoping decision it raises is deliberately left
-open. ALMS was examined and declined, with its reason recorded.
+A fourth series, **ELMS**, is now modelled — both LMP2 classes scoped
+separately ([phase 0](reports/elms/data_availability_phase0.md) ·
+[crew-rating results](reports/elms/crew_rating_findings.md)). It exists to give
+the amateur-driver question a second, independent test, and it **disagrees with
+the first**: IMSA's GT3 comparison was inconclusive, ELMS's is significant in
+the opposite direction, so the simple "amateurs degrade tyres faster"
+hypothesis is not supported. ALMS was examined and declined, with its reason
+recorded.
 
 Candidate sources beyond that are surveyed against this project's actual bar —
 per-lap flags and tyre age, not just lap times — in

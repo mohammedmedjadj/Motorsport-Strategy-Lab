@@ -132,6 +132,35 @@ ENDURANCE_SCOPE: dict[str, tuple[CircuitScope, ...]] = {
         CircuitScope("Sebring", "HYPERCAR", (2022, 2023)),
         CircuitScope("Spa", "HYPERCAR", (2022, 2023, 2024, 2025, 2026)),
     ),
+    "elms": (
+        # ELMS LMP2, scoped as TWO classes. The label changed meaning in 2023:
+        # before, `LMP2` is every LMP2 entry; from 2023 the field splits and
+        # `LMP2` means the professional-crew subset only. Keeping them apart
+        # makes the amateur effect measurable instead of a confound -- the same
+        # call as IMSA's GTD / GTD PRO, and settled on that evidence (see
+        # reports/elms/data_availability_phase0.md).
+        #
+        # CAUTION for any crew comparison: `LMP2` is only pro-only from 2023.
+        # Pairing it against Pro/Am on 2021-2022 would compare a mixed field
+        # against a pro one and call the difference a crew effect.
+        CircuitScope("Aragon", "LMP2", (2023,)),
+        CircuitScope("Barcelona", "LMP2", (2022, 2023, 2024, 2025)),
+        CircuitScope("Imola", "LMP2", (2022, 2024, 2025)),
+        CircuitScope("Monza", "LMP2", (2022,)),
+        CircuitScope("Mugello", "LMP2", (2024,)),
+        CircuitScope("Paul Ricard", "LMP2", (2022, 2023, 2024, 2025)),
+        CircuitScope("Portimao", "LMP2", (2021, 2022, 2023, 2024, 2025)),
+        CircuitScope("Silverstone", "LMP2", (2025,)),
+        CircuitScope("Spa", "LMP2", (2021, 2022, 2023, 2024, 2025)),
+        CircuitScope("Aragon", "LMP2 Pro/Am", (2023,)),
+        CircuitScope("Barcelona", "LMP2 Pro/Am", (2023, 2024, 2025)),
+        CircuitScope("Imola", "LMP2 Pro/Am", (2024, 2025)),
+        CircuitScope("Mugello", "LMP2 Pro/Am", (2024,)),
+        CircuitScope("Paul Ricard", "LMP2 Pro/Am", (2023, 2024, 2025)),
+        CircuitScope("Portimao", "LMP2 Pro/Am", (2023, 2024, 2025)),
+        CircuitScope("Silverstone", "LMP2 Pro/Am", (2025,)),
+        CircuitScope("Spa", "LMP2 Pro/Am", (2023, 2024, 2025)),
+    ),
 }
 
 

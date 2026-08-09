@@ -1,8 +1,12 @@
-"""Materialise the per-race race-control flag timeline for IMSA and WEC.
+"""Materialise the per-race race-control flag timeline for every scoped series.
 
 Aggregates server-side into per (race, lap, flag) car-lap counts — a ~1 MB
 artifact covering every available race — rather than downloading full lap data
-for ~100 races. Neutralisations are race-wide, so no per-class detail is needed.
+for ~100 races. Neutralisations are race-wide, so no per-class detail is needed -- but they
+ARE per-series: a series with no flag rows here gets no neutralisation
+posterior, and ``endurance_models.load_race_model`` refuses to build a model
+for it rather than falling back to a default prior. That is how ELMS being
+absent from this query was caught, after its laps were already scoped.
 
 Usage (needs network; writes data/derived/endurance/race_flags.csv)::
 
@@ -28,7 +32,7 @@ from src.safety_car.endurance import (  # noqa: E402
 QUERY = """
     SELECT series_code, year, event, session_id, lap, flags, count(*) AS car_laps
     FROM imsa.laps_with_metadata
-    WHERE session = 'race' AND series_code IN ('imsa', 'wec')
+    WHERE session = 'race' AND series_code IN ('imsa', 'wec', 'elms')
     GROUP BY 1, 2, 3, 4, 5, 6
     ORDER BY series_code, year, event, session_id, lap, flags
 """
