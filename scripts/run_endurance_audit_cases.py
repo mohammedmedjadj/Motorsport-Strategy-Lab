@@ -223,13 +223,74 @@ IMSA_ANALYSIS = [
 ]
 
 
-def write_report(series: str, title: str, analysis: list[str]) -> None:
+GT3_ANALYSIS = [
+    "## What these two cases show",
+    "",
+    "Both circuits are tyre-limited: the exact dynamic program wants more "
+    "stops than the fuel minimum, which no prototype race in scope ever "
+    "reaches. The single-stop engine cannot express \"stop more often\", so "
+    "read its window as where the *next* stop belongs given that pressure, "
+    "not as agreement or disagreement with the full plan.",
+    "",
+    "The two layers of the model disagree with each other at VIR, and saying "
+    "so is more useful than picking one. The full-race dynamic program wants "
+    "five stops where the winner took three and the fuel minimum is two — "
+    "stop *more often*. The single-stop engine, asked about the lap-28 "
+    "decision in isolation, wants that particular stop **later** (lap 40, "
+    "+14.24 s). Both are consistent: more stops overall and each one later is "
+    "only contradictory if you assume the extra visits come at the front of "
+    "the race, and nothing in the DP says they do.",
+    "",
+    "What neither layer has is a term for track position. A time-only optimum "
+    "cannot price what two extra stops cost on a short circuit where passing "
+    "is hard, which is the same limitation the F1 audit documents at Monaco. "
+    "A gap this size is a question about the model as much as about the "
+    "strategy.",
+    "",
+]
+
+ELMS_ANALYSIS = [
+    "## What these two cases show",
+    "",
+    "Mugello 2024 produced the only double stop under caution in any audited "
+    "race here, and both class winners made it independently — laps 66 and 67 "
+    "under the same Safety Car, in LMP2 and in LMP2 Pro/Am. The engine models "
+    "one stop, so it can price the first and is structurally silent on the "
+    "second. That silence is the finding worth recording: a real strategy "
+    "existed that this model has no way to represent.",
+    "",
+    "It also disagrees with the first stop, and by a lot — +19.71 s for LMP2 "
+    "and +16.16 s for Pro/Am against an optimum of lap 84 in both. The engine "
+    "discounts a neutralised stop by the pace ratio but has no rivals in it, "
+    "so it cannot see the reason teams take one: everyone else is queued "
+    "behind a Safety Car and the *relative* cost is what collapses, not the "
+    "absolute one. Two independent class winners made the same call, which is "
+    "the strongest signal available that the omission matters here.",
+    "",
+    "One thing the two cases agree on exactly: the recommended window is lap "
+    "83-84 for both classes, at the same event, in the same conditions. The "
+    "crew-rating comparison found no consistent effect across championships, "
+    "and at the level of a single decision the model sees no difference at "
+    "all.",
+    "",
+    "ELMS is the most Safety-Car-dominated series in scope — 23 of 29 races "
+    "see one, against WEC's 19 of 33 and IMSA's none at all — so the value of "
+    "a neutralised stop is higher here than anywhere else this project models.",
+    "",
+]
+
+
+def write_report(series: str, title: str, analysis: list[str],
+                 out_dir: str | None = None, filename: str = "audit_cases.md") -> None:
+    """``out_dir`` separates the *scope key* from where its report lives: the
+    GT3 cases are IMSA's classes, not a series, so they belong in reports/imsa/
+    under their own filename rather than inventing a reports/gt3/ directory."""
     cases = build_cases(series)
     lines = [f"# {title}", ""] + HEADER
     for case in cases:
         lines += audit_case(case)
     lines += analysis
-    out = REPORTS_DIR / series / "audit_cases.md"
+    out = REPORTS_DIR / (out_dir or series) / filename
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text("\n".join(lines), encoding="utf-8")
     print(f"wrote {out}\n")
@@ -238,6 +299,16 @@ def write_report(series: str, title: str, analysis: list[str]) -> None:
 def main() -> int:
     write_report("wec", "WEC per-decision audit — real stop timing vs the model", WEC_ANALYSIS)
     write_report("imsa", "IMSA per-decision audit — real stop timing vs the model", IMSA_ANALYSIS)
+    write_report(
+        "gt3",
+        "IMSA GT3 per-decision audit — GTD and GTD PRO, where an extra stop can pay",
+        GT3_ANALYSIS, out_dir="imsa", filename="gt3_audit_cases.md",
+    )
+    write_report(
+        "elms",
+        "ELMS per-decision audit — real stop timing vs the model",
+        ELMS_ANALYSIS, out_dir="elms",
+    )
     return 0
 
 

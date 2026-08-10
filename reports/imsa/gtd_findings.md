@@ -151,7 +151,9 @@ answerable with more seasons rather than merely askable.
 
 ## 7. What is not here
 
-- **No per-decision audit.** GTP and WEC each have one; GTD does not yet.
+- **Per-decision audit: now present** for both GT3 classes
+  ([`gt3_audit_cases.md`](gt3_audit_cases.md)), on the two circuits the
+  cross-series rule marks tyre-limited.
 - **No established amateur effect on degradation** — see §6. The design is in
   place and the measurement is inconclusive at 44 pairs, which is a different
   thing from an effect that is not there.

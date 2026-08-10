@@ -192,10 +192,111 @@ def build_imsa_cases() -> list[EnduranceAuditCase]:
     return cases
 
 
+def build_gt3_cases() -> list[EnduranceAuditCase]:
+    """IMSA's two GT3 classes, on circuits the cross-series rule marks as
+    tyre-limited (``reports/when_tyres_beat_fuel.md``).
+
+    A different question from the GTP cases above. There the model and the
+    field both answer to the fuel clock; here the stop is cheap enough that
+    the exact dynamic program wants *more* visits than the fuel minimum, so
+    the audit asks whether real teams move in that direction and how far.
+    """
+    return [
+        _case(
+            "G-A", "imsa", 2025, "VIR", "GTD", "021", 28,
+            title="VIR 2025 — the GTD winner stopped past the fuel minimum, but not to the optimum",
+            real_decision=(
+                "Car 021 (class winner) took three green-flag stops over 81 "
+                "laps — laps 8, 28 and 53 — where the fuel minimum is two. The "
+                "exact dynamic program, on this race's 4.9 s pit loss and its "
+                "+0.060 s/lap slope (the steepest GTD reads anywhere), puts the "
+                "optimum at five."
+            ),
+            question=(
+                "The team moved in the model's direction and stopped short of "
+                "it: three stops against a fuel minimum of two and an optimum "
+                "of five. Does the single-stop engine show that same pressure "
+                "at the lap-28 decision, and is the residual gap a real "
+                "opportunity or the time-only objective ignoring what two more "
+                "stops cost in track position on a short circuit?"
+            ),
+        ),
+        _case(
+            "G-B", "imsa", 2026, "Laguna Seca", "GTDPRO", "3", 45,
+            title="Laguna Seca 2026 — the GTD PRO winner's first stop (lap 45)",
+            real_decision=(
+                "Car 3 (class winner) stopped laps 45, 55 and 106 over 111 "
+                "laps; the second of those fell under a full-course yellow. "
+                "Laguna Seca is tyre-limited for GTD PRO on a 7.7 s pit loss."
+            ),
+            question=(
+                "Same GT3 car and same Balance of Performance as GTD, with an "
+                "all-professional crew. Does the recommended window differ "
+                "between the two classes at all, or are their fitted slopes too "
+                "close to move a decision?"
+            ),
+        ),
+    ]
+
+
+def build_elms_cases() -> list[EnduranceAuditCase]:
+    """ELMS LMP2, and the only double stop under caution in any audited race.
+
+    Both class winners at Mugello 2024 pitted on laps 66 *and* 67 under the
+    same Safety Car — independently, in two different classes. That is a
+    strategy the single-stop engine structurally cannot represent, which makes
+    it worth auditing rather than avoiding.
+    """
+    return [
+        _case(
+            "E-A", "elms", 2024, "Mugello", "LMP2", "14", 66,
+            title="Mugello 2024 — the LMP2 winner's double Safety Car stop (laps 66 and 67)",
+            real_decision=(
+                "Car 14 (class winner) stopped seven times over 114 laps, "
+                "including twice consecutively under Safety Car on laps 66 and "
+                "67. Mugello is the one ELMS circuit the dynamic program marks "
+                "tyre-limited, on a 9.2 s pit loss."
+            ),
+            question=(
+                "A stop under caution is discounted by the pace ratio, and ELMS "
+                "is the most Safety-Car-dominated series in scope — 23 of 29 "
+                "races. Does the model value the first neutralised stop as "
+                "highly as the team did, and what does it have to say about the "
+                "second, which its single-stop framing cannot express?"
+            ),
+        ),
+        _case(
+            "E-B", "elms", 2024, "Mugello", "LMP2 Pro/Am", "19", 66,
+            title="Mugello 2024 — the Pro/Am winner made the same double stop",
+            real_decision=(
+                "Car 19 (Pro/Am class winner) stopped on laps 66 and 67 under "
+                "the same Safety Car as the LMP2 winner, from an independent "
+                "seven-stop race."
+            ),
+            question=(
+                "Same circuit, same caution, same decision — from a class that "
+                "must run an amateur-rated driver. The crew-rating comparison "
+                "found no consistent effect across championships; does a single "
+                "decision under identical conditions look any different?"
+            ),
+        ),
+    ]
+
+
 def build_cases(series: str) -> list[EnduranceAuditCase]:
-    """All audit cases for one series ('wec' or 'imsa')."""
+    """All audit cases for one scope key: 'wec', 'imsa', 'gt3' or 'elms'.
+
+    'gt3' is a class group rather than a series — IMSA's GTD and GTD PRO —
+    because those two answer a different strategy question from GTP and are
+    never pooled with it."""
     if series == "wec":
         return build_wec_cases()
     if series == "imsa":
         return build_imsa_cases()
-    raise ValueError(f"unknown series {series!r}; expected 'wec' or 'imsa'")
+    if series == "gt3":
+        return build_gt3_cases()
+    if series == "elms":
+        return build_elms_cases()
+    raise ValueError(
+        f"unknown scope {series!r}; expected 'wec', 'imsa', 'gt3' or 'elms'"
+    )

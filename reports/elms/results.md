@@ -102,8 +102,8 @@ plausible stop plans from an invented neutralisation risk.
 
 ## 6. What is not here
 
-- **No per-decision audit.** F1, WEC and IMSA GTP each have one; ELMS does
-  not, and neither do IMSA's GT3 classes.
+- **Per-decision audit: now present** ([`audit_cases.md`](audit_cases.md)),
+  covering Mugello 2024's double Safety Car stop in both classes.
 - **No phase-by-phase report set.** F1, WEC and IMSA carry phases 0–7 as
   separate documents. ELMS has phase 0, this results document and the crew
   comparison — the modelling is complete, the paperwork is not.
