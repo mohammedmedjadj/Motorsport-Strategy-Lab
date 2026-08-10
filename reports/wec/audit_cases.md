@@ -6,7 +6,7 @@ Reading guide: the model optimises **expected race time** to the next stop only,
 
 ## Case W-A: Bahrain 2025 — car 009's Safety Car-onset stop (lap 216)
 
-**State (measured from data):** end of lap 215/237, car 009 on tyre age 18, 19 laps since last refuel (fuel range 32 laps; net slope +0.0462 s/lap).
+**State (measured from data):** end of lap 215/237, car 009 on tyre age 18, 19 laps since last refuel (fuel range 32 laps; net slope +0.0492 s/lap).
 
 **Real decision:** Car 009 (this race's class winner by laps completed) pitted lap 216 — the exact lap the flag turned from GF to SF (Safety Car called) — its ninth and final stop of the race.
 
@@ -15,20 +15,20 @@ Reading guide: the model optimises **expected race time** to the next stop only,
 **Model output** (pit_lap 0 = run to the flag without stopping, where feasible):
 
 - Best median pit lap: **217** — recommended window (medians within 0.5s): **[216, 217, 218, 219, 220]**.
-- Outcome spread at the best lap (p10-p90): 149.6s — the honest uncertainty of any single-race outcome.
-- **Verdict:** Real choice (lap 216): median cost +0.04s vs the model optimum (lap 217); INSIDE the recommended window.
+- Outcome spread at the best lap (p10-p90): 149.5s — the honest uncertainty of any single-race outcome.
+- **Verdict:** Real choice (lap 216): median cost +0.05s vs the model optimum (lap 217); INSIDE the recommended window.
 
 | pit_lap | median_s | mean_s | p10_s | p90_s | p_best |
 |---|---|---|---|---|---|
-| 216 <- real | 2611.961 | 2656.123 | 2606.740 | 2757.947 | 0.068 |
-| 217 | 2611.917 | 2655.892 | 2606.698 | 2756.313 | 0.838 |
-| 218 | 2611.961 | 2655.843 | 2606.740 | 2756.600 | 0.006 |
-| 219 | 2612.108 | 2655.869 | 2606.875 | 2755.653 | 0.009 |
-| 220 | 2612.342 | 2656.074 | 2607.103 | 2757.747 | 0.006 |
+| 216 <- real | 2612.705 | 2656.860 | 2607.569 | 2758.686 | 0.068 |
+| 217 | 2612.654 | 2656.626 | 2607.521 | 2757.011 | 0.838 |
+| 218 | 2612.705 | 2656.580 | 2607.569 | 2757.335 | 0.006 |
+| 219 | 2612.846 | 2656.615 | 2607.711 | 2756.336 | 0.009 |
+| 220 | 2613.104 | 2656.835 | 2607.958 | 2758.488 | 0.006 |
 
 ## Case W-B: Bahrain 2024 — car 15's routine green-flag stop (lap 125)
 
-**State (measured from data):** end of lap 124/235, car 15 on tyre age 29, 30 laps since last refuel (fuel range 32 laps; net slope +0.0569 s/lap).
+**State (measured from data):** end of lap 124/235, car 15 on tyre age 29, 30 laps since last refuel (fuel range 32 laps; net slope +0.0576 s/lap).
 
 **Real decision:** Car 15 (the class winner) pitted lap 125 under green flag — its fourth of eight stops, with no neutralisation involved.
 
@@ -37,17 +37,17 @@ Reading guide: the model optimises **expected race time** to the next stop only,
 **Model output** (pit_lap 0 = run to the flag without stopping, where feasible):
 
 - Best median pit lap: **126** — recommended window (medians within 0.5s): **[126]**.
-- Outcome spread at the best lap (p10-p90): 821.5s — the honest uncertainty of any single-race outcome.
-- **Verdict:** Real choice (lap 125): median cost +4.54s vs the model optimum (lap 126); OUTSIDE the recommended window.
+- Outcome spread at the best lap (p10-p90): 821.1s — the honest uncertainty of any single-race outcome.
+- **Verdict:** Real choice (lap 125): median cost +4.58s vs the model optimum (lap 126); OUTSIDE the recommended window.
 
 | pit_lap | median_s | mean_s | p10_s | p90_s | p_best |
 |---|---|---|---|---|---|
-| 125 <- real | 13324.509 | 13447.514 | 13137.906 | 13959.699 | 0.003 |
-| 126 | 13319.972 | 13442.907 | 13133.496 | 13954.950 | 0.997 |
+| 125 <- real | 13329.216 | 13451.877 | 13142.587 | 13964.249 | 0.003 |
+| 126 | 13324.639 | 13447.213 | 13138.135 | 13959.216 | 0.997 |
 
 ## Case W-C: Imola 2024 — car 5's Safety Car-onset stop (lap 130), the anomalous-slope circuit
 
-**State (measured from data):** end of lap 129/205, car 5 on tyre age 21, 23 laps since last refuel (fuel range 36 laps; net slope -0.0186 s/lap).
+**State (measured from data):** end of lap 129/205, car 5 on tyre age 21, 23 laps since last refuel (fuel range 36 laps; net slope -0.0100 s/lap).
 
 **Real decision:** Car 5 (the class winner) pitted lap 130 — the exact lap the flag turned from GF to SF — its fifth of seven stops.
 
@@ -55,13 +55,17 @@ Reading guide: the model optimises **expected race time** to the next stop only,
 
 **Model output** (pit_lap 0 = run to the flag without stopping, where feasible):
 
-- Best median pit lap: **130** — recommended window (medians within 0.5s): **[130]**.
-- Outcome spread at the best lap (p10-p90): 418.9s — the honest uncertainty of any single-race outcome.
-- **Verdict:** Real choice (lap 130): median cost +0.00s vs the model optimum (lap 130); INSIDE the recommended window.
+- Best median pit lap: **131** — recommended window (medians within 0.5s): **[130, 131, 132, 133, 134]**.
+- Outcome spread at the best lap (p10-p90): 407.0s — the honest uncertainty of any single-race outcome.
+- **Verdict:** Real choice (lap 130): median cost +0.03s vs the model optimum (lap 131); INSIDE the recommended window.
 
 | pit_lap | median_s | mean_s | p10_s | p90_s | p_best |
 |---|---|---|---|---|---|
-| 130 <- real | 7231.824 | 7314.022 | 7155.284 | 7574.214 | 0.892 |
+| 130 <- real | 7247.818 | 7338.094 | 7190.803 | 7598.075 | 0.836 |
+| 131 | 7247.789 | 7338.532 | 7191.605 | 7598.556 | 0.008 |
+| 132 | 7248.030 | 7338.990 | 7192.349 | 7597.771 | 0.007 |
+| 133 | 7248.113 | 7339.454 | 7193.107 | 7599.770 | 0.005 |
+| 134 | 7248.270 | 7339.882 | 7193.932 | 7600.309 | 0.007 |
 
 ## Cross-case analysis
 

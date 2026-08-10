@@ -42,18 +42,30 @@ def _fuel_ranges() -> dict[tuple[str, str], int]:
 def main() -> None:
     ranges = _fuel_ranges()
     rows = []
+    missing: list[str] = []
     for series, event, car_class, season in scoped_race_seasons():
         circuit = slugify(event)
         fuel_range = ranges.get((series, circuit))
         if fuel_range is None:
             continue                                   # no fuel range measured
-        slug = f"{season}_{circuit}_{car_class.lower()}"
+        # slugify, not .lower(): a class name can carry spaces and slashes
+        # ("LMP2 Pro/Am" -> lmp2_pro_am). Lower-casing produced "lmp2 pro/am",
+        # which matched no file, and the FileNotFoundError below swallowed the
+        # whole class silently -- 17 ELMS race-seasons were missing from this
+        # audit with nothing to show for it.
+        slug = f"{season}_{circuit}_{slugify(car_class)}"
         try:
-            audit = audit_fuel_limited(series, circuit, season, slug, fuel_range)
+            audit = audit_fuel_limited(series, circuit, car_class, season, slug, fuel_range)
         except FileNotFoundError:
+            missing.append(f"{series} {season} {event} {car_class}")
             continue
         rows.append(audit.row())
 
+    if missing:
+        # Loud, not silent: a class vanishing from this audit used to look
+        # identical to a class that had no fuel range measured.
+        print(f"  {len(missing)} scoped race-seasons had no lap file: "
+              f"{missing[:5]}{' ...' if len(missing) > 5 else ''}")
     table = pd.DataFrame(rows)
     OUT_CSV.parent.mkdir(parents=True, exist_ok=True)
     table.to_csv(OUT_CSV, index=False)

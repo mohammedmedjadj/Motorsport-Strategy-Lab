@@ -6,7 +6,7 @@ Reading guide: the model optimises **expected race time** to the next stop only,
 
 ## Case G-A: VIR 2025 — the GTD winner stopped past the fuel minimum, but not to the optimum
 
-**State (measured from data):** end of lap 27/81, car 021 on tyre age 18, 19 laps since last refuel (fuel range 32 laps; net slope +0.0602 s/lap).
+**State (measured from data):** end of lap 27/81, car 021 on tyre age 18, 19 laps since last refuel (fuel range 32 laps; net slope +0.0606 s/lap).
 
 **Real decision:** Car 021 (class winner) took three green-flag stops over 81 laps — laps 8, 28 and 53 — where the fuel minimum is two. The exact dynamic program, on this race's 4.9 s pit loss and its +0.060 s/lap slope (the steepest GTD reads anywhere), puts the optimum at five.
 
@@ -15,14 +15,14 @@ Reading guide: the model optimises **expected race time** to the next stop only,
 **Model output** (pit_lap 0 = run to the flag without stopping, where feasible):
 
 - Best median pit lap: **40** — recommended window (medians within 0.5s): **[39, 40]**.
-- Outcome spread at the best lap (p10-p90): 775.0s — the honest uncertainty of any single-race outcome.
-- **Verdict:** Real choice (lap 28): median cost +14.24s vs the model optimum (lap 40); OUTSIDE the recommended window.
+- Outcome spread at the best lap (p10-p90): 774.8s — the honest uncertainty of any single-race outcome.
+- **Verdict:** Real choice (lap 28): median cost +14.33s vs the model optimum (lap 40); OUTSIDE the recommended window.
 
 | pit_lap | median_s | mean_s | p10_s | p90_s | p_best |
 |---|---|---|---|---|---|
-| 28 <- real | 6202.037 | 6270.645 | 5945.622 | 6719.089 | 0.002 |
-| 39 | 6188.288 | 6256.953 | 5930.612 | 6705.266 | 0.042 |
-| 40 | 6187.799 | 6256.377 | 5929.950 | 6704.921 | 0.883 |
+| 28 <- real | 6202.604 | 6271.175 | 5946.086 | 6719.579 | 0.002 |
+| 39 | 6188.726 | 6257.392 | 5931.062 | 6705.731 | 0.043 |
+| 40 | 6188.271 | 6256.813 | 5930.410 | 6705.207 | 0.882 |
 
 ## Case G-B: Laguna Seca 2026 — the GTD PRO winner's first stop (lap 45)
 

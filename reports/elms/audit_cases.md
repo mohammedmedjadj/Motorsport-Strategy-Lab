@@ -6,7 +6,7 @@ Reading guide: the model optimises **expected race time** to the next stop only,
 
 ## Case E-A: Mugello 2024 — the LMP2 winner's double Safety Car stop (laps 66 and 67)
 
-**State (measured from data):** end of lap 65/114, car 14 on tyre age 2, 6 laps since last refuel (fuel range 25 laps; net slope +0.0655 s/lap).
+**State (measured from data):** end of lap 65/114, car 14 on tyre age 2, 6 laps since last refuel (fuel range 25 laps; net slope +0.0658 s/lap).
 
 **Real decision:** Car 14 (class winner) stopped seven times over 114 laps, including twice consecutively under Safety Car on laps 66 and 67. Mugello is the one ELMS circuit the dynamic program marks tyre-limited, on a 9.2 s pit loss.
 
@@ -15,18 +15,18 @@ Reading guide: the model optimises **expected race time** to the next stop only,
 **Model output** (pit_lap 0 = run to the flag without stopping, where feasible):
 
 - Best median pit lap: **84** — recommended window (medians within 0.5s): **[83, 84]**.
-- Outcome spread at the best lap (p10-p90): 734.3s — the honest uncertainty of any single-race outcome.
-- **Verdict:** Real choice (lap 66): median cost +19.71s vs the model optimum (lap 84); OUTSIDE the recommended window.
+- Outcome spread at the best lap (p10-p90): 734.1s — the honest uncertainty of any single-race outcome.
+- **Verdict:** Real choice (lap 66): median cost +19.86s vs the model optimum (lap 84); OUTSIDE the recommended window.
 
 | pit_lap | median_s | mean_s | p10_s | p90_s | p_best |
 |---|---|---|---|---|---|
-| 66 <- real | 5243.482 | 5293.597 | 4975.547 | 5717.400 | 0.001 |
-| 83 | 5223.933 | 5264.258 | 4947.496 | 5680.121 | 0.030 |
-| 84 | 5223.772 | 5263.647 | 4946.803 | 5681.083 | 0.876 |
+| 66 <- real | 5243.879 | 5293.877 | 4975.880 | 5717.547 | 0.001 |
+| 83 | 5224.177 | 5264.425 | 4947.699 | 5680.160 | 0.029 |
+| 84 | 5224.022 | 5263.812 | 4947.003 | 5681.150 | 0.877 |
 
 ## Case E-B: Mugello 2024 — the Pro/Am winner made the same double stop
 
-**State (measured from data):** end of lap 65/114, car 19 on tyre age 2, 6 laps since last refuel (fuel range 25 laps; net slope +0.0495 s/lap).
+**State (measured from data):** end of lap 65/114, car 19 on tyre age 2, 6 laps since last refuel (fuel range 25 laps; net slope +0.0329 s/lap).
 
 **Real decision:** Car 19 (Pro/Am class winner) stopped on laps 66 and 67 under the same Safety Car as the LMP2 winner, from an independent seven-stop race.
 
@@ -34,15 +34,16 @@ Reading guide: the model optimises **expected race time** to the next stop only,
 
 **Model output** (pit_lap 0 = run to the flag without stopping, where feasible):
 
-- Best median pit lap: **84** — recommended window (medians within 0.5s): **[83, 84]**.
-- Outcome spread at the best lap (p10-p90): 662.0s — the honest uncertainty of any single-race outcome.
-- **Verdict:** Real choice (lap 66): median cost +16.16s vs the model optimum (lap 84); OUTSIDE the recommended window.
+- Best median pit lap: **84** — recommended window (medians within 0.5s): **[82, 83, 84]**.
+- Outcome spread at the best lap (p10-p90): 659.4s — the honest uncertainty of any single-race outcome.
+- **Verdict:** Real choice (lap 66): median cost +8.81s vs the model optimum (lap 84); OUTSIDE the recommended window.
 
 | pit_lap | median_s | mean_s | p10_s | p90_s | p_best |
 |---|---|---|---|---|---|
-| 66 <- real | 5249.941 | 5297.194 | 5010.321 | 5680.413 | 0.014 |
-| 83 | 5234.048 | 5274.896 | 4990.183 | 5652.366 | 0.028 |
-| 84 | 5233.777 | 5274.434 | 4989.649 | 5651.647 | 0.821 |
+| 66 <- real | 5234.141 | 5278.790 | 4992.163 | 5662.843 | 0.032 |
+| 82 | 5225.745 | 5264.278 | 4979.407 | 5638.810 | 0.027 |
+| 83 | 5225.522 | 5263.920 | 4979.091 | 5638.577 | 0.026 |
+| 84 | 5225.330 | 5263.614 | 4978.838 | 5638.207 | 0.765 |
 
 ## What these two cases show
 

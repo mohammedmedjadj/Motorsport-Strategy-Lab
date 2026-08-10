@@ -79,6 +79,24 @@ MIN_LAPS_PER_CAR = 20
 #: own 90th-percentile cutoff up to swallow the anomaly.
 FIELD_WIDE_TRIM_RATIO = 1.3
 
+#: Exit threshold for the same filter, applied with hysteresis: once a lap
+#: number trips ``FIELD_WIDE_TRIM_RATIO``, the contiguous laps either side of
+#: it are dropped too for as long as the field median stays above this lower
+#: bound.
+#:
+#: A neutralisation does not end cleanly at the detection threshold. At ELMS
+#: Portimao 2023 the field median runs 1.407x the race median on lap 6 -- well
+#: over the 1.3 cutoff -- then 1.131, 1.077 and 1.057 on laps 7, 8 and 9 as the
+#: field winds back up. Only lap 6 was being removed. The recovery laps are
+#: still compromised, they are still flagged green in the source, and because
+#: they sit early in the race they sit at *low tyre age*, so they drag the
+#: fitted slope negative. That is the mechanism behind this project's
+#: physically impossible negative slopes (Portimao 2023 fits -0.249 s/lap).
+#:
+#: High threshold to detect, low threshold to exit, which is the standard way
+#: to segment a ramp rather than a step.
+FIELD_WIDE_EXIT_RATIO = 1.05
+
 
 @dataclass(frozen=True)
 class FrameDiagnostics:
@@ -117,10 +135,8 @@ def frame_diagnostics(laps: pd.DataFrame) -> FrameDiagnostics:
     if green.empty:
         return FrameDiagnostics(total, non_green_or_pit, missing_age, 0, 0, 0, 0)
 
-    overall_median = float(green["lap_time_s"].median())
-    lap_median = green.groupby("lap")["lap_time_s"].transform("median")
     before = len(green)
-    green = green[lap_median <= FIELD_WIDE_TRIM_RATIO * overall_median]
+    green = green[~_field_wide_anomaly(green)]
     field_wide_trimmed = before - len(green)
 
     # The same residual-based trim build_endurance_frame applies. This used to
@@ -185,6 +201,34 @@ class EnduranceFit:
         return bool(np.isfinite(r) and abs(r) < SEPARABILITY_LIMIT)
 
 
+def _field_wide_anomaly(green: pd.DataFrame) -> pd.Series:
+    """Boolean mask of laps belonging to a field-wide slow period.
+
+    Hysteresis, not a single cut: a lap number whose field median exceeds
+    ``FIELD_WIDE_TRIM_RATIO`` seeds an anomaly, and the run extends outward
+    through every contiguous lap still above ``FIELD_WIDE_EXIT_RATIO``. See
+    the constants for why the single-threshold version missed the recovery
+    laps that follow a neutralisation and biased slopes negative.
+    """
+    overall = float(green["lap_time_s"].median())
+    by_lap = green.groupby("lap")["lap_time_s"].median().sort_index()
+    seeds = by_lap[by_lap > FIELD_WIDE_TRIM_RATIO * overall].index
+    elevated = by_lap > FIELD_WIDE_EXIT_RATIO * overall
+
+    bad: set = set()
+    laps = list(by_lap.index)
+    pos = {lap: i for i, lap in enumerate(laps)}
+    for seed in seeds:
+        i = pos[seed]
+        bad.add(seed)
+        for step in (-1, 1):                       # grow both ways
+            j = i + step
+            while 0 <= j < len(laps) and bool(elevated.iloc[j]):
+                bad.add(laps[j])
+                j += step
+    return green["lap"].isin(bad)
+
+
 def _traffic_residual(green: pd.DataFrame) -> pd.Series:
     """Lap time net of a first-pass car-driver intercept and tyre-age effect.
 
@@ -234,9 +278,7 @@ def build_endurance_frame(laps: pd.DataFrame) -> pd.DataFrame:
     # at once (standing start / an early caution mislabelled green) — this
     # must run before the per-car quantile, because such laps inflate a car's
     # own cutoff and become invisible to it.
-    overall_median = float(green["lap_time_s"].median())
-    lap_median = green.groupby("lap")["lap_time_s"].transform("median")
-    green = green[lap_median <= FIELD_WIDE_TRIM_RATIO * overall_median]
+    green = green[~_field_wide_anomaly(green)]
 
     # Trim remaining traffic-compromised laps per car -- on the *residual*,
     # not on the lap time itself.

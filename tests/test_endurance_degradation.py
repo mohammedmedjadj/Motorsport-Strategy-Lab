@@ -225,3 +225,36 @@ def test_rejects_empty_input() -> None:
     empty["is_green"] = False
     with pytest.raises(ValueError, match="no usable green laps"):
         build_endurance_frame(empty)
+
+
+def test_the_field_wide_filter_follows_a_neutralisation_to_its_end() -> None:
+    """A caution is a ramp, not a step, and the filter has to segment it as one.
+
+    The detection threshold catches only the slowest lap of a field-wide slow
+    period. The laps that follow, while the field winds back up to racing pace,
+    stay well under it — at ELMS Portimao 2023 the field median runs 1.407x the
+    race median on lap 6 and then 1.131, 1.077, 1.057 on laps 7-9. Those
+    recovery laps are still compromised, still flagged green upstream, and sit
+    early in the race and therefore at *low tyre age*, so keeping them drags
+    the fitted slope negative.
+
+    Hysteresis fixes the direction: a high threshold seeds the anomaly, a lower
+    one decides where it ends. Measured over all 210 scoped race-seasons it
+    takes physically impossible slopes (below -0.1 s/lap, i.e. tyres gaining a
+    tenth of a second per lap as they age) from 7 races down to 3, and moves
+    Road America 2022 GTD from -0.422 to -0.035.
+
+    It does **not** fix everything, and this test does not pretend otherwise:
+    Portimao 2023 still fits -0.213. Its cause is elsewhere — every one of its
+    seven cars fits a positive slope individually while the pooled
+    fixed-effects fit is negative, which is a specification problem rather than
+    a filtering one.
+    """
+    laps = EnduranceLoader("elms").load_laps(2023, "Portimao", "LMP2")
+    kept = build_endurance_frame(laps)
+    # Lap 6 seeds the anomaly and laps 7-9 are its tail; all four must go.
+    assert not set(range(6, 10)) & set(kept["lap"].unique()), (
+        "the recovery laps after a field-wide slow period are back in the frame"
+    )
+    # ... and the filter must not run away and eat the race.
+    assert len(kept) > 0.5 * len(laps[laps["is_green"] & ~laps["is_pit_lap"]])

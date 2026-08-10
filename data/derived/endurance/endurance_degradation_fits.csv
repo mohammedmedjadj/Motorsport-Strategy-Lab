@@ -1,49 +1,49 @@
 series,event,circuit_canonical,car_class,season,n_laps,n_cars,net_slope,ci_low,ci_high,rmse_s,fuel_deg_corr,separable
 imsa,Daytona,Daytona,GTP,2023,5191,9,0.0216,0.0143,0.0289,0.965,0.951,False
-imsa,Daytona,Daytona,GTP,2024,5555,10,0.0307,0.0253,0.0361,0.899,0.966,False
-imsa,Daytona,Daytona,GTP,2025,5649,12,0.0385,0.0286,0.0484,1.52,0.943,False
+imsa,Daytona,Daytona,GTP,2024,5552,10,0.0307,0.0253,0.0361,0.898,0.966,False
+imsa,Daytona,Daytona,GTP,2025,5633,12,0.036,0.0309,0.0412,1.324,0.942,False
 imsa,Daytona,Daytona,GTP,2026,4961,11,0.0233,0.0167,0.03,0.908,0.972,False
-imsa,Detroit,Detroit,GTP,2024,426,10,0.0301,0.0002,0.06,0.978,0.984,False
+imsa,Detroit,Detroit,GTP,2024,408,10,0.0316,-0.0008,0.0639,0.881,0.984,False
 imsa,Detroit,Detroit,GTP,2025,702,11,-0.0,-0.0054,0.0053,0.632,0.996,False
-imsa,Detroit,Detroit,GTP,2026,651,11,0.0034,-0.0044,0.0112,0.735,0.994,False
-imsa,Indianapolis,Indianapolis,GTP,2023,854,10,0.0171,0.0111,0.0231,0.845,0.975,False
-imsa,Indianapolis,Indianapolis,GTP,2024,1338,11,0.0155,-0.0215,0.0526,3.522,0.897,True
-imsa,Indianapolis,Indianapolis,GTP,2025,2116,12,0.0122,0.0095,0.0148,0.732,0.977,False
-imsa,Laguna Seca,Laguna Seca,GTP,2023,585,9,0.0099,-0.0104,0.0301,1.255,0.982,False
+imsa,Detroit,Detroit,GTP,2026,640,11,0.0032,-0.0036,0.01,0.689,0.994,False
+imsa,Indianapolis,Indianapolis,GTP,2023,849,10,0.0183,0.013,0.0235,0.839,0.975,False
+imsa,Indianapolis,Indianapolis,GTP,2024,869,10,0.0304,-0.0194,0.0801,1.698,0.99,False
+imsa,Indianapolis,Indianapolis,GTP,2025,2104,12,0.013,0.0105,0.0155,0.729,0.976,False
+imsa,Laguna Seca,Laguna Seca,GTP,2023,576,9,0.0122,-0.0085,0.0329,1.203,0.982,False
 imsa,Laguna Seca,Laguna Seca,GTP,2024,961,10,0.0166,0.0081,0.0251,0.906,0.985,False
 imsa,Laguna Seca,Laguna Seca,GTP,2025,1182,11,0.0238,0.0178,0.0298,0.846,1.0,False
 imsa,Laguna Seca,Laguna Seca,GTP,2026,992,11,0.0241,0.0127,0.0355,0.758,0.997,False
 imsa,Long Beach,Long Beach,GTP,2023,438,7,0.0008,-0.0116,0.0131,0.803,1.0,False
-imsa,Long Beach,Long Beach,GTP,2024,394,10,-0.0249,-0.0366,-0.0133,0.813,0.985,False
+imsa,Long Beach,Long Beach,GTP,2024,393,10,-0.0238,-0.0368,-0.0108,0.788,0.985,False
 imsa,Long Beach,Long Beach,GTP,2025,603,11,-0.0236,-0.0345,-0.0127,0.633,0.996,False
-imsa,Long Beach,Long Beach,GTP,2026,467,11,-0.0141,-0.0281,-0.0002,0.73,0.985,False
+imsa,Long Beach,Long Beach,GTP,2026,453,11,-0.0127,-0.0259,0.0004,0.671,0.985,False
 imsa,Mosport,Mosport,GTP,2023,793,9,0.0002,-0.0091,0.0094,0.969,0.986,False
-imsa,Road America,Road America,GTP,2023,555,9,-0.0357,-0.0653,-0.006,1.469,0.996,False
+imsa,Road America,Road America,GTP,2023,544,9,-0.0203,-0.0405,-0.0001,1.322,0.996,False
 imsa,Road America,Road America,GTP,2024,277,9,-0.059,-0.0966,-0.0215,1.22,0.97,False
 imsa,Road America,Road America,GTP,2025,414,11,0.0174,-0.0184,0.0533,1.384,0.98,False
-imsa,Road Atlanta,Road Atlanta,GTP,2023,2520,10,0.0217,0.0182,0.0252,1.057,0.973,False
-imsa,Road Atlanta,Road Atlanta,GTP,2024,3403,11,0.0112,0.0054,0.0171,0.976,0.987,False
-imsa,Road Atlanta,Road Atlanta,GTP,2025,4091,12,0.0204,0.0162,0.0246,0.887,0.97,False
+imsa,Road Atlanta,Road Atlanta,GTP,2023,2502,10,0.0221,0.0184,0.0258,1.045,0.973,False
+imsa,Road Atlanta,Road Atlanta,GTP,2024,3399,11,0.0118,0.0061,0.0174,0.974,0.987,False
+imsa,Road Atlanta,Road Atlanta,GTP,2025,4090,12,0.0204,0.0161,0.0247,0.886,0.97,False
 imsa,Sebring,Sebring,GTP,2023,1594,8,0.0194,-0.0016,0.0404,1.28,0.978,False
-imsa,Sebring,Sebring,GTP,2024,2387,11,0.0138,0.0064,0.0212,1.05,0.975,False
-imsa,Sebring,Sebring,GTP,2025,3411,13,0.0123,-0.0008,0.0253,1.018,0.826,True
+imsa,Sebring,Sebring,GTP,2024,2382,11,0.0139,0.0066,0.0211,1.047,0.975,False
+imsa,Sebring,Sebring,GTP,2025,3410,13,0.0123,-0.0006,0.0253,1.018,0.826,True
 imsa,Sebring,Sebring,GTP,2026,2780,11,0.0022,-0.0042,0.0085,0.893,0.82,True
 imsa,Watkins Glen,Watkins Glen,GTP,2023,1113,8,0.0047,-0.0093,0.0188,1.174,0.991,False
-imsa,Watkins Glen,Watkins Glen,GTP,2024,947,11,0.0172,0.0031,0.0314,1.363,0.978,False
-imsa,Watkins Glen,Watkins Glen,GTP,2025,1119,13,0.0226,0.0082,0.037,1.399,0.96,False
+imsa,Watkins Glen,Watkins Glen,GTP,2024,928,11,0.0204,0.0032,0.0375,1.287,0.978,False
+imsa,Watkins Glen,Watkins Glen,GTP,2025,1099,13,0.0245,0.0097,0.0393,1.325,0.96,False
 imsa,Watkins Glen,Watkins Glen,GTP,2026,1071,9,0.0271,0.0194,0.0348,0.867,0.945,False
 imsa,Belle Isle,Belle Isle,GTD,2022,515,9,-0.0186,-0.0272,-0.01,0.635,1.0,False
 imsa,Canadian Tire Motorsport Park,Mosport,GTD,2026,1226,13,0.0109,0.0041,0.0177,0.428,0.999,False
-imsa,Daytona,Daytona,GTD,2021,9753,19,0.0085,0.0038,0.0131,0.831,0.972,False
-imsa,Daytona,Daytona,GTD,2022,8653,22,-0.0693,-0.0823,-0.0563,1.821,0.959,False
-imsa,Daytona,Daytona,GTD,2023,11009,23,-0.0109,-0.0158,-0.0059,1.026,0.968,False
-imsa,Daytona,Daytona,GTD,2024,10775,23,0.0019,-0.0037,0.0074,1.021,0.968,False
-imsa,Daytona,Daytona,GTD,2025,9595,22,0.0398,0.0342,0.0454,0.604,0.961,False
-imsa,Daytona,Daytona,GTD,2026,7540,20,0.0358,0.0309,0.0406,0.599,0.949,False
+imsa,Daytona,Daytona,GTD,2021,9735,19,0.0092,0.0046,0.0138,0.825,0.972,False
+imsa,Daytona,Daytona,GTD,2022,8620,22,-0.0663,-0.0796,-0.053,1.807,0.958,False
+imsa,Daytona,Daytona,GTD,2023,11003,23,-0.0105,-0.0155,-0.0055,1.022,0.968,False
+imsa,Daytona,Daytona,GTD,2024,10770,23,0.0018,-0.0038,0.0074,1.019,0.968,False
+imsa,Daytona,Daytona,GTD,2025,9568,22,0.0405,0.035,0.046,0.601,0.961,False
+imsa,Daytona,Daytona,GTD,2026,7518,20,0.0362,0.0314,0.041,0.598,0.949,False
 imsa,Indianapolis,Indianapolis,GTD,2023,1237,16,0.0239,0.0113,0.0366,0.636,0.985,False
-imsa,Indianapolis,Indianapolis,GTD,2024,2367,21,0.059,0.0291,0.0889,3.521,0.957,False
-imsa,Indianapolis,Indianapolis,GTD,2025,2403,17,0.0265,0.0212,0.0317,0.71,0.985,False
-imsa,Laguna Seca,Laguna Seca,GTD,2021,965,11,0.0444,0.0366,0.0521,0.503,0.999,False
+imsa,Indianapolis,Indianapolis,GTD,2024,1532,19,0.0105,0.0012,0.0198,0.692,0.986,False
+imsa,Indianapolis,Indianapolis,GTD,2025,2401,17,0.0267,0.0215,0.0318,0.709,0.985,False
+imsa,Laguna Seca,Laguna Seca,GTD,2021,954,11,0.0454,0.0376,0.0532,0.504,0.999,False
 imsa,Laguna Seca,Laguna Seca,GTD,2022,1048,13,0.0522,0.0458,0.0586,0.618,0.999,False
 imsa,Laguna Seca,Laguna Seca,GTD,2023,754,14,0.0658,0.0462,0.0855,0.706,0.98,False
 imsa,Laguna Seca,Laguna Seca,GTD,2024,1272,15,0.0247,0.0164,0.0329,0.667,0.978,False
@@ -57,7 +57,7 @@ imsa,Long Beach,Long Beach,GTD,2022,596,14,0.0058,-0.0056,0.0172,0.641,0.964,Fal
 imsa,Long Beach,Long Beach,GTD,2023,740,13,0.0007,-0.0053,0.0067,0.471,1.0,False
 imsa,Long Beach,Long Beach,GTD,2024,515,14,-0.0154,-0.0237,-0.0072,0.603,0.98,False
 imsa,Long Beach,Long Beach,GTD,2025,746,15,0.0021,-0.0038,0.008,0.503,0.99,False
-imsa,Long Beach,Long Beach,GTD,2026,644,16,-0.0092,-0.0225,0.0041,0.635,0.988,False
+imsa,Long Beach,Long Beach,GTD,2026,628,16,0.0011,-0.0137,0.0158,0.616,0.988,False
 imsa,Mid-Ohio,Mid-Ohio,GTD,2021,1133,13,0.0105,0.0075,0.0135,0.469,0.979,False
 imsa,Mid-Ohio,Mid-Ohio,GTD,2022,969,11,0.0217,0.0154,0.028,0.561,0.997,False
 imsa,Mosport,Mosport,GTD,2022,469,6,0.0116,0.0017,0.0214,0.465,0.985,False
@@ -65,147 +65,147 @@ imsa,Mosport,Mosport,GTD,2023,1056,14,0.0103,0.001,0.0196,0.954,0.976,False
 imsa,Mosport,Mosport,GTD,2024,956,12,0.0185,0.0076,0.0294,0.631,0.976,False
 imsa,Mosport,Mosport,GTD,2025,946,13,0.0329,0.0262,0.0395,0.536,0.99,False
 imsa,Road America,Road America,GTD,2021,696,14,0.0714,0.0589,0.084,0.951,0.992,False
-imsa,Road America,Road America,GTD,2022,378,11,-0.4218,-0.4685,-0.3752,6.008,0.978,False
+imsa,Road America,Road America,GTD,2022,294,11,-0.0353,-0.076,0.0054,0.914,0.98,False
 imsa,Road America,Road America,GTD,2023,793,14,0.019,0.0071,0.031,0.683,0.997,False
 imsa,Road America,Road America,GTD,2024,316,12,-0.0008,-0.0327,0.0312,0.899,0.955,False
-imsa,Road America,Road America,GTD,2025,361,11,0.047,0.0091,0.085,0.912,0.961,False
-imsa,Road Atlanta,Road Atlanta,GTD,2021,2782,15,-0.0357,-0.0466,-0.0248,1.141,0.979,False
-imsa,Road Atlanta,Road Atlanta,GTD,2022,3353,14,0.0219,0.0183,0.0255,0.582,0.975,False
-imsa,Road Atlanta,Road Atlanta,GTD,2023,4041,19,0.0009,-0.0041,0.0058,0.9,0.953,False
-imsa,Road Atlanta,Road Atlanta,GTD,2024,5696,18,0.0233,0.0205,0.0261,0.73,0.988,False
+imsa,Road America,Road America,GTD,2025,350,11,0.0989,0.0715,0.1264,0.727,0.966,False
+imsa,Road Atlanta,Road Atlanta,GTD,2021,2768,15,-0.0332,-0.0442,-0.0221,1.116,0.979,False
+imsa,Road Atlanta,Road Atlanta,GTD,2022,3349,14,0.0222,0.0186,0.0258,0.58,0.975,False
+imsa,Road Atlanta,Road Atlanta,GTD,2023,4039,19,0.0012,-0.0037,0.006,0.898,0.953,False
+imsa,Road Atlanta,Road Atlanta,GTD,2024,5677,18,0.0248,0.0221,0.0275,0.733,0.988,False
 imsa,Road Atlanta,Road Atlanta,GTD,2025,4050,15,0.0198,0.0172,0.0225,0.613,0.976,False
-imsa,Sebring,Sebring,GTD,2021,2617,13,0.0171,0.0093,0.0249,0.702,0.966,False
+imsa,Sebring,Sebring,GTD,2021,2605,13,0.0186,0.0108,0.0264,0.701,0.966,False
 imsa,Sebring,Sebring,GTD,2022,3702,17,0.0256,0.0183,0.033,0.816,0.984,False
-imsa,Sebring,Sebring,GTD,2023,3599,20,0.0202,0.011,0.0294,0.807,0.964,False
-imsa,Sebring,Sebring,GTD,2024,3895,20,0.0158,0.0068,0.0249,1.02,0.968,False
-imsa,Sebring,Sebring,GTD,2025,4130,19,0.0146,0.0078,0.0214,0.729,0.709,True
-imsa,Sebring,Sebring,GTD,2026,3575,19,0.0202,0.0128,0.0276,2.411,0.695,True
+imsa,Sebring,Sebring,GTD,2023,3593,20,0.0206,0.0115,0.0298,0.806,0.964,False
+imsa,Sebring,Sebring,GTD,2024,3890,20,0.0155,0.0065,0.0245,1.02,0.968,False
+imsa,Sebring,Sebring,GTD,2025,4127,19,0.0155,0.0086,0.0224,0.735,0.708,True
+imsa,Sebring,Sebring,GTD,2026,3571,19,0.0203,0.0129,0.0277,2.412,0.695,True
 imsa,VIR,VIR,GTD,2021,949,15,0.0071,-0.0089,0.023,0.636,0.998,False
 imsa,VIR,VIR,GTD,2022,834,12,0.0369,0.0154,0.0584,0.641,0.997,False
 imsa,VIR,VIR,GTD,2023,706,12,0.0252,0.0156,0.0348,0.536,0.987,False
 imsa,VIR,VIR,GTD,2024,934,14,0.0804,0.0693,0.0916,0.629,0.99,False
-imsa,VIR,VIR,GTD,2025,740,13,0.0602,0.0493,0.0711,0.489,0.935,False
-imsa,Watkins Glen,Watkins Glen,GTD,2022,1412,15,0.0214,0.0142,0.0286,0.695,0.968,False
+imsa,VIR,VIR,GTD,2025,727,13,0.0606,0.0494,0.0719,0.491,0.932,False
+imsa,Watkins Glen,Watkins Glen,GTD,2022,1408,15,0.0215,0.0142,0.0288,0.696,0.968,False
 imsa,Watkins Glen,Watkins Glen,GTD,2023,2489,19,0.0298,0.0228,0.0369,0.703,0.989,False
 imsa,Watkins Glen,Watkins Glen,GTD,2024,1470,20,0.0229,0.0045,0.0413,1.062,0.963,False
-imsa,Watkins Glen,Watkins Glen,GTD,2025,1430,19,0.0601,0.0509,0.0694,0.747,0.952,False
-imsa,Watkins Glen,Watkins Glen,GTD,2026,1765,19,0.0175,0.0104,0.0247,0.679,0.965,False
-imsa,Watkins Glen 240,Watkins Glen,GTD,2021,429,11,-0.0287,-0.0426,-0.0149,0.713,0.998,False
-imsa,Watkins Glen 6 Hours,Watkins Glen,GTD,2021,1609,14,0.0102,-0.0008,0.0213,1.045,0.974,False
+imsa,Watkins Glen,Watkins Glen,GTD,2025,1412,19,0.0648,0.056,0.0735,0.719,0.953,False
+imsa,Watkins Glen,Watkins Glen,GTD,2026,1763,19,0.018,0.0108,0.0253,0.68,0.965,False
+imsa,Watkins Glen 240,Watkins Glen,GTD,2021,421,11,-0.0355,-0.0458,-0.0252,0.655,0.998,False
+imsa,Watkins Glen 6 Hours,Watkins Glen,GTD,2021,1608,14,0.0102,-0.0009,0.0213,1.045,0.974,False
 imsa,Canadian Tire Motorsport Park,Mosport,GTDPRO,2026,955,10,0.0006,-0.0039,0.0051,0.385,0.999,False
-imsa,Daytona,Daytona,GTDPRO,2022,5639,13,-0.0084,-0.0188,0.0019,0.998,0.951,False
-imsa,Daytona,Daytona,GTDPRO,2023,5107,10,0.0089,0.0029,0.0149,0.66,0.949,False
-imsa,Daytona,Daytona,GTDPRO,2024,5891,13,0.0295,0.0212,0.0378,1.032,0.959,False
+imsa,Daytona,Daytona,GTDPRO,2022,5614,13,-0.0077,-0.018,0.0027,0.997,0.951,False
+imsa,Daytona,Daytona,GTDPRO,2023,5105,10,0.0088,0.003,0.0146,0.661,0.949,False
+imsa,Daytona,Daytona,GTDPRO,2024,5889,13,0.0295,0.0212,0.0378,1.033,0.959,False
 imsa,Daytona,Daytona,GTDPRO,2025,6789,15,0.0414,0.0351,0.0477,0.567,0.968,False
 imsa,Daytona,Daytona,GTDPRO,2026,5894,15,0.0358,0.0319,0.0396,0.561,0.968,False
-imsa,Detroit,Detroit,GTDPRO,2024,443,11,0.0219,0.0105,0.0333,1.699,0.989,False
+imsa,Detroit,Detroit,GTDPRO,2024,427,11,0.0251,0.0143,0.0358,1.552,0.989,False
 imsa,Detroit,Detroit,GTDPRO,2025,661,11,-0.0155,-0.0257,-0.0053,0.689,0.995,False
 imsa,Detroit,Detroit,GTDPRO,2026,557,10,0.0047,-0.009,0.0185,0.69,0.996,False
 imsa,Indianapolis,Indianapolis,GTDPRO,2023,386,5,0.0279,0.0223,0.0336,0.472,0.962,False
-imsa,Indianapolis,Indianapolis,GTDPRO,2024,1475,12,0.0465,0.0197,0.0733,3.671,0.914,False
-imsa,Indianapolis,Indianapolis,GTDPRO,2025,1657,11,0.0213,0.0164,0.0262,0.501,0.981,False
+imsa,Indianapolis,Indianapolis,GTDPRO,2024,1012,12,0.0162,0.0118,0.0205,0.546,0.983,False
+imsa,Indianapolis,Indianapolis,GTDPRO,2025,1654,11,0.0216,0.0168,0.0264,0.502,0.981,False
 imsa,Laguna Seca,Laguna Seca,GTDPRO,2022,515,6,0.0512,0.0396,0.0628,0.507,0.998,False
 imsa,Laguna Seca,Laguna Seca,GTDPRO,2023,287,5,0.0771,0.0572,0.097,0.656,0.975,False
 imsa,Laguna Seca,Laguna Seca,GTDPRO,2024,797,9,0.0174,0.0115,0.0233,0.519,0.98,False
 imsa,Laguna Seca,Laguna Seca,GTDPRO,2025,993,10,0.0304,0.0254,0.0354,0.505,1.0,False
 imsa,Laguna Seca,Laguna Seca,GTDPRO,2026,807,9,0.0331,0.0276,0.0386,0.505,1.0,False
-imsa,Lime Rock,Lime Rock,GTDPRO,2022,640,5,0.0158,0.0137,0.018,0.303,0.996,False
+imsa,Lime Rock,Lime Rock,GTDPRO,2022,639,5,0.0159,0.0138,0.018,0.302,0.996,False
 imsa,Lime Rock,Lime Rock,GTDPRO,2023,655,5,0.0218,0.0178,0.0259,0.212,0.991,False
 imsa,Long Beach,Long Beach,GTDPRO,2022,262,6,-0.0005,-0.0109,0.0099,0.482,0.967,False
 imsa,Long Beach,Long Beach,GTDPRO,2023,289,5,0.0074,-0.0012,0.016,0.388,1.0,False
 imsa,Mosport,Mosport,GTDPRO,2022,489,6,0.0132,0.0083,0.0181,0.429,0.992,False
-imsa,Mosport,Mosport,GTDPRO,2023,355,5,-0.0029,-0.0216,0.0159,0.495,0.982,False
-imsa,Mosport,Mosport,GTDPRO,2024,717,9,0.0145,0.0089,0.0202,0.398,0.95,False
+imsa,Mosport,Mosport,GTDPRO,2023,350,5,-0.0024,-0.0213,0.0165,0.486,0.982,False
+imsa,Mosport,Mosport,GTDPRO,2024,712,9,0.0145,0.0085,0.0205,0.387,0.951,False
 imsa,Mosport,Mosport,GTDPRO,2025,741,10,0.024,0.0179,0.03,0.392,0.998,False
-imsa,Road America,Road America,GTDPRO,2022,166,5,-0.343,-0.6279,-0.0581,4.754,0.976,False
+imsa,Road America,Road America,GTDPRO,2022,108,4,-0.0684,-0.0952,-0.0417,0.803,0.982,False
 imsa,Road America,Road America,GTDPRO,2023,284,5,0.0239,0.0101,0.0378,0.613,0.998,False
 imsa,Road America,Road America,GTDPRO,2024,270,10,-0.037,-0.0807,0.0067,1.52,0.963,False
-imsa,Road America,Road America,GTDPRO,2025,322,10,0.0365,-0.0181,0.0912,0.804,0.968,False
+imsa,Road America,Road America,GTDPRO,2025,313,10,0.0671,0.0043,0.1299,0.763,0.968,False
 imsa,Road Atlanta,Road Atlanta,GTDPRO,2022,1942,7,0.0196,0.0138,0.0254,0.506,0.981,False
-imsa,Road Atlanta,Road Atlanta,GTDPRO,2023,1654,8,0.0204,0.0141,0.0268,0.592,0.954,False
-imsa,Road Atlanta,Road Atlanta,GTDPRO,2024,3946,13,0.0036,-0.001,0.0081,1.178,0.954,False
-imsa,Road Atlanta,Road Atlanta,GTDPRO,2025,3080,10,0.0136,0.0095,0.0178,0.493,0.974,False
+imsa,Road Atlanta,Road Atlanta,GTDPRO,2023,1645,8,0.0197,0.0139,0.0255,0.582,0.953,False
+imsa,Road Atlanta,Road Atlanta,GTDPRO,2024,3941,13,0.0034,-0.0012,0.008,1.177,0.954,False
+imsa,Road Atlanta,Road Atlanta,GTDPRO,2025,3079,10,0.0137,0.0095,0.0179,0.493,0.974,False
 imsa,Sebring,Sebring,GTDPRO,2022,2519,11,0.029,0.0233,0.0348,0.666,0.982,False
-imsa,Sebring,Sebring,GTDPRO,2023,1559,8,0.0086,0.0002,0.0171,0.732,0.961,False
-imsa,Sebring,Sebring,GTDPRO,2024,2536,12,-0.0076,-0.0124,-0.0029,0.71,0.968,False
-imsa,Sebring,Sebring,GTDPRO,2025,2651,11,0.021,0.0164,0.0256,0.567,0.861,True
+imsa,Sebring,Sebring,GTDPRO,2023,1558,8,0.0089,0.0001,0.0177,0.73,0.961,False
+imsa,Sebring,Sebring,GTDPRO,2024,2530,12,-0.0067,-0.0118,-0.0017,0.702,0.968,False
+imsa,Sebring,Sebring,GTDPRO,2025,2649,11,0.0211,0.0164,0.0257,0.565,0.861,True
 imsa,Sebring,Sebring,GTDPRO,2026,2761,13,0.0121,0.0053,0.0189,0.57,0.848,True
 imsa,VIR,VIR,GTDPRO,2022,349,5,0.0376,0.0183,0.057,0.465,1.0,False
 imsa,VIR,VIR,GTDPRO,2023,302,5,0.0146,-0.0204,0.0496,0.577,0.991,False
-imsa,VIR,VIR,GTDPRO,2024,600,9,0.0537,0.0379,0.0695,1.994,0.99,False
+imsa,VIR,VIR,GTDPRO,2024,597,9,0.054,0.0388,0.0692,1.994,0.99,False
 imsa,VIR,VIR,GTDPRO,2025,575,10,0.0638,0.0455,0.0821,0.513,0.945,False
-imsa,Watkins Glen,Watkins Glen,GTDPRO,2022,699,7,0.0171,0.0089,0.0253,0.534,0.976,False
+imsa,Watkins Glen,Watkins Glen,GTDPRO,2022,697,7,0.017,0.0091,0.0248,0.527,0.977,False
 imsa,Watkins Glen,Watkins Glen,GTDPRO,2023,1124,9,0.019,0.0144,0.0236,0.648,0.985,False
-imsa,Watkins Glen,Watkins Glen,GTDPRO,2024,856,11,0.0258,0.0122,0.0394,0.948,0.971,False
-imsa,Watkins Glen,Watkins Glen,GTDPRO,2025,759,10,0.0405,0.0241,0.0569,0.677,0.968,False
+imsa,Watkins Glen,Watkins Glen,GTDPRO,2024,854,11,0.0239,0.011,0.0367,0.935,0.971,False
+imsa,Watkins Glen,Watkins Glen,GTDPRO,2025,752,10,0.0443,0.0277,0.0609,0.643,0.968,False
 imsa,Watkins Glen,Watkins Glen,GTDPRO,2026,1153,12,0.0161,0.0081,0.024,0.427,0.936,False
 wec,Bahrain,Bahrain,HYPERCAR,2022,954,5,0.0295,0.0085,0.0505,0.661,0.996,False
 wec,Bahrain,Bahrain,HYPERCAR,2023,2523,12,0.0517,0.0455,0.058,0.694,1.0,False
-wec,Bahrain,Bahrain,HYPERCAR,2024,3212,18,0.0569,0.0501,0.0636,0.798,0.992,False
-wec,Bahrain,Bahrain,HYPERCAR,2025,3449,18,0.0462,0.038,0.0544,0.74,0.99,False
-wec,COTA,COTA,HYPERCAR,2024,2517,18,-0.0126,-0.0163,-0.0089,0.743,0.999,False
-wec,COTA,COTA,HYPERCAR,2025,1068,17,-0.2743,-0.3374,-0.2112,3.227,0.965,False
+wec,Bahrain,Bahrain,HYPERCAR,2024,3200,18,0.0576,0.051,0.0642,0.786,0.992,False
+wec,Bahrain,Bahrain,HYPERCAR,2025,3431,18,0.0492,0.0413,0.0572,0.727,0.99,False
+wec,COTA,COTA,HYPERCAR,2024,2496,18,-0.012,-0.015,-0.009,0.73,0.999,False
+wec,COTA,COTA,HYPERCAR,2025,918,17,-0.1645,-0.2241,-0.1048,2.596,0.96,False
 wec,Fuji,Fuji,HYPERCAR,2022,990,5,0.0051,-0.0003,0.0105,0.539,1.0,False
 wec,Fuji,Fuji,HYPERCAR,2023,2284,12,0.0131,0.0076,0.0186,0.554,1.0,False
-wec,Fuji,Fuji,HYPERCAR,2024,2782,18,0.0193,0.0157,0.023,0.57,0.99,False
-wec,Fuji,Fuji,HYPERCAR,2025,2488,18,0.0171,0.0123,0.022,0.664,0.982,False
-wec,Imola,Imola,HYPERCAR,2024,2958,19,-0.0186,-0.037,-0.0002,2.442,0.996,False
-wec,Imola,Imola,HYPERCAR,2025,3088,18,0.0142,0.0094,0.0191,0.775,0.993,False
-wec,Imola,Imola,HYPERCAR,2026,2922,17,0.0012,-0.011,0.0134,1.521,0.99,False
+wec,Fuji,Fuji,HYPERCAR,2024,2747,18,0.0218,0.0181,0.0255,0.549,0.99,False
+wec,Fuji,Fuji,HYPERCAR,2025,2454,18,0.0213,0.0166,0.0259,0.629,0.982,False
+wec,Imola,Imola,HYPERCAR,2024,2359,19,-0.01,-0.024,0.004,1.091,0.998,False
+wec,Imola,Imola,HYPERCAR,2025,3069,18,0.0147,0.0099,0.0195,0.77,0.993,False
+wec,Imola,Imola,HYPERCAR,2026,2919,17,0.0012,-0.0112,0.0135,1.516,0.991,False
 wec,Interlagos,Interlagos,HYPERCAR,2024,3736,19,0.0264,0.0213,0.0316,0.836,0.999,False
 wec,Interlagos,Interlagos,HYPERCAR,2025,3667,18,0.0018,-0.0023,0.0059,0.642,0.999,False
-wec,Le Mans,Le Mans,HYPERCAR,2022,1429,5,0.1526,0.0491,0.2562,3.814,0.999,False
-wec,Le Mans,Le Mans,HYPERCAR,2025,6080,21,0.0079,-0.0175,0.0332,1.775,0.984,False
-wec,Le Mans,Le Mans,HYPERCAR,2026,4935,18,-0.0442,-0.0562,-0.0321,1.696,0.943,False
-wec,Losail,Losail,HYPERCAR,2025,4375,18,-0.024,-0.0284,-0.0197,0.896,0.968,False
-wec,Monza,Monza,HYPERCAR,2022,685,6,-0.0131,-0.037,0.0108,0.812,0.993,False
+wec,Le Mans,Le Mans,HYPERCAR,2022,1393,5,0.1828,0.0865,0.279,2.75,0.999,False
+wec,Le Mans,Le Mans,HYPERCAR,2025,6046,21,-0.0033,-0.0289,0.0224,1.745,0.983,False
+wec,Le Mans,Le Mans,HYPERCAR,2026,4929,18,-0.0455,-0.0579,-0.033,1.69,0.944,False
+wec,Losail,Losail,HYPERCAR,2025,4344,18,-0.0191,-0.0236,-0.0146,0.859,0.968,False
+wec,Monza,Monza,HYPERCAR,2022,677,6,-0.01,-0.0318,0.0117,0.792,0.993,False
 wec,Portimao,Portimao,HYPERCAR,2023,2002,11,0.0046,-0.0026,0.0119,0.726,0.999,False
 wec,Sebring,Sebring,HYPERCAR,2022,577,4,-0.0184,-0.0335,-0.0033,0.701,0.995,False
 wec,Sebring,Sebring,HYPERCAR,2023,1783,11,-0.0095,-0.0157,-0.0033,0.923,0.978,False
-wec,Spa,Spa,HYPERCAR,2022,200,4,-0.1241,-0.316,0.0677,3.829,0.979,False
-wec,Spa,Spa,HYPERCAR,2023,1126,13,0.0001,-0.0198,0.0199,1.478,0.966,False
-wec,Spa,Spa,HYPERCAR,2024,1675,19,0.0525,0.0413,0.0638,1.243,0.949,False
+wec,Spa,Spa,HYPERCAR,2022,179,4,0.0499,-0.0349,0.1347,1.957,0.993,False
+wec,Spa,Spa,HYPERCAR,2023,1098,13,0.0218,0.0051,0.0385,1.346,0.965,False
+wec,Spa,Spa,HYPERCAR,2024,1658,19,0.0586,0.0468,0.0704,1.222,0.948,False
 wec,Spa,Spa,HYPERCAR,2025,1794,17,0.0198,0.0088,0.0307,1.094,0.988,False
 wec,Spa,Spa,HYPERCAR,2026,1802,17,0.0251,0.0156,0.0345,1.053,0.982,False
-elms,Aragon,Aragon,LMP2,2023,668,8,0.05,0.0359,0.0641,1.199,0.994,False
+elms,Aragon,Aragon,LMP2,2023,661,8,0.0389,0.0273,0.0506,1.156,0.994,False
 elms,Barcelona,Barcelona,LMP2,2022,1641,16,0.0275,0.0139,0.041,1.029,0.988,False
-elms,Barcelona,Barcelona,LMP2,2023,685,7,0.0556,0.0173,0.0939,1.321,0.944,False
+elms,Barcelona,Barcelona,LMP2,2023,684,7,0.0572,0.0224,0.0921,1.32,0.944,False
 elms,Barcelona,Barcelona,LMP2,2024,1502,14,0.0751,0.0553,0.095,1.405,0.992,False
-elms,Barcelona,Barcelona,LMP2,2025,1196,13,0.0256,0.0081,0.043,1.542,0.991,False
-elms,Imola,Imola,LMP2,2022,1476,17,-0.0009,-0.0159,0.014,1.176,0.98,False
-elms,Imola,Imola,LMP2,2024,1282,14,0.0118,-0.0038,0.0274,1.341,0.978,False
-elms,Imola,Imola,LMP2,2025,1014,12,-0.0223,-0.0778,0.0332,2.072,0.994,False
+elms,Barcelona,Barcelona,LMP2,2025,1185,13,0.0249,0.0084,0.0413,1.525,0.991,False
+elms,Imola,Imola,LMP2,2022,1468,17,0.0006,-0.0147,0.0159,1.16,0.98,False
+elms,Imola,Imola,LMP2,2024,1257,14,0.0022,-0.0107,0.0151,1.153,0.977,False
+elms,Imola,Imola,LMP2,2025,971,12,-0.0193,-0.0652,0.0265,1.756,0.994,False
 elms,Monza,Monza,LMP2,2022,1330,16,0.0105,-0.0016,0.0227,0.844,0.969,False
-elms,Mugello,Mugello,LMP2,2024,992,14,0.0655,0.0273,0.1038,1.833,0.973,False
-elms,Paul Ricard,Paul Ricard,LMP2,2022,1501,17,-0.0164,-0.0243,-0.0085,0.862,0.988,False
+elms,Mugello,Mugello,LMP2,2024,991,14,0.0658,0.0277,0.1039,1.828,0.973,False
+elms,Paul Ricard,Paul Ricard,LMP2,2022,1495,17,-0.0121,-0.0215,-0.0027,0.882,0.988,False
 elms,Paul Ricard,Paul Ricard,LMP2,2023,706,7,0.0504,-0.004,0.1049,1.168,0.995,False
 elms,Paul Ricard,Paul Ricard,LMP2,2024,1301,14,0.0152,0.0008,0.0296,0.903,0.986,False
-elms,Paul Ricard,Paul Ricard,LMP2,2025,892,12,0.04,-0.0153,0.0953,3.162,0.986,False
+elms,Paul Ricard,Paul Ricard,LMP2,2025,867,12,0.063,0.0069,0.1191,3.091,0.986,False
 elms,Portimao,Portimao,LMP2,2021,1258,12,-0.0008,-0.0078,0.0061,0.701,0.99,False
-elms,Portimao,Portimao,LMP2,2022,1231,15,-0.1931,-0.239,-0.1472,3.374,0.994,False
-elms,Portimao,Portimao,LMP2,2023,480,7,-0.2493,-0.288,-0.2105,2.052,0.986,False
-elms,Portimao,Portimao,LMP2,2024,1214,14,-0.0011,-0.0168,0.0146,0.944,0.98,False
+elms,Portimao,Portimao,LMP2,2022,1081,15,-0.0875,-0.1105,-0.0646,2.003,0.994,False
+elms,Portimao,Portimao,LMP2,2023,442,7,-0.2134,-0.2439,-0.1829,1.85,0.985,False
+elms,Portimao,Portimao,LMP2,2024,1187,14,0.0003,-0.0157,0.0163,0.89,0.979,False
 elms,Portimao,Portimao,LMP2,2025,815,9,0.0352,0.0193,0.0511,0.902,0.972,False
-elms,Silverstone,Silverstone,LMP2,2025,875,12,0.0404,0.0066,0.0742,2.03,0.986,False
+elms,Silverstone,Silverstone,LMP2,2025,514,12,0.0234,-0.0198,0.0666,1.821,0.978,False
 elms,Spa,Spa,LMP2,2021,726,10,0.0184,-0.0009,0.0377,1.13,0.987,False
-elms,Spa,Spa,LMP2,2022,1091,16,-0.054,-0.0741,-0.034,1.605,0.986,False
-elms,Spa,Spa,LMP2,2023,325,7,0.1094,0.0069,0.2119,1.947,0.973,False
-elms,Spa,Spa,LMP2,2024,893,14,-0.019,-0.0457,0.0078,1.444,0.98,False
-elms,Spa,Spa,LMP2,2025,656,12,0.0566,0.0331,0.0801,1.427,0.979,False
-elms,Aragon,Aragon,LMP2 Pro/Am,2023,910,10,0.0538,0.0385,0.0691,1.391,0.998,False
+elms,Spa,Spa,LMP2,2022,1060,16,-0.039,-0.0581,-0.0199,1.417,0.987,False
+elms,Spa,Spa,LMP2,2023,316,7,0.0662,-0.015,0.1474,1.849,0.977,False
+elms,Spa,Spa,LMP2,2024,873,14,-0.0082,-0.0344,0.0179,1.23,0.982,False
+elms,Spa,Spa,LMP2,2025,647,12,0.0161,-0.0071,0.0392,1.263,0.972,False
+elms,Aragon,Aragon,LMP2 Pro/Am,2023,887,10,0.0278,0.0113,0.0443,1.29,0.999,False
 elms,Barcelona,Barcelona,LMP2 Pro/Am,2023,1211,11,0.0385,0.025,0.052,1.212,0.985,False
-elms,Barcelona,Barcelona,LMP2 Pro/Am,2024,836,8,0.0805,0.0523,0.1088,1.495,0.99,False
+elms,Barcelona,Barcelona,LMP2 Pro/Am,2024,822,8,0.0832,0.0591,0.1073,1.445,0.991,False
 elms,Barcelona,Barcelona,LMP2 Pro/Am,2025,737,8,0.0201,-0.0051,0.0453,1.307,0.989,False
-elms,Imola,Imola,LMP2 Pro/Am,2024,762,8,-0.0025,-0.0402,0.0352,1.364,0.975,False
-elms,Imola,Imola,LMP2 Pro/Am,2025,664,8,-0.012,-0.109,0.085,2.076,0.99,False
-elms,Mugello,Mugello,LMP2 Pro/Am,2024,519,7,0.0495,0.004,0.0951,1.75,0.976,False
-elms,Paul Ricard,Paul Ricard,LMP2 Pro/Am,2023,1112,11,0.0121,-0.0077,0.0319,1.116,0.995,False
-elms,Paul Ricard,Paul Ricard,LMP2 Pro/Am,2024,773,8,0.0342,-0.0057,0.0741,1.415,0.972,False
-elms,Paul Ricard,Paul Ricard,LMP2 Pro/Am,2025,609,8,0.022,-0.0227,0.0666,2.204,0.976,False
-elms,Portimao,Portimao,LMP2 Pro/Am,2023,663,10,-0.3368,-0.377,-0.2966,2.674,0.978,False
-elms,Portimao,Portimao,LMP2 Pro/Am,2024,664,8,-0.0145,-0.0349,0.0058,1.044,0.978,False
-elms,Portimao,Portimao,LMP2 Pro/Am,2025,789,8,0.0117,-0.0002,0.0235,0.968,0.983,False
-elms,Silverstone,Silverstone,LMP2 Pro/Am,2025,491,7,0.0267,-0.0242,0.0776,2.425,0.996,False
-elms,Spa,Spa,LMP2 Pro/Am,2023,407,9,0.0648,0.0107,0.119,1.542,0.97,False
-elms,Spa,Spa,LMP2 Pro/Am,2024,435,7,-0.0168,-0.0553,0.0217,1.063,0.979,False
-elms,Spa,Spa,LMP2 Pro/Am,2025,375,7,0.0149,-0.039,0.0688,1.575,0.992,False
+elms,Imola,Imola,LMP2 Pro/Am,2024,725,8,0.0022,-0.0297,0.0342,1.358,0.975,False
+elms,Imola,Imola,LMP2 Pro/Am,2025,638,8,0.0205,-0.0421,0.0831,1.703,0.99,False
+elms,Mugello,Mugello,LMP2 Pro/Am,2024,513,7,0.0329,-0.0071,0.0728,1.634,0.977,False
+elms,Paul Ricard,Paul Ricard,LMP2 Pro/Am,2023,1103,11,-0.0023,-0.0189,0.0144,0.972,0.996,False
+elms,Paul Ricard,Paul Ricard,LMP2 Pro/Am,2024,766,8,0.0283,-0.0115,0.0682,1.366,0.972,False
+elms,Paul Ricard,Paul Ricard,LMP2 Pro/Am,2025,545,8,0.0471,0.0042,0.09,2.041,0.975,False
+elms,Portimao,Portimao,LMP2 Pro/Am,2023,536,10,-0.2979,-0.3523,-0.2434,2.879,0.975,False
+elms,Portimao,Portimao,LMP2 Pro/Am,2024,650,8,-0.005,-0.0269,0.0168,0.954,0.978,False
+elms,Portimao,Portimao,LMP2 Pro/Am,2025,773,8,0.0122,0.0037,0.0208,0.904,0.984,False
+elms,Silverstone,Silverstone,LMP2 Pro/Am,2025,486,7,0.0424,-0.0215,0.1063,2.268,0.996,False
+elms,Spa,Spa,LMP2 Pro/Am,2023,398,9,0.073,0.0172,0.1288,1.462,0.971,False
+elms,Spa,Spa,LMP2 Pro/Am,2024,426,7,-0.0107,-0.0456,0.0243,0.976,0.978,False
+elms,Spa,Spa,LMP2 Pro/Am,2025,366,7,-0.0072,-0.067,0.0525,1.483,0.992,False

@@ -6,7 +6,7 @@ Reading guide: the model optimises **expected race time** to the next stop only,
 
 ## Case I-A: Watkins Glen 2024 — car 01's FCY-onset stop (lap 90)
 
-**State (measured from data):** end of lap 89/148, car 01 on tyre age 14, 17 laps since last refuel (fuel range 32 laps; net slope +0.0172 s/lap).
+**State (measured from data):** end of lap 89/148, car 01 on tyre age 14, 17 laps since last refuel (fuel range 32 laps; net slope +0.0204 s/lap).
 
 **Real decision:** Car 01 (the class winner) pitted lap 90 — the exact lap the flag turned from GF to FCY — its fourth of eight stops.
 
@@ -14,17 +14,16 @@ Reading guide: the model optimises **expected race time** to the next stop only,
 
 **Model output** (pit_lap 0 = run to the flag without stopping, where feasible):
 
-- Best median pit lap: **104** — recommended window (medians within 0.5s): **[100, 102, 103, 104]**.
-- Outcome spread at the best lap (p10-p90): 1225.2s — the honest uncertainty of any single-race outcome.
-- **Verdict:** Real choice (lap 90): median cost +6.72s vs the model optimum (lap 104); OUTSIDE the recommended window.
+- Best median pit lap: **104** — recommended window (medians within 0.5s): **[101, 103, 104]**.
+- Outcome spread at the best lap (p10-p90): 1224.4s — the honest uncertainty of any single-race outcome.
+- **Verdict:** Real choice (lap 90): median cost +7.81s vs the model optimum (lap 104); OUTSIDE the recommended window.
 
 | pit_lap | median_s | mean_s | p10_s | p90_s | p_best |
 |---|---|---|---|---|---|
-| 90 <- real | 6316.962 | 6385.768 | 5854.827 | 7084.330 | 0.013 |
-| 100 | 6310.706 | 6378.392 | 5849.625 | 7076.011 | 0.017 |
-| 102 | 6310.642 | 6377.702 | 5849.090 | 7076.398 | 0.021 |
-| 103 | 6310.413 | 6377.375 | 5848.813 | 7075.040 | 0.026 |
-| 104 | 6310.240 | 6377.034 | 5848.542 | 7073.718 | 0.792 |
+| 90 <- real | 6320.192 | 6390.614 | 5859.861 | 7089.680 | 0.014 |
+| 101 | 6312.851 | 6381.811 | 5853.284 | 7079.976 | 0.023 |
+| 103 | 6312.511 | 6381.139 | 5852.588 | 7078.820 | 0.025 |
+| 104 | 6312.378 | 6380.754 | 5852.318 | 7076.754 | 0.791 |
 
 ## Case I-B: Road America 2024 — car 10's routine green-flag stop (lap 29)
 

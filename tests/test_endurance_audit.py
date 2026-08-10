@@ -40,11 +40,11 @@ def test_stint_lengths_segmented_by_pit_visits() -> None:
 
 def test_fuel_limited_flag_logic() -> None:
     # longest stint reaches the range and >=1 full stint → fuel-limited.
-    a = FuelLimitedAudit("wec", "test", 2024, "7", fuel_range_laps=32,
+    a = FuelLimitedAudit("wec", "test", "HYPERCAR", 2024, "7", fuel_range_laps=32,
                          longest_stint=32, n_full_stints=4, n_stints=8)
     assert a.ran_fuel_limited is True
     # a winner whose longest stint falls well short is not fuel-limited.
-    b = FuelLimitedAudit("imsa", "test", 2023, "5", fuel_range_laps=50,
+    b = FuelLimitedAudit("imsa", "test", "GTP", 2023, "5", fuel_range_laps=50,
                          longest_stint=43, n_full_stints=0, n_stints=4)
     assert b.ran_fuel_limited is False
 
@@ -75,9 +75,13 @@ def test_fuel_limited_verdict_survives_the_strictest_tolerance() -> None:
         fuel_range = ranges.get((series, circuit))
         if fuel_range is None:
             continue
-        slug = f"{season}_{circuit}_{car_class.lower()}"
+        # slugify, not .lower() — this test carried the same bug the script
+        # did, so it would have re-verified the strict-tolerance claim on a
+        # scope silently missing every class whose name has a space or slash.
+        slug = f"{season}_{circuit}_{slugify(car_class)}"
         try:
-            audit = audit_fuel_limited(series, circuit, season, slug, fuel_range, tolerance_laps=0)
+            audit = audit_fuel_limited(series, circuit, car_class, season, slug, fuel_range,
+                                       tolerance_laps=0)
         except FileNotFoundError:
             continue
         rows.append({"series": series, "ran_fuel_limited": audit.ran_fuel_limited})
@@ -102,6 +106,24 @@ def test_committed_audit_most_winners_ran_fuel_limited() -> None:
     not "always" — asserting "always" on the small sample would have been
     exactly the kind of small-N overclaim this widening was meant to catch."""
     art = pd.read_csv(_ARTIFACT)
-    assert art["ran_fuel_limited"].mean() > 0.75
-    by_series = art.groupby("series")["ran_fuel_limited"].mean()
-    assert (by_series > 0.7).all()
+    assert "car_class" in art.columns, (
+        "the audit must identify the class: IMSA fields three at the same "
+        "circuit-year and pooling them hides the finding below"
+    )
+
+    # Stated per class, because pooling makes it false. Running the fuel
+    # minimum is a *prototype* behaviour, not a universal one -- the same
+    # mechanism as reports/when_tyres_beat_fuel.md. Where the stop is cheap,
+    # winners stop more often than the tank requires:
+    #
+    #   ELMS LMP2 1.00, LMP2 Pro/Am 0.94, WEC HYPERCAR 0.89
+    #   IMSA GTD PRO 0.77, GTP 0.64, GTD 0.63
+    #
+    # The series-level average was 0.75 and hid a 0.63-to-1.00 spread.
+    by_class = art.groupby(["series", "car_class"])["ran_fuel_limited"].mean()
+    prototypes = by_class.loc[[("elms", "LMP2"), ("elms", "LMP2 Pro/Am"),
+                               ("wec", "HYPERCAR")]]
+    assert (prototypes > 0.85).all(), f"prototype winners stopped running to the tank: {prototypes}"
+    gt3 = by_class.loc[[("imsa", "GTD"), ("imsa", "GTDPRO")]]
+    assert (gt3 < 0.85).all(), f"GT3 winners now run fuel-limited like prototypes: {gt3}"
+    assert art["ran_fuel_limited"].mean() > 0.7

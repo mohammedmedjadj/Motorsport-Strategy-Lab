@@ -54,6 +54,7 @@ class FuelLimitedAudit:
 
     series: str
     circuit: str
+    car_class: str
     year: int
     car: str
     fuel_range_laps: int
@@ -73,14 +74,19 @@ class FuelLimitedAudit:
 
     def row(self) -> dict:
         return {
-            "series": self.series, "circuit": self.circuit, "year": self.year,
+            # car_class belongs in the identity: IMSA fields three classes at
+            # the same circuit-year, and without it their rows are
+            # indistinguishable -- which hid that "winners run fuel-limited"
+            # is a prototype fact, not a universal one.
+            "series": self.series, "circuit": self.circuit,
+            "car_class": self.car_class, "year": self.year,
             "winner_car": self.car, "fuel_range_laps": self.fuel_range_laps,
             "longest_stint": self.longest_stint, "n_full_stints": self.n_full_stints,
             "n_stints": self.n_stints, "ran_fuel_limited": self.ran_fuel_limited,
         }
 
 
-def audit_fuel_limited(series: str, circuit: str, year: int, slug: str,
+def audit_fuel_limited(series: str, circuit: str, car_class: str, year: int, slug: str,
                        fuel_range_laps: int,
                        tolerance_laps: int = DEFAULT_TOLERANCE_LAPS) -> FuelLimitedAudit:
     """Reconstruct the winner's stints and test them against the fuel range."""
@@ -89,5 +95,5 @@ def audit_fuel_limited(series: str, circuit: str, year: int, slug: str,
     lengths = stint_lengths(laps, car)
     longest = max(lengths) if lengths else 0
     n_full = int(np.sum(np.array(lengths) >= fuel_range_laps - tolerance_laps))
-    return FuelLimitedAudit(series, circuit, year, str(car), fuel_range_laps,
+    return FuelLimitedAudit(series, circuit, car_class, year, str(car), fuel_range_laps,
                             longest, n_full, len(lengths), tolerance_laps)

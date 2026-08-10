@@ -48,34 +48,34 @@ def test_committed_fits_match_a_fresh_recomputation(fits) -> None:
 
 
 def test_separability_claim_matches_the_report(fits) -> None:
-    """The fuel/degradation split is identified almost nowhere, and where it is,
-    the reason is the race format rather than the car.
+    """The fuel/degradation split is identified at exactly one circuit, and the
+    reason is the race format rather than the car.
 
-    Stated per class, because the claim is about *races* and a class is part of
-    what a race is: pooling GTP and GTD Sebring rows would have made "Sebring
-    is separable at both editions" read as four editions of one thing.
+    Sebring is separable in **all three IMSA classes at both editions** — GTP
+    0.826/0.820, GTD 0.708/0.695, GTD PRO 0.861/0.848 — and nowhere else in
+    any series. Its 12 h format carries enough fuel-only splash stops to
+    weaken the fuel/tyre collinearity that makes the split unidentified
+    everywhere else.
 
-    IMSA GTP: Sebring 2025 and 2026, whose 12 h format has enough fuel-only
-    splash stops to weaken the usual fuel/tyre collinearity, plus Indianapolis
-    2024 sitting 0.003 the right side of a 0.90 cutoff — named as the threshold
-    coincidence it is, not as a second finding. Every WEC race stays
-    non-separable.
+    Six concordant observations, where an earlier version of this test had two
+    plus Indianapolis 2024 sitting 0.003 the right side of the 0.90 cutoff and
+    flagged as the threshold coincidence it was. That artefact disappeared
+    when the field-wide filter gained hysteresis and stopped keeping the
+    recovery laps after a neutralisation — which is what a spurious result
+    looks like when the noise causing it is removed.
     """
-    gtp = fits[(fits["series"] == "imsa") & (fits["car_class"] == "GTP")]
-    wec = fits[fits["series"] == "wec"]
-    separable_gtp = gtp[gtp["separable"]]
-    assert set(separable_gtp["event"]) == {"Sebring", "Indianapolis"}
-    sebring = separable_gtp[separable_gtp["event"] == "Sebring"]
-    assert len(sebring) == 2
-    assert (sebring["fuel_deg_corr"] < 0.85).all()
-    indy = separable_gtp[separable_gtp["event"] == "Indianapolis"]
-    assert len(indy) == 1 and (indy["fuel_deg_corr"] > 0.89).all()
-    assert (~wec["separable"]).all()
-
-    # GT3 is reported in its own right; the collinearity is the norm there too.
-    gtd = fits[(fits["series"] == "imsa") & (fits["car_class"] == "GTD")]
-    assert len(gtd) > 50
-    assert gtd["separable"].mean() < 0.25, "GT3 should be mostly non-separable too"
+    imsa = fits[fits["series"] == "imsa"]
+    separable = fits[fits["separable"]]
+    assert set(separable["event"]) == {"Sebring"}, (
+        f"separability escaped Sebring: {sorted(set(separable['event']))}"
+    )
+    # All three IMSA classes, both editions each.
+    assert set(separable["car_class"]) == {"GTP", "GTD", "GTDPRO"}
+    assert len(separable) == 6
+    assert (separable["fuel_deg_corr"] < 0.87).all()
+    # Every other race in every series stays collinear.
+    assert not fits[fits["event"] != "Sebring"]["separable"].any()
+    assert len(imsa) > 100
 
 
 def test_loro_backs_the_bahrain_exception(loro) -> None:
