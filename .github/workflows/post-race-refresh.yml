@@ -11,7 +11,8 @@ name: Post-race data refresh
 # output, `git diff` is empty, and nothing is committed. It only commits when a
 # round genuinely new to the scope is successfully ingested.
 #
-# KNOWN ISSUE (as of 2026-08): the ingest step cannot reach the F1 timing API
+# KNOWN ISSUE (still reproducing 2026-08-10, run 31364396877): the ingest step
+# cannot reach the F1 timing API
 # from GitHub-hosted runners. FastF1's primary endpoint errors here, it falls
 # back to its livetiming mirror (in-progress sessions only), and every race
 # fails with SessionNotAvailableError -- including 2023 races ingested long ago.
@@ -20,6 +21,16 @@ name: Post-race data refresh
 # total failure (see src/ingestion/pipeline.py), so a run in this state fails
 # loudly at the ingest step and leaves committed data untouched -- which is the
 # intended behaviour, not a secondary bug.
+#
+# So this workflow is red every Monday, on purpose, and that carries its own
+# risk: a job that always fails stops being read. Two things make it safe to
+# leave. The failure message names the exact state ("0 of 16 races loaded, but
+# 14 were already ingested") rather than a generic traceback, so a *different*
+# failure is immediately distinguishable from this one. And the run goes green
+# by itself the week the API becomes reachable -- nothing needs remembering.
+# The same pipeline run from a developer machine succeeds today, which is how
+# the 2026 rounds were ingested; the problem is GitHub-hosted runners, not the
+# code.
 #
 # The endurance (WEC/IMSA) side is deliberately NOT refreshed here: its
 # committed reports and several tests are pinned to exact race counts (e.g.
