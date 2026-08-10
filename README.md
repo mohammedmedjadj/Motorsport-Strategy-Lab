@@ -59,6 +59,16 @@ on stop cost and the car class stops mattering — GT3 dominated the earlier,
 narrower version of this finding only because GT3 racing is where cheap stops
 are common.
 
+A defect the same widening exposed, diagnosed and **not yet fixed**:
+[**track evolution is an omitted variable**](reports/track_evolution_omitted_variable.md).
+41 of 210 endurance races fit a negative degradation slope, and at ELMS
+Portimao 2023 — where the track dries by 17.8 s a lap over the race — the
+model attributes that improvement to tyre age with its sign inverted. Adding a
+lap-number term moves exactly the races that drift and leaves the others
+untouched to four decimals, which is what a real omitted variable looks like.
+The write-up states what it does and does not invalidate rather than quietly
+carrying on.
+
 Candidate sources beyond that are surveyed against this project's actual bar —
 per-lap flags and tyre age, not just lap times — in
 [`reports/new_series_survey_phase0.md`](reports/new_series_survey_phase0.md).

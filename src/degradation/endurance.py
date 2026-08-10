@@ -28,6 +28,13 @@ Two other departures from the F1 model (``src/degradation/model.py``):
 
 - **Fuel resets.** Endurance cars refuel, so fuel load is not monotone in lap
   number as it is in F1 — hence ``laps_since_refuel`` rather than lap number.
+  That substitution is right for fuel and leaves **nothing carrying race
+  time**, which is a measured defect rather than a theoretical one: track
+  evolution is currently attributed to tyre age with its sign inverted, and
+  it is the reason 41 of 210 races fit a negative slope. Diagnosed with its
+  evidence in ``reports/track_evolution_omitted_variable.md``; not yet fixed,
+  because the drying is non-linear and a proper term touches every fitted
+  number in four series.
 - **Fixed effects are per car *and* driver.** Endurance rotates drivers within a
   car and driver pace differences are large; a car-only intercept would push them
   into the residual.
