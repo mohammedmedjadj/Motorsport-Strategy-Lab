@@ -68,19 +68,40 @@ The two races with no drift are untouched to four decimal places. The two with
 drift move substantially toward zero. That is the signature of a real omitted
 variable rather than a coincidence.
 
-## Why this is not fixed here
+## An attempted fix, and why it was withdrawn
 
-A linear term recovers only about 40% of the gap at Portimao, because the
-drying is **not linear** — 116 → 114 → 110 → 103 → 98.6 → 98.2 is steep early
-and flat late. Capturing it needs a non-linear race-time term (a spline, or
-segmented by phase), which is a specification change touching every fitted
-number in four series, every committed artifact, and the cross-series results
-that currently rest on them.
+A linear term recovers only ~40% of the gap because the drying is non-linear
+(116 → 114 → 110 → 103 → 98.6 → 98.2, steep early and flat late). So a
+piecewise-linear race-time basis was built and validated on synthetic races
+with a known +0.080 s/lap slope and an 18 s drying curve
+(`src/degradation/track_evolution.py`). It looked convincing:
 
-Doing that on the last measurement of a long session, without the room to
-validate it against synthetic data with a known truth, is how a project
-acquires a subtler bug than the one it set out to fix. The diagnosis is
-recorded with its evidence so the change can be made deliberately.
+| model | recovered slope (truth +0.0800) |
+|---|---|
+| current (fixed effects + tyre age) | **−0.0750** — wrong sign |
+| + linear lap term | +0.0555 |
+| + piecewise-linear basis | **+0.0810** |
+
+It also failed catastrophically on races with too few stints (−3.88), so an
+identifiability test was added — the multiple correlation of tyre age on the
+time basis after fixed effects, which reads 1.000 in the degenerate case — and
+the term applied only below a 0.95 limit. On synthetic data that guard worked
+exactly as designed.
+
+**Refitting all 210 real race-seasons then made everything worse**: negative
+slopes 41 → 64, physically impossible ones 3 → 5, the ELMS median crossing
+from +0.019 to −0.007. The wiring was reverted; the module and this evidence
+are kept.
+
+The explanation is in the diagnostic itself. Median identifiability on real
+races is **0.585**, against 0.18–0.39 in the synthetic races used to validate
+it. Real fields sit far closer to the degenerate boundary than the generator
+implied, so a 0.95 limit admits races the basis cannot support. The synthetic
+test modelled track evolution as the only confounder on cleaner stint
+structures than any real race has, and produced false confidence.
+
+That is the whole reason to measure a fix on real data before keeping it, and
+the reason this section reports a withdrawal rather than a success.
 
 ## What this does and does not invalidate
 
