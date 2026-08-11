@@ -746,6 +746,36 @@ problem they solve is specific to endurance racing and has no F1 analogue:
 
 ---
 
+## What four series say that one cannot
+
+The strongest results in this project are **comparisons**, and none of them
+could have been produced inside a single championship. Full write-up:
+[`reports/cross_series_synthesis.md`](reports/cross_series_synthesis.md).
+
+> **The pit stop decides the strategy regime, not the car.** Across six
+> populations the correlation between a class's median pit loss and the share
+> of its circuits where an extra stop beats the fuel minimum is **−0.913**.
+> WEC Hypercar, at a 76-second stop, is fuel-limited everywhere; IMSA GTD, at
+> 20 seconds, is tyre-limited at a third of its circuits. This overturned the
+> project's own published conclusion twice — "every measured race is
+> fuel-limited" was a fact about *expensive stops* stated as a fact about
+> endurance racing.
+
+> **The tyre-change premium is the car, not the crew.** Holding the GT3 car
+> fixed and changing only the driver rating moves it 17.6 s → 16.9 s; changing
+> the car moves it 8.7 s → 17.6 s. Measuring this required IMSA's GTD PRO to
+> be scoped as a class in its own right.
+
+> **No consistent crew effect on tyre wear.** Two natural experiments with the
+> same design disagree — IMSA +0.0040 s/lap (p = 0.085), ELMS **−0.0143**
+> (p = 0.0093), the significant one contradicting the intuitive hypothesis.
+> One test alone would have been written up as a trend.
+
+> **Slope instability is not the machinery.** ELMS LMP2 is near-spec — one
+> chassis, one engine — and its slopes fail to transfer between seasons
+> exactly as the Balance-of-Performance classes do. A hypothesis carried since
+> the F1 phase, closed by a negative control.
+
 ## Key findings across all three series
 
 Having gone through F1, WEC and IMSA individually above, nine results stood
@@ -890,6 +920,9 @@ Motorsport-Strategy-Lab/
   reports/
     f1/                 # phase 0-5 reports + extensions (breadth layer,
                         #   adversarial rival, track position), audit cases, figures
+    elms/               # phase 0-4 + 7 reports, audit cases, results.md,
+                        #   crew_rating_findings.md (LMP2 and LMP2 Pro/Am,
+                        #   never merged)
     imsa/               # phase 0-7 reports, audit cases, methodology.md,
                         #   packaging_phase7.md (IMSA-only, never merged with WEC),
                         #   gtd_findings.md (the GT3 class, never merged with GTP)

@@ -104,9 +104,12 @@ plausible stop plans from an invented neutralisation risk.
 
 - **Per-decision audit: now present** ([`audit_cases.md`](audit_cases.md)),
   covering Mugello 2024's double Safety Car stop in both classes.
-- **No phase-by-phase report set.** F1, WEC and IMSA carry phases 0–7 as
-  separate documents. ELMS has phase 0, this results document and the crew
-  comparison — the modelling is complete, the paperwork is not.
+- **Phase-by-phase report set: now present** — phases
+  [0](data_availability_phase0.md), [1](data_quality_phase1.md),
+  [2](degradation_phase2.md), [3](safety_car_phase3.md),
+  [4](simulator_phase4.md) and [7](packaging_phase7.md), plus the
+  [audit](audit_cases.md). No phase 5/6 equivalents: the audit *is* ELMS's
+  phase 5, and this document plus the crew comparison serve as its phase 6.
 - **No established crew effect**, and the ELMS test disagrees with IMSA's.
   See [`crew_rating_findings.md`](crew_rating_findings.md), which is explicit
   about what its p-value does and does not license.
