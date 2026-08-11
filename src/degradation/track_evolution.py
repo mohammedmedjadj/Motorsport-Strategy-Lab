@@ -41,14 +41,25 @@ support. The synthetic test was too idealised and produced false confidence:
 it modelled track evolution as the only confounder, on stint structures
 cleaner than any real race has.
 
+**Lowering the limit does not rescue it, and that was checked rather than
+assumed.** Sweeping the threshold from 1.01 down to 0.30 across all 210
+race-seasons never beats leaving the term out: 42 negative slopes with no term
+against 61 at 0.90, 54 at 0.60, 43 at 0.40 and 41 at 0.30 — where it treats
+only 49 races to gain a single one. There is no threshold at which this helps.
+
+An earlier version of this note advised exactly that sweep as the way to
+resume. It was wrong, and saying so here is the point: the problem is not
+calibration. A piecewise-linear basis in lap number does not separate track
+evolution from tyre age on real stint structures at all, however carefully it
+is gated.
+
 Kept rather than deleted because the diagnosis it rests on is solid and
 independently evidenced (``reports/track_evolution_omitted_variable.md``): a
 lap-number term moves exactly the races that drift and leaves the others
-untouched to four decimals. What is missing is a basis that separates track
-evolution from tyre age on *real* stint structures, and a validation harness
-built from real races rather than an idealised generator. Anyone resuming this
-should start by lowering IDENTIFIABILITY_LIMIT until the real-data refit stops
-degrading, and treat that threshold as the finding.
+untouched to four decimals. What is missing is a *different* estimator, not a
+better threshold — plausibly one that identifies track evolution from
+between-car information at a given lap rather than from the race-time axis
+that tyre age already lives on.
 """
 
 from __future__ import annotations

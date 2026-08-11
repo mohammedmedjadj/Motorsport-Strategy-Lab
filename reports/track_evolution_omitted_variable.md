@@ -103,6 +103,29 @@ structures than any real race has, and produced false confidence.
 That is the whole reason to measure a fix on real data before keeping it, and
 the reason this section reports a withdrawal rather than a success.
 
+**And lowering the identifiability limit does not rescue it.** Sweeping it
+from 1.01 to 0.30 over all 210 race-seasons:
+
+| limit | races treated | negative slopes after |
+|---|---|---|
+| no term at all | — | **42** |
+| 0.90 | 184 | 61 |
+| 0.60 | 108 | 54 |
+| 0.40 | 72 | 43 |
+| 0.30 | 49 | 41 |
+
+At no threshold does the term beat leaving it out. At the most restrictive it
+treats 49 races to gain one negative slope out of 42. The first version of
+this section advised that sweep as the way to resume, and it was wrong: the
+problem is not calibration. A piecewise-linear basis in lap number does not
+separate track evolution from tyre age on real stint structures however
+carefully it is gated, because tyre age already lives on the race-time axis
+the basis is built from.
+
+What is needed is a different estimator — plausibly one identifying track
+evolution from *between-car* information at a given lap, where tyre ages
+differ across the field, rather than from the time axis itself.
+
 ## What this does and does not invalidate
 
 - **Slope magnitudes are affected** in races with strong track evolution, most
