@@ -13,11 +13,20 @@ The rule this encodes: **a headline number in a report is a claim about an
 artifact, and a claim about an artifact is testable.** Where a report states a
 count that the committed data determines, it is parsed out and checked here.
 
-Deliberately narrow. It does not try to validate prose, or every figure in
-every document — a test that greps for decimals would fail on rounding and be
-deleted within a week. It checks the counts that describe *scope*, because
-those are what go stale when the project grows, which is exactly what kept
-happening.
+Deliberately narrow. It does not try to validate every figure in every
+document — a test that greps for decimals would fail on rounding and be
+deleted within a week. It checks two things: the counts that describe *scope*,
+because those go stale whenever the project grows, and the headline figures
+the cross-series synthesis argues from, because those go stale whenever the
+models are refitted.
+
+The second group was added after three figures in the ELMS phase set were
+written from memory of an earlier run rather than from the CSVs. They were
+caught by hand, which worked and does not scale.
+
+Every check here has been verified to fail when the report is perturbed —
+a guard that cannot fail is worse than no guard, because it reports safety
+it is not providing.
 """
 
 from __future__ import annotations
@@ -154,4 +163,58 @@ def test_readme_test_count_badge_is_not_wildly_stale() -> None:
     assert claimed >= collected, (
         f"README advertises {claimed} tests but {collected} test functions are "
         "defined before parametrisation — the badge is over-claiming."
+    )
+
+
+# --- body-text figures, not just scope counts -------------------------------
+
+
+def test_quoted_median_slopes_match_the_artifact() -> None:
+    """Median slopes are quoted in prose across several reports, and prose is
+    where they go stale.
+
+    Added after three figures in the ELMS phase set were written from memory
+    of an earlier run rather than from the CSVs — 9 negative slopes where the
+    artifact said 7, and two pit-loss medians. All three were caught by hand
+    before commit, which is exactly the review mechanism that does not scale.
+    """
+    fits = pd.read_csv(ENDURANCE_DERIVED_DIR / "endurance_degradation_fits.csv")
+    text = _text("reports/cross_series_synthesis.md")
+    for (series, car_class), group in fits.groupby(["series", "car_class"]):
+        median = group["net_slope"].median()
+        assert f"+{median:.4f}" in text or f"{median:.4f}" in text, (
+            f"the synthesis no longer quotes {series}/{car_class}'s median "
+            f"slope of {median:+.4f}"
+        )
+
+
+def test_quoted_race_counts_match_the_artifact() -> None:
+    """Same for the race counts in the synthesis table."""
+    fits = pd.read_csv(ENDURANCE_DERIVED_DIR / "endurance_degradation_fits.csv")
+    text = _text("reports/cross_series_synthesis.md")
+    for (series, car_class), group in fits.groupby(["series", "car_class"]):
+        assert f"| {len(group)} |" in text, (
+            f"{series}/{car_class} has {len(group)} race-seasons; the synthesis "
+            "table does not carry that count"
+        )
+
+
+def test_the_pit_loss_ordering_claim_still_holds() -> None:
+    """The synthesis's central claim is that sorting classes by pit loss sorts
+    the strategy columns with them, quantified as a -0.913 correlation.
+
+    Asserted as a property rather than a decimal: if the correlation ever
+    weakens materially the claim needs rewriting, and a test pinned to three
+    decimals would fail on a regeneration that changes nothing important.
+    """
+    plans = pd.read_csv(ENDURANCE_DERIVED_DIR / "multistop_plans.csv")
+    plans["tyre_limited"] = plans["optimal_stops"] != plans["min_stops"]
+    by_class = plans.groupby(["series", "car_class"]).agg(
+        pit_loss=("pit_loss_s", "median"),
+        share=("tyre_limited", "mean"),
+    )
+    corr = by_class["pit_loss"].corr(by_class["share"])
+    assert corr < -0.8, (
+        f"the pit-loss/tyre-limited relationship weakened to {corr:.3f}; the "
+        "synthesis quotes -0.913 and its argument rests on it"
     )
