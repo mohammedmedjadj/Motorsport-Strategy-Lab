@@ -11,7 +11,7 @@ import pandas as pd
 import pytest
 
 from src.ingestion.config import ENDURANCE_DERIVED_DIR
-from src.simulator.traffic import measure_traffic_cost, traffic_exposure
+from src.simulator.traffic import measure_traffic_cost, prime_classes, traffic_exposure
 
 FIELD_DIR = ENDURANCE_DERIVED_DIR / "field"
 
@@ -51,13 +51,32 @@ def test_traffic_slows_prototypes_on_real_data() -> None:
     2022, where a prototype rarely saw genuinely clear air — a real, wider set of
     exceptions than the original 4+4-circuit sample showed (one), not a
     regression. Traffic adds a positive per-car cost at the large majority."""
-    prime = {"imsa": "GTP", "wec": "HYPERCAR"}
     costs, clean_devs = {}, []
+    skipped = 0
     for path, field in _real_fields().items():
         series = path.split("field_")[1].split("_")[0]
-        t = measure_traffic_cost(field, series, "x", prime[series])
+        t = None
+        for name in prime_classes(series):
+            try:
+                t = measure_traffic_cost(field, series, "x", name)
+                break
+            except ValueError:
+                t = None
+        if t is None:
+            # No prototype ran at this event, so there is nothing for traffic
+            # to be measured *against*. All 11 such fields are IMSA GT-only
+            # rounds — Lime Rock, VIR, Mosport/CTMP — which field GTD and
+            # GTD PRO and no prototype class at all. That is the right answer
+            # rather than a gap, and it only appeared once GTD was scoped back
+            # to 2021 and brought those rounds into the field data.
+            skipped += 1
+            continue
         costs[path] = t.cost_per_car_s
         clean_devs.append(t.clean_air_dev_s)
+    # The skip must stay rare — it is a data gap, not a modelling choice.
+    # 11 of 106 fields are GT-only rounds; anything much beyond that means a
+    # prime class has been renamed again and PRIME_CLASS_ALIASES needs it.
+    assert skipped <= 15, f"{skipped} fields unmeasurable — check PRIME_CLASS_ALIASES"
     # Clear air beats the own median at the large majority of races.
     assert sum(d < 0 for d in clean_devs) >= 0.85 * len(clean_devs)
     # The per-car traffic cost is positive at the large majority of races.
@@ -77,14 +96,22 @@ def test_traffic_slows_prototypes_on_real_data() -> None:
                     reason="traffic artifact not generated")
 def test_committed_traffic_artifact_matches_fresh_measurement() -> None:
     art = pd.read_csv(ENDURANCE_DERIVED_DIR / "endurance_traffic_cost.csv")
-    assert set(art["series"]) <= {"imsa", "wec"}
+    # Superset floor, not an exact set: ELMS joined later and a scope that
+    # grows should not fail a test for growing, only for losing something.
+    assert {"imsa", "wec"} <= set(art["series"])
     assert (art["clear_vs_traffic_s"] > 0).mean() >= 0.7  # positive at most races
     # Drift guard on one race, reconstructed by its exact (series, year, circuit).
-    prime = {"imsa": "GTP", "wec": "HYPERCAR"}
     row = art.iloc[0]
     path = FIELD_DIR / f"field_{row['series']}_{int(row['year'])}_{row['circuit']}.csv"
-    fresh = measure_traffic_cost(pd.read_csv(path), row["series"], row["circuit"],
-                                 prime[row["series"]])
+    field = pd.read_csv(path)
+    fresh = None
+    for name in prime_classes(row["series"]):
+        try:
+            fresh = measure_traffic_cost(field, row["series"], row["circuit"], name)
+            break
+        except ValueError:
+            fresh = None
+    assert fresh is not None, f"no prime class measurable in {path.name}"
     assert row["cost_per_car_s"] == pytest.approx(fresh.cost_per_car_s, abs=1e-3)
 
 
@@ -100,6 +127,10 @@ def test_traffic_stability_summarises_every_circuit_across_its_seasons() -> None
     counts = per_race.groupby(["series", "circuit"]).size().rename("n").reset_index()
     merged = stab.merge(counts, on=["series", "circuit"])
     assert (merged["n_seasons"] == merged["n"]).all()
-    spa = stab.set_index("circuit").loc["spa"]
-    assert spa["clear_vs_traffic_mean_s"] == stab["clear_vs_traffic_mean_s"].max()
+    # Indexed by (series, circuit), not circuit alone: WEC and ELMS both race
+    # at Spa, so the circuit name stopped being a unique key the moment ELMS
+    # was scoped, and `.loc["spa"]` silently began returning two rows.
+    spa = stab.set_index(["series", "circuit"]).loc[("wec", "spa")]
+    wec_stab = stab[stab["series"] == "wec"]
+    assert spa["clear_vs_traffic_mean_s"] == wec_stab["clear_vs_traffic_mean_s"].max()
     assert spa["clear_vs_traffic_sd_s"] > 0   # genuinely varies season to season

@@ -46,11 +46,11 @@ from src.simulator.track_position import (  # noqa: E402
     adjacent_swap_rate_endurance,
     measure_circuit,
 )
-from src.simulator.traffic import measure_traffic_cost  # noqa: E402
+from src.simulator.traffic import PRIME_CLASS, measure_traffic_cost, prime_classes  # noqa: E402
 
 HOLD_LAPS = 15
 FIELD_DIR = ENDURANCE_DERIVED_DIR / "field"
-PRIME_CLASS = {"imsa": "GTP", "wec": "HYPERCAR"}
+
 
 
 def _frames(series: str, event: str, car_class: str, seasons: tuple[int, ...]):
@@ -177,9 +177,17 @@ def main() -> int:
     for path in sorted(FIELD_DIR.glob("field_*.csv")):
         series, year, circuit_slug = path.stem.removeprefix("field_").split("_", 2)
         field = pd.read_csv(path)
-        try:
-            t = measure_traffic_cost(field, series, circuit_slug, PRIME_CLASS[series])
-        except ValueError:
+        if series not in PRIME_CLASS:
+            print(f"  traffic: no prime class defined for series {series!r}, skipping "
+                  f"{path.name} — add it to PRIME_CLASS")
+            continue
+        for prime in prime_classes(series):
+            try:
+                t = measure_traffic_cost(field, series, circuit_slug, prime)
+                break
+            except ValueError:
+                t = None
+        if t is None:
             continue
         traffic.append({
             "series": series, "circuit": circuit_slug, "year": int(year),

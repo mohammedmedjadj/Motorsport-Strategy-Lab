@@ -79,6 +79,36 @@ def traffic_exposure(
     return prime[["car", "lap", "traffic", "dev"]]
 
 
+#: The class whose traffic cost is measured, per series: the top prototype
+#: class, since traffic is what *it* loses to slower classes. ELMS's is LMP2
+#: rather than LMP2 Pro/Am — same car, but Pro/Am is not the reference pace.
+#:
+#: Defined here rather than in the generating script because the tests need
+#: the same map, and they carried their own copy of it. Two copies meant ELMS
+#: had to be added twice; it was added once, and the tests raised KeyError.
+PRIME_CLASS: dict[str, str] = {"imsa": "GTP", "wec": "HYPERCAR", "elms": "LMP2"}
+
+#: Earlier names for the same prime class, tried in order when the current one
+#: has no green laps in a field. IMSA's top prototype class was **DPi** through
+#: 2022 and **GTP** from 2023; the field data uses whichever name applied that
+#: season.
+#:
+#: This is the third label in this project whose name or meaning shifts inside
+#: the scope, after Mosport/Canadian Tire Motorsport Park and LMP2/LMP2 Pro-Am.
+#: It stayed invisible while IMSA's scope began in 2023, and appeared the
+#: moment GTD was scoped back to 2021 and brought DPi-era fields with it — 30
+#: races whose traffic was silently unmeasured, because the code looked for
+#: GTP in a DPi season.
+PRIME_CLASS_ALIASES: dict[str, tuple[str, ...]] = {"imsa": ("DPi",)}
+
+
+def prime_classes(series: str) -> tuple[str, ...]:
+    """Every name the series' prime class has had, current first."""
+    if series not in PRIME_CLASS:
+        raise KeyError(f"no prime class defined for series {series!r}")
+    return (PRIME_CLASS[series], *PRIME_CLASS_ALIASES.get(series, ()))
+
+
 def measure_traffic_cost(
     field: pd.DataFrame, series: str, circuit: str, prime_class: str,
     window_s: float = DEFAULT_WINDOW_S,

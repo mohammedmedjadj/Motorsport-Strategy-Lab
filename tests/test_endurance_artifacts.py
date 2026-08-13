@@ -271,3 +271,50 @@ def test_a_near_spec_field_does_not_rescue_slope_transfer(loro) -> None:
         "control no longer supports 'the instability is not the hardware'"
     )
     assert r2.median() <= 0.0
+
+
+# --- the gap that let ELMS be scoped without a traffic layer -----------------
+
+
+def test_every_artifact_covers_every_scoped_series() -> None:
+    """A series in the scope must appear in every artifact that has a series
+    column, or be listed here as a stated exception.
+
+    This is the check that was missing. ELMS was scoped, materialised, fitted
+    and written up while `endurance_traffic_cost.csv` and
+    `endurance_traffic_stability.csv` still held only IMSA and WEC — nothing
+    failed, because no test asserted that an artifact covers the scope it is
+    generated from. The defect was found by reading a CSV by hand.
+
+    The shape of that mistake is the general one: adding a series without
+    checking what it makes incomplete elsewhere. A coverage assertion catches
+    it for every future addition, which reading by hand does not.
+    """
+    from src.data.endurance_scope import ENDURANCE_SCOPE
+
+    scoped = set(ENDURANCE_SCOPE)
+    artifacts = [
+        "endurance_degradation_fits.csv",
+        "endurance_degradation_loro.csv",
+        "endurance_data_quality.csv",
+        "endurance_overtaking_difficulty.csv",
+        "endurance_pit_procedure.csv",
+        "multistop_plans.csv",
+        "fuel_limited_audit.csv",
+        "endurance_traffic_cost.csv",
+        "endurance_traffic_stability.csv",
+    ]
+    missing: dict[str, set[str]] = {}
+    for name in artifacts:
+        art = pd.read_csv(ENDURANCE_DERIVED_DIR / name)
+        if "series" not in art.columns:
+            continue
+        gap = scoped - set(art["series"])
+        if gap:
+            missing[name] = gap
+
+    assert not missing, (
+        f"scoped series absent from artifacts: {missing}. Either regenerate "
+        "them, or — if the omission is deliberate — say so here rather than "
+        "leaving the artifact quietly narrower than the scope."
+    )
