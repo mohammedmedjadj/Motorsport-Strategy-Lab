@@ -122,9 +122,57 @@ separate track evolution from tyre age on real stint structures however
 carefully it is gated, because tyre age already lives on the race-time axis
 the basis is built from.
 
-What is needed is a different estimator — plausibly one identifying track
-evolution from *between-car* information at a given lap, where tyre ages
-differ across the field, rather than from the time axis itself.
+## A second attempt: two-way fixed effects, also withdrawn
+
+The obvious next estimator avoids imposing any shape on the track curve at
+all: add a **fixed effect per lap** alongside the existing car-driver one.
+Lap effects absorb whatever the track was doing at that moment
+non-parametrically, and tyre age is then identified purely from cars that are
+at *different* points in their stints on the same lap.
+
+The synthetic validation is as clean as it gets. Recovering a known +0.0800
+s/lap under a non-linear 18 s drying curve, averaged over 15 seeded races:
+
+| drift | pit stagger | current model | two-way FE |
+|---|---|---|---|
+| 0 s | 3 laps | +0.0810 | **+0.0811** |
+| −6 s | 3 laps | +0.0766 | **+0.0811** |
+| −18 s | 3 laps | +0.0679 | **+0.0811** |
+| −18 s | 1 lap | +0.0335 | **+0.0786** |
+| −18 s | **0 (synchronised)** | −0.0724 | **+1.3397** |
+
+The estimate is *identical* whatever the drift — the property no basis
+function can have. And it degenerates exactly where theory says it must: with
+a perfectly synchronised field, tyre age is collinear with the lap effects.
+That condition is directly measurable as the within-lap share of tyre-age
+variance, which reads 0.000 in the degenerate case and 0.67+ where the
+estimator is exact. Real races have a median of 0.473 and a minimum of 0.027,
+so a 0.20 guard excludes the handful that cannot support it.
+
+**And the real-data refit failed again**: negative slopes 41 → 64, the median
+falling 0.0185 → 0.0098, the ELMS median crossing to −0.002. Withdrawn, like
+the first.
+
+### What is honestly not known
+
+The obvious candidate explanation was selection: if *which* cars carry fresh
+tyres at a given lap is not random — leaders pitting first, slower cars
+pitting early to clear traffic — then between-car tyre-age variation is
+confounded with car quality. Measured, that correlation is **−0.047 to
+−0.118** across four reference races. Real but far too small to account for
+the failure.
+
+So the cause is not established. Two estimators, each exact on synthetic data
+under the confounder they were built for, each failing on real races, and the
+one mechanism proposed to explain the gap does not survive measurement. What
+the synthetic generator is missing is evidently something else, and naming it
+is the actual open problem — bigger than "add a track term", which is why
+this document no longer suggests that as a small job.
+
+Anyone resuming should start by building a synthetic generator that
+*reproduces the failure*, rather than one that validates a fix. A model of
+real races faithful enough to break these two estimators is the thing neither
+attempt had, and it would say what the missing confounder is.
 
 ## What this does and does not invalidate
 
