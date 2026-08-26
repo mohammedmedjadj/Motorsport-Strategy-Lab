@@ -80,8 +80,11 @@ chassis and engine are the same for everyone, so it is not caused by
 heterogeneous, BoP-adjusted machinery. It is a negative result and it is the
 most useful thing this series contributed.
 
-Bahrain — the one WEC circuit whose slope genuinely transfers — is now more
-clearly an isolated exception than the best case of a general rule.
+Bahrain — the one WEC circuit whose slope genuinely transfers — is an
+exception rather than the best case of a general rule. It is not the only one
+in the project: IMSA's Lime Rock transfers better in both GT3 classes (+0.573
+and +0.497), which is a fact about short circuits with cheap stops rather than
+about prototypes.
 
 Note the omitted race-time term makes this conclusion *more* secure rather than
 less: a trend that differs by race is one more reason fits do not transfer, so

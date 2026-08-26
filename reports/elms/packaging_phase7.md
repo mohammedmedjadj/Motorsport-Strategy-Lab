@@ -51,9 +51,10 @@ question had been open since the F1 phase and could not be answered inside any
 series already modelled.
 
 **A second, independent crew-rating experiment** — and one that disagrees with
-IMSA's. Two natural experiments now exist in this project; they do not agree,
-and [`crew_rating_findings.md`](crew_rating_findings.md) reports that rather
-than choosing the significant one.
+IMSA's in sign. Two natural experiments now exist in this project; they do not
+agree, neither survives its own robustness checks, and
+[`crew_rating_findings.md`](crew_rating_findings.md) reports that rather than
+picking whichever one happened to clear 5%.
 
 **A third neutralisation regime** (23 of 29 races see a Safety Car, against
 WEC's 19 of 33 and IMSA's 0 of 63), which is the third independent

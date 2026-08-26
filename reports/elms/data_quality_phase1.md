@@ -30,7 +30,7 @@ could be scoped at all.
 **The field-wide filter removes more here than the per-car traffic trim does
 in proportion.** 2,447 LMP2 laps against 2,914, where in a prototype race the
 per-car trim usually dominates. ELMS is the most Safety-Car-dominated series
-in this project (23 of 29 races, see [phase 3](#)), so more of its green-flagged
+in this project (23 of 29 races, see [phase 3](safety_car_phase3.md)), so more of its green-flagged
 laps are actually field-wide recovery running.
 
 ## The two filters, and why each exists

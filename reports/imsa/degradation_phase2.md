@@ -1,4 +1,4 @@
-# Phase 1 (IMSA) — tyre degradation model
+# Phase 2 (IMSA) — tyre degradation model
 
 Fitted per race on green, non-pit, traffic-trimmed laps (`src/degradation/endurance.py`):
 `lap_time = a_{car,driver} + n * tyre_age`, where `n` is the **net within-stint

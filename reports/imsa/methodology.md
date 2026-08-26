@@ -14,7 +14,15 @@ underlying problem — pit visit vs tyre change vs driver stint as three
 distinct signals — is genuinely the same, but every fitted number below is
 IMSA's own, never pooled with WEC's. IMSA and WEC turn out not to be
 interchangeable at all (§4.2), which is the clearest argument for keeping
-their reports apart rather than merging them for convenience. See
+their reports apart rather than merging them for convenience.
+
+> **Scope note.** This report was written against IMSA's GTP class on four
+> circuits and has been updated in place as the scope widened to ten GTP
+> circuits and two GT3 classes. Where a section still reads as GTP-only, it is
+> GTP-only; GTD and GTD PRO have their own document,
+> [`gtd_findings.md`](gtd_findings.md), and are never pooled with GTP here.
+> Figures are checked against the committed artifacts by
+> `tests/test_reports_are_not_stale.py`. See
 [`reports/methodology.md`](../methodology.md) for the sibling F1 report this
 one mirrors in structure.
 
@@ -30,15 +38,18 @@ keeps explicit throughout: IMSA services tyres *while* refuelling
 (parallel), not after (WEC's sequential rule), so a tyre change costs only
 +8.7s over a fuel-only stop, against WEC's +21.6s; IMSA has shown **zero
 Safety Car events in 63 races**, relying entirely on Full Course Yellow
-(FCY in 90-93% of races at every scoped circuit, P = 0.961 series-wide);
+(FCY in 61 of 63 races — 100% at 14 of its 17 events, P = 0.968 series-wide);
 and a genuine data-quality bug was found and fixed while building this
 report's degradation model. The headline results: degradation slopes do not
-transfer across seasons or circuits anywhere in the four scoped circuits
-(Watkins Glen, Sebring, Mosport, Road America) — the same conclusion as F1
-and WEC, now shown to hold in a *second* endurance series tested two
-different ways; **no scoped IMSA race is tyre-limited on stop count**,
-corroborated by 24 of 33 real race winners running a stint within 3 laps of
-the circuit's measured fuel range; and the simulator's confidence tracks the
+transfer across seasons or circuits anywhere in GTP's ten scoped circuits —
+the same conclusion as F1 and WEC, now shown to hold in a *second* endurance
+series tested two different ways — **except in the GT3 classes**, where Lime
+Rock reaches a leave-one-race-out R² of +0.573 (GTD) and +0.497 (GTD PRO), the
+best transfers anywhere in this project; **1 of 10 scoped GTP circuit-seasons
+is tyre-limited on stop count** (Laguna Seca 2026, on a 10.4 s pit loss),
+against 5 of 15 in GTD and 2 of 13 in GTD PRO, corroborated by 21 of 33 real
+GTP race winners running a stint within 3 laps of the circuit's measured fuel
+range; and the simulator's confidence tracks the
 strength of each circuit's own degradation signal directly, from a decisive
 recommendation at Road America down to an honestly flat one at Mosport.
 
@@ -100,7 +111,7 @@ rows.
   18,247 laps kept (69.1%)** across the 10 race-seasons in the frozen scope,
   the same five-stage filter as WEC. IMSA's retention (56-79%) sits lower
   than WEC's (70-86%) mostly because IMSA loses far more laps to
-  neutralisation: FCY appears in 90-93% of IMSA races against ~27% of WEC
+  neutralisation: FCY appears in 61 of 63 IMSA races against 9 of 33 WEC
   races (§4.2).
 - **A widened scope for the cross-cutting extensions**: 10 circuits, every
   eligible GTP race (≥4 cars, ≥40 laps) discovered the same way as WEC's,
@@ -283,7 +294,7 @@ would need to be **1.8× (Laguna Seca, the tightest margin measured in
 either series) to 205× (Sebring, the most fuel-secure)** steeper than
 measured before an extra stop would pay off. 7 of 10 circuits get their
 stints re-spaced evenly rather than run fuel-tank-flat-out. Corroborated
-independently by real results (§4.6): **24 of 33 real IMSA race winners**
+independently by real results (§4.6): **21 of 33 real IMSA GTP race winners**
 ran at least one stint within 3 laps of the circuit's own measured fuel
 range.
 
@@ -358,7 +369,7 @@ confident refutation of the real call.
 
 ### 4.8 Retrospective winner audit and the fuel-limited sensitivity sweep
 
-**24 of 33 real IMSA race winners (72.7%)** ran a stint within 3 laps of
+**21 of 33 real IMSA GTP race winners (63.6%)** ran a stint within 3 laps of
 the circuit's measured fuel range (`reports/endurance_audit.md`),
 corroborating §4.4. A sensitivity sweep on that 3-lap tolerance
 (`reports/fuel_limited_sensitivity.md`) shows IMSA's share moves

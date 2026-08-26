@@ -33,7 +33,7 @@ every LMP2 entry, not the professional subset; pairing the full range against
 Pro/Am would compare a mixed field against a pro one and call the difference a
 crew effect.
 
-## 2. The two tests disagree, and the significant one inverts the hypothesis
+## 2. The two tests disagree in sign, and neither is robust
 
 | test | Pro/Am − Pro slope | pairs | Pro/Am steeper in | paired Wilcoxon |
 |---|---|---|---|---|

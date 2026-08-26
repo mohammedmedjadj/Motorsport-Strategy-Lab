@@ -110,12 +110,17 @@ rather than the crew
 ([`reports/imsa/gtd_findings.md`](../imsa/gtd_findings.md) §6).
 
 The same reasoning applies here, and ELMS adds something IMSA cannot supply on
-its own. The IMSA crew comparison on *degradation* came out inconclusive —
-+0.0040 s/lap steeper for Pro/Am across 44 matched pairs, paired Wilcoxon
-p = 0.085. ELMS gives a **second, independent test of the same question** on a
-different car (LMP2, near-spec) in a different championship. Two independent
-inconclusive results still say little; two agreeing ones would say a great
-deal, and a disagreement would be more informative than either alone.
+its own. The IMSA crew comparison on *degradation* finds Pro/Am steeper by
++0.0040 s/lap across 44 matched pairs, at a paired Wilcoxon p = 0.032 that
+does not survive any of three robustness checks. ELMS gives a **second,
+independent test of the same question** on a different car (LMP2, near-spec)
+in a different championship. Two agreeing results would say a great deal; a
+disagreement would be more informative than either alone.
+
+*(This paragraph originally quoted p = 0.085, which is what the comparison
+returned before the slopes beneath it were twice corrected. It was recomputed
+along with everything else when the test was finally given code —
+`src/degradation/crew_rating.py`.)*
 
 Scope, both classes materialised:
 

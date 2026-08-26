@@ -57,9 +57,10 @@ evolution, weather, traffic, tyre allocation, or the genuine year-to-year
 variation of a compound — is not the car.
 
 It is a negative result, and it is the most useful thing ELMS contributed.
-Bahrain remains the one circuit anywhere in this project whose slope
-genuinely transfers, and it is now more clearly the exception rather than the
-best case of a general rule.
+Bahrain is the one *WEC* circuit whose slope genuinely transfers, and IMSA's
+Lime Rock GT3 classes transfer better still (+0.573 and +0.497). Both are
+short circuits by the standards of their series. The exception is rare, but it
+is not unique, and this document previously said it was.
 
 ## 3. Fuel and degradation are not separable, at all
 

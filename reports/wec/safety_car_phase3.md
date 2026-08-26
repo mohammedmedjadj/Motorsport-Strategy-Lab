@@ -1,4 +1,4 @@
-# Phase 2 (WEC) — Safety Car / Full Course Yellow probability model
+# Phase 3 (WEC) — Safety Car / Full Course Yellow probability model
 
 Built on **33 WEC HYPERCAR-class races (2021-2026)** pulled in one aggregated
 query (`data/derived/endurance/race_flags.csv`) — comparable to the F1 phase's

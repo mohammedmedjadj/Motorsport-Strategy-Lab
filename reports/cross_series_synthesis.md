@@ -105,9 +105,20 @@ candidate cause was heterogeneous, Balance-of-Performance-adjusted cars.
 ELMS LMP2 is the control: one chassis, one engine, near-spec. Its slopes fail
 to transfer exactly as the others do (leave-one-race-out mean R² of +0.035,
 −0.001, −0.011, −0.067, −0.004 across its circuits). **The instability is not
-the hardware.** Bahrain remains the only circuit anywhere in this project whose
-slope genuinely transfers, and it now reads as an isolated exception rather
-than the best case of a general rule.
+the hardware.**
+
+Bahrain is the strongest transfer **in WEC**, at a leave-one-race-out mean
+within-stint R² of +0.217 over four folds (+0.049, +0.310, +0.266, +0.243).
+It is **not** the strongest in this project: widening to IMSA's GT3 classes
+found four circuit-classes above it — Lime Rock GTD **+0.573**, Lime Rock
+GTD PRO +0.497, Laguna Seca GTD +0.273, Laguna Seca GTD PRO +0.256. Short
+circuits with cheap stops transfer better than long ones with expensive
+stops, which is the same axis the cross-series pit-loss rule turns on.
+
+So transfer is not impossible everywhere — it is rare, and where it happens it
+tracks circuit length and stop cost rather than machinery. That is a weaker
+claim than "Bahrain is the one exception", which this document asserted until
+the GT3 classes were scoped and measured.
 
 ## 5. Three neutralisation regimes, no average that describes any
 

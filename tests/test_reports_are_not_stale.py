@@ -288,6 +288,7 @@ def test_the_pit_loss_ordering_claim_still_holds() -> None:
 #: whole time. One report corrected, its neighbour not: exactly the failure
 #: this module was written for, one directory over from where it was looking.
 PER_SERIES_SLOPE_REPORTS = (
+    ("reports/elms/methodology.md", "elms"),
     ("reports/elms/results.md", "elms"),
     ("reports/elms/degradation_phase2.md", "elms"),
     ("reports/imsa/gtd_findings.md", "imsa"),
@@ -394,4 +395,119 @@ def test_stated_separability_counts_match_the_artifact() -> None:
             assert str(separable) in stated, (
                 f"{report} states {stated} of {total} for {series}; the "
                 f"artifact says {separable} of {total} clear the threshold"
+            )
+
+
+def test_no_report_claims_bahrain_is_the_projects_best_transfer() -> None:
+    """Superlatives are the claims a widening scope breaks first.
+
+    "Bahrain is the strongest transfer found anywhere in this project, F1
+    included" was true when only F1 and WEC existed. It survived the IMSA
+    prototype phase, the GT3 phase and the whole of ELMS, quoted in six
+    documents, while IMSA's Lime Rock GTD sat in the artifact at more than
+    twice its R².
+
+    A superlative is a claim about the *whole* artifact, so it is exactly the
+    kind that no per-series check catches: every series' own numbers stayed
+    right, and the ranking between them silently stopped holding. This asserts
+    the ranking directly, and asserts that no document claims Bahrain leads it.
+    """
+    loro = pd.read_csv(ENDURANCE_DERIVED_DIR / "endurance_degradation_loro.csv")
+    means = loro[loro["held_out_season"] == "MEAN"]
+    best = means.loc[means["r2_within"].idxmax()]
+
+    assert best["circuit_canonical"] != "Bahrain", (
+        "Bahrain is now the artifact's best transfer again — the reports were "
+        "rewritten to say it is not, and need rewriting back."
+    )
+
+    leader = (
+        f"{best['series']}/{best['circuit_canonical']}/{best['car_class']} "
+        f"at R2 {best['r2_within']:+.3f}"
+    )
+    for report in (
+        "README.md",
+        "reports/cross_series_synthesis.md",
+        "reports/elms/results.md",
+        "reports/elms/degradation_phase2.md",
+        "reports/wec/methodology.md",
+        "reports/wec/degradation_phase2.md",
+    ):
+        text = _text(report)
+        for paragraph in re.split(r"\n\s*\n", text):
+            lowered = paragraph.lower()
+            if "bahrain" not in lowered:
+                continue
+            # Claims of the form "the strongest/only ... in this project" are
+            # the false ones. Two things make a paragraph safe: scoping the
+            # claim to WEC, where it is still true, or explicitly denying it —
+            # the corrections themselves say "no longer the strongest transfer
+            # in the project", and a guard that cannot read a denial would
+            # fail on the very text written to satisfy it.
+            claims_the_superlative = (
+                "strongest transfer" in lowered
+                or "only circuit" in lowered
+                or "one circuit anywhere" in lowered
+            )
+            scoped_to_wec = (
+                "in wec" in lowered
+                or "wec circuit" in lowered
+                or "**wec**" in lowered
+            )
+            denied = any(
+                marker in lowered
+                for marker in (
+                    "no longer", "not the strongest", "is not", "was true",
+                    "retired", "not in the project", "previously",
+                )
+            )
+            overreaching = claims_the_superlative and not scoped_to_wec and not denied
+            assert not overreaching, (
+                f"{report} claims Bahrain leads on transfer without scoping the "
+                f"claim to WEC. The artifact's leader is {leader}."
+            )
+
+
+def test_no_report_claims_every_endurance_race_is_fuel_limited() -> None:
+    """The project's most-repeated overclaim, and the second superlative to break.
+
+    "No measured endurance race is tyre-limited — every one is fuel-limited on
+    stop count" was true of the prototype classes it was measured on. It was
+    stated as a fact about endurance racing, propagated into four documents,
+    and stayed there through the GT3 and ELMS widenings that falsified it.
+
+    Nine circuit-seasons are tyre-limited, every one of them in a cheap-stop
+    class. Scoped to WEC the claim is still exactly true, so paragraphs that
+    say so are left alone; what fails here is an unscoped one.
+    """
+    plans = pd.read_csv(ENDURANCE_DERIVED_DIR / "multistop_plans.csv")
+    tyre_limited = plans[plans["optimal_stops"] != plans["min_stops"]]
+    assert not tyre_limited.empty, (
+        "no scoped race is tyre-limited any more — the reports were rewritten "
+        "to say some are, and would need rewriting back"
+    )
+
+    examples = ", ".join(
+        f"{r.series}/{r.circuit}/{r.car_class} {r.year}"
+        for r in list(tyre_limited.itertuples())[:3]
+    )
+    for report in sorted(REPO.glob("reports/**/*.md")) + [REPO / "README.md"]:
+        for paragraph in re.split(r"\n\s*\n", report.read_text(encoding="utf-8")):
+            lowered = paragraph.lower()
+            claims = (
+                "every one is fuel-limited" in lowered
+                or "every scoped endurance race is **fuel-limited" in lowered
+                or "no measured endurance race is tyre-limited" in lowered
+            )
+            scoped_or_denied = (
+                "wec" in lowered
+                or "originally" in lowered
+                or "known to be false" in lowered
+                or "was true" in lowered
+                or "not what they say" in lowered
+            )
+            assert not (claims and not scoped_or_denied), (
+                f"{report.relative_to(REPO).as_posix()} states that every "
+                f"endurance race is fuel-limited without scoping or retracting "
+                f"it. Tyre-limited races exist: {examples}."
             )

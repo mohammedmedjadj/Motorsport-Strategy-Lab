@@ -572,11 +572,13 @@ LMP2_PROAM_INTRO = (
     "driver. A second natural experiment on crew rating, independent of IMSA's."
 )
 LMP2_PROAM_CAVEAT = (
-    "And it **disagrees with IMSA's**. Paired on circuit and season, the "
-    "Pro/Am slope is *shallower* by 0.0143 s/lap (p = 0.0093) where IMSA's "
-    "was steeper by 0.0040 (p = 0.085). Two independent tests pointing "
-    "opposite ways: no consistent crew effect on tyre wear survives across "
-    "championships."
+    "And it **disagrees with IMSA's in sign**. Paired on the race, the Pro/Am "
+    "slope here is *shallower* by 0.0053 s/lap (17 pairs, p = 0.148) where "
+    "IMSA's was steeper by 0.0040 (44 pairs, p = 0.032) — and IMSA's does not "
+    "survive a sign test, dropping its in-progress season, or dropping races "
+    "hit by the known track-evolution defect. Two independent tests pointing "
+    "opposite ways, neither robust: no consistent crew effect on tyre wear "
+    "survives across championships."
 )
 
 PANELS = {

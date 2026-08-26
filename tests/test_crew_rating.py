@@ -16,6 +16,7 @@ luck, not by construction, and these tests are what replaces the luck.
 
 from __future__ import annotations
 
+import re
 from pathlib import Path
 
 import pandas as pd
@@ -114,30 +115,102 @@ def test_no_crew_result_is_robustly_significant(fits: pd.DataFrame, pair: CrewPa
     )
 
 
-def test_the_reports_quote_the_computed_numbers(fits: pd.DataFrame) -> None:
-    """The specific failure that made this module necessary.
+def test_the_primary_crew_documents_quote_both_results(fits: pd.DataFrame) -> None:
+    """The three documents whose subject *is* this comparison must carry it.
 
-    Every document that states a crew p-value must state the one the code
-    produces. Checked across all of them at once, because the last time these
-    numbers moved, one report was corrected and three were not.
+    Kept separate from the sweep below because the failure modes differ: this
+    catches a document that stopped reporting a result, the sweep catches one
+    that reports a result nothing computes.
     """
     documents = [
         "reports/elms/crew_rating_findings.md",
-        "reports/imsa/gtd_findings.md",
         "reports/cross_series_synthesis.md",
         "README.md",
     ]
     for result in compare_crew_ratings(fits):
-        p = f"{result.p_value:.3f}"
-        difference = f"{result.median_difference_s:+.4f}".replace("+", "")
+        p_value = f"{result.p_value:.3f}"
+        difference = f"{abs(result.median_difference_s):.4f}"
         for document in documents:
             text = _text(document)
-            if result.series not in text.lower():
-                continue
-            assert p in text, (
-                f"{document} does not carry {result.series}'s p-value of {p}"
+            assert p_value in text, (
+                f"{document} does not carry {result.series}'s p-value of {p_value}"
             )
-            assert difference in text or difference.lstrip("-") in text, (
+            assert difference in text, (
                 f"{document} does not carry {result.series}'s median "
                 f"difference of {difference}"
             )
+
+
+#: Words that mark a quoted figure as deliberately historical. The post-mortem
+#: sections quote the superseded p-values on purpose — that is the whole point
+#: of a post-mortem — so a sweep that flagged them would be unusable.
+_HISTORICAL = ("previously", "originally", "used to", "before the", "superseded")
+
+#: Everything that could carry a crew figure in front of a reader, including
+#: the demo, which is not a report and was carrying the inverted numbers in its
+#: user-facing caveat text after all four reports had been corrected.
+_SWEPT = ("README.md", "demo/app.py", "reports/**/*.md", "reports/*.md")
+
+
+def _crew_paragraphs(text: str) -> list[str]:
+    """Paragraphs that are talking about the crew comparison.
+
+    Identified by a class pair plus the vocabulary of the test itself, so an
+    unrelated p-value elsewhere in the same document is not swept up.
+    """
+    out = []
+    for paragraph in re.split(r"\n\s*\n", text):
+        lowered = paragraph.lower()
+        if any(word in lowered for word in _HISTORICAL):
+            continue
+        names_a_pair = "pro/am" in lowered or "gtd pro" in lowered
+        is_the_test = "wilcoxon" in lowered or "pair" in lowered or "sign test" in lowered
+        if names_a_pair and is_the_test:
+            out.append(paragraph)
+    return out
+
+
+def test_no_document_quotes_a_crew_p_value_the_code_cannot_produce(
+    fits: pd.DataFrame,
+) -> None:
+    """A negative guard, so it costs nothing to point at every file.
+
+    The positive form above ("this document must contain X") cannot be pointed
+    at everything: a report that mentions ELMS once in passing is not obliged
+    to quote ELMS's p-value, so demanding it produces false failures and the
+    guard gets deleted. Asking instead that **no** document states a crew
+    p-value the code does not produce scales to the whole repository and
+    catches the real defect exactly.
+
+    It is pointed at ``demo/app.py`` as well as the reports. When these numbers
+    were corrected, the demo's user-facing caveat still read "shallower by
+    0.0143 s/lap (p = 0.0093)" after all four reports had been fixed — the shop
+    window outlived the documentation, which is the worst way round.
+    """
+    allowed = set()
+    for result in compare_crew_ratings(fits):
+        allowed.add(f"{result.p_value:.3f}")
+        allowed.add(f"{result.p_value:.4f}")
+        for pair in CREW_PAIRS:
+            if pair.series != result.series:
+                continue
+            for variant in robustness(fits, pair):
+                allowed.add(f"{variant.p_value:.3f}")
+                allowed.add(f"{variant.p_value:.4f}")
+
+    offenders = []
+    for pattern in _SWEPT:
+        for path in sorted(REPO.glob(pattern)):
+            text = path.read_text(encoding="utf-8")
+            for paragraph in _crew_paragraphs(text):
+                for quoted in re.findall(r"p\s*=\s*(\d\.\d+)", paragraph):
+                    if quoted not in allowed:
+                        offenders.append(
+                            f"{path.relative_to(REPO).as_posix()}: p = {quoted}"
+                        )
+
+    assert not offenders, (
+        f"crew p-values quoted that the code does not produce: {offenders}. "
+        f"Computable values are {sorted(allowed)}. If one of these is a "
+        "deliberate historical reference, say so in the same paragraph."
+    )

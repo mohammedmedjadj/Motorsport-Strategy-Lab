@@ -1,4 +1,4 @@
-# Phase 2 (IMSA) — Full Course Yellow probability model
+# Phase 3 (IMSA) — Full Course Yellow probability model
 
 Built on **63 IMSA GTP-class races (2021-2026)** pulled in one aggregated query
 (`data/derived/endurance/race_flags.csv`) — larger than the F1 phase's 27
@@ -9,9 +9,19 @@ is new, because this source encodes race control as a per-lap flag rather than
 `TrackStatus` intervals — see [Phase 0](data_availability_phase0.md) for how
 `FCY` was distinguished from the chequered flag (`FF`) and red flag (`RF`).
 
-IMSA shows **no Safety Car flag at all** (that is a WEC-only procedure — see
-[the WEC report](../wec/safety_car_phase3.md)); only Full Course Yellow is
+IMSA shows **no Safety Car flag at all**. Both other endurance series in this
+project run one — WEC in 19 of 33 races
+([report](../wec/safety_car_phase3.md)), ELMS in 23 of 29
+([report](../elms/safety_car_phase3.md)) — so it is not an endurance-wide
+convention but a difference between championships, which is the whole argument
+for never pooling their neutralisation models. Only Full Course Yellow is
 modelled here.
+
+> **Scope note.** The per-circuit sections below were computed on the frozen
+> four-circuit GTP scope and are labelled as such. The series-wide section is
+> computed on all 63 races and is the current figure; where the two disagree,
+> the series-wide one is the live number and is checked against the artifact by
+> `tests/test_reports_are_not_stale.py`.
 
 ## Per-circuit results (4-6 editions each — the scoped circuits)
 
@@ -35,7 +45,7 @@ modelled here.
 ### Road America (5 editions)
 
 - FCY: **5/5 races** (P = 0.917 [0.621, 1.000]) — rate 0.0503/lap [0.0296, 0.0764]
-  — the **highest** rate of the four scoped circuits
+  — the **highest** rate of the four originally scoped circuits
 - Durations (laps): n=17
 
 ## Series-wide result (all 63 races pooled)
@@ -44,9 +54,12 @@ modelled here.
 |---|---|---|---|---|---|
 | FCY | 61 / 63 | 293 | **0.961** [0.902, 0.993] | 0.02097 [0.01864, 0.02343] | mean 5.2, max 119 |
 
-**Every scoped circuit individually confirms the series-wide picture**: an IMSA
-race is essentially certain to see at least one FCY (all four circuits sit at
-90-93% on their own small samples, consistent with the pooled 96%). The
+**Nearly every event individually confirms the series-wide picture**: an IMSA
+race is essentially certain to see at least one FCY. Across all 17 events now
+in scope, **14 record a Full Course Yellow in every edition**; Laguna Seca is
+the one partial exception at 5 of 6, and Belle Isle's single race is the only
+event with none at all. The four circuits this report was originally built on
+sit at 90-93% on their own small samples, consistent with the pooled 96.1%. The
 119-lap maximum duration is real, not an artefact: it is the 2026 Daytona 24h
 (705 laps, 154 of them under FCY), with car counts staying consistent through
 the run.

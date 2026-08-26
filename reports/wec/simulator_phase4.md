@@ -1,4 +1,4 @@
-# Phase 3 (WEC) — strategy simulator
+# Phase 4 (WEC) — strategy simulator
 
 Same philosophy as the F1 engine: every constant measured, uncertainty
 propagated per draw, common random numbers across candidates, a distribution

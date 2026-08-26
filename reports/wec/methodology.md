@@ -29,9 +29,10 @@ procedure, sampled independently), and an **exact multi-stop dynamic
 program**, since a 6-24 hour race needs 2-29 stops, not one. The headline
 results: degradation slopes are unstable across seasons everywhere except
 **Bahrain**, whose pooled slope explains a fifth of a held-out season's
-within-stint variance (mean R² +0.209) — the strongest transfer found
-anywhere in this project, F1 included; WEC runs a genuine **Safety Car**
-procedure and prefers it over FCY at every one of its four scoped circuits
+within-stint variance (mean R² +0.209 on the frozen 2023-2025 scope) — the
+strongest transfer found anywhere in WEC, though not in the project: IMSA's
+Lime Rock GT3 classes reach +0.573 and +0.497; WEC runs a genuine **Safety Car**
+procedure and prefers it over FCY across its 11 scoped circuits (Safety Car in 19 of 33 races against FCY in 9)
 (Spa alone: SC in 5 of 6 editions vs FCY in 3 of 6); and **no scoped WEC race
 is tyre-limited on stop count** — every one is fuel-limited, corroborated by
 25 of 28 real race winners running a stint within 3 laps of the circuit's
@@ -280,14 +281,17 @@ per-car rows (§3.2, the bug found while writing this section).
 **Bahrain is the exception that actually transfers**: its net slope sits in
 a tight +0.042 to +0.049 s/lap band across three real seasons, and every
 individual held-out fold scores positive (+0.227, +0.213, +0.192) — the
-strongest transfer found anywhere in this project, F1's own circuits
-included. **A measurement-basis note, since the same nominal quantity
+strongest transfer found anywhere in **WEC**. It was described as the
+strongest in the project until IMSA's GT3 classes were scoped: Lime Rock
+reaches +0.573 (GTD) and +0.497 (GTD PRO), and Laguna Seca +0.273 and +0.256,
+all on the widened artifact. **A measurement-basis note, since the same nominal quantity
 appears twice in this project with different values**: the +0.209 above is
 the mean over the frozen 2023-2025 degradation scope (3 folds), matching
 `degradation_phase2.md`. The widened `ENDURANCE_SCOPE` artifact
 (`data/derived/endurance/endurance_degradation_loro.csv`, feeding
 [`reports/generalization_audit.md`](../generalization_audit.md)) adds a
-2022 fold (+0.133) and therefore reports **+0.191** over 4 folds. Neither
+2022 fold and therefore reports **+0.217** over 4 folds (+0.049, +0.310,
++0.266, +0.243). Neither
 is wrong; they are different fold sets, and the qualitative finding —
 every Bahrain fold positive, unique in either series — holds under both. Everywhere else, the pattern from F1 repeats: slopes move too
 much between editions of the same race for a fitted trend to predict a

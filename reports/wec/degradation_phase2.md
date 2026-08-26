@@ -1,4 +1,4 @@
-# Phase 1 (WEC) — tyre degradation model
+# Phase 2 (WEC) — tyre degradation model
 
 Fitted per race on green, non-pit, traffic-trimmed laps (`src/degradation/endurance.py`):
 `lap_time = a_{car,driver} + n * tyre_age`, where `n` is the **net within-stint
@@ -76,7 +76,12 @@ around, and it is the only WEC circuit with a **positive**, if still modest,
 mean LORO R². Still far from a strong transfer, but the most stable of the
 four scoped WEC circuits.
 
-## Bahrain (3 seasons) — the exception: a slope that genuinely transfers
+## Bahrain (3 seasons) — WEC's exception: a slope that genuinely transfers
+
+*This section is computed on the frozen 2023-2025 degradation scope. On the
+widened `ENDURANCE_SCOPE` artifact the same circuit reads a mean R² of +0.217
+over four folds. And it is WEC's best transfer, not the project's: IMSA's Lime
+Rock GT3 classes reach +0.573 and +0.497.*
 
 | Season | Laps | Cars | Net slope (s/lap) | 95% CI | RMSE |
 |---|---|---|---|---|---|
