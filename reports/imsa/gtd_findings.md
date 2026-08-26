@@ -31,11 +31,13 @@ and ELMS 2021's empty `flags` column — have no counterpart here.
 
 ## 2. Degradation
 
-Median net within-stint slope **+0.0202 s/lap**, against GTP's +0.0155 on the
-same circuits and the same code. Nine of 60 GTD races fit a negative slope
-(GTP: 5 of 33) — tyres apparently getting faster with age, which is what a
-race where fuel burn outweighs tyre wear looks like through a single net
-coefficient, and is reported rather than clipped.
+Median net within-stint slope **+0.0200 s/lap**, against GTP's +0.0166 and
+GTD PRO's +0.0190 on the same circuits and the same code. 8 of 60 GTD races
+fit a negative slope (GTP: 5 of 33) — tyres apparently getting faster with
+age. Part of that is a race where fuel burn outweighs tyre wear seen through a
+single net coefficient; part is the unmodelled track-evolution term diagnosed
+in [`reports/track_evolution_omitted_variable.md`](../track_evolution_omitted_variable.md).
+Reported rather than clipped, and every slope here read as a lower bound.
 
 Standard errors are cluster-robust by car with a `t(G−1)` reference; with a
 median 14-car field that is a `t(13)`, so the tail weight is doing real work
@@ -135,19 +137,41 @@ reported in §4 is therefore a property of the machine and its service, not of
 who is driving it. Same fuel-only stop to two significant figures (60.2 s in
 both GT3 classes) makes the comparison as clean as this data allows.
 
-**Degradation: suggestive, and not established.** Paired on circuit *and*
-season — 44 pairs where GTD and GTD PRO raced the same event in the same
-year — the Pro/Am slope is steeper by a median **+0.0040 s/lap** (GTD 0.0231,
-GTD PRO 0.0200), in 27 of the 44 pairs. A paired Wilcoxon test gives
-**p = 0.085**.
+**Degradation: significant on its face, and not robust.** Paired on the
+*race* — 44 pairs where GTD and GTD PRO ran the same event in the same season
+— the Pro/Am slope is steeper by a median **+0.0040 s/lap** (paired medians:
+GTD 0.0226, GTD PRO 0.0193), in 28 of the 44 pairs. A paired Wilcoxon test
+gives **p = 0.032**.
 
-That is not significant at the conventional level and is reported as what it
-is: a difference in the expected direction that 44 pairs cannot separate from
-chance. The temptation with a result like this is to call it "a trend
-towards" and move on; the honest statement is that **this analysis does not
-establish an amateur effect on tyre wear.** It does establish the design —
-same car, same BoP, same weekends, same tracks — so the question is now
-answerable with more seasons rather than merely askable.
+Pairing on the race rather than the circuit matters here: IMSA ran two
+distinct races at Watkins Glen in 2021, and a circuit-keyed pairing averages
+them into a single pair without saying so.
+
+Read alone, p = 0.032 licenses "amateur-rated crews degrade tyres faster in
+IMSA". It does not survive being asked twice. `robustness()` in
+`src/degradation/crew_rating.py` re-runs the test under three defensible
+variations and **all three put it back above 0.05**: a sign test, which drops
+magnitudes so no single large pair can carry the result, gives p = 0.096;
+dropping the still-in-progress 2026 season gives p = 0.094; restricting to the
+37 pairs where both classes fit a positive slope — excluding races hit by the
+[unmodelled track-evolution
+term](../track_evolution_omitted_variable.md) — gives p = 0.054.
+
+And the second natural experiment points the other way: **ELMS's LMP2 Pro/Am
+crews degrade −0.0053 s/lap *less* than its professionals** (17 pairs,
+p = 0.148). See [`reports/elms/crew_rating_findings.md`](../elms/crew_rating_findings.md).
+
+So the honest statement is unchanged from what this section said before the
+numbers were recomputed, even though every number in it moved: **this analysis
+does not establish an amateur effect on tyre wear.** What it does establish is
+the design — same car, same BoP, same weekends, same tracks — so the question
+is answerable with more seasons rather than merely askable.
+
+Both tests and their robustness variants are computed by
+`src/degradation/crew_rating.py` and pinned by `tests/test_crew_rating.py`.
+Until that module existed the comparison was run by hand and its published
+p-values had drifted a long way from the artifacts; the post-mortem is in
+[`reports/elms/crew_rating_findings.md`](../elms/crew_rating_findings.md) §6.
 
 ## 7. What is not here
 

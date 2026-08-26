@@ -529,9 +529,9 @@ two at Laguna Seca. Pooling them would have averaged that away.
 
 | class | what it is | race-seasons | circuits | seasons | median slope |
 |---|---|---|---|---|---|
-| **GTP** | manufacturer prototype (Hypercar-adjacent) | 33 | 10 | 2023–2026 | +0.0155 s/lap |
-| **GTD** | GT3, **Pro/Am** (mandatory bronze/silver driver) | 60 | 13 | 2021–2026 | +0.0202 s/lap |
-| **GTD PRO** | GT3, **all-professional** line-ups | 47 | 12 | 2022–2026 | +0.0196 s/lap |
+| **GTP** | manufacturer prototype (Hypercar-adjacent) | 33 | 10 | 2023–2026 | +0.0166 s/lap |
+| **GTD** | GT3, **Pro/Am** (mandatory bronze/silver driver) | 60 | 13 | 2021–2026 | +0.0200 s/lap |
+| **GTD PRO** | GT3, **all-professional** line-ups | 47 | 12 | 2022–2026 | +0.0190 s/lap |
 
 GTD and GTD PRO are the *same cars under the same Balance of Performance*.
 Keeping them apart is what makes the crew-rating question measurable at all:
@@ -767,9 +767,14 @@ could have been produced inside a single championship. Full write-up:
 > be scoped as a class in its own right.
 
 > **No consistent crew effect on tyre wear.** Two natural experiments with the
-> same design disagree — IMSA +0.0040 s/lap (p = 0.085), ELMS **−0.0143**
-> (p = 0.0093), the significant one contradicting the intuitive hypothesis.
-> One test alone would have been written up as a trend.
+> same design disagree in sign — IMSA **+0.0040** s/lap (44 pairs, p = 0.032),
+> ELMS **−0.0053** (17 pairs, p = 0.148). Only IMSA's clears 5%, and it clears
+> it once: a sign test, dropping the in-progress season, and dropping the races
+> hit by the known track-evolution defect each put it back above the line
+> (0.096 / 0.094 / 0.054). One test alone would have been written up as a
+> trend. Computed by `src/degradation/crew_rating.py`, pinned by
+> `tests/test_crew_rating.py` — which exists because these numbers were once
+> produced by hand and drifted.
 
 > **Slope instability is not the machinery.** ELMS LMP2 is near-spec — one
 > chassis, one engine — and its slopes fail to transfer between seasons

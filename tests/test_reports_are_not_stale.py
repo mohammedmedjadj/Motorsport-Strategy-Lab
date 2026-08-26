@@ -56,6 +56,62 @@ def _text(rel: str) -> str:
     return (REPO / rel).read_text(encoding="utf-8")
 
 
+def _mentions_class(text: str, car_class: str) -> bool:
+    """Does this document actually discuss that class?
+
+    Reports spell IMSA's all-pro class both ``GTDPRO`` (the artifact label)
+    and ``GTD PRO`` (the way the paddock writes it), so both count.
+    """
+    return car_class in text or car_class.replace("GTDPRO", "GTD PRO") in text
+
+
+def _counts_out_of(text: str, total: int, keyword: str) -> list[str]:
+    """Every "N of {total}" stated in a paragraph that is about ``keyword``.
+
+    Scoped rather than document-wide: "N of M" is one of the most common
+    shapes in these reports — eligibility floors, circuit coverage, races with
+    a Safety Car — so matching it everywhere would build a guard that fails on
+    sentences it was never meant to read, and a guard that cries wolf gets
+    deleted.
+
+    Scoped to the **paragraph**, though, not the line. These reports are
+    hard-wrapped at about 78 columns, so a claim and the word that identifies
+    it routinely land on different physical lines:
+
+        ...a cleaner result than
+        IMSA's (6 of 140) or WEC's (0 of 28). Teams change tyres...
+
+    A line-scoped version of this function shipped first and silently missed
+    both of the real stale figures it was written to catch, for exactly that
+    reason. Markdown's semantic unit is the paragraph; the line break is
+    typography.
+    """
+    normalised = _digits_for_words(text)
+    return [
+        match
+        for paragraph in re.split(r"\n\s*\n", normalised)
+        if keyword.lower() in paragraph.lower()
+        for match in re.findall(rf"(\d+) of {total}\b", paragraph)
+    ]
+
+
+#: Prose does not always use digits, and a guard that only reads digits is
+#: blind to exactly the sentences a human wrote by hand — which are the ones
+#: that go stale. "Nine of 60 GTD races fit a negative slope" survived this
+#: module's first version for that reason alone, against an artifact saying 8.
+_WORD_DIGITS = {
+    "one": "1", "two": "2", "three": "3", "four": "4", "five": "5",
+    "six": "6", "seven": "7", "eight": "8", "nine": "9", "ten": "10",
+    "eleven": "11", "twelve": "12",
+}
+
+
+def _digits_for_words(text: str) -> str:
+    for word, digit in _WORD_DIGITS.items():
+        text = re.sub(rf"\b{word}\b", digit, text, flags=re.IGNORECASE)
+    return text
+
+
 # --- scope counts stated in prose must match the scope itself ---------------
 
 
@@ -218,3 +274,124 @@ def test_the_pit_loss_ordering_claim_still_holds() -> None:
         f"the pit-loss/tyre-limited relationship weakened to {corr:.3f}; the "
         "synthesis quotes -0.913 and its argument rests on it"
     )
+
+
+# --- the per-series reports, not just the synthesis -------------------------
+
+
+#: Every document that states a class's median net slope or its count of
+#: negative fits. The synthesis was guarded from the start; these were not, and
+#: ``reports/elms/results.md`` drifted on eight separate figures — a median, a
+#: negative-slope count, a kept-lap percentage, a field size, a separability
+#: count against another series, and four cells of a leave-one-race-out table
+#: — while ``reports/elms/degradation_phase2.md`` carried the right numbers the
+#: whole time. One report corrected, its neighbour not: exactly the failure
+#: this module was written for, one directory over from where it was looking.
+PER_SERIES_SLOPE_REPORTS = (
+    ("reports/elms/results.md", "elms"),
+    ("reports/elms/degradation_phase2.md", "elms"),
+    ("reports/imsa/gtd_findings.md", "imsa"),
+)
+
+
+@pytest.mark.parametrize(("report", "series"), PER_SERIES_SLOPE_REPORTS)
+def test_per_series_reports_quote_their_own_median_slopes(
+    fits: pd.DataFrame, report: str, series: str
+) -> None:
+    """A series' own report must quote its own artifact.
+
+    Checked per class rather than per document: a report that covers two
+    classes can go stale on one of them, which is what happened, and a
+    whole-document check would have passed on the half that was still right.
+    """
+    text = _text(report)
+    scoped = fits[fits["series"] == series]
+    missing = []
+    for car_class, group in scoped.groupby("car_class"):
+        # Only classes the report actually discusses. A GTD report is not
+        # required to quote GTP's median, and demanding it would make this
+        # guard cry wolf until someone deleted it.
+        if not _mentions_class(text, car_class):
+            continue
+        median = f"{group['net_slope'].median():+.4f}"
+        # Reports quote either "+0.0161" or "0.0161"; both are the same claim.
+        if median not in text and median.lstrip("+") not in text:
+            missing.append(f"{car_class}={median}")
+    assert not missing, (
+        f"{report} no longer quotes the artifact's median slope for: "
+        f"{missing}. Either the fits were regenerated and the report was not "
+        "updated, or the report is quoting a number nothing computes."
+    )
+
+
+@pytest.mark.parametrize(("report", "series"), PER_SERIES_SLOPE_REPORTS)
+def test_per_series_reports_quote_their_own_negative_slope_counts(
+    fits: pd.DataFrame, report: str, series: str
+) -> None:
+    """"N of M races fit a negative slope" is the figure that moved most.
+
+    It is the direct read-out of the unmodelled track-evolution term, so it
+    changes every time the filtering changes — and it changed twice without
+    ``results.md`` following, which is how "9 of 25" outlived the "7 of 25"
+    its own phase report already carried.
+    """
+    text = _text(report)
+    scoped = fits[fits["series"] == series]
+    stale = []
+    for car_class, group in scoped.groupby("car_class"):
+        if not _mentions_class(text, car_class):
+            continue
+        negative, total = int((group["net_slope"] < 0).sum()), len(group)
+        # Scoped to lines that are actually making this claim. "N of M" is far
+        # too common a shape — the same report says "58 of 60 cleared the
+        # eligibility floor" — and a guard that matched those would fail on
+        # sentences it has no business reading.
+        stated = _counts_out_of(text, total, keyword="negative")
+        if stated and str(negative) not in stated:
+            stale.append(f"{car_class}: says {stated} of {total}, artifact says {negative}")
+    assert not stale, f"{report} carries a stale negative-slope count — {stale}"
+
+
+def test_the_elms_control_result_matches_the_loro_artifact() -> None:
+    """The near-spec control is this project's most-cited negative result.
+
+    It is argued from a five-row table of leave-one-race-out R² values that
+    appears in two documents. When the fits were corrected, one copy was
+    updated and the other was not — and the stale copy overstated Portimao's
+    failure almost fourfold (−0.253 against the artifact's −0.067), which
+    would have made the conclusion look stronger than the data supports.
+    """
+    loro = pd.read_csv(ENDURANCE_DERIVED_DIR / "endurance_degradation_loro.csv")
+    means = loro[(loro["series"] == "elms") & (loro["held_out_season"] == "MEAN")]
+    assert not means.empty, "no ELMS leave-one-race-out means in the artifact"
+
+    for report in ("reports/elms/results.md", "reports/elms/degradation_phase2.md"):
+        text = _text(report)
+        for _, row in means.iterrows():
+            value = f"{row['r2_within']:+.3f}".replace("-", "\u2212")
+            assert value in text, (
+                f"{report} does not carry the artifact's leave-one-race-out R² "
+                f"of {value} for {row['car_class']} at {row['circuit_canonical']}"
+            )
+
+
+def test_stated_separability_counts_match_the_artifact() -> None:
+    """"0 of 42 races clear the separability threshold" is a cross-series claim.
+
+    Each series' report quotes the other two for context, so a refit that
+    changes one series' count leaves stale numbers in reports belonging to
+    series that did not change at all. IMSA's went from 3 to 6 that way.
+    """
+    fits = pd.read_csv(ENDURANCE_DERIVED_DIR / "endurance_degradation_fits.csv")
+    counts = {s: (int(g["separable"].sum()), len(g)) for s, g in fits.groupby("series")}
+
+    for report in ("reports/elms/results.md", "reports/elms/degradation_phase2.md"):
+        text = _text(report)
+        for series, (separable, total) in counts.items():
+            stated = _counts_out_of(text, total, keyword="separab")
+            if not stated:
+                continue
+            assert str(separable) in stated, (
+                f"{report} states {stated} of {total} for {series}; the "
+                f"artifact says {separable} of {total} clear the threshold"
+            )

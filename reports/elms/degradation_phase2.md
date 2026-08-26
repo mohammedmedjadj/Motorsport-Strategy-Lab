@@ -13,7 +13,7 @@ scoping data, not by writing a new model:
 
 `n` is the **net within-stint slope**: fuel gain and tyre loss combined.
 Standard errors are cluster-robust by car with a `t(G−1)` reference. ELMS
-fields run 7–19 cars, so that reference is doing real work rather than being a
+fields run 7–17 cars, so that reference is doing real work rather than being a
 formality — at 7 cars it is a `t(6)`, whose 95% interval is 22% wider than the
 normal's.
 

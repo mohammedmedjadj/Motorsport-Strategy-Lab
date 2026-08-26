@@ -13,12 +13,12 @@ crew comparison that separation made possible.*
 | Race-seasons | 25 | 17 |
 | Seasons | 2021–2025 | 2023–2025 |
 | Circuits | 9 | 8 |
-| Median net slope | +0.0184 s/lap | +0.0201 s/lap |
-| Races fitting a negative slope | 9 of 25 | 5 of 17 |
+| Median net slope | +0.0161 s/lap | +0.0205 s/lap |
+| Races fitting a negative slope | 7 of 25 | 5 of 17 |
 
-52,472 race laps in total, 71.1% of them kept for modelling (median per race).
+52,472 race laps in total, 69.6% of them kept for modelling (median per race).
 Standard errors are cluster-robust by car with a `t(G−1)` reference; ELMS
-fields run 7–19 cars, so that reference is doing real work.
+fields run 7–17 cars, so that reference is doing real work.
 
 ## 2. The control experiment, and it comes back negative
 
@@ -38,11 +38,11 @@ They still fail. Leave-one-race-out mean within-stint R², per circuit:
 
 | circuit | LMP2 | LMP2 Pro/Am |
 |---|---|---|
-| Barcelona | +0.035 | +0.025 |
-| Imola | −0.003 | −0.001 |
-| Paul Ricard | −0.010 | +0.004 |
-| Portimao | **−0.253** | **−0.567** |
-| Spa | −0.008 | −0.013 |
+| Barcelona | +0.035 | +0.027 |
+| Imola | −0.001 | −0.003 |
+| Paul Ricard | −0.011 | −0.011 |
+| Portimao | **−0.067** | **−0.455** |
+| Spa | −0.004 | −0.012 |
 
 Every value is at or below zero except two that are indistinguishable from it.
 A pooled slope fitted on a circuit's other seasons explains **none** of the
@@ -64,7 +64,7 @@ best case of a general rule.
 ## 3. Fuel and degradation are not separable, at all
 
 **0 of 42 races** clear the separability threshold — a cleaner result than
-IMSA's (3 of 140) or WEC's (0 of 28). Teams change tyres at essentially every
+IMSA's (6 of 140) or WEC's (0 of 28). Teams change tyres at essentially every
 fuel stop, so `laps_since_refuel` and `tyre_age` move together and fitting
 both yields a collinear ridge. Only the net slope is reported, as everywhere
 else in this project.

@@ -55,7 +55,7 @@ being measured. Measured on synthetic races, that version attenuated a true
 
 ## Known limitation carried into later phases
 
-Both classes still fit a substantial number of negative net slopes (9 of 25
+Both classes still fit a substantial number of negative net slopes (7 of 25
 LMP2, 5 of 17 Pro/Am). The cause is diagnosed and is **not** a filtering
 problem: the model carries no race-time term, so track evolution lands on the
 tyre-age coefficient with its sign inverted. Portimao 2023 gets 17.8 s a lap

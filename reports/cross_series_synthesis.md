@@ -69,18 +69,32 @@ difference and is recorded as unexplained.
 Two natural experiments, same design — the same car under the same regulations,
 entered with and without a mandatory amateur-rated driver:
 
-| experiment | Pro/Am − Pro | pairs | paired Wilcoxon |
-|---|---|---|---|
-| IMSA GTD vs GTD PRO | +0.0040 s/lap | 44 | p = 0.085 |
-| ELMS Pro/Am vs LMP2 | **−0.0143 s/lap** | 17 | **p = 0.0093** |
+| experiment | Pro/Am − Pro | pairs | paired Wilcoxon | holds up under robustness? |
+|---|---|---|---|---|
+| IMSA GTD vs GTD PRO | +0.0040 s/lap | 44 | **p = 0.032** | **no** — 0.096 / 0.094 / 0.054 |
+| ELMS Pro/Am vs LMP2 | −0.0053 s/lap | 17 | p = 0.148 | not significant to begin with |
 
-They point in opposite directions, and the significant one contradicts the
-intuitive hypothesis: in ELMS the *professionals* degrade faster. The honest
-summary is that **no consistent crew effect survives across championships**.
+**They point in opposite directions.** IMSA's amateur-rated crews degrade
+faster, as the intuitive hypothesis predicts; ELMS's degrade *slower*, which
+it does not. Only IMSA's clears 5%, and it clears it once: a sign test, the
+removal of the in-progress 2026 season, and the removal of races hit by the
+known track-evolution defect each put it back above the line.
+
+The honest summary is that **no consistent crew effect survives across
+championships**, and that the one significant-looking result is a statement
+about statistical power rather than about tyres.
 
 One test alone would have been read as "a trend towards" and written up as a
 finding. Two independent ones make that impossible, which is the argument for
 the second series.
+
+These numbers previously read p = 0.085 and p = 0.0093, with the two
+championships' significance the other way round. They were computed by hand,
+the slopes beneath them were corrected twice, and no code recomputed them.
+Both tests now come from `src/degradation/crew_rating.py` and are pinned by
+`tests/test_crew_rating.py`, which fails if any document here — the README
+included — quotes a crew p-value the code does not produce. The post-mortem is
+[`reports/elms/crew_rating_findings.md`](elms/crew_rating_findings.md) §6.
 
 ## 4. Slope instability is not the machinery
 
