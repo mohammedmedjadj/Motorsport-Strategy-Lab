@@ -5,6 +5,8 @@ specific numeric claims the hand-written reports make."""
 
 from __future__ import annotations
 
+from pathlib import Path
+
 import pandas as pd
 import pytest
 
@@ -318,3 +320,40 @@ def test_every_artifact_covers_every_scoped_series() -> None:
         "them, or — if the omission is deliberate — say so here rather than "
         "leaving the artifact quietly narrower than the scope."
     )
+
+
+def test_the_discovery_catalogue_can_see_every_scoped_class() -> None:
+    """The availability scan must at least look at what the project models.
+
+    ``discover_endurance_events.py`` used a hand-written map of one prototype
+    class per series, so the catalogue it produced was structurally unable to
+    contain GTD, GTD PRO, ELMS or LMP2 Pro/Am — and anything reading that
+    catalogue inherited the blindness. The demo did, and offered 2 of 6 scoped
+    classes for weeks without a single test failing.
+
+    The scan is now seeded from ``ENDURANCE_SCOPE`` plus explicit unscoped
+    candidates. This asserts the seeding, not the network result, so it runs
+    offline: a scoped class must always be a scan target.
+    """
+    import importlib.util
+
+    from src.data.endurance_scope import ENDURANCE_SCOPE
+
+    spec = importlib.util.spec_from_file_location(
+        "_discover", Path(__file__).resolve().parents[1]
+        / "scripts" / "discover_endurance_events.py"
+    )
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+
+    targets = set(module._scan_targets())
+    scoped = {
+        (series, cs.car_class)
+        for series, circuits in ENDURANCE_SCOPE.items()
+        for cs in circuits
+    }
+    assert scoped <= targets, (
+        f"scoped classes the availability scan cannot see: {sorted(scoped - targets)}"
+    )
+    # ... and it still looks beyond the scope, which is its actual job.
+    assert targets - scoped, "the scan covers only what is already scoped"

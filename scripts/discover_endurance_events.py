@@ -30,8 +30,37 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from src.data.endurance_loader import EnduranceLoader  # noqa: E402
 from src.ingestion.config import ENDURANCE_DERIVED_DIR  # noqa: E402
 
-#: The top prototype class per series (what the current scope models).
-PROTOTYPE_CLASS = {"imsa": "GTP", "wec": "HYPERCAR"}
+#: Which (series, class) pairs to scan upstream.
+#:
+#: Seeded from ``ENDURANCE_SCOPE`` so a class this project already models is
+#: never absent from its own availability scan, plus explicit *candidates* not
+#: yet scoped — the point of a discovery script being to look beyond what is
+#: already in.
+#:
+#: This map used to be a hand-written ``{"imsa": "GTP", "wec": "HYPERCAR"}``,
+#: one prototype class per series. That made the catalogue structurally unable
+#: to see GTD, GTD PRO, ELMS or LMP2 Pro/Am, and anything reading it inherited
+#: that blindness — ``available_races`` did, so the demo offered 2 of 6 scoped
+#: classes for weeks without a single failure anywhere.
+CANDIDATE_CLASSES: tuple[tuple[str, str], ...] = (
+    ("alms", "LMP2"),      # declined on circuit diversity, rescanned anyway
+    ("elms", "LMP3"),
+    ("imsa", "LMP2"),
+    ("imsa", "LMP3"),
+    ("wec", "LMGT3"),
+)
+
+
+def _scan_targets() -> list[tuple[str, str]]:
+    """Every scoped (series, class), plus the unscoped candidates above."""
+    from src.data.endurance_scope import ENDURANCE_SCOPE
+
+    scoped = {
+        (series, cs.car_class)
+        for series, circuits in ENDURANCE_SCOPE.items()
+        for cs in circuits
+    }
+    return sorted(scoped | set(CANDIDATE_CLASSES))
 
 #: Eligibility floor for a degradation fit: at least this many cars, a race long
 #: enough to have within-stint pace to fit, and *some* green-flag laps. The last
@@ -69,7 +98,7 @@ def main() -> None:  # pragma: no cover - network
     args = ap.parse_args()
 
     rows = []
-    for series, car_class in PROTOTYPE_CLASS.items():
+    for series, car_class in _scan_targets():
         loader = EnduranceLoader(series)
         for year in range(args.start, args.end + 1):
             try:

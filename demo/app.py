@@ -1,20 +1,26 @@
-"""Interactive demo: a live pit-window simulator for all three series, using
-the exact same measured models and simulator engines as the rest of this
-project (no separate or simplified model built for the demo).
+"""Interactive demo: a live pit-window simulator for every class this project
+models, using the exact same measured models and simulator engines as the rest
+of the repository — no separate or simplified model built for the demo.
 
-The three series are kept **strictly separate**, one panel each, because they
-are not variants of one another:
+**Seven panels, one per class**, because the class is the unit this project
+models and never pools:
 
-- F1 has a tyre-compound choice and a sporting rule forcing two dry compounds;
-  it has no fuel constraint (refuelling is banned).
-- WEC has a fuel constraint and no compound choice, and its neutralisations are
-  Safety-Car-dominated (44 SC vs 18 FCY events across its 33 committed races).
-- IMSA has the same fuel constraint but a completely different neutralisation
-  regime: 293 full-course yellows and *zero* Safety Cars across its 63
-  committed races.
+- **F1** — compound choice, a mandatory two-dry-compound rule, no fuel
+  constraint (refuelling is banned).
+- **WEC Hypercar** — 44 Safety Cars against 18 FCY over 33 races; a 76 s pit
+  loss makes every circuit fuel-limited.
+- **IMSA GTP** — 293 FCY and *zero* Safety Cars over 63 races.
+- **IMSA GTD / GTD PRO** — the same GT3 cars under the same Balance of
+  Performance, separated only by whether an amateur-rated driver is
+  mandatory. GTD is tyre-limited at five circuits where the prototypes are at
+  one and none.
+- **ELMS LMP2 / LMP2 Pro/Am** — a near-spec Oreca 07 field, and the second
+  crew-rating experiment, which disagrees with IMSA's.
 
-Merging them into one "endurance" panel would hide exactly the differences a
-strategy engineer cares about, so nothing here pools them.
+Keying a panel on series alone would have been a real defect rather than a
+tidiness one: IMSA's three classes race the same rounds and their measured
+tyre-change premiums are 8.7 s, 17.6 s and 16.9 s, so one race's model would
+have appeared under another class's name.
 
 Run locally:
 
@@ -73,8 +79,12 @@ def _endurance_distance(series: str, year: int, event: str, car_class: str) -> i
 
 
 @st.cache_data
-def _races(series: str) -> pd.DataFrame:
-    return available_races(series)
+def _races(series: str, car_class: str) -> pd.DataFrame:
+    """One class's committed races. Filtered by class, not just series: IMSA
+    fields three and ELMS two, and a panel that mixed them would be the very
+    pooling this project refuses everywhere else."""
+    races = available_races(series)
+    return races[races["car_class"] == car_class].reset_index(drop=True)
 
 
 def _candidate_chart(
@@ -251,20 +261,30 @@ def f1_panel() -> None:
 # Endurance (WEC and IMSA — same engine, deliberately separate panels)
 # --------------------------------------------------------------------------
 
-def endurance_panel(series: str, heading: str, intro: str, caveat: str) -> None:
-    """One endurance series' panel.
+def endurance_panel(series: str, car_class: str, heading: str, intro: str,
+                    caveat: str) -> None:
+    """One endurance **class's** panel — the unit this project models.
 
-    ``series`` selects the data *and* the neutralisation posterior, so a WEC
-    race is never simulated with IMSA's hazards or vice versa. The two panels
-    share this rendering code but never share a model, an event list, or a
-    conclusion.
+    ``series`` selects the neutralisation posterior, so a WEC race is never
+    simulated with IMSA's hazards; ``car_class`` selects the degradation fit,
+    pit loss and fuel range, so GT3 is never simulated with a prototype's.
+    Six panels share this rendering code and share no fitted number.
+
+    The class argument is not cosmetic. IMSA runs GTP, GTD and GTD PRO at the
+    same rounds and their measured pit-stop premiums are 8.7 s, 17.6 s and
+    16.9 s; a panel keyed on series alone would have shown one race's model
+    under another class's name.
     """
+    key = f"{series}_{car_class}".replace(" ", "_").replace("/", "_")
     st.subheader(heading)
     st.caption(intro)
 
-    races = _races(series)
+    races = _races(series, car_class)
     if races.empty:
-        st.warning(f"No eligible {series.upper()} race is committed in this checkout.")
+        st.warning(
+            f"No {car_class} race for {series.upper()} is committed in this "
+            "checkout. Run scripts/materialise_endurance.py to fetch them."
+        )
         return
 
     with st.sidebar:
@@ -278,7 +298,7 @@ def endurance_panel(series: str, heading: str, intro: str, caveat: str) -> None:
                 f"{races.loc[i, 'year']} · {races.loc[i, 'event']} "
                 f"({races.loc[i, 'car_class']})"
             ),
-            key=f"{series}_event",
+            key=f"{key}_event",
         )
         row = races.loc[idx]
         year, event, car_class = int(row["year"]), str(row["event"]), str(row["car_class"])
@@ -291,16 +311,16 @@ def endurance_panel(series: str, heading: str, intro: str, caveat: str) -> None:
         st.header("Race state")
         total_laps = st.slider(
             "Race distance (laps)", max(10, distance // 2), max(20, distance * 2),
-            distance, key=f"{series}_total",
+            distance, key=f"{key}_total",
         )
         current_lap = st.slider(
             "Current lap (decision point)", 1, max(2, total_laps - 2),
-            min(total_laps // 3, max(2, total_laps - 2)), key=f"{series}_lap",
+            min(total_laps // 3, max(2, total_laps - 2)), key=f"{key}_lap",
         )
-        tyre_age = st.slider("Tyre age (laps)", 0, 60, 10, key=f"{series}_age")
+        tyre_age = st.slider("Tyre age (laps)", 0, 60, 10, key=f"{key}_age")
         laps_since_refuel = st.slider(
             "Laps since refuelling", 0, max(1, model.fuel_range_laps - 1),
-            min(10, max(1, model.fuel_range_laps - 1)), key=f"{series}_fuel",
+            min(10, max(1, model.fuel_range_laps - 1)), key=f"{key}_fuel",
             help=(
                 f"The measured fuel range for this race is "
                 f"{model.fuel_range_laps} laps. The car must visit the pits "
@@ -308,9 +328,9 @@ def endurance_panel(series: str, heading: str, intro: str, caveat: str) -> None:
             ),
         )
         n_draws = st.select_slider(
-            "Monte Carlo draws", [500, 1000, 2000, 5000], value=2000, key=f"{series}_draws",
+            "Monte Carlo draws", [500, 1000, 2000, 5000], value=2000, key=f"{key}_draws",
         )
-        run = st.button("Simulate", type="primary", width="stretch", key=f"{series}_run")
+        run = st.button("Simulate", type="primary", width="stretch", key=f"{key}_run")
 
     st.markdown("**Measured model for this race** (nothing below is assumed)")
     m1, m2, m3, m4 = st.columns(4)
@@ -484,44 +504,111 @@ def _full_race_plan(
     )
 
 
+# Each panel states what its own class measured. Nothing here is shared
+# between classes except the rendering code — the numbers quoted are each
+# class's own, and where two classes disagree the panels say so.
+
 WEC_INTRO = (
     "Hypercar. Degradation fit on this race; FCY and Safety Car hazards from "
     "WEC's own series-wide posterior over its 33 committed races."
 )
 WEC_CAVEAT = (
     "WEC's neutralisations are Safety-Car-dominated: 44 SC deployments against "
-    "18 FCY periods in the committed data, with SC durations running as long "
-    "as 18 laps. Both hazards are measured from WEC alone — IMSA data never "
-    "enters this model."
+    "18 FCY periods, with SC durations running as long as 18 laps. A 76 s "
+    "median pit loss makes every WEC circuit in scope fuel-limited on stop "
+    "count — no extra stop ever pays for itself here."
 )
-IMSA_INTRO = (
-    "GTP. Degradation fit on this race; neutralisation hazards from IMSA's own "
-    "series-wide posterior over its 63 committed races."
+
+GTP_INTRO = (
+    "IMSA's manufacturer prototype class. Degradation fit on this race; "
+    "neutralisation hazards from IMSA's own posterior over 63 committed races."
 )
-IMSA_CAVEAT = (
-    "IMSA is a different neutralisation regime entirely: 293 full-course "
-    "yellows and **zero** Safety Cars in the committed data. The SC hazard is "
-    "therefore a Jeffreys-prior floor (half a pseudo-event), not a measured "
-    "rate — the model refuses to encode 'can never happen' from an absence of "
-    "evidence. WEC data never enters this model."
+GTP_CAVEAT = (
+    "IMSA has **293 full-course yellows and zero Safety Cars** in the "
+    "committed data, so its SC hazard is a Jeffreys-prior floor rather than a "
+    "measured rate — the model refuses to encode 'can never happen' from an "
+    "absence of evidence. GTP services tyres in parallel with the fuel fill: "
+    "a 8.7 s tyre-change premium against WEC's 21.6 s."
+)
+
+GTD_INTRO = (
+    "GT3, **Pro/Am**: every entry must field a bronze- or silver-rated driver. "
+    "Same cars and Balance of Performance as GTD PRO, different crews."
+)
+GTD_CAVEAT = (
+    "The class that overturned this project's headline endurance finding. "
+    "GTD's 19.7 s median pit loss is cheap enough that an extra stop can pay "
+    "for itself, and it is **tyre-limited at five circuits** where the "
+    "prototypes are at one and none. 'Every measured race is fuel-limited' was "
+    "a fact about expensive stops, not about endurance racing."
+)
+
+GTDPRO_INTRO = (
+    "GT3, **all-professional** line-ups. The same cars under the same Balance "
+    "of Performance as GTD — the class boundary is the crew rating."
+)
+GTDPRO_CAVEAT = (
+    "The controlled comparison: holding the car fixed and changing only the "
+    "crew moves the tyre-change premium 17.6 s → 16.9 s, while changing the "
+    "car moves it 8.7 s → 17.6 s. The pit-stop difference is the **car, not "
+    "the crew**. On tyre wear the crew comparison is inconclusive here and "
+    "contradicted in ELMS."
+)
+
+LMP2_INTRO = (
+    "ELMS LMP2 — close to a one-make formula (Oreca 07 chassis, Gibson "
+    "engine), which is why this class is the project's near-spec control."
+)
+LMP2_CAVEAT = (
+    "ELMS is the most Safety-Car-dominated series in scope: **23 of 29 races** "
+    "see one, against WEC's 19 of 33 and IMSA's none. A neutralised stop is "
+    "worth more here than anywhere else this project models. Note that before "
+    "2023 this label covered every LMP2 entry; from 2023 it means the "
+    "professional subset only."
+)
+
+LMP2_PROAM_INTRO = (
+    "ELMS LMP2 Pro/Am — the same Oreca 07 with a mandatory amateur-rated "
+    "driver. A second natural experiment on crew rating, independent of IMSA's."
+)
+LMP2_PROAM_CAVEAT = (
+    "And it **disagrees with IMSA's**. Paired on circuit and season, the "
+    "Pro/Am slope is *shallower* by 0.0143 s/lap (p = 0.0093) where IMSA's "
+    "was steeper by 0.0040 (p = 0.085). Two independent tests pointing "
+    "opposite ways: no consistent crew effect on tyre wear survives across "
+    "championships."
 )
 
 PANELS = {
     "Formula 1": f1_panel,
-    "WEC — Hypercar": lambda: endurance_panel("wec", "WEC — pit-window simulator", WEC_INTRO, WEC_CAVEAT),
-    "IMSA — GTP": lambda: endurance_panel("imsa", "IMSA — pit-window simulator", IMSA_INTRO, IMSA_CAVEAT),
+    "WEC — Hypercar": lambda: endurance_panel(
+        "wec", "HYPERCAR", "WEC Hypercar — pit-window simulator",
+        WEC_INTRO, WEC_CAVEAT),
+    "IMSA — GTP": lambda: endurance_panel(
+        "imsa", "GTP", "IMSA GTP — pit-window simulator", GTP_INTRO, GTP_CAVEAT),
+    "IMSA — GTD (GT3 Pro/Am)": lambda: endurance_panel(
+        "imsa", "GTD", "IMSA GTD — pit-window simulator", GTD_INTRO, GTD_CAVEAT),
+    "IMSA — GTD PRO (GT3 all-pro)": lambda: endurance_panel(
+        "imsa", "GTDPRO", "IMSA GTD PRO — pit-window simulator",
+        GTDPRO_INTRO, GTDPRO_CAVEAT),
+    "ELMS — LMP2": lambda: endurance_panel(
+        "elms", "LMP2", "ELMS LMP2 — pit-window simulator",
+        LMP2_INTRO, LMP2_CAVEAT),
+    "ELMS — LMP2 Pro/Am": lambda: endurance_panel(
+        "elms", "LMP2 Pro/Am", "ELMS LMP2 Pro/Am — pit-window simulator",
+        LMP2_PROAM_INTRO, LMP2_PROAM_CAVEAT),
 }
 
 
 def main() -> None:
     st.title("Motorsport Strategy Lab — live pit-window simulator")
     st.caption(
-        "Three series, three separate models, one engine. Source: "
+        "Four series, six classes, six separate models, one engine. Source: "
         "[github.com/mohammedmedjadj/Motorsport-Strategy-Lab]"
         "(https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab)."
     )
     with st.sidebar:
-        series = st.radio("Series", list(PANELS), index=0)
+        series = st.radio("Series / class", list(PANELS), index=0)
         st.divider()
     PANELS[series]()
 

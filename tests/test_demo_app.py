@@ -47,12 +47,26 @@ def _simulate(at: AppTest) -> AppTest:
     return at
 
 
-def test_the_three_series_are_offered_separately() -> None:
-    """The series never share a panel — the whole point of keeping WEC and
-    IMSA apart is that a user cannot accidentally read one as the other."""
+def test_every_class_is_offered_separately() -> None:
+    """No two classes share a panel.
+
+    The unit is the class, not the series: IMSA runs GTP, GTD and GTD PRO at
+    the same rounds and their measured tyre-change premiums are 8.7 s, 17.6 s
+    and 16.9 s. A panel keyed on series alone would show one class's model
+    under another's name, which is the same pooling error this project has
+    already had to correct in the artifacts twice.
+    """
     at = AppTest.from_file(APP, default_timeout=TIMEOUT).run()
     options = at.sidebar.radio[0].options
-    assert options == ["Formula 1", "WEC — Hypercar", "IMSA — GTP"]
+    assert options == [
+        "Formula 1",
+        "WEC — Hypercar",
+        "IMSA — GTP",
+        "IMSA — GTD (GT3 Pro/Am)",
+        "IMSA — GTD PRO (GT3 all-pro)",
+        "ELMS — LMP2",
+        "ELMS — LMP2 Pro/Am",
+    ]
 
 
 def test_f1_panel_produces_a_ranked_recommendation() -> None:
@@ -85,7 +99,10 @@ def test_f1_excludes_no_stop_until_two_dry_compounds_have_been_used() -> None:
     assert "No stop" in set(at.dataframe[-1].value["Candidate"])
 
 
-@pytest.mark.parametrize("series", ["WEC — Hypercar", "IMSA — GTP"])
+@pytest.mark.parametrize(
+    "series",
+    ["WEC — Hypercar", "IMSA — GTP", "IMSA — GTD (GT3 Pro/Am)", "ELMS — LMP2"],
+)
 def test_endurance_panels_report_a_measured_model_and_a_full_race_plan(series: str) -> None:
     at = _simulate(_app(series))
     labels = [m.label for m in at.metric]
@@ -126,3 +143,63 @@ def test_the_two_endurance_series_do_not_share_a_model() -> None:
                 ("Green pace", "Pit loss", "Fuel range")}
 
     assert card(wec) != card(imsa)
+
+
+# --- the demo must offer everything the project models -----------------------
+
+
+def test_every_scoped_class_has_a_panel() -> None:
+    """The demo is the shop window, and it was showing two of six classes.
+
+    ``available_races`` used to read ``available_events.csv`` — a
+    network-derived scoping aid that enumerates one prototype class per series
+    and has never known about GTD, GTD PRO, ELMS or LMP2 Pro/Am. So the demo
+    silently offered WEC Hypercar and IMSA GTP only, and would have drifted
+    again at the next widening.
+
+    The fix was to derive from ``ENDURANCE_SCOPE`` instead, which cannot go
+    stale against the scope by construction. This test is the guard that would
+    have caught the original defect: every scoped class must be reachable in
+    the demo, or the window is describing a smaller project than exists.
+    """
+    from src.data.endurance_scope import ENDURANCE_SCOPE
+
+    at = AppTest.from_file(APP, default_timeout=TIMEOUT).run()
+    assert not at.exception, [str(e.value) for e in at.exception]
+    offered = " | ".join(at.sidebar.radio[0].options)
+
+    scoped = {(s, cs.car_class) for s, circuits in ENDURANCE_SCOPE.items()
+              for cs in circuits}
+    missing = [
+        f"{series}/{car_class}" for series, car_class in sorted(scoped)
+        if series.upper() not in offered.upper()
+        or car_class.upper().replace("GTDPRO", "GTD PRO") not in offered.upper()
+    ]
+    assert not missing, (
+        f"scoped classes with no demo panel: {missing}. The demo derives its "
+        "race list from the scope, so a new class needs a panel or it is "
+        "modelled and invisible."
+    )
+    # F1 plus one panel per endurance class.
+    assert len(at.sidebar.radio[0].options) == 1 + len(scoped)
+
+
+def test_available_races_covers_the_whole_scope() -> None:
+    """The demo's race list must be the scope, not a subset of it.
+
+    Checked separately from the panel test because the two failure modes are
+    different: a class can have a panel that then offers no races, which looks
+    like a data problem and is really a catalogue one.
+    """
+    from src.data.endurance_scope import scoped_race_seasons
+    from src.simulator.endurance_models import available_races
+
+    races = available_races()
+    scoped = {(s, y, e, c) for s, e, c, y in scoped_race_seasons()}
+    offered = set(
+        zip(races["series"], races["year"], races["event"], races["car_class"])
+    )
+    assert offered == scoped, (
+        f"offered but not scoped: {sorted(offered - scoped)[:3]}; "
+        f"scoped but not offered: {sorted(scoped - offered)[:3]}"
+    )

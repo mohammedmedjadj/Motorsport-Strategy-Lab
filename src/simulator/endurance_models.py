@@ -26,9 +26,9 @@ from functools import lru_cache
 
 import pandas as pd
 
-from src.data.endurance_loader import EnduranceLoader
+from src.data.endurance_loader import EnduranceLoader, derived_path
 from src.degradation.endurance import build_endurance_frame, fit_endurance_degradation
-from src.ingestion.config import ENDURANCE_DERIVED_DIR
+from src.data.endurance_scope import scoped_race_seasons
 from src.safety_car.endurance import (
     extract_events,
     fit_neutralisation_models,
@@ -66,17 +66,41 @@ def _neutralisation_posteriors() -> dict[str, tuple]:
 
 
 def available_races(series: str | None = None) -> pd.DataFrame:
-    """The races that have enough committed data to be modelled.
+    """Every scoped race whose laps are committed — what can be modelled offline.
 
-    Reads the Phase-1 availability audit rather than globbing the lap files, so
-    a race that was ingested but failed its quality gate (``eligible`` False)
-    is not offered as if it were usable.
+    Derived from ``ENDURANCE_SCOPE`` intersected with what is actually on disk,
+    **not** from ``available_events.csv``. The two answer different questions
+    and conflating them was a real defect:
+
+    - ``available_events.csv`` is a network-derived *scoping aid*: what exists
+      upstream and clears the eligibility floor. Its own generator says
+      "nothing here is used by a model directly". It enumerates one prototype
+      class per series, so it has never known about GTD, GTD PRO, ELMS or
+      LMP2 Pro/Am.
+    - This function answers what a consumer can actually load right now, which
+      is the scope — the thing every model is fitted from.
+
+    Reading the catalogue meant the demo offered 2 of the project's 6 scoped
+    classes and no ELMS at all, silently, and would have drifted again at the
+    next widening. Deriving from the scope cannot go stale against it by
+    construction.
+
+    The ``eligible`` guarantee the catalogue provided is preserved and
+    strengthened: a race only enters ``ENDURANCE_SCOPE`` after clearing that
+    same floor, and the on-disk check means nothing is offered that cannot be
+    loaded.
     """
-    events = pd.read_csv(ENDURANCE_DERIVED_DIR / "available_events.csv")
-    events = events[events["eligible"]]
+    rows = [
+        {"series": s, "year": year, "event": event, "car_class": car_class}
+        for s, event, car_class, year in scoped_race_seasons()
+        if derived_path(s, year, event, car_class).exists()
+    ]
+    races = pd.DataFrame(rows, columns=["series", "year", "event", "car_class"])
     if series is not None:
-        events = events[events["series"] == series]
-    return events.sort_values(["year", "event"], kind="stable").reset_index(drop=True)
+        races = races[races["series"] == series]
+    return races.sort_values(
+        ["series", "year", "event", "car_class"], kind="stable"
+    ).reset_index(drop=True)
 
 
 def load_race_laps(series: str, year: int, event: str, car_class: str) -> pd.DataFrame:
