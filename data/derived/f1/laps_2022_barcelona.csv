@@ -1,0 +1,1231 @@
+Driver,DriverNumber,Team,LapNumber,Stint,Compound,TyreLife,FreshTyre,Position,TrackStatus,lap_time_s,time_s,lap_start_time_s,air_temp_c,track_temp_c,humidity_pct,rainfall,is_in_lap,is_out_lap,is_missing_laptime,is_inaccurate,is_wet_compound,is_non_green,is_unknown_status,is_deleted,is_pace_lap,stint_crosses_red_flag
+VER,1,Red Bull Racing,1.0,1.0,SOFT,4.0,False,2.0,12,89.739,3822.883,3732.915,36.6,49.3,6.0,False,False,False,False,True,False,True,False,False,False,False
+VER,1,Red Bull Racing,2.0,1.0,SOFT,5.0,False,2.0,1,87.509,3910.392,3822.883,36.7,49.4,7.0,False,False,False,False,False,False,False,False,False,True,False
+VER,1,Red Bull Racing,3.0,1.0,SOFT,6.0,False,2.0,1,87.574,3997.966,3910.392,36.9,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+VER,1,Red Bull Racing,4.0,1.0,SOFT,7.0,False,2.0,1,87.601,4085.567,3997.966,36.9,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+VER,1,Red Bull Racing,5.0,1.0,SOFT,8.0,False,2.0,1,87.937,4173.504,4085.567,37.0,49.3,6.0,False,False,False,False,False,False,False,False,False,True,False
+VER,1,Red Bull Racing,6.0,1.0,SOFT,9.0,False,2.0,1,87.761,4261.265,4173.504,37.0,49.3,6.0,False,False,False,False,False,False,False,False,False,True,False
+VER,1,Red Bull Racing,7.0,1.0,SOFT,10.0,False,2.0,12,88.07,4349.335,4261.265,36.8,49.5,6.0,False,False,False,False,False,False,True,False,False,False,False
+VER,1,Red Bull Racing,8.0,1.0,SOFT,11.0,False,2.0,1,88.115,4437.45,4349.335,37.0,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+VER,1,Red Bull Racing,9.0,1.0,SOFT,12.0,False,4.0,12,96.463,4533.913,4437.45,36.9,49.3,6.0,False,False,False,False,False,False,True,False,False,False,False
+VER,1,Red Bull Racing,10.0,1.0,SOFT,13.0,False,4.0,1,89.262,4623.175,4533.913,37.0,49.6,6.0,False,False,False,False,False,False,False,False,False,True,False
+VER,1,Red Bull Racing,11.0,1.0,SOFT,14.0,False,3.0,1,89.192,4712.367,4623.175,36.9,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+VER,1,Red Bull Racing,12.0,1.0,SOFT,15.0,False,3.0,1,89.055,4801.422,4712.367,37.0,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+VER,1,Red Bull Racing,13.0,1.0,SOFT,16.0,False,4.0,1,92.379,4893.801,4801.422,37.0,49.7,6.0,False,True,False,False,True,False,False,False,False,False,False
+VER,1,Red Bull Racing,14.0,2.0,MEDIUM,1.0,True,5.0,1,105.251,4999.052,4893.801,36.8,49.7,6.0,False,False,True,False,True,False,False,False,False,False,False
+VER,1,Red Bull Racing,15.0,2.0,MEDIUM,2.0,True,4.0,1,87.317,5086.369,4999.052,36.8,49.7,5.0,False,False,False,False,False,False,False,False,False,True,False
+VER,1,Red Bull Racing,16.0,2.0,MEDIUM,3.0,True,4.0,1,88.085,5174.454,5086.369,36.6,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+VER,1,Red Bull Racing,17.0,2.0,MEDIUM,4.0,True,4.0,1,88.13,5262.584,5174.454,36.7,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+VER,1,Red Bull Racing,18.0,2.0,MEDIUM,5.0,True,3.0,1,88.336,5350.92,5262.584,36.9,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+VER,1,Red Bull Racing,19.0,2.0,MEDIUM,6.0,True,3.0,1,87.954,5438.874,5350.92,37.1,49.7,5.0,False,False,False,False,False,False,False,False,False,True,False
+VER,1,Red Bull Racing,20.0,2.0,MEDIUM,7.0,True,3.0,1,88.275,5527.149,5438.874,37.1,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+VER,1,Red Bull Racing,21.0,2.0,MEDIUM,8.0,True,3.0,1,88.094,5615.243,5527.149,37.0,49.0,6.0,False,False,False,False,False,False,False,False,False,True,False
+VER,1,Red Bull Racing,22.0,2.0,MEDIUM,9.0,True,3.0,1,88.207,5703.45,5615.243,37.1,49.0,6.0,False,False,False,False,False,False,False,False,False,True,False
+VER,1,Red Bull Racing,23.0,2.0,MEDIUM,10.0,True,3.0,1,88.466,5791.916,5703.45,37.1,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+VER,1,Red Bull Racing,24.0,2.0,MEDIUM,11.0,True,3.0,1,89.602,5881.518,5791.916,37.1,49.4,6.0,False,False,False,False,False,False,False,False,True,False,False
+VER,1,Red Bull Racing,25.0,2.0,MEDIUM,12.0,True,3.0,1,88.957,5970.475,5881.518,37.0,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+VER,1,Red Bull Racing,26.0,2.0,MEDIUM,13.0,True,3.0,1,88.486,6058.961,5970.475,37.0,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+VER,1,Red Bull Racing,27.0,2.0,MEDIUM,14.0,True,2.0,1,88.533,6147.494,6058.961,37.0,49.4,7.0,False,False,False,False,False,False,False,False,False,True,False
+VER,1,Red Bull Racing,28.0,2.0,MEDIUM,15.0,True,3.0,1,92.263,6239.757,6147.494,37.0,49.4,6.0,False,True,False,False,True,False,False,False,False,False,False
+VER,1,Red Bull Racing,29.0,3.0,SOFT,4.0,False,4.0,1,103.366,6343.123,6239.757,37.2,49.3,7.0,False,False,True,False,True,False,False,False,False,False,False
+VER,1,Red Bull Racing,30.0,3.0,SOFT,5.0,False,4.0,1,85.732,6428.855,6343.123,37.2,49.3,6.0,False,False,False,False,False,False,False,False,False,True,False
+VER,1,Red Bull Racing,31.0,3.0,SOFT,6.0,False,3.0,1,87.0,6515.855,6428.855,37.2,49.3,6.0,False,False,False,False,False,False,False,False,False,True,False
+VER,1,Red Bull Racing,32.0,3.0,SOFT,7.0,False,3.0,1,85.974,6601.829,6515.855,37.1,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+VER,1,Red Bull Racing,33.0,3.0,SOFT,8.0,False,3.0,1,86.799,6688.628,6601.829,37.0,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+VER,1,Red Bull Racing,34.0,3.0,SOFT,9.0,False,3.0,1,86.517,6775.145,6688.628,36.7,49.3,6.0,False,False,False,False,False,False,False,False,False,True,False
+VER,1,Red Bull Racing,35.0,3.0,SOFT,10.0,False,3.0,1,86.951,6862.096,6775.145,36.7,49.1,7.0,False,False,False,False,False,False,False,False,False,True,False
+VER,1,Red Bull Racing,36.0,3.0,SOFT,11.0,False,2.0,1,87.255,6949.351,6862.096,36.6,49.1,7.0,False,False,False,False,False,False,False,False,False,True,False
+VER,1,Red Bull Racing,37.0,3.0,SOFT,12.0,False,2.0,1,86.773,7036.124,6949.351,36.6,49.0,7.0,False,False,False,False,False,False,False,False,False,True,False
+VER,1,Red Bull Racing,38.0,3.0,SOFT,13.0,False,1.0,1,86.586,7122.71,7036.124,36.8,49.3,7.0,False,False,False,False,False,False,False,False,False,True,False
+VER,1,Red Bull Racing,39.0,3.0,SOFT,14.0,False,1.0,1,86.776,7209.486,7122.71,36.9,49.1,7.0,False,False,False,False,False,False,False,False,False,True,False
+VER,1,Red Bull Racing,40.0,3.0,SOFT,15.0,False,1.0,1,86.93,7296.416,7209.486,36.8,49.1,8.0,False,False,False,False,False,False,False,False,False,True,False
+VER,1,Red Bull Racing,41.0,3.0,SOFT,16.0,False,1.0,1,87.455,7383.871,7296.416,36.8,49.0,8.0,False,False,False,False,False,False,False,False,False,True,False
+VER,1,Red Bull Racing,42.0,3.0,SOFT,17.0,False,1.0,1,87.176,7471.047,7383.871,36.6,49.0,7.0,False,False,False,False,False,False,False,False,False,True,False
+VER,1,Red Bull Racing,43.0,3.0,SOFT,18.0,False,1.0,1,87.134,7558.181,7471.047,36.6,49.0,7.0,False,False,False,False,False,False,False,False,False,True,False
+VER,1,Red Bull Racing,44.0,3.0,SOFT,19.0,False,1.0,1,90.814,7648.995,7558.181,36.6,48.9,8.0,False,True,False,False,True,False,False,False,False,False,False
+VER,1,Red Bull Racing,45.0,4.0,MEDIUM,1.0,True,2.0,1,103.854,7752.849,7648.995,36.6,49.1,8.0,False,False,True,False,True,False,False,False,False,False,False
+VER,1,Red Bull Racing,46.0,4.0,MEDIUM,2.0,True,2.0,1,85.456,7838.305,7752.849,36.8,49.1,8.0,False,False,False,False,False,False,False,False,False,True,False
+VER,1,Red Bull Racing,47.0,4.0,MEDIUM,3.0,True,2.0,1,85.704,7924.009,7838.305,36.8,49.0,7.0,False,False,False,False,False,False,False,False,False,True,False
+VER,1,Red Bull Racing,48.0,4.0,MEDIUM,4.0,True,2.0,1,85.755,8009.764,7924.009,36.6,49.0,7.0,False,False,False,False,False,False,False,False,False,True,False
+VER,1,Red Bull Racing,49.0,4.0,MEDIUM,5.0,True,1.0,1,86.242,8096.006,8009.764,36.6,49.0,8.0,False,False,False,False,False,False,False,False,False,True,False
+VER,1,Red Bull Racing,50.0,4.0,MEDIUM,6.0,True,1.0,1,86.491,8182.497,8096.006,36.8,48.8,8.0,False,False,False,False,False,False,False,False,False,True,False
+VER,1,Red Bull Racing,51.0,4.0,MEDIUM,7.0,True,1.0,1,86.66,8269.157,8182.497,36.9,48.8,7.0,False,False,False,False,False,False,False,False,False,True,False
+VER,1,Red Bull Racing,52.0,4.0,MEDIUM,8.0,True,1.0,1,86.785,8355.942,8269.157,36.9,48.9,7.0,False,False,False,False,False,False,False,False,False,True,False
+VER,1,Red Bull Racing,53.0,4.0,MEDIUM,9.0,True,1.0,1,86.656,8442.598,8355.942,36.9,48.9,7.0,False,False,False,False,False,False,False,False,False,True,False
+VER,1,Red Bull Racing,54.0,4.0,MEDIUM,10.0,True,1.0,1,86.935,8529.533,8442.598,36.7,48.8,7.0,False,False,False,False,False,False,False,False,False,True,False
+VER,1,Red Bull Racing,55.0,4.0,MEDIUM,11.0,True,1.0,1,87.015,8616.548,8529.533,36.6,48.4,8.0,False,False,False,False,False,False,False,False,False,True,False
+VER,1,Red Bull Racing,56.0,4.0,MEDIUM,12.0,True,1.0,1,87.038,8703.586,8616.548,36.5,48.3,9.0,False,False,False,False,False,False,False,False,False,True,False
+VER,1,Red Bull Racing,57.0,4.0,MEDIUM,13.0,True,1.0,1,86.618,8790.204,8703.586,36.4,48.4,8.0,False,False,False,False,False,False,False,False,False,True,False
+VER,1,Red Bull Racing,58.0,4.0,MEDIUM,14.0,True,1.0,1,86.621,8876.825,8790.204,36.3,48.4,8.0,False,False,False,False,False,False,False,False,False,True,False
+VER,1,Red Bull Racing,59.0,4.0,MEDIUM,15.0,True,1.0,1,86.863,8963.688,8876.825,36.3,48.3,8.0,False,False,False,False,False,False,False,False,False,True,False
+VER,1,Red Bull Racing,60.0,4.0,MEDIUM,16.0,True,1.0,1,86.59,9050.278,8963.688,36.3,48.3,9.0,False,False,False,False,False,False,False,False,False,True,False
+VER,1,Red Bull Racing,61.0,4.0,MEDIUM,17.0,True,1.0,1,86.819,9137.097,9050.278,36.4,48.1,11.0,False,False,False,False,False,False,False,False,False,True,False
+VER,1,Red Bull Racing,62.0,4.0,MEDIUM,18.0,True,1.0,1,86.924,9224.021,9137.097,36.5,47.9,9.0,False,False,False,False,False,False,False,False,False,True,False
+VER,1,Red Bull Racing,63.0,4.0,MEDIUM,19.0,True,1.0,1,87.205,9311.226,9224.021,36.5,48.0,9.0,False,False,False,False,False,False,False,False,False,True,False
+VER,1,Red Bull Racing,64.0,4.0,MEDIUM,20.0,True,1.0,1,87.345,9398.571,9311.226,36.4,48.0,8.0,False,False,False,False,False,False,False,False,False,True,False
+VER,1,Red Bull Racing,65.0,4.0,MEDIUM,21.0,True,1.0,1,87.611,9486.182,9398.571,36.5,47.9,8.0,False,False,False,False,False,False,False,False,False,True,False
+VER,1,Red Bull Racing,66.0,4.0,MEDIUM,22.0,True,1.0,1,87.437,9573.619,9486.182,36.4,48.1,7.0,False,False,False,False,False,False,False,False,False,True,False
+PER,11,Red Bull Racing,1.0,1.0,SOFT,4.0,False,4.0,12,92.215,3825.359,3732.915,36.6,49.3,6.0,False,False,False,False,True,False,True,False,False,False,False
+PER,11,Red Bull Racing,2.0,1.0,SOFT,5.0,False,4.0,1,87.791,3913.15,3825.359,36.7,49.4,7.0,False,False,False,False,False,False,False,False,False,True,False
+PER,11,Red Bull Racing,3.0,1.0,SOFT,6.0,False,4.0,1,87.942,4001.092,3913.15,36.9,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+PER,11,Red Bull Racing,4.0,1.0,SOFT,7.0,False,4.0,1,88.119,4089.211,4001.092,36.9,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+PER,11,Red Bull Racing,5.0,1.0,SOFT,8.0,False,4.0,1,88.534,4177.745,4089.211,37.0,49.3,6.0,False,False,False,False,False,False,False,False,False,True,False
+PER,11,Red Bull Racing,6.0,1.0,SOFT,9.0,False,4.0,1,88.708,4266.453,4177.745,37.0,49.3,6.0,False,False,False,False,False,False,False,False,False,True,False
+PER,11,Red Bull Racing,7.0,1.0,SOFT,10.0,False,4.0,12,88.456,4354.909,4266.453,36.8,49.5,6.0,False,False,False,False,False,False,True,False,False,False,False
+PER,11,Red Bull Racing,8.0,1.0,SOFT,11.0,False,4.0,1,88.703,4443.612,4354.909,37.0,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+PER,11,Red Bull Racing,9.0,1.0,SOFT,12.0,False,3.0,12,89.475,4533.087,4443.612,36.9,49.3,6.0,False,False,False,False,False,False,True,False,False,False,False
+PER,11,Red Bull Racing,10.0,1.0,SOFT,13.0,False,3.0,1,89.546,4622.633,4533.087,37.0,49.6,6.0,False,False,False,False,False,False,False,False,False,True,False
+PER,11,Red Bull Racing,11.0,1.0,SOFT,14.0,False,4.0,1,90.777,4713.41,4622.633,36.9,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+PER,11,Red Bull Racing,12.0,1.0,SOFT,15.0,False,4.0,1,89.571,4802.981,4713.41,37.0,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+PER,11,Red Bull Racing,13.0,1.0,SOFT,16.0,False,2.0,1,89.348,4892.329,4802.981,37.0,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+PER,11,Red Bull Racing,14.0,1.0,SOFT,17.0,False,2.0,1,89.176,4981.505,4892.329,36.9,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+PER,11,Red Bull Racing,15.0,1.0,SOFT,18.0,False,2.0,1,89.283,5070.788,4981.505,36.8,49.7,5.0,False,False,False,False,False,False,False,False,False,True,False
+PER,11,Red Bull Racing,16.0,1.0,SOFT,19.0,False,2.0,1,89.234,5160.022,5070.788,36.7,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+PER,11,Red Bull Racing,17.0,1.0,SOFT,20.0,False,2.0,1,92.728,5252.75,5160.022,36.7,49.7,6.0,False,True,False,False,True,False,False,False,False,False,False
+PER,11,Red Bull Racing,18.0,2.0,MEDIUM,1.0,True,4.0,1,105.488,5358.238,5252.75,37.2,49.7,5.0,False,False,True,False,True,False,False,False,False,False,False
+PER,11,Red Bull Racing,19.0,2.0,MEDIUM,2.0,True,4.0,1,87.169,5445.407,5358.238,37.1,49.7,5.0,False,False,False,False,False,False,False,False,False,True,False
+PER,11,Red Bull Racing,20.0,2.0,MEDIUM,3.0,True,4.0,1,87.312,5532.719,5445.407,37.1,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+PER,11,Red Bull Racing,21.0,2.0,MEDIUM,4.0,True,4.0,1,87.383,5620.102,5532.719,37.0,49.0,6.0,False,False,False,False,False,False,False,False,False,True,False
+PER,11,Red Bull Racing,22.0,2.0,MEDIUM,5.0,True,4.0,1,87.419,5707.521,5620.102,37.1,49.0,6.0,False,False,False,False,False,False,False,False,False,True,False
+PER,11,Red Bull Racing,23.0,2.0,MEDIUM,6.0,True,4.0,1,88.06,5795.581,5707.521,37.1,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+PER,11,Red Bull Racing,24.0,2.0,MEDIUM,7.0,True,4.0,1,87.722,5883.303,5795.581,37.1,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+PER,11,Red Bull Racing,25.0,2.0,MEDIUM,8.0,True,4.0,1,88.409,5971.712,5883.303,37.0,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+PER,11,Red Bull Racing,26.0,2.0,MEDIUM,9.0,True,4.0,1,88.498,6060.21,5971.712,37.0,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+PER,11,Red Bull Racing,27.0,2.0,MEDIUM,10.0,True,3.0,1,88.642,6148.852,6060.21,37.0,49.4,7.0,False,False,False,False,False,False,False,False,False,True,False
+PER,11,Red Bull Racing,28.0,2.0,MEDIUM,11.0,True,2.0,1,88.61,6237.462,6148.852,37.0,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+PER,11,Red Bull Racing,29.0,2.0,MEDIUM,12.0,True,2.0,1,87.972,6325.434,6237.462,37.2,49.3,7.0,False,False,False,False,False,False,False,False,False,True,False
+PER,11,Red Bull Racing,30.0,2.0,MEDIUM,13.0,True,2.0,1,88.328,6413.762,6325.434,37.2,49.3,6.0,False,False,False,False,False,False,False,False,False,True,False
+PER,11,Red Bull Racing,31.0,2.0,MEDIUM,14.0,True,1.0,1,87.92,6501.682,6413.762,37.2,49.3,6.0,False,False,False,False,False,False,False,False,False,True,False
+PER,11,Red Bull Racing,32.0,2.0,MEDIUM,15.0,True,1.0,1,88.276,6589.958,6501.682,37.1,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+PER,11,Red Bull Racing,33.0,2.0,MEDIUM,16.0,True,1.0,1,88.393,6678.351,6589.958,37.0,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+PER,11,Red Bull Racing,34.0,2.0,MEDIUM,17.0,True,1.0,1,88.047,6766.398,6678.351,36.7,49.3,6.0,False,False,False,False,False,False,False,False,False,True,False
+PER,11,Red Bull Racing,35.0,2.0,MEDIUM,18.0,True,1.0,1,88.288,6854.686,6766.398,36.7,49.1,7.0,False,False,False,False,False,False,False,False,False,True,False
+PER,11,Red Bull Racing,36.0,2.0,MEDIUM,19.0,True,1.0,1,88.433,6943.119,6854.686,36.6,49.1,7.0,False,False,False,False,False,False,False,False,False,True,False
+PER,11,Red Bull Racing,37.0,2.0,MEDIUM,20.0,True,1.0,1,92.252,7035.371,6943.119,36.6,49.0,7.0,False,True,False,False,True,False,False,False,False,False,False
+PER,11,Red Bull Racing,38.0,3.0,MEDIUM,1.0,True,2.0,1,104.438,7139.809,7035.371,36.8,49.3,7.0,False,False,True,False,True,False,False,False,False,False,False
+PER,11,Red Bull Racing,39.0,3.0,MEDIUM,2.0,True,2.0,1,86.649,7226.458,7139.809,36.7,49.1,7.0,False,False,False,False,False,False,False,False,False,True,False
+PER,11,Red Bull Racing,40.0,3.0,MEDIUM,3.0,True,2.0,1,86.9,7313.358,7226.458,36.8,49.1,8.0,False,False,False,False,False,False,False,False,False,True,False
+PER,11,Red Bull Racing,41.0,3.0,MEDIUM,4.0,True,2.0,1,86.816,7400.174,7313.358,36.6,49.0,8.0,False,False,False,False,False,False,False,False,False,True,False
+PER,11,Red Bull Racing,42.0,3.0,MEDIUM,5.0,True,2.0,1,87.184,7487.358,7400.174,36.6,49.0,7.0,False,False,False,False,False,False,False,False,False,True,False
+PER,11,Red Bull Racing,43.0,3.0,MEDIUM,6.0,True,2.0,1,86.957,7574.315,7487.358,36.6,48.7,8.0,False,False,False,False,False,False,False,False,False,True,False
+PER,11,Red Bull Racing,44.0,3.0,MEDIUM,7.0,True,2.0,1,86.945,7661.26,7574.315,36.6,48.9,8.0,False,False,False,False,False,False,False,False,False,True,False
+PER,11,Red Bull Racing,45.0,3.0,MEDIUM,8.0,True,1.0,1,86.913,7748.173,7661.26,36.6,49.1,8.0,False,False,False,False,False,False,False,False,False,True,False
+PER,11,Red Bull Racing,46.0,3.0,MEDIUM,9.0,True,1.0,1,86.808,7834.981,7748.173,36.8,49.1,8.0,False,False,False,False,False,False,False,False,False,True,False
+PER,11,Red Bull Racing,47.0,3.0,MEDIUM,10.0,True,1.0,1,87.183,7922.164,7834.981,36.8,49.0,7.0,False,False,False,False,False,False,False,False,False,True,False
+PER,11,Red Bull Racing,48.0,3.0,MEDIUM,11.0,True,1.0,1,86.915,8009.079,7922.164,36.6,49.0,7.0,False,False,False,False,False,False,False,False,False,True,False
+PER,11,Red Bull Racing,49.0,3.0,MEDIUM,12.0,True,2.0,1,88.557,8097.636,8009.079,36.6,49.0,8.0,False,False,False,False,False,False,False,False,False,True,False
+PER,11,Red Bull Racing,50.0,3.0,MEDIUM,13.0,True,2.0,1,87.39,8185.026,8097.636,36.8,48.8,8.0,False,False,False,False,False,False,False,False,True,False,False
+PER,11,Red Bull Racing,51.0,3.0,MEDIUM,14.0,True,2.0,1,87.607,8272.633,8185.026,36.9,48.8,7.0,False,False,False,False,False,False,False,False,False,True,False
+PER,11,Red Bull Racing,52.0,3.0,MEDIUM,15.0,True,2.0,1,87.648,8360.281,8272.633,36.9,48.9,7.0,False,False,False,False,False,False,False,False,False,True,False
+PER,11,Red Bull Racing,53.0,3.0,MEDIUM,16.0,True,2.0,1,90.735,8451.016,8360.281,36.9,48.9,7.0,False,True,False,False,True,False,False,False,False,False,False
+PER,11,Red Bull Racing,54.0,4.0,SOFT,4.0,False,2.0,1,105.742,8556.758,8451.016,36.6,48.5,8.0,False,False,True,False,True,False,False,False,False,False,False
+PER,11,Red Bull Racing,55.0,4.0,SOFT,5.0,False,2.0,1,84.108,8640.866,8556.758,36.6,48.4,8.0,False,False,False,False,False,False,False,False,False,True,False
+PER,11,Red Bull Racing,56.0,4.0,SOFT,6.0,False,2.0,1,85.885,8726.751,8640.866,36.5,48.3,9.0,False,False,False,False,False,False,False,False,False,True,False
+PER,11,Red Bull Racing,57.0,4.0,SOFT,7.0,False,2.0,1,85.567,8812.318,8726.751,36.4,48.4,8.0,False,False,False,False,False,False,False,False,False,True,False
+PER,11,Red Bull Racing,58.0,4.0,SOFT,8.0,False,2.0,1,85.714,8898.032,8812.318,36.3,48.4,7.0,False,False,False,False,False,False,False,False,False,True,False
+PER,11,Red Bull Racing,59.0,4.0,SOFT,9.0,False,2.0,1,86.108,8984.14,8898.032,36.3,48.3,8.0,False,False,False,False,False,False,False,False,False,True,False
+PER,11,Red Bull Racing,60.0,4.0,SOFT,10.0,False,2.0,1,86.026,9070.166,8984.14,36.3,48.3,9.0,False,False,False,False,False,False,False,False,False,True,False
+PER,11,Red Bull Racing,61.0,4.0,SOFT,11.0,False,2.0,1,86.367,9156.533,9070.166,36.4,48.1,11.0,False,False,False,False,False,False,False,False,False,True,False
+PER,11,Red Bull Racing,62.0,4.0,SOFT,12.0,False,2.0,1,86.036,9242.569,9156.533,36.5,47.9,9.0,False,False,False,False,False,False,False,False,False,True,False
+PER,11,Red Bull Racing,63.0,4.0,SOFT,13.0,False,2.0,1,86.218,9328.787,9242.569,36.5,48.0,8.0,False,False,False,False,False,False,False,False,False,True,False
+PER,11,Red Bull Racing,64.0,4.0,SOFT,14.0,False,2.0,1,85.752,9414.539,9328.787,36.4,48.0,8.0,False,False,False,False,False,False,False,False,False,True,False
+PER,11,Red Bull Racing,65.0,4.0,SOFT,15.0,False,2.0,1,86.096,9500.635,9414.539,36.4,48.1,7.0,False,False,False,False,False,False,False,False,False,True,False
+PER,11,Red Bull Racing,66.0,4.0,SOFT,16.0,False,2.0,1,86.056,9586.691,9500.635,36.4,48.1,7.0,False,False,False,False,False,False,False,False,False,True,False
+RUS,63,Mercedes,1.0,1.0,SOFT,4.0,False,3.0,12,90.987,3824.131,3732.915,36.6,49.3,6.0,False,False,False,False,True,False,True,False,False,False,False
+RUS,63,Mercedes,2.0,1.0,SOFT,5.0,False,3.0,1,87.831,3911.962,3824.131,36.7,49.4,7.0,False,False,False,False,False,False,False,False,False,True,False
+RUS,63,Mercedes,3.0,1.0,SOFT,6.0,False,3.0,1,87.9,3999.862,3911.962,36.9,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+RUS,63,Mercedes,4.0,1.0,SOFT,7.0,False,3.0,1,88.177,4088.039,3999.862,36.9,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+RUS,63,Mercedes,5.0,1.0,SOFT,8.0,False,3.0,1,88.503,4176.542,4088.039,37.0,49.3,6.0,False,False,False,False,False,False,False,False,False,True,False
+RUS,63,Mercedes,6.0,1.0,SOFT,9.0,False,3.0,1,88.655,4265.197,4176.542,37.0,49.3,6.0,False,False,False,False,False,False,False,False,False,True,False
+RUS,63,Mercedes,7.0,1.0,SOFT,10.0,False,3.0,12,88.74,4353.937,4265.197,36.8,49.5,6.0,False,False,False,False,False,False,True,False,False,False,False
+RUS,63,Mercedes,8.0,1.0,SOFT,11.0,False,3.0,1,88.892,4442.829,4353.937,37.0,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+RUS,63,Mercedes,9.0,1.0,SOFT,12.0,False,2.0,12,89.504,4532.333,4442.829,36.9,49.3,6.0,False,False,False,False,False,False,True,False,False,False,False
+RUS,63,Mercedes,10.0,1.0,SOFT,13.0,False,2.0,1,89.42,4621.753,4532.333,37.0,49.6,6.0,False,False,False,False,False,False,False,False,False,True,False
+RUS,63,Mercedes,11.0,1.0,SOFT,14.0,False,2.0,1,89.528,4711.281,4621.753,36.9,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+RUS,63,Mercedes,12.0,1.0,SOFT,15.0,False,2.0,1,89.014,4800.295,4711.281,37.0,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+RUS,63,Mercedes,13.0,1.0,SOFT,16.0,False,3.0,1,92.39,4892.685,4800.295,37.0,49.7,6.0,False,True,False,False,True,False,False,False,False,False,False
+RUS,63,Mercedes,14.0,2.0,MEDIUM,1.0,True,4.0,1,105.382,4998.067,4892.685,36.8,49.7,6.0,False,False,True,False,True,False,False,False,False,False,False
+RUS,63,Mercedes,15.0,2.0,MEDIUM,2.0,True,3.0,1,87.631,5085.698,4998.067,36.8,49.7,5.0,False,False,False,False,False,False,False,False,False,True,False
+RUS,63,Mercedes,16.0,2.0,MEDIUM,3.0,True,3.0,1,88.016,5173.714,5085.698,36.6,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+RUS,63,Mercedes,17.0,2.0,MEDIUM,4.0,True,3.0,1,88.149,5261.863,5173.714,36.7,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+RUS,63,Mercedes,18.0,2.0,MEDIUM,5.0,True,2.0,1,88.317,5350.18,5261.863,36.9,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+RUS,63,Mercedes,19.0,2.0,MEDIUM,6.0,True,2.0,1,88.03,5438.21,5350.18,37.1,49.7,5.0,False,False,False,False,False,False,False,False,False,True,False
+RUS,63,Mercedes,20.0,2.0,MEDIUM,7.0,True,2.0,1,88.255,5526.465,5438.21,37.1,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+RUS,63,Mercedes,21.0,2.0,MEDIUM,8.0,True,2.0,1,88.123,5614.588,5526.465,37.0,49.0,6.0,False,False,False,False,False,False,False,False,False,True,False
+RUS,63,Mercedes,22.0,2.0,MEDIUM,9.0,True,2.0,1,88.137,5702.725,5614.588,37.1,49.0,6.0,False,False,False,False,False,False,False,False,False,True,False
+RUS,63,Mercedes,23.0,2.0,MEDIUM,10.0,True,2.0,1,88.555,5791.28,5702.725,37.1,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+RUS,63,Mercedes,24.0,2.0,MEDIUM,11.0,True,2.0,1,89.588,5880.868,5791.28,37.1,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+RUS,63,Mercedes,25.0,2.0,MEDIUM,12.0,True,2.0,1,88.79,5969.658,5880.868,37.0,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+RUS,63,Mercedes,26.0,2.0,MEDIUM,13.0,True,2.0,1,88.687,6058.345,5969.658,37.0,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+RUS,63,Mercedes,27.0,2.0,MEDIUM,14.0,True,1.0,1,88.513,6146.858,6058.345,37.0,49.4,7.0,False,False,False,False,False,False,False,False,False,True,False
+RUS,63,Mercedes,28.0,2.0,MEDIUM,15.0,True,1.0,1,88.838,6235.696,6146.858,37.0,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+RUS,63,Mercedes,29.0,2.0,MEDIUM,16.0,True,1.0,1,88.799,6324.495,6235.696,37.2,49.3,7.0,False,False,False,False,False,False,False,False,False,True,False
+RUS,63,Mercedes,30.0,2.0,MEDIUM,17.0,True,1.0,1,88.626,6413.121,6324.495,37.2,49.3,6.0,False,False,False,False,False,False,False,False,False,True,False
+RUS,63,Mercedes,31.0,2.0,MEDIUM,18.0,True,2.0,1,90.146,6503.267,6413.121,37.2,49.3,6.0,False,False,False,False,False,False,False,False,False,True,False
+RUS,63,Mercedes,32.0,2.0,MEDIUM,19.0,True,2.0,1,89.244,6592.511,6503.267,37.1,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+RUS,63,Mercedes,33.0,2.0,MEDIUM,20.0,True,2.0,1,89.286,6681.797,6592.511,37.0,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+RUS,63,Mercedes,34.0,2.0,MEDIUM,21.0,True,2.0,1,89.221,6771.018,6681.797,36.7,49.3,6.0,False,False,False,False,False,False,False,False,False,True,False
+RUS,63,Mercedes,35.0,2.0,MEDIUM,22.0,True,2.0,1,88.956,6859.974,6771.018,36.7,49.1,7.0,False,False,False,False,False,False,False,False,False,True,False
+RUS,63,Mercedes,36.0,2.0,MEDIUM,23.0,True,3.0,1,92.633,6952.607,6859.974,36.6,49.1,7.0,False,True,False,False,True,False,False,False,False,False,False
+RUS,63,Mercedes,37.0,3.0,MEDIUM,1.0,True,3.0,1,104.507,7057.114,6952.607,36.6,49.0,7.0,False,False,True,False,True,False,False,False,False,False,False
+RUS,63,Mercedes,38.0,3.0,MEDIUM,2.0,True,3.0,1,86.839,7143.953,7057.114,36.8,49.3,7.0,False,False,False,False,False,False,False,False,False,True,False
+RUS,63,Mercedes,39.0,3.0,MEDIUM,3.0,True,3.0,1,87.082,7231.035,7143.953,36.7,49.1,7.0,False,False,False,False,False,False,False,False,False,True,False
+RUS,63,Mercedes,40.0,3.0,MEDIUM,4.0,True,3.0,1,87.943,7318.978,7231.035,36.8,49.1,8.0,False,False,False,False,False,False,False,False,False,True,False
+RUS,63,Mercedes,41.0,3.0,MEDIUM,5.0,True,3.0,1,87.348,7406.326,7318.978,36.6,49.0,8.0,False,False,False,False,False,False,False,False,False,True,False
+RUS,63,Mercedes,42.0,3.0,MEDIUM,6.0,True,3.0,1,87.146,7493.472,7406.326,36.6,49.0,7.0,False,False,False,False,False,False,False,False,False,True,False
+RUS,63,Mercedes,43.0,3.0,MEDIUM,7.0,True,3.0,1,87.081,7580.553,7493.472,36.6,48.7,8.0,False,False,False,False,False,False,False,False,False,True,False
+RUS,63,Mercedes,44.0,3.0,MEDIUM,8.0,True,3.0,1,87.5,7668.053,7580.553,36.6,48.9,8.0,False,False,False,False,False,False,False,False,False,True,False
+RUS,63,Mercedes,45.0,3.0,MEDIUM,9.0,True,3.0,1,88.345,7756.398,7668.053,36.7,49.1,8.0,False,False,False,False,False,False,False,False,False,True,False
+RUS,63,Mercedes,46.0,3.0,MEDIUM,10.0,True,3.0,1,87.927,7844.325,7756.398,36.8,49.1,8.0,False,False,False,False,False,False,False,False,False,True,False
+RUS,63,Mercedes,47.0,3.0,MEDIUM,11.0,True,3.0,1,87.884,7932.209,7844.325,36.8,49.0,7.0,False,False,False,False,False,False,False,False,False,True,False
+RUS,63,Mercedes,48.0,3.0,MEDIUM,12.0,True,3.0,1,87.843,8020.052,7932.209,36.6,49.0,7.0,False,False,False,False,False,False,False,False,False,True,False
+RUS,63,Mercedes,49.0,3.0,MEDIUM,13.0,True,3.0,1,87.479,8107.531,8020.052,36.6,49.0,8.0,False,False,False,False,False,False,False,False,False,True,False
+RUS,63,Mercedes,50.0,3.0,MEDIUM,14.0,True,3.0,1,87.42,8194.951,8107.531,36.8,48.8,8.0,False,False,False,False,False,False,False,False,False,True,False
+RUS,63,Mercedes,51.0,3.0,MEDIUM,15.0,True,3.0,1,90.898,8285.849,8194.951,36.9,48.8,7.0,False,True,False,False,True,False,False,False,False,False,False
+RUS,63,Mercedes,52.0,4.0,SOFT,3.0,False,4.0,1,103.495,8389.344,8285.849,36.9,48.9,7.0,False,False,True,False,True,False,False,False,False,False,False
+RUS,63,Mercedes,53.0,4.0,SOFT,4.0,False,3.0,1,84.636,8473.98,8389.344,36.7,48.8,7.0,False,False,False,False,False,False,False,False,False,True,False
+RUS,63,Mercedes,54.0,4.0,SOFT,5.0,False,3.0,1,85.262,8559.242,8473.98,36.6,48.5,8.0,False,False,False,False,False,False,False,False,False,True,False
+RUS,63,Mercedes,55.0,4.0,SOFT,6.0,False,3.0,1,85.551,8644.793,8559.242,36.6,48.4,8.0,False,False,False,False,False,False,False,False,False,True,False
+RUS,63,Mercedes,56.0,4.0,SOFT,7.0,False,3.0,1,85.947,8730.74,8644.793,36.5,48.3,9.0,False,False,False,False,False,False,False,False,False,True,False
+RUS,63,Mercedes,57.0,4.0,SOFT,8.0,False,3.0,1,86.882,8817.622,8730.74,36.4,48.4,8.0,False,False,False,False,False,False,False,False,False,True,False
+RUS,63,Mercedes,58.0,4.0,SOFT,9.0,False,3.0,1,86.691,8904.313,8817.622,36.3,48.4,7.0,False,False,False,False,False,False,False,False,False,True,False
+RUS,63,Mercedes,59.0,4.0,SOFT,10.0,False,3.0,1,86.761,8991.074,8904.313,36.3,48.3,8.0,False,False,False,False,False,False,False,False,False,True,False
+RUS,63,Mercedes,60.0,4.0,SOFT,11.0,False,3.0,1,86.386,9077.46,8991.074,36.4,48.2,9.0,False,False,False,False,False,False,False,False,False,True,False
+RUS,63,Mercedes,61.0,4.0,SOFT,12.0,False,3.0,1,87.069,9164.529,9077.46,36.4,48.1,11.0,False,False,False,False,False,False,False,False,False,True,False
+RUS,63,Mercedes,62.0,4.0,SOFT,13.0,False,3.0,1,87.141,9251.67,9164.529,36.5,47.9,9.0,False,False,False,False,False,False,False,False,False,True,False
+RUS,63,Mercedes,63.0,4.0,SOFT,14.0,False,3.0,1,87.404,9339.074,9251.67,36.5,48.0,8.0,False,False,False,False,False,False,False,False,False,True,False
+RUS,63,Mercedes,64.0,4.0,SOFT,15.0,False,3.0,1,87.965,9427.039,9339.074,36.4,48.0,8.0,False,False,False,False,False,False,False,False,False,True,False
+RUS,63,Mercedes,65.0,4.0,SOFT,16.0,False,3.0,1,88.936,9515.975,9427.039,36.4,48.1,7.0,False,False,False,False,False,False,False,False,False,True,False
+RUS,63,Mercedes,66.0,4.0,SOFT,17.0,False,3.0,1,90.571,9606.546,9515.975,36.4,48.1,7.0,False,False,False,False,False,False,False,False,False,True,False
+SAI,55,Ferrari,1.0,1.0,SOFT,4.0,False,5.0,12,92.878,3826.022,3732.915,36.6,49.3,6.0,False,False,False,False,True,False,True,False,False,False,False
+SAI,55,Ferrari,2.0,1.0,SOFT,5.0,False,5.0,1,88.431,3914.453,3826.022,36.7,49.4,7.0,False,False,False,False,False,False,False,False,False,True,False
+SAI,55,Ferrari,3.0,1.0,SOFT,6.0,False,5.0,1,88.145,4002.598,3914.453,36.9,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+SAI,55,Ferrari,4.0,1.0,SOFT,7.0,False,5.0,1,88.127,4090.725,4002.598,36.9,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+SAI,55,Ferrari,5.0,1.0,SOFT,8.0,False,5.0,1,88.385,4179.11,4090.725,37.0,49.3,6.0,False,False,False,False,False,False,False,False,False,True,False
+SAI,55,Ferrari,6.0,1.0,SOFT,9.0,False,5.0,1,88.613,4267.723,4179.11,37.0,49.3,6.0,False,False,False,False,False,False,False,False,False,True,False
+SAI,55,Ferrari,7.0,1.0,SOFT,10.0,False,11.0,12,103.795,4371.518,4267.723,36.8,49.5,6.0,False,False,False,False,False,False,True,False,False,False,False
+SAI,55,Ferrari,8.0,1.0,SOFT,11.0,False,11.0,1,90.09,4461.608,4371.518,37.0,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+SAI,55,Ferrari,9.0,1.0,SOFT,12.0,False,11.0,12,90.381,4551.989,4461.608,36.9,49.3,6.0,False,False,False,False,False,False,True,False,False,False,False
+SAI,55,Ferrari,10.0,1.0,SOFT,13.0,False,11.0,1,94.685,4646.674,4551.989,37.0,49.7,6.0,False,True,False,False,True,False,False,False,False,False,False
+SAI,55,Ferrari,11.0,2.0,MEDIUM,1.0,True,15.0,1,105.81,4752.484,4646.674,36.9,49.7,6.0,False,False,True,False,True,False,False,False,False,False,False
+SAI,55,Ferrari,12.0,2.0,MEDIUM,2.0,True,11.0,1,87.632,4840.116,4752.484,37.0,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+SAI,55,Ferrari,13.0,2.0,MEDIUM,3.0,True,10.0,1,89.103,4929.219,4840.116,37.0,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+SAI,55,Ferrari,14.0,2.0,MEDIUM,4.0,True,8.0,1,87.967,5017.186,4929.219,36.8,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+SAI,55,Ferrari,15.0,2.0,MEDIUM,5.0,True,8.0,1,88.067,5105.253,5017.186,36.8,49.7,5.0,False,False,False,False,False,False,False,False,False,True,False
+SAI,55,Ferrari,16.0,2.0,MEDIUM,6.0,True,8.0,1,88.318,5193.571,5105.253,36.6,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+SAI,55,Ferrari,17.0,2.0,MEDIUM,7.0,True,8.0,1,89.416,5282.987,5193.571,36.7,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+SAI,55,Ferrari,18.0,2.0,MEDIUM,8.0,True,7.0,1,88.192,5371.179,5282.987,37.2,49.7,5.0,False,False,False,False,False,False,False,False,False,True,False
+SAI,55,Ferrari,19.0,2.0,MEDIUM,9.0,True,7.0,1,88.476,5459.655,5371.179,37.1,49.7,5.0,False,False,False,False,False,False,False,False,False,True,False
+SAI,55,Ferrari,20.0,2.0,MEDIUM,10.0,True,7.0,1,88.728,5548.383,5459.655,37.1,49.7,5.0,False,False,False,False,False,False,False,False,False,True,False
+SAI,55,Ferrari,21.0,2.0,MEDIUM,11.0,True,7.0,1,89.122,5637.505,5548.383,37.0,49.0,6.0,False,False,False,False,False,False,False,False,False,True,False
+SAI,55,Ferrari,22.0,2.0,MEDIUM,12.0,True,7.0,1,88.971,5726.476,5637.505,37.0,49.0,6.0,False,False,False,False,False,False,False,False,False,True,False
+SAI,55,Ferrari,23.0,2.0,MEDIUM,13.0,True,7.0,1,89.078,5815.554,5726.476,37.1,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+SAI,55,Ferrari,24.0,2.0,MEDIUM,14.0,True,6.0,1,88.204,5903.758,5815.554,37.0,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+SAI,55,Ferrari,25.0,2.0,MEDIUM,15.0,True,6.0,1,88.739,5992.497,5903.758,37.0,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+SAI,55,Ferrari,26.0,2.0,MEDIUM,16.0,True,6.0,1,88.755,6081.252,5992.497,37.0,49.4,7.0,False,False,False,False,False,False,False,False,False,True,False
+SAI,55,Ferrari,27.0,2.0,MEDIUM,17.0,True,6.0,1,88.548,6169.8,6081.252,37.0,49.4,7.0,False,False,False,False,False,False,False,False,False,True,False
+SAI,55,Ferrari,28.0,2.0,MEDIUM,18.0,True,5.0,1,88.654,6258.454,6169.8,37.0,49.4,7.0,False,False,False,False,False,False,False,False,False,True,False
+SAI,55,Ferrari,29.0,2.0,MEDIUM,19.0,True,5.0,1,89.525,6347.979,6258.454,37.2,49.3,7.0,False,False,False,False,False,False,False,False,False,True,False
+SAI,55,Ferrari,30.0,2.0,MEDIUM,20.0,True,5.0,1,88.827,6436.806,6347.979,37.2,49.3,6.0,False,False,False,False,False,False,False,False,False,True,False
+SAI,55,Ferrari,31.0,2.0,MEDIUM,21.0,True,5.0,1,92.7,6529.506,6436.806,37.2,49.3,6.0,False,True,False,False,True,False,False,False,False,False,False
+SAI,55,Ferrari,32.0,3.0,MEDIUM,1.0,True,7.0,1,105.94,6635.446,6529.506,37.1,49.5,6.0,False,False,True,False,True,False,False,False,False,False,False
+SAI,55,Ferrari,33.0,3.0,MEDIUM,2.0,True,7.0,1,86.673,6722.119,6635.446,37.0,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+SAI,55,Ferrari,34.0,3.0,MEDIUM,3.0,True,6.0,1,86.627,6808.746,6722.119,36.7,49.2,7.0,False,False,False,False,False,False,False,False,False,True,False
+SAI,55,Ferrari,35.0,3.0,MEDIUM,4.0,True,5.0,1,87.053,6895.799,6808.746,36.7,49.1,7.0,False,False,False,False,False,False,False,False,False,True,False
+SAI,55,Ferrari,36.0,3.0,MEDIUM,5.0,True,5.0,1,86.849,6982.648,6895.799,36.6,49.0,7.0,False,False,False,False,False,False,False,False,False,True,False
+SAI,55,Ferrari,37.0,3.0,MEDIUM,6.0,True,5.0,1,86.837,7069.485,6982.648,36.6,49.0,7.0,False,False,False,False,False,False,False,False,False,True,False
+SAI,55,Ferrari,38.0,3.0,MEDIUM,7.0,True,5.0,1,86.915,7156.4,7069.485,36.9,49.1,7.0,False,False,False,False,False,False,False,False,False,True,False
+SAI,55,Ferrari,39.0,3.0,MEDIUM,8.0,True,5.0,1,87.165,7243.565,7156.4,36.7,49.1,7.0,False,False,False,False,False,False,False,False,False,True,False
+SAI,55,Ferrari,40.0,3.0,MEDIUM,9.0,True,5.0,1,87.633,7331.198,7243.565,36.8,49.1,8.0,False,False,False,False,False,False,False,False,False,True,False
+SAI,55,Ferrari,41.0,3.0,MEDIUM,10.0,True,5.0,1,87.834,7419.032,7331.198,36.6,49.0,8.0,False,False,False,False,False,False,False,False,False,True,False
+SAI,55,Ferrari,42.0,3.0,MEDIUM,11.0,True,5.0,1,87.95,7506.982,7419.032,36.6,49.0,7.0,False,False,False,False,False,False,False,False,False,True,False
+SAI,55,Ferrari,43.0,3.0,MEDIUM,12.0,True,5.0,1,88.058,7595.04,7506.982,36.6,48.7,8.0,False,False,False,False,False,False,False,False,False,True,False
+SAI,55,Ferrari,44.0,3.0,MEDIUM,13.0,True,5.0,1,88.125,7683.165,7595.04,36.6,48.9,8.0,False,False,False,False,False,False,False,False,False,True,False
+SAI,55,Ferrari,45.0,3.0,MEDIUM,14.0,True,5.0,1,91.806,7774.971,7683.165,36.7,49.1,8.0,False,True,False,False,True,False,False,False,False,False,False
+SAI,55,Ferrari,46.0,4.0,SOFT,4.0,False,7.0,1,104.598,7879.569,7774.971,36.8,49.0,7.0,False,False,True,False,True,False,False,False,False,False,False
+SAI,55,Ferrari,47.0,4.0,SOFT,5.0,False,6.0,1,86.345,7965.914,7879.569,36.8,49.0,7.0,False,False,False,False,False,False,False,False,False,True,False
+SAI,55,Ferrari,48.0,4.0,SOFT,6.0,False,6.0,1,86.171,8052.085,7965.914,36.6,49.0,7.0,False,False,False,False,False,False,False,False,False,True,False
+SAI,55,Ferrari,49.0,4.0,SOFT,7.0,False,5.0,1,85.985,8138.07,8052.085,36.5,49.0,8.0,False,False,False,False,False,False,False,False,False,True,False
+SAI,55,Ferrari,50.0,4.0,SOFT,8.0,False,5.0,1,86.281,8224.351,8138.07,36.8,48.8,8.0,False,False,False,False,False,False,False,False,False,True,False
+SAI,55,Ferrari,51.0,4.0,SOFT,9.0,False,5.0,1,86.216,8310.567,8224.351,36.9,48.8,7.0,False,False,False,False,False,False,False,False,False,True,False
+SAI,55,Ferrari,52.0,4.0,SOFT,10.0,False,5.0,1,86.136,8396.703,8310.567,36.9,48.9,7.0,False,False,False,False,False,False,False,False,False,True,False
+SAI,55,Ferrari,53.0,4.0,SOFT,11.0,False,5.0,1,86.437,8483.14,8396.703,36.7,48.8,7.0,False,False,False,False,False,False,False,False,False,True,False
+SAI,55,Ferrari,54.0,4.0,SOFT,12.0,False,5.0,1,86.455,8569.595,8483.14,36.6,48.5,8.0,False,False,False,False,False,False,False,False,False,True,False
+SAI,55,Ferrari,55.0,4.0,SOFT,13.0,False,5.0,1,86.302,8655.897,8569.595,36.5,48.3,9.0,False,False,False,False,False,False,False,False,False,True,False
+SAI,55,Ferrari,56.0,4.0,SOFT,14.0,False,5.0,1,86.76,8742.657,8655.897,36.5,48.3,9.0,False,False,False,False,False,False,False,False,False,True,False
+SAI,55,Ferrari,57.0,4.0,SOFT,15.0,False,5.0,1,87.691,8830.348,8742.657,36.4,48.4,8.0,False,False,False,False,False,False,False,False,False,True,False
+SAI,55,Ferrari,58.0,4.0,SOFT,16.0,False,4.0,1,86.051,8916.399,8830.348,36.3,48.4,7.0,False,False,False,False,False,False,False,False,False,True,False
+SAI,55,Ferrari,59.0,4.0,SOFT,17.0,False,4.0,1,87.298,9003.697,8916.399,36.3,48.3,8.0,False,False,False,False,False,False,False,False,False,True,False
+SAI,55,Ferrari,60.0,4.0,SOFT,18.0,False,5.0,1,88.388,9092.085,9003.697,36.4,48.2,9.0,False,False,False,False,False,False,False,False,False,True,False
+SAI,55,Ferrari,61.0,4.0,SOFT,19.0,False,5.0,1,87.394,9179.479,9092.085,36.4,48.1,11.0,False,False,False,False,False,False,False,False,False,True,False
+SAI,55,Ferrari,62.0,4.0,SOFT,20.0,False,5.0,1,87.366,9266.845,9179.479,36.5,48.0,9.0,False,False,False,False,False,False,False,False,False,True,False
+SAI,55,Ferrari,63.0,4.0,SOFT,21.0,False,5.0,1,87.865,9354.71,9266.845,36.5,48.0,8.0,False,False,False,False,False,False,False,False,False,True,False
+SAI,55,Ferrari,64.0,4.0,SOFT,22.0,False,5.0,1,88.256,9442.966,9354.71,36.5,47.9,8.0,False,False,False,False,False,False,False,False,False,True,False
+SAI,55,Ferrari,65.0,4.0,SOFT,23.0,False,4.0,1,87.64,9530.606,9442.966,36.4,48.1,7.0,False,False,False,False,False,False,False,False,False,True,False
+SAI,55,Ferrari,66.0,4.0,SOFT,24.0,False,4.0,1,88.221,9618.827,9530.606,36.4,47.8,8.0,False,False,False,False,False,False,False,False,False,True,False
+HAM,44,Mercedes,1.0,1.0,MEDIUM,1.0,True,19.0,12,115.147,3848.291,3732.915,36.6,49.3,6.0,False,True,False,False,True,False,True,False,False,False,False
+HAM,44,Mercedes,2.0,2.0,SOFT,3.0,False,19.0,1,115.134,3963.425,3848.291,36.7,49.4,7.0,False,False,True,False,True,False,False,False,False,False,False
+HAM,44,Mercedes,3.0,2.0,SOFT,4.0,False,19.0,1,87.495,4050.92,3963.425,36.9,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+HAM,44,Mercedes,4.0,2.0,SOFT,5.0,False,19.0,1,88.327,4139.247,4050.92,37.0,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+HAM,44,Mercedes,5.0,2.0,SOFT,6.0,False,19.0,1,89.321,4228.568,4139.247,37.0,49.3,6.0,False,False,False,False,False,False,False,False,False,True,False
+HAM,44,Mercedes,6.0,2.0,SOFT,7.0,False,19.0,12,88.986,4317.554,4228.568,36.9,49.5,6.0,False,False,False,False,False,False,True,False,False,False,False
+HAM,44,Mercedes,7.0,2.0,SOFT,8.0,False,19.0,1,89.147,4406.701,4317.554,37.0,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+HAM,44,Mercedes,8.0,2.0,SOFT,9.0,False,19.0,12,89.086,4495.787,4406.701,37.0,49.5,6.0,False,False,False,False,False,False,True,False,False,False,False
+HAM,44,Mercedes,9.0,2.0,SOFT,10.0,False,19.0,1,88.606,4584.393,4495.787,37.0,49.6,6.0,False,False,False,False,False,False,False,False,False,True,False
+HAM,44,Mercedes,10.0,2.0,SOFT,11.0,False,19.0,1,88.558,4672.951,4584.393,37.0,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+HAM,44,Mercedes,11.0,2.0,SOFT,12.0,False,19.0,1,89.331,4762.282,4672.951,37.0,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+HAM,44,Mercedes,12.0,2.0,SOFT,13.0,False,18.0,1,88.746,4851.028,4762.282,37.0,49.7,6.0,False,False,False,False,False,False,False,False,True,False,False
+HAM,44,Mercedes,13.0,2.0,SOFT,14.0,False,17.0,1,89.037,4940.065,4851.028,36.9,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+HAM,44,Mercedes,14.0,2.0,SOFT,15.0,False,17.0,1,89.167,5029.232,4940.065,36.8,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+HAM,44,Mercedes,15.0,2.0,SOFT,16.0,False,16.0,1,89.215,5118.447,5029.232,36.7,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+HAM,44,Mercedes,16.0,2.0,SOFT,17.0,False,16.0,1,89.642,5208.089,5118.447,36.6,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+HAM,44,Mercedes,17.0,2.0,SOFT,18.0,False,16.0,1,89.873,5297.962,5208.089,36.9,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+HAM,44,Mercedes,18.0,2.0,SOFT,19.0,False,16.0,1,90.181,5388.143,5297.962,37.2,49.7,5.0,False,False,False,False,False,False,False,False,False,True,False
+HAM,44,Mercedes,19.0,2.0,SOFT,20.0,False,16.0,1,90.07,5478.213,5388.143,37.1,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+HAM,44,Mercedes,20.0,2.0,SOFT,21.0,False,16.0,1,90.443,5568.656,5478.213,37.1,49.7,5.0,False,False,False,False,False,False,False,False,False,True,False
+HAM,44,Mercedes,21.0,2.0,SOFT,22.0,False,16.0,1,90.48,5659.136,5568.656,37.1,49.0,6.0,False,False,False,False,False,False,False,False,False,True,False
+HAM,44,Mercedes,22.0,2.0,SOFT,23.0,False,16.0,1,94.486,5753.622,5659.136,37.0,49.0,6.0,False,True,False,False,True,False,False,False,False,False,False
+HAM,44,Mercedes,23.0,3.0,MEDIUM,1.0,True,19.0,1,105.871,5859.493,5753.622,37.1,49.4,6.0,False,False,True,False,True,False,False,False,False,False,False
+HAM,44,Mercedes,24.0,3.0,MEDIUM,2.0,True,18.0,1,87.98,5947.473,5859.493,37.0,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+HAM,44,Mercedes,25.0,3.0,MEDIUM,3.0,True,17.0,1,87.415,6034.888,5947.473,37.0,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+HAM,44,Mercedes,26.0,3.0,MEDIUM,4.0,True,17.0,1,87.156,6122.044,6034.888,37.0,49.4,7.0,False,False,False,False,False,False,False,False,False,True,False
+HAM,44,Mercedes,27.0,3.0,MEDIUM,5.0,True,16.0,1,87.244,6209.288,6122.044,37.0,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+HAM,44,Mercedes,28.0,3.0,MEDIUM,6.0,True,14.0,1,86.99,6296.278,6209.288,37.0,49.4,7.0,False,False,False,False,False,False,False,False,False,True,False
+HAM,44,Mercedes,29.0,3.0,MEDIUM,7.0,True,13.0,1,87.619,6383.897,6296.278,37.2,49.3,6.0,False,False,False,False,False,False,False,False,False,True,False
+HAM,44,Mercedes,30.0,3.0,MEDIUM,8.0,True,12.0,1,86.711,6470.608,6383.897,37.2,49.3,6.0,False,False,False,False,False,False,False,False,False,True,False
+HAM,44,Mercedes,31.0,3.0,MEDIUM,9.0,True,10.0,1,87.364,6557.972,6470.608,37.1,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+HAM,44,Mercedes,32.0,3.0,MEDIUM,10.0,True,9.0,1,86.329,6644.301,6557.972,37.1,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+HAM,44,Mercedes,33.0,3.0,MEDIUM,11.0,True,8.0,1,86.895,6731.196,6644.301,37.0,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+HAM,44,Mercedes,34.0,3.0,MEDIUM,12.0,True,7.0,1,86.697,6817.893,6731.196,36.7,49.2,7.0,False,False,False,False,False,False,False,False,False,True,False
+HAM,44,Mercedes,35.0,3.0,MEDIUM,13.0,True,7.0,1,87.31,6905.203,6817.893,36.7,49.1,7.0,False,False,False,False,False,False,False,False,True,False,False
+HAM,44,Mercedes,36.0,3.0,MEDIUM,14.0,True,6.0,1,86.976,6992.179,6905.203,36.6,49.0,7.0,False,False,False,False,False,False,False,False,False,True,False
+HAM,44,Mercedes,37.0,3.0,MEDIUM,15.0,True,6.0,1,86.956,7079.135,6992.179,36.6,49.0,7.0,False,False,False,False,False,False,False,False,False,True,False
+HAM,44,Mercedes,38.0,3.0,MEDIUM,16.0,True,6.0,1,87.157,7166.292,7079.135,36.9,49.1,7.0,False,False,False,False,False,False,False,False,False,True,False
+HAM,44,Mercedes,39.0,3.0,MEDIUM,17.0,True,6.0,1,86.82,7253.112,7166.292,36.7,49.1,7.0,False,False,False,False,False,False,False,False,False,True,False
+HAM,44,Mercedes,40.0,3.0,MEDIUM,18.0,True,6.0,1,87.34,7340.452,7253.112,36.8,49.0,8.0,False,False,False,False,False,False,False,False,False,True,False
+HAM,44,Mercedes,41.0,3.0,MEDIUM,19.0,True,6.0,1,87.36,7427.812,7340.452,36.6,49.0,8.0,False,False,False,False,False,False,False,False,True,False,False
+HAM,44,Mercedes,42.0,3.0,MEDIUM,20.0,True,6.0,1,87.351,7515.163,7427.812,36.6,49.0,7.0,False,False,False,False,False,False,False,False,False,True,False
+HAM,44,Mercedes,43.0,3.0,MEDIUM,21.0,True,6.0,1,88.239,7603.402,7515.163,36.6,48.7,8.0,False,False,False,False,False,False,False,False,False,True,False
+HAM,44,Mercedes,44.0,3.0,MEDIUM,22.0,True,6.0,1,87.114,7690.516,7603.402,36.6,48.9,8.0,False,False,False,False,False,False,False,False,False,True,False
+HAM,44,Mercedes,45.0,3.0,MEDIUM,23.0,True,6.0,1,87.458,7777.974,7690.516,36.7,49.1,8.0,False,False,False,False,False,False,False,False,False,True,False
+HAM,44,Mercedes,46.0,3.0,MEDIUM,24.0,True,5.0,1,87.73,7865.704,7777.974,36.8,49.1,8.0,False,False,False,False,False,False,False,False,False,True,False
+HAM,44,Mercedes,47.0,3.0,MEDIUM,25.0,True,5.0,1,87.662,7953.366,7865.704,36.8,49.0,7.0,False,False,False,False,False,False,False,False,False,True,False
+HAM,44,Mercedes,48.0,3.0,MEDIUM,26.0,True,5.0,1,90.916,8044.282,7953.366,36.6,49.0,7.0,False,True,False,False,True,False,False,False,False,False,False
+HAM,44,Mercedes,49.0,4.0,SOFT,4.0,False,7.0,1,103.326,8147.608,8044.282,36.5,49.0,8.0,False,False,True,False,True,False,False,False,False,False,False
+HAM,44,Mercedes,50.0,4.0,SOFT,5.0,False,7.0,1,85.106,8232.714,8147.608,36.8,48.8,8.0,False,False,False,False,False,False,False,False,False,True,False
+HAM,44,Mercedes,51.0,4.0,SOFT,6.0,False,6.0,1,84.253,8316.967,8232.714,36.9,48.8,7.0,False,False,False,False,False,False,False,False,False,True,False
+HAM,44,Mercedes,52.0,4.0,SOFT,7.0,False,6.0,1,85.802,8402.769,8316.967,36.9,48.9,7.0,False,False,False,False,False,False,False,False,False,True,False
+HAM,44,Mercedes,53.0,4.0,SOFT,8.0,False,6.0,1,85.257,8488.026,8402.769,36.7,48.8,7.0,False,False,False,False,False,False,False,False,False,True,False
+HAM,44,Mercedes,54.0,4.0,SOFT,9.0,False,6.0,1,85.389,8573.415,8488.026,36.6,48.5,8.0,False,False,False,False,False,False,False,False,False,True,False
+HAM,44,Mercedes,55.0,4.0,SOFT,10.0,False,6.0,1,85.207,8658.622,8573.415,36.5,48.3,9.0,False,False,False,False,False,False,False,False,False,True,False
+HAM,44,Mercedes,56.0,4.0,SOFT,11.0,False,6.0,1,85.832,8744.454,8658.622,36.5,48.3,9.0,False,False,False,False,False,False,False,False,False,True,False
+HAM,44,Mercedes,57.0,4.0,SOFT,12.0,False,6.0,1,86.447,8830.901,8744.454,36.4,48.4,8.0,False,False,False,False,False,False,False,False,False,True,False
+HAM,44,Mercedes,58.0,4.0,SOFT,13.0,False,5.0,1,86.408,8917.309,8830.901,36.3,48.4,7.0,False,False,False,False,False,False,False,False,False,True,False
+HAM,44,Mercedes,59.0,4.0,SOFT,14.0,False,5.0,1,86.919,9004.228,8917.309,36.3,48.3,8.0,False,False,False,False,False,False,False,False,False,True,False
+HAM,44,Mercedes,60.0,4.0,SOFT,15.0,False,4.0,1,85.895,9090.123,9004.228,36.4,48.2,9.0,False,False,False,False,False,False,False,False,False,True,False
+HAM,44,Mercedes,61.0,4.0,SOFT,16.0,False,4.0,1,86.425,9176.548,9090.123,36.4,48.1,11.0,False,False,False,False,False,False,False,False,False,True,False
+HAM,44,Mercedes,62.0,4.0,SOFT,17.0,False,4.0,1,86.804,9263.352,9176.548,36.5,48.0,9.0,False,False,False,False,False,False,False,False,False,True,False
+HAM,44,Mercedes,63.0,4.0,SOFT,18.0,False,4.0,1,88.977,9352.329,9263.352,36.5,48.0,8.0,False,False,False,False,False,False,False,False,False,True,False
+HAM,44,Mercedes,64.0,4.0,SOFT,19.0,False,4.0,1,89.833,9442.162,9352.329,36.5,47.9,8.0,False,False,False,False,False,False,False,False,False,True,False
+HAM,44,Mercedes,65.0,4.0,SOFT,20.0,False,5.0,1,91.646,9533.808,9442.162,36.4,48.1,7.0,False,False,False,False,False,False,False,False,False,True,False
+HAM,44,Mercedes,66.0,4.0,SOFT,21.0,False,5.0,1,94.345,9628.153,9533.808,36.4,47.8,8.0,False,False,False,False,False,False,False,False,False,True,False
+BOT,77,Alfa Romeo,1.0,1.0,SOFT,4.0,False,7.0,12,94.684,3827.828,3732.915,36.6,49.3,6.0,False,False,False,False,True,False,True,False,False,False,False
+BOT,77,Alfa Romeo,2.0,1.0,SOFT,5.0,False,7.0,1,89.46,3917.288,3827.828,36.7,49.4,7.0,False,False,False,False,False,False,False,False,False,True,False
+BOT,77,Alfa Romeo,3.0,1.0,SOFT,6.0,False,7.0,1,88.709,4005.997,3917.288,36.9,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+BOT,77,Alfa Romeo,4.0,1.0,SOFT,7.0,False,6.0,1,88.499,4094.496,4005.997,37.0,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+BOT,77,Alfa Romeo,5.0,1.0,SOFT,8.0,False,6.0,1,88.999,4183.495,4094.496,37.0,49.3,6.0,False,False,False,False,False,False,False,False,False,True,False
+BOT,77,Alfa Romeo,6.0,1.0,SOFT,9.0,False,6.0,1,88.984,4272.479,4183.495,37.0,49.3,6.0,False,False,False,False,False,False,False,False,False,True,False
+BOT,77,Alfa Romeo,7.0,1.0,SOFT,10.0,False,5.0,12,89.508,4361.987,4272.479,36.8,49.5,6.0,False,False,False,False,False,False,True,False,False,False,False
+BOT,77,Alfa Romeo,8.0,1.0,SOFT,11.0,False,5.0,1,89.083,4451.07,4361.987,37.0,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+BOT,77,Alfa Romeo,9.0,1.0,SOFT,12.0,False,5.0,12,89.517,4540.587,4451.07,36.9,49.3,6.0,False,False,False,False,False,False,True,False,False,False,False
+BOT,77,Alfa Romeo,10.0,1.0,SOFT,13.0,False,5.0,1,89.63,4630.217,4540.587,37.0,49.6,6.0,False,False,False,False,False,False,False,False,False,True,False
+BOT,77,Alfa Romeo,11.0,1.0,SOFT,14.0,False,5.0,1,89.147,4719.364,4630.217,36.9,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+BOT,77,Alfa Romeo,12.0,1.0,SOFT,15.0,False,5.0,1,89.414,4808.778,4719.364,37.0,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+BOT,77,Alfa Romeo,13.0,1.0,SOFT,16.0,False,5.0,1,89.267,4898.045,4808.778,37.0,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+BOT,77,Alfa Romeo,14.0,1.0,SOFT,17.0,False,3.0,1,93.231,4991.276,4898.045,36.9,49.7,6.0,False,True,False,False,True,False,False,False,False,False,False
+BOT,77,Alfa Romeo,15.0,2.0,MEDIUM,1.0,True,5.0,1,107.922,5099.198,4991.276,36.8,49.7,5.0,False,False,True,False,True,False,False,False,False,False,False
+BOT,77,Alfa Romeo,16.0,2.0,MEDIUM,2.0,True,5.0,1,88.392,5187.59,5099.198,36.6,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+BOT,77,Alfa Romeo,17.0,2.0,MEDIUM,3.0,True,5.0,1,88.276,5275.866,5187.59,36.7,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+BOT,77,Alfa Romeo,18.0,2.0,MEDIUM,4.0,True,5.0,1,88.537,5364.403,5275.866,37.2,49.7,5.0,False,False,False,False,False,False,False,False,False,True,False
+BOT,77,Alfa Romeo,19.0,2.0,MEDIUM,5.0,True,5.0,1,88.389,5452.792,5364.403,37.1,49.7,5.0,False,False,False,False,False,False,False,False,False,True,False
+BOT,77,Alfa Romeo,20.0,2.0,MEDIUM,6.0,True,5.0,1,88.55,5541.342,5452.792,37.1,49.7,5.0,False,False,False,False,False,False,False,False,False,True,False
+BOT,77,Alfa Romeo,21.0,2.0,MEDIUM,7.0,True,5.0,1,88.613,5629.955,5541.342,37.0,49.0,6.0,False,False,False,False,False,False,False,False,False,True,False
+BOT,77,Alfa Romeo,22.0,2.0,MEDIUM,8.0,True,5.0,1,88.189,5718.144,5629.955,37.0,49.0,6.0,False,False,False,False,False,False,False,False,False,True,False
+BOT,77,Alfa Romeo,23.0,2.0,MEDIUM,9.0,True,5.0,1,88.803,5806.947,5718.144,37.1,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+BOT,77,Alfa Romeo,24.0,2.0,MEDIUM,10.0,True,5.0,1,88.563,5895.51,5806.947,37.0,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+BOT,77,Alfa Romeo,25.0,2.0,MEDIUM,11.0,True,5.0,1,88.699,5984.209,5895.51,37.0,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+BOT,77,Alfa Romeo,26.0,2.0,MEDIUM,12.0,True,5.0,1,88.576,6072.785,5984.209,37.0,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+BOT,77,Alfa Romeo,27.0,2.0,MEDIUM,13.0,True,5.0,1,88.508,6161.293,6072.785,37.0,49.4,7.0,False,False,False,False,False,False,False,False,False,True,False
+BOT,77,Alfa Romeo,28.0,2.0,MEDIUM,14.0,True,4.0,1,89.057,6250.35,6161.293,37.0,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+BOT,77,Alfa Romeo,29.0,2.0,MEDIUM,15.0,True,3.0,1,88.695,6339.045,6250.35,37.2,49.3,7.0,False,False,False,False,False,False,False,False,False,True,False
+BOT,77,Alfa Romeo,30.0,2.0,MEDIUM,16.0,True,3.0,1,88.692,6427.737,6339.045,37.2,49.3,6.0,False,False,False,False,False,False,False,False,False,True,False
+BOT,77,Alfa Romeo,31.0,2.0,MEDIUM,17.0,True,4.0,1,89.25,6516.987,6427.737,37.2,49.3,6.0,False,False,False,False,False,False,False,False,False,True,False
+BOT,77,Alfa Romeo,32.0,2.0,MEDIUM,18.0,True,4.0,1,88.803,6605.79,6516.987,37.1,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+BOT,77,Alfa Romeo,33.0,2.0,MEDIUM,19.0,True,4.0,1,89.322,6695.112,6605.79,37.0,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+BOT,77,Alfa Romeo,34.0,2.0,MEDIUM,20.0,True,4.0,1,92.22,6787.332,6695.112,36.7,49.3,6.0,False,True,False,False,True,False,False,False,False,False,False
+BOT,77,Alfa Romeo,35.0,3.0,MEDIUM,1.0,True,4.0,1,106.198,6893.53,6787.332,36.7,49.1,7.0,False,False,True,False,True,False,False,False,False,False,False
+BOT,77,Alfa Romeo,36.0,3.0,MEDIUM,2.0,True,4.0,1,86.395,6979.925,6893.53,36.6,49.0,7.0,False,False,False,False,False,False,False,False,False,True,False
+BOT,77,Alfa Romeo,37.0,3.0,MEDIUM,3.0,True,4.0,1,87.343,7067.268,6979.925,36.6,49.0,7.0,False,False,False,False,False,False,False,False,False,True,False
+BOT,77,Alfa Romeo,38.0,3.0,MEDIUM,4.0,True,4.0,1,87.335,7154.603,7067.268,36.9,49.1,7.0,False,False,False,False,False,False,False,False,False,True,False
+BOT,77,Alfa Romeo,39.0,3.0,MEDIUM,5.0,True,4.0,1,87.314,7241.917,7154.603,36.7,49.1,7.0,False,False,False,False,False,False,False,False,False,True,False
+BOT,77,Alfa Romeo,40.0,3.0,MEDIUM,6.0,True,4.0,1,87.449,7329.366,7241.917,36.8,49.1,8.0,False,False,False,False,False,False,False,False,False,True,False
+BOT,77,Alfa Romeo,41.0,3.0,MEDIUM,7.0,True,4.0,1,88.315,7417.681,7329.366,36.6,49.0,8.0,False,False,False,False,False,False,False,False,False,True,False
+BOT,77,Alfa Romeo,42.0,3.0,MEDIUM,8.0,True,4.0,1,87.646,7505.327,7417.681,36.6,49.0,7.0,False,False,False,False,False,False,False,False,False,True,False
+BOT,77,Alfa Romeo,43.0,3.0,MEDIUM,9.0,True,4.0,1,88.174,7593.501,7505.327,36.6,48.7,8.0,False,False,False,False,False,False,False,False,False,True,False
+BOT,77,Alfa Romeo,44.0,3.0,MEDIUM,10.0,True,4.0,1,87.999,7681.5,7593.501,36.6,48.9,8.0,False,False,False,False,False,False,False,False,False,True,False
+BOT,77,Alfa Romeo,45.0,3.0,MEDIUM,11.0,True,4.0,1,88.259,7769.759,7681.5,36.7,49.1,8.0,False,False,False,False,False,False,False,False,False,True,False
+BOT,77,Alfa Romeo,46.0,3.0,MEDIUM,12.0,True,4.0,1,88.512,7858.271,7769.759,36.8,49.1,8.0,False,False,False,False,False,False,False,False,False,True,False
+BOT,77,Alfa Romeo,47.0,3.0,MEDIUM,13.0,True,4.0,1,88.374,7946.645,7858.271,36.8,49.0,7.0,False,False,False,False,False,False,False,False,False,True,False
+BOT,77,Alfa Romeo,48.0,3.0,MEDIUM,14.0,True,4.0,1,88.364,8035.009,7946.645,36.6,49.0,7.0,False,False,False,False,False,False,False,False,False,True,False
+BOT,77,Alfa Romeo,49.0,3.0,MEDIUM,15.0,True,4.0,1,88.448,8123.457,8035.009,36.5,49.0,8.0,False,False,False,False,False,False,False,False,False,True,False
+BOT,77,Alfa Romeo,50.0,3.0,MEDIUM,16.0,True,4.0,1,88.275,8211.732,8123.457,36.8,48.8,8.0,False,False,False,False,False,False,False,False,False,True,False
+BOT,77,Alfa Romeo,51.0,3.0,MEDIUM,17.0,True,4.0,1,88.13,8299.862,8211.732,36.9,48.8,7.0,False,False,False,False,False,False,False,False,False,True,False
+BOT,77,Alfa Romeo,52.0,3.0,MEDIUM,18.0,True,3.0,1,88.684,8388.546,8299.862,36.9,48.9,7.0,False,False,False,False,False,False,False,False,False,True,False
+BOT,77,Alfa Romeo,53.0,3.0,MEDIUM,19.0,True,4.0,1,89.717,8478.263,8388.546,36.7,48.8,7.0,False,False,False,False,False,False,False,False,False,True,False
+BOT,77,Alfa Romeo,54.0,3.0,MEDIUM,20.0,True,4.0,1,87.948,8566.211,8478.263,36.6,48.5,8.0,False,False,False,False,False,False,False,False,False,True,False
+BOT,77,Alfa Romeo,55.0,3.0,MEDIUM,21.0,True,4.0,1,87.842,8654.053,8566.211,36.5,48.3,9.0,False,False,False,False,False,False,False,False,False,True,False
+BOT,77,Alfa Romeo,56.0,3.0,MEDIUM,22.0,True,4.0,1,87.657,8741.71,8654.053,36.5,48.3,9.0,False,False,False,False,False,False,False,False,False,True,False
+BOT,77,Alfa Romeo,57.0,3.0,MEDIUM,23.0,True,4.0,1,88.149,8829.859,8741.71,36.4,48.4,8.0,False,False,False,False,False,False,False,False,False,True,False
+BOT,77,Alfa Romeo,58.0,3.0,MEDIUM,24.0,True,6.0,1,90.459,8920.318,8829.859,36.3,48.4,7.0,False,False,False,False,False,False,False,False,False,True,False
+BOT,77,Alfa Romeo,59.0,3.0,MEDIUM,25.0,True,6.0,1,88.471,9008.789,8920.318,36.3,48.3,8.0,False,False,False,False,False,False,False,False,False,True,False
+BOT,77,Alfa Romeo,60.0,3.0,MEDIUM,26.0,True,6.0,1,88.522,9097.311,9008.789,36.4,48.2,9.0,False,False,False,False,False,False,False,False,False,True,False
+BOT,77,Alfa Romeo,61.0,3.0,MEDIUM,27.0,True,6.0,1,88.748,9186.059,9097.311,36.4,48.1,11.0,False,False,False,False,False,False,False,False,False,True,False
+BOT,77,Alfa Romeo,62.0,3.0,MEDIUM,28.0,True,6.0,1,89.055,9275.114,9186.059,36.5,48.0,9.0,False,False,False,False,False,False,False,False,False,True,False
+BOT,77,Alfa Romeo,63.0,3.0,MEDIUM,29.0,True,6.0,1,88.844,9363.958,9275.114,36.5,48.0,8.0,False,False,False,False,False,False,False,False,False,True,False
+BOT,77,Alfa Romeo,64.0,3.0,MEDIUM,30.0,True,6.0,1,89.289,9453.247,9363.958,36.5,47.9,8.0,False,False,False,False,False,False,False,False,False,True,False
+BOT,77,Alfa Romeo,65.0,3.0,MEDIUM,31.0,True,6.0,1,89.97,9543.217,9453.247,36.4,48.1,7.0,False,False,False,False,False,False,False,False,False,True,False
+BOT,77,Alfa Romeo,66.0,3.0,MEDIUM,32.0,True,6.0,1,90.378,9633.595,9543.217,36.4,47.8,8.0,False,False,False,False,False,False,False,False,False,True,False
+OCO,31,Alpine,1.0,1.0,SOFT,1.0,True,9.0,12,95.905,3829.049,3732.915,36.6,49.3,6.0,False,False,False,False,True,False,True,False,False,False,False
+OCO,31,Alpine,2.0,1.0,SOFT,2.0,True,9.0,1,89.962,3919.011,3829.049,36.7,49.4,7.0,False,False,False,False,False,False,False,False,False,True,False
+OCO,31,Alpine,3.0,1.0,SOFT,3.0,True,9.0,1,89.434,4008.445,3919.011,36.9,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+OCO,31,Alpine,4.0,1.0,SOFT,4.0,True,9.0,1,89.087,4097.532,4008.445,37.0,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+OCO,31,Alpine,5.0,1.0,SOFT,5.0,True,8.0,1,88.992,4186.524,4097.532,37.0,49.3,6.0,False,False,False,False,False,False,False,False,False,True,False
+OCO,31,Alpine,6.0,1.0,SOFT,6.0,True,7.0,1,88.76,4275.284,4186.524,36.9,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+OCO,31,Alpine,7.0,1.0,SOFT,7.0,True,6.0,12,89.725,4365.009,4275.284,36.8,49.5,6.0,False,False,False,False,False,False,True,False,False,False,False
+OCO,31,Alpine,8.0,1.0,SOFT,8.0,True,6.0,1,89.294,4454.303,4365.009,37.0,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+OCO,31,Alpine,9.0,1.0,SOFT,9.0,True,6.0,12,89.822,4544.125,4454.303,36.9,49.3,6.0,False,False,False,False,False,False,True,False,False,False,False
+OCO,31,Alpine,10.0,1.0,SOFT,10.0,True,6.0,1,89.671,4633.796,4544.125,37.0,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+OCO,31,Alpine,11.0,1.0,SOFT,11.0,True,6.0,1,89.666,4723.462,4633.796,36.9,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+OCO,31,Alpine,12.0,1.0,SOFT,12.0,True,6.0,1,89.693,4813.155,4723.462,37.0,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+OCO,31,Alpine,13.0,1.0,SOFT,13.0,True,6.0,1,93.395,4906.55,4813.155,37.0,49.7,6.0,False,True,False,False,True,False,False,False,False,False,False
+OCO,31,Alpine,14.0,2.0,MEDIUM,1.0,True,7.0,1,106.958,5013.508,4906.55,36.8,49.7,6.0,False,False,True,False,True,False,False,False,False,False,False
+OCO,31,Alpine,15.0,2.0,MEDIUM,2.0,True,7.0,1,88.845,5102.353,5013.508,36.8,49.7,5.0,False,False,False,False,False,False,False,False,False,True,False
+OCO,31,Alpine,16.0,2.0,MEDIUM,3.0,True,7.0,1,89.026,5191.379,5102.353,36.6,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+OCO,31,Alpine,17.0,2.0,MEDIUM,4.0,True,6.0,1,88.689,5280.068,5191.379,36.7,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+OCO,31,Alpine,18.0,2.0,MEDIUM,5.0,True,6.0,1,88.997,5369.065,5280.068,37.2,49.7,5.0,False,False,False,False,False,False,False,False,False,True,False
+OCO,31,Alpine,19.0,2.0,MEDIUM,6.0,True,6.0,1,88.888,5457.953,5369.065,37.1,49.7,5.0,False,False,False,False,False,False,False,False,False,True,False
+OCO,31,Alpine,20.0,2.0,MEDIUM,7.0,True,6.0,1,89.122,5547.075,5457.953,37.1,49.7,5.0,False,False,False,False,False,False,False,False,False,True,False
+OCO,31,Alpine,21.0,2.0,MEDIUM,8.0,True,6.0,1,89.237,5636.312,5547.075,37.0,49.0,6.0,False,False,False,False,False,False,False,False,False,True,False
+OCO,31,Alpine,22.0,2.0,MEDIUM,9.0,True,6.0,1,89.169,5725.481,5636.312,37.0,49.0,6.0,False,False,False,False,False,False,False,False,False,True,False
+OCO,31,Alpine,23.0,2.0,MEDIUM,10.0,True,6.0,1,89.515,5814.996,5725.481,37.1,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+OCO,31,Alpine,24.0,2.0,MEDIUM,11.0,True,7.0,1,90.197,5905.193,5814.996,37.0,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+OCO,31,Alpine,25.0,2.0,MEDIUM,12.0,True,7.0,1,89.551,5994.744,5905.193,37.0,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+OCO,31,Alpine,26.0,2.0,MEDIUM,13.0,True,7.0,1,89.641,6084.385,5994.744,37.0,49.4,7.0,False,False,False,False,False,False,False,False,False,True,False
+OCO,31,Alpine,27.0,2.0,MEDIUM,14.0,True,7.0,1,89.504,6173.889,6084.385,37.0,49.4,7.0,False,False,False,False,False,False,False,False,False,True,False
+OCO,31,Alpine,28.0,2.0,MEDIUM,15.0,True,6.0,1,89.942,6263.831,6173.889,37.0,49.4,7.0,False,False,False,False,False,False,False,False,False,True,False
+OCO,31,Alpine,29.0,2.0,MEDIUM,16.0,True,6.0,1,89.786,6353.617,6263.831,37.2,49.3,7.0,False,False,False,False,False,False,False,False,False,True,False
+OCO,31,Alpine,30.0,2.0,MEDIUM,17.0,True,6.0,1,89.672,6443.289,6353.617,37.2,49.3,6.0,False,False,False,False,False,False,False,False,False,True,False
+OCO,31,Alpine,31.0,2.0,MEDIUM,18.0,True,6.0,1,91.062,6534.351,6443.289,37.2,49.3,6.0,False,False,False,False,False,False,False,False,False,True,False
+OCO,31,Alpine,32.0,2.0,MEDIUM,19.0,True,5.0,1,89.863,6624.214,6534.351,37.1,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+OCO,31,Alpine,33.0,2.0,MEDIUM,20.0,True,5.0,1,89.663,6713.877,6624.214,37.0,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+OCO,31,Alpine,34.0,2.0,MEDIUM,21.0,True,5.0,1,89.418,6803.295,6713.877,36.7,49.2,7.0,False,False,False,False,False,False,False,False,False,True,False
+OCO,31,Alpine,35.0,2.0,MEDIUM,22.0,True,6.0,1,93.452,6896.747,6803.295,36.7,49.1,7.0,False,True,False,False,True,False,False,False,False,False,False
+OCO,31,Alpine,36.0,3.0,SOFT,4.0,False,7.0,1,106.285,7003.032,6896.747,36.6,49.0,7.0,False,False,True,False,True,False,False,False,False,False,False
+OCO,31,Alpine,37.0,3.0,SOFT,5.0,False,7.0,1,87.027,7090.059,7003.032,36.6,49.0,7.0,False,False,False,False,False,False,False,False,False,True,False
+OCO,31,Alpine,38.0,3.0,SOFT,6.0,False,7.0,1,87.438,7177.497,7090.059,36.9,49.1,7.0,False,False,False,False,False,False,False,False,False,True,False
+OCO,31,Alpine,39.0,3.0,SOFT,7.0,False,7.0,1,87.481,7264.978,7177.497,36.7,49.1,7.0,False,False,False,False,False,False,False,False,False,True,False
+OCO,31,Alpine,40.0,3.0,SOFT,8.0,False,7.0,1,87.301,7352.279,7264.978,36.8,49.0,8.0,False,False,False,False,False,False,False,False,False,True,False
+OCO,31,Alpine,41.0,3.0,SOFT,9.0,False,7.0,1,87.642,7439.921,7352.279,36.6,49.0,8.0,False,False,False,False,False,False,False,False,False,True,False
+OCO,31,Alpine,42.0,3.0,SOFT,10.0,False,7.0,1,87.49,7527.411,7439.921,36.6,49.0,7.0,False,False,False,False,False,False,False,False,False,True,False
+OCO,31,Alpine,43.0,3.0,SOFT,11.0,False,7.0,1,87.719,7615.13,7527.411,36.6,48.7,8.0,False,False,False,False,False,False,False,False,False,True,False
+OCO,31,Alpine,44.0,3.0,SOFT,12.0,False,7.0,1,87.789,7702.919,7615.13,36.6,49.1,8.0,False,False,False,False,False,False,False,False,False,True,False
+OCO,31,Alpine,45.0,3.0,SOFT,13.0,False,7.0,1,88.247,7791.166,7702.919,36.7,49.1,8.0,False,False,False,False,False,False,False,False,False,True,False
+OCO,31,Alpine,46.0,3.0,SOFT,14.0,False,6.0,1,88.233,7879.399,7791.166,36.8,49.0,7.0,False,False,False,False,False,False,False,False,False,True,False
+OCO,31,Alpine,47.0,3.0,SOFT,15.0,False,7.0,1,89.064,7968.463,7879.399,36.8,49.0,7.0,False,False,False,False,False,False,False,False,False,True,False
+OCO,31,Alpine,48.0,3.0,SOFT,16.0,False,7.0,1,88.091,8056.554,7968.463,36.6,49.0,8.0,False,False,False,False,False,False,False,False,False,True,False
+OCO,31,Alpine,49.0,3.0,SOFT,17.0,False,6.0,1,87.841,8144.395,8056.554,36.5,49.0,8.0,False,False,False,False,False,False,False,False,False,True,False
+OCO,31,Alpine,50.0,3.0,SOFT,18.0,False,6.0,1,88.147,8232.542,8144.395,36.8,48.8,8.0,False,False,False,False,False,False,False,False,False,True,False
+OCO,31,Alpine,51.0,3.0,SOFT,19.0,False,7.0,1,88.627,8321.169,8232.542,36.9,48.8,7.0,False,False,False,False,False,False,False,False,False,True,False
+OCO,31,Alpine,52.0,3.0,SOFT,20.0,False,7.0,1,92.228,8413.397,8321.169,36.9,48.9,7.0,False,True,False,False,True,False,False,False,False,False,False
+OCO,31,Alpine,53.0,4.0,SOFT,4.0,False,8.0,1,104.279,8517.676,8413.397,36.7,48.8,7.0,False,False,True,False,True,False,False,False,False,False,False
+OCO,31,Alpine,54.0,4.0,SOFT,5.0,False,7.0,1,85.935,8603.611,8517.676,36.6,48.4,8.0,False,False,False,False,False,False,False,False,False,True,False
+OCO,31,Alpine,55.0,4.0,SOFT,6.0,False,7.0,1,86.174,8689.785,8603.611,36.5,48.3,9.0,False,False,False,False,False,False,False,False,False,True,False
+OCO,31,Alpine,56.0,4.0,SOFT,7.0,False,7.0,1,86.219,8776.004,8689.785,36.4,48.4,8.0,False,False,False,False,False,False,False,False,False,True,False
+OCO,31,Alpine,57.0,4.0,SOFT,8.0,False,7.0,1,86.456,8862.46,8776.004,36.3,48.4,8.0,False,False,False,False,False,False,False,False,False,True,False
+OCO,31,Alpine,58.0,4.0,SOFT,9.0,False,7.0,1,87.126,8949.586,8862.46,36.3,48.4,7.0,False,False,False,False,False,False,False,False,False,True,False
+OCO,31,Alpine,59.0,4.0,SOFT,10.0,False,7.0,1,86.364,9035.95,8949.586,36.3,48.3,9.0,False,False,False,False,False,False,False,False,False,True,False
+OCO,31,Alpine,60.0,4.0,SOFT,11.0,False,7.0,1,87.207,9123.157,9035.95,36.4,48.2,9.0,False,False,False,False,False,False,False,False,False,True,False
+OCO,31,Alpine,61.0,4.0,SOFT,12.0,False,7.0,1,87.211,9210.368,9123.157,36.5,47.9,9.0,False,False,False,False,False,False,False,False,False,True,False
+OCO,31,Alpine,62.0,4.0,SOFT,13.0,False,7.0,1,87.104,9297.472,9210.368,36.5,48.0,9.0,False,False,False,False,False,False,False,False,False,True,False
+OCO,31,Alpine,63.0,4.0,SOFT,14.0,False,7.0,1,87.644,9385.116,9297.472,36.4,48.0,8.0,False,False,False,False,False,False,False,False,False,True,False
+OCO,31,Alpine,64.0,4.0,SOFT,15.0,False,7.0,1,87.829,9472.945,9385.116,36.5,47.9,8.0,False,False,False,False,False,False,False,False,False,True,False
+OCO,31,Alpine,65.0,4.0,SOFT,16.0,False,7.0,1,87.852,9560.797,9472.945,36.4,48.1,7.0,False,False,False,False,False,False,False,False,False,True,False
+OCO,31,Alpine,66.0,4.0,SOFT,17.0,False,7.0,1,88.219,9649.016,9560.797,36.4,47.8,8.0,False,False,False,False,False,False,False,False,False,True,False
+NOR,4,McLaren,1.0,1.0,SOFT,1.0,True,10.0,12,96.471,3829.615,3732.915,36.6,49.3,6.0,False,False,False,False,True,False,True,False,False,False,False
+NOR,4,McLaren,2.0,1.0,SOFT,2.0,True,10.0,1,90.317,3919.932,3829.615,36.7,49.4,7.0,False,False,False,False,False,False,False,False,False,True,False
+NOR,4,McLaren,3.0,1.0,SOFT,3.0,True,10.0,1,89.87,4009.802,3919.932,36.9,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+NOR,4,McLaren,4.0,1.0,SOFT,4.0,True,10.0,1,89.647,4099.449,4009.802,37.0,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+NOR,4,McLaren,5.0,1.0,SOFT,5.0,True,10.0,1,89.915,4189.364,4099.449,37.0,49.3,6.0,False,False,False,False,False,False,False,False,False,True,False
+NOR,4,McLaren,6.0,1.0,SOFT,6.0,True,10.0,1,89.796,4279.16,4189.364,36.9,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+NOR,4,McLaren,7.0,1.0,SOFT,7.0,True,9.0,12,90.165,4369.325,4279.16,36.8,49.5,6.0,False,False,False,False,False,False,True,False,False,False,False
+NOR,4,McLaren,8.0,1.0,SOFT,8.0,True,9.0,1,89.859,4459.184,4369.325,37.0,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+NOR,4,McLaren,9.0,1.0,SOFT,9.0,True,8.0,12,89.795,4548.979,4459.184,36.9,49.3,6.0,False,False,False,False,False,False,True,False,False,False,False
+NOR,4,McLaren,10.0,1.0,SOFT,10.0,True,7.0,1,89.857,4638.836,4548.979,37.0,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+NOR,4,McLaren,11.0,1.0,SOFT,11.0,True,7.0,1,90.049,4728.885,4638.836,36.9,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+NOR,4,McLaren,12.0,1.0,SOFT,12.0,True,7.0,1,92.651,4821.536,4728.885,37.0,49.7,6.0,False,True,False,False,True,False,False,False,False,False,False
+NOR,4,McLaren,13.0,2.0,MEDIUM,1.0,True,9.0,1,107.09,4928.626,4821.536,37.0,49.7,6.0,False,False,True,False,True,False,False,False,False,False,False
+NOR,4,McLaren,14.0,2.0,MEDIUM,2.0,True,10.0,1,90.999,5019.625,4928.626,36.8,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+NOR,4,McLaren,15.0,2.0,MEDIUM,3.0,True,9.0,1,89.179,5108.804,5019.625,36.8,49.7,5.0,False,False,False,False,False,False,False,False,False,True,False
+NOR,4,McLaren,16.0,2.0,MEDIUM,4.0,True,9.0,1,89.313,5198.117,5108.804,36.6,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+NOR,4,McLaren,17.0,2.0,MEDIUM,5.0,True,9.0,1,89.496,5287.613,5198.117,36.7,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+NOR,4,McLaren,18.0,2.0,MEDIUM,6.0,True,9.0,1,89.216,5376.829,5287.613,37.2,49.7,5.0,False,False,False,False,False,False,False,False,False,True,False
+NOR,4,McLaren,19.0,2.0,MEDIUM,7.0,True,9.0,1,89.621,5466.45,5376.829,37.1,49.7,5.0,False,False,False,False,False,False,False,False,False,True,False
+NOR,4,McLaren,20.0,2.0,MEDIUM,8.0,True,9.0,1,89.942,5556.392,5466.45,37.1,49.7,5.0,False,False,False,False,False,False,False,False,False,True,False
+NOR,4,McLaren,21.0,2.0,MEDIUM,9.0,True,8.0,1,90.024,5646.416,5556.392,37.0,49.0,6.0,False,False,False,False,False,False,False,False,False,True,False
+NOR,4,McLaren,22.0,2.0,MEDIUM,10.0,True,8.0,1,88.88,5735.296,5646.416,37.0,49.0,6.0,False,False,False,False,False,False,False,False,False,True,False
+NOR,4,McLaren,23.0,2.0,MEDIUM,11.0,True,8.0,1,89.509,5824.805,5735.296,37.1,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+NOR,4,McLaren,24.0,2.0,MEDIUM,12.0,True,8.0,1,89.298,5914.103,5824.805,37.0,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+NOR,4,McLaren,25.0,2.0,MEDIUM,13.0,True,8.0,1,89.186,6003.289,5914.103,37.0,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+NOR,4,McLaren,26.0,2.0,MEDIUM,14.0,True,8.0,1,89.555,6092.844,6003.289,37.0,49.4,7.0,False,False,False,False,False,False,False,False,False,True,False
+NOR,4,McLaren,27.0,2.0,MEDIUM,15.0,True,8.0,1,89.201,6182.045,6092.844,37.0,49.4,7.0,False,False,False,False,False,False,False,False,False,True,False
+NOR,4,McLaren,28.0,2.0,MEDIUM,16.0,True,7.0,1,89.681,6271.726,6182.045,37.0,49.4,7.0,False,False,False,False,False,False,False,False,False,True,False
+NOR,4,McLaren,29.0,2.0,MEDIUM,17.0,True,7.0,1,89.371,6361.097,6271.726,37.2,49.3,7.0,False,False,False,False,False,False,False,False,False,True,False
+NOR,4,McLaren,30.0,2.0,MEDIUM,18.0,True,7.0,1,89.6,6450.697,6361.097,37.2,49.3,6.0,False,False,False,False,False,False,False,False,False,True,False
+NOR,4,McLaren,31.0,2.0,MEDIUM,19.0,True,7.0,1,89.122,6539.819,6450.697,37.2,49.3,6.0,False,False,False,False,False,False,False,False,False,True,False
+NOR,4,McLaren,32.0,2.0,MEDIUM,20.0,True,6.0,1,89.309,6629.128,6539.819,37.1,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+NOR,4,McLaren,33.0,2.0,MEDIUM,21.0,True,6.0,1,92.718,6721.846,6629.128,37.0,49.5,6.0,False,True,False,False,True,False,False,False,False,False,False
+NOR,4,McLaren,34.0,3.0,SOFT,4.0,False,9.0,1,109.283,6831.129,6721.846,36.7,49.2,7.0,False,False,True,False,True,False,False,False,False,False,False
+NOR,4,McLaren,35.0,3.0,SOFT,5.0,False,9.0,1,88.724,6919.853,6831.129,36.6,49.1,7.0,False,False,False,False,False,False,False,False,False,True,False
+NOR,4,McLaren,36.0,3.0,SOFT,6.0,False,9.0,1,88.221,7008.074,6919.853,36.6,49.0,7.0,False,False,False,False,False,False,False,False,False,True,False
+NOR,4,McLaren,37.0,3.0,SOFT,7.0,False,9.0,1,87.683,7095.757,7008.074,36.8,49.3,7.0,False,False,False,False,False,False,False,False,False,True,False
+NOR,4,McLaren,38.0,3.0,SOFT,8.0,False,9.0,1,88.069,7183.826,7095.757,36.9,49.1,7.0,False,False,False,False,False,False,False,False,False,True,False
+NOR,4,McLaren,39.0,3.0,SOFT,9.0,False,8.0,1,87.116,7270.942,7183.826,36.7,49.1,7.0,False,False,False,False,False,False,False,False,False,True,False
+NOR,4,McLaren,40.0,3.0,SOFT,10.0,False,8.0,1,87.28,7358.222,7270.942,36.8,49.0,8.0,False,False,False,False,False,False,False,False,False,True,False
+NOR,4,McLaren,41.0,3.0,SOFT,11.0,False,8.0,1,87.573,7445.795,7358.222,36.6,49.0,8.0,False,False,False,False,False,False,False,False,False,True,False
+NOR,4,McLaren,42.0,3.0,SOFT,12.0,False,8.0,1,87.813,7533.608,7445.795,36.6,49.0,7.0,False,False,False,False,False,False,False,False,False,True,False
+NOR,4,McLaren,43.0,3.0,SOFT,13.0,False,8.0,1,87.975,7621.583,7533.608,36.6,48.7,8.0,False,False,False,False,False,False,False,False,False,True,False
+NOR,4,McLaren,44.0,3.0,SOFT,14.0,False,8.0,1,87.777,7709.36,7621.583,36.6,49.1,8.0,False,False,False,False,False,False,False,False,False,True,False
+NOR,4,McLaren,45.0,3.0,SOFT,15.0,False,8.0,1,87.858,7797.218,7709.36,36.7,49.1,8.0,False,False,False,False,False,False,False,False,False,True,False
+NOR,4,McLaren,46.0,3.0,SOFT,16.0,False,8.0,1,88.437,7885.655,7797.218,36.8,49.0,7.0,False,False,False,False,False,False,False,False,False,True,False
+NOR,4,McLaren,47.0,3.0,SOFT,17.0,False,8.0,1,88.114,7973.769,7885.655,36.8,49.0,7.0,False,False,False,False,False,False,False,False,False,True,False
+NOR,4,McLaren,48.0,3.0,SOFT,18.0,False,8.0,1,88.617,8062.386,7973.769,36.6,49.0,8.0,False,False,False,False,False,False,False,False,False,True,False
+NOR,4,McLaren,49.0,3.0,SOFT,19.0,False,8.0,1,89.543,8151.929,8062.386,36.5,49.0,8.0,False,False,False,False,False,False,False,False,False,True,False
+NOR,4,McLaren,50.0,3.0,SOFT,20.0,False,8.0,1,88.469,8240.398,8151.929,36.9,48.8,7.0,False,False,False,False,False,False,False,False,False,True,False
+NOR,4,McLaren,51.0,3.0,SOFT,21.0,False,8.0,1,91.363,8331.761,8240.398,36.9,48.8,7.0,False,True,False,False,True,False,False,False,False,False,False
+NOR,4,McLaren,52.0,4.0,SOFT,4.0,False,10.0,1,104.828,8436.589,8331.761,36.9,48.9,7.0,False,False,True,False,True,False,False,False,False,False,False
+NOR,4,McLaren,53.0,4.0,SOFT,5.0,False,9.0,1,85.619,8522.208,8436.589,36.7,48.8,7.0,False,False,False,False,False,False,False,False,False,True,False
+NOR,4,McLaren,54.0,4.0,SOFT,6.0,False,8.0,1,85.859,8608.067,8522.208,36.6,48.4,8.0,False,False,False,False,False,False,False,False,False,True,False
+NOR,4,McLaren,55.0,4.0,SOFT,7.0,False,8.0,1,85.87,8693.937,8608.067,36.5,48.3,9.0,False,False,False,False,False,False,False,False,False,True,False
+NOR,4,McLaren,56.0,4.0,SOFT,8.0,False,8.0,1,86.164,8780.101,8693.937,36.4,48.4,8.0,False,False,False,False,False,False,False,False,False,True,False
+NOR,4,McLaren,57.0,4.0,SOFT,9.0,False,8.0,1,85.906,8866.007,8780.101,36.3,48.4,8.0,False,False,False,False,False,False,False,False,False,True,False
+NOR,4,McLaren,58.0,4.0,SOFT,10.0,False,8.0,1,86.746,8952.753,8866.007,36.3,48.4,7.0,False,False,False,False,False,False,False,False,False,True,False
+NOR,4,McLaren,59.0,4.0,SOFT,11.0,False,8.0,1,87.704,9040.457,8952.753,36.3,48.3,9.0,False,False,False,False,False,False,False,False,False,True,False
+NOR,4,McLaren,60.0,4.0,SOFT,12.0,False,8.0,1,87.663,9128.12,9040.457,36.4,48.2,9.0,False,False,False,False,False,False,False,False,False,True,False
+NOR,4,McLaren,61.0,4.0,SOFT,13.0,False,8.0,1,88.045,9216.165,9128.12,36.5,47.9,9.0,False,False,False,False,False,False,False,False,False,True,False
+NOR,4,McLaren,62.0,4.0,SOFT,14.0,False,8.0,1,87.581,9303.746,9216.165,36.5,48.0,9.0,False,False,False,False,False,False,False,False,False,True,False
+NOR,4,McLaren,63.0,4.0,SOFT,15.0,False,8.0,1,87.64,9391.386,9303.746,36.4,48.0,8.0,False,False,False,False,False,False,False,False,False,True,False
+NOR,4,McLaren,64.0,4.0,SOFT,16.0,False,8.0,1,87.917,9479.303,9391.386,36.5,47.9,8.0,False,False,False,False,False,False,False,False,False,True,False
+NOR,4,McLaren,65.0,4.0,SOFT,17.0,False,8.0,1,88.372,9567.675,9479.303,36.4,48.1,7.0,False,False,False,False,False,False,False,False,False,True,False
+NOR,4,McLaren,66.0,4.0,SOFT,18.0,False,8.0,1,89.179,9656.854,9567.675,36.4,47.8,8.0,False,False,False,False,False,False,False,False,False,True,False
+ALO,14,Alpine,1.0,1.0,SOFT,1.0,True,15.0,12,99.123,3832.267,3732.915,36.6,49.3,6.0,False,False,False,False,True,False,True,False,False,False,False
+ALO,14,Alpine,2.0,1.0,SOFT,2.0,True,15.0,1,90.932,3923.199,3832.267,36.7,49.4,7.0,False,False,False,False,False,False,False,False,False,True,False
+ALO,14,Alpine,3.0,1.0,SOFT,3.0,True,15.0,1,90.573,4013.772,3923.199,36.9,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+ALO,14,Alpine,4.0,1.0,SOFT,4.0,True,15.0,1,89.627,4103.399,4013.772,37.0,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+ALO,14,Alpine,5.0,1.0,SOFT,5.0,True,14.0,1,89.174,4192.573,4103.399,37.0,49.3,6.0,False,False,False,False,False,False,False,False,False,True,False
+ALO,14,Alpine,6.0,1.0,SOFT,6.0,True,14.0,1,90.389,4282.962,4192.573,36.9,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+ALO,14,Alpine,7.0,1.0,SOFT,7.0,True,13.0,12,89.656,4372.618,4282.962,36.8,49.5,6.0,False,False,False,False,False,False,True,False,False,False,False
+ALO,14,Alpine,8.0,1.0,SOFT,8.0,True,13.0,1,90.653,4463.271,4372.618,37.0,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+ALO,14,Alpine,9.0,1.0,SOFT,9.0,True,12.0,12,89.669,4552.94,4463.271,36.9,49.3,6.0,False,False,False,False,False,False,True,False,False,False,False
+ALO,14,Alpine,10.0,1.0,SOFT,10.0,True,13.0,1,94.566,4647.506,4552.94,37.0,49.7,6.0,False,True,False,False,True,False,False,False,False,False,False
+ALO,14,Alpine,11.0,2.0,MEDIUM,1.0,True,16.0,1,107.116,4754.622,4647.506,37.0,49.7,6.0,False,False,True,False,True,False,False,False,False,False,False
+ALO,14,Alpine,12.0,2.0,MEDIUM,2.0,True,13.0,1,88.932,4843.554,4754.622,37.0,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+ALO,14,Alpine,13.0,2.0,MEDIUM,3.0,True,11.0,1,89.343,4932.897,4843.554,37.0,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+ALO,14,Alpine,14.0,2.0,MEDIUM,4.0,True,12.0,1,89.992,5022.889,4932.897,36.8,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+ALO,14,Alpine,15.0,2.0,MEDIUM,5.0,True,11.0,1,89.508,5112.397,5022.889,36.8,49.7,5.0,False,False,False,False,False,False,False,False,False,True,False
+ALO,14,Alpine,16.0,2.0,MEDIUM,6.0,True,11.0,1,89.74,5202.137,5112.397,36.6,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+ALO,14,Alpine,17.0,2.0,MEDIUM,7.0,True,11.0,1,89.62,5291.757,5202.137,36.7,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+ALO,14,Alpine,18.0,2.0,MEDIUM,8.0,True,11.0,1,89.783,5381.54,5291.757,37.2,49.7,5.0,False,False,False,False,False,False,False,False,False,True,False
+ALO,14,Alpine,19.0,2.0,MEDIUM,9.0,True,11.0,1,89.681,5471.221,5381.54,37.1,49.7,5.0,False,False,False,False,False,False,False,False,False,True,False
+ALO,14,Alpine,20.0,2.0,MEDIUM,10.0,True,11.0,1,89.82,5561.041,5471.221,37.1,49.7,5.0,False,False,False,False,False,False,False,False,False,True,False
+ALO,14,Alpine,21.0,2.0,MEDIUM,11.0,True,11.0,1,89.888,5650.929,5561.041,37.0,49.0,6.0,False,False,False,False,False,False,False,False,False,True,False
+ALO,14,Alpine,22.0,2.0,MEDIUM,12.0,True,10.0,1,89.737,5740.666,5650.929,37.0,49.0,6.0,False,False,False,False,False,False,False,False,False,True,False
+ALO,14,Alpine,23.0,2.0,MEDIUM,13.0,True,10.0,1,89.763,5830.429,5740.666,37.1,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+ALO,14,Alpine,24.0,2.0,MEDIUM,14.0,True,10.0,1,89.738,5920.167,5830.429,37.0,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+ALO,14,Alpine,25.0,2.0,MEDIUM,15.0,True,10.0,1,89.732,6009.899,5920.167,37.0,49.4,6.0,False,False,False,False,False,False,False,False,True,False,False
+ALO,14,Alpine,26.0,2.0,MEDIUM,16.0,True,10.0,1,90.135,6100.034,6009.899,37.0,49.4,7.0,False,False,False,False,False,False,False,False,True,False,False
+ALO,14,Alpine,27.0,2.0,MEDIUM,17.0,True,10.0,1,89.815,6189.849,6100.034,37.0,49.4,7.0,False,False,False,False,False,False,False,False,False,True,False
+ALO,14,Alpine,28.0,2.0,MEDIUM,18.0,True,9.0,1,89.914,6279.763,6189.849,37.0,49.4,7.0,False,False,False,False,False,False,False,False,False,True,False
+ALO,14,Alpine,29.0,2.0,MEDIUM,19.0,True,9.0,1,89.714,6369.477,6279.763,37.2,49.3,7.0,False,False,False,False,False,False,False,False,False,True,False
+ALO,14,Alpine,30.0,2.0,MEDIUM,20.0,True,9.0,1,89.996,6459.473,6369.477,37.2,49.3,6.0,False,False,False,False,False,False,False,False,False,True,False
+ALO,14,Alpine,31.0,2.0,MEDIUM,21.0,True,9.0,1,93.694,6553.167,6459.473,37.2,49.3,6.0,False,True,False,False,True,False,False,False,False,False,False
+ALO,14,Alpine,32.0,3.0,SOFT,1.0,True,11.0,1,105.671,6658.838,6553.167,37.1,49.5,6.0,False,False,True,False,True,False,False,False,False,False,False
+ALO,14,Alpine,33.0,3.0,SOFT,2.0,True,11.0,1,87.707,6746.545,6658.838,36.7,49.3,6.0,False,False,False,False,False,False,False,False,False,True,False
+ALO,14,Alpine,34.0,3.0,SOFT,3.0,True,10.0,1,87.898,6834.443,6746.545,36.7,49.2,7.0,False,False,False,False,False,False,False,False,False,True,False
+ALO,14,Alpine,35.0,3.0,SOFT,4.0,True,10.0,1,88.735,6923.178,6834.443,36.6,49.1,7.0,False,False,False,False,False,False,False,False,False,True,False
+ALO,14,Alpine,36.0,3.0,SOFT,5.0,True,10.0,1,88.382,7011.56,6923.178,36.6,49.0,7.0,False,False,False,False,False,False,False,False,False,True,False
+ALO,14,Alpine,37.0,3.0,SOFT,6.0,True,10.0,1,88.053,7099.613,7011.56,36.8,49.3,7.0,False,False,False,False,False,False,False,False,False,True,False
+ALO,14,Alpine,38.0,3.0,SOFT,7.0,True,10.0,1,88.089,7187.702,7099.613,36.9,49.1,7.0,False,False,False,False,False,False,False,False,False,True,False
+ALO,14,Alpine,39.0,3.0,SOFT,8.0,True,10.0,1,88.234,7275.936,7187.702,36.8,49.1,8.0,False,False,False,False,False,False,False,False,False,True,False
+ALO,14,Alpine,40.0,3.0,SOFT,9.0,True,10.0,1,88.445,7364.381,7275.936,36.8,49.0,8.0,False,False,False,False,False,False,False,False,False,True,False
+ALO,14,Alpine,41.0,3.0,SOFT,10.0,True,10.0,1,88.339,7452.72,7364.381,36.6,49.0,8.0,False,False,False,False,False,False,False,False,False,True,False
+ALO,14,Alpine,42.0,3.0,SOFT,11.0,True,9.0,1,88.995,7541.715,7452.72,36.6,49.0,7.0,False,False,False,False,False,False,False,False,False,True,False
+ALO,14,Alpine,43.0,3.0,SOFT,12.0,True,9.0,1,87.271,7628.986,7541.715,36.6,48.7,8.0,False,False,False,False,False,False,False,False,False,True,False
+ALO,14,Alpine,44.0,3.0,SOFT,13.0,True,9.0,1,87.764,7716.75,7628.986,36.6,49.1,8.0,False,False,False,False,False,False,False,False,False,True,False
+ALO,14,Alpine,45.0,3.0,SOFT,14.0,True,9.0,1,87.693,7804.443,7716.75,36.7,49.1,8.0,False,False,False,False,False,False,False,False,False,True,False
+ALO,14,Alpine,46.0,3.0,SOFT,15.0,True,9.0,1,87.715,7892.158,7804.443,36.8,49.0,7.0,False,False,False,False,False,False,False,False,False,True,False
+ALO,14,Alpine,47.0,3.0,SOFT,16.0,True,9.0,1,87.855,7980.013,7892.158,36.8,49.0,7.0,False,False,False,False,False,False,False,False,False,True,False
+ALO,14,Alpine,48.0,3.0,SOFT,17.0,True,9.0,1,87.849,8067.862,7980.013,36.6,49.0,8.0,False,False,False,False,False,False,False,False,False,True,False
+ALO,14,Alpine,49.0,3.0,SOFT,18.0,True,9.0,1,88.119,8155.981,8067.862,36.5,49.0,8.0,False,False,False,False,False,False,False,False,False,True,False
+ALO,14,Alpine,50.0,3.0,SOFT,19.0,True,9.0,1,88.296,8244.277,8155.981,36.9,48.8,7.0,False,False,False,False,False,False,False,False,False,True,False
+ALO,14,Alpine,51.0,3.0,SOFT,20.0,True,9.0,1,88.039,8332.316,8244.277,36.9,48.8,7.0,False,False,False,False,False,False,False,False,False,True,False
+ALO,14,Alpine,52.0,3.0,SOFT,21.0,True,8.0,1,88.164,8420.48,8332.316,36.9,48.9,7.0,False,False,False,False,False,False,False,False,False,True,False
+ALO,14,Alpine,53.0,3.0,SOFT,22.0,True,7.0,1,91.991,8512.471,8420.48,36.7,48.8,7.0,False,True,False,False,True,False,False,False,False,False,False
+ALO,14,Alpine,54.0,4.0,SOFT,3.0,False,10.0,1,108.172,8620.643,8512.471,36.6,48.4,8.0,False,False,True,False,True,False,False,False,False,False,False
+ALO,14,Alpine,55.0,4.0,SOFT,4.0,False,9.0,1,86.819,8707.462,8620.643,36.5,48.3,9.0,False,False,False,False,False,False,False,False,False,True,False
+ALO,14,Alpine,56.0,4.0,SOFT,5.0,False,9.0,1,86.599,8794.061,8707.462,36.4,48.4,8.0,False,False,False,False,False,False,False,False,False,True,False
+ALO,14,Alpine,57.0,4.0,SOFT,6.0,False,9.0,1,86.792,8880.853,8794.061,36.3,48.4,8.0,False,False,False,False,False,False,False,False,False,True,False
+ALO,14,Alpine,58.0,4.0,SOFT,7.0,False,9.0,1,86.789,8967.642,8880.853,36.3,48.3,8.0,False,False,False,False,False,False,False,False,False,True,False
+ALO,14,Alpine,59.0,4.0,SOFT,8.0,False,9.0,1,86.611,9054.253,8967.642,36.3,48.3,9.0,False,False,False,False,False,False,False,False,False,True,False
+ALO,14,Alpine,60.0,4.0,SOFT,9.0,False,9.0,1,86.926,9141.179,9054.253,36.4,48.1,11.0,False,False,False,False,False,False,False,False,False,True,False
+ALO,14,Alpine,61.0,4.0,SOFT,10.0,False,9.0,1,87.384,9228.563,9141.179,36.5,47.9,9.0,False,False,False,False,False,False,False,False,False,True,False
+ALO,14,Alpine,62.0,4.0,SOFT,11.0,False,9.0,1,87.719,9316.282,9228.563,36.5,48.0,8.0,False,False,False,False,False,False,False,False,False,True,False
+ALO,14,Alpine,63.0,4.0,SOFT,12.0,False,9.0,1,87.421,9403.703,9316.282,36.4,48.0,8.0,False,False,False,False,False,False,False,False,False,True,False
+ALO,14,Alpine,64.0,4.0,SOFT,13.0,False,9.0,1,88.493,9492.196,9403.703,36.5,47.9,8.0,False,False,False,False,False,False,False,False,False,True,False
+ALO,14,Alpine,65.0,4.0,SOFT,14.0,False,9.0,1,88.27,9580.466,9492.196,36.4,48.1,7.0,False,False,False,False,False,False,False,False,False,True,False
+TSU,22,AlphaTauri,1.0,1.0,SOFT,1.0,True,11.0,12,97.032,3830.176,3732.915,36.6,49.3,6.0,False,False,False,False,True,False,True,False,False,False,False
+TSU,22,AlphaTauri,2.0,1.0,SOFT,2.0,True,11.0,1,90.603,3920.779,3830.176,36.7,49.4,7.0,False,False,False,False,False,False,False,False,False,True,False
+TSU,22,AlphaTauri,3.0,1.0,SOFT,3.0,True,11.0,1,89.864,4010.643,3920.779,36.9,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+TSU,22,AlphaTauri,4.0,1.0,SOFT,4.0,True,11.0,1,89.457,4100.1,4010.643,37.0,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+TSU,22,AlphaTauri,5.0,1.0,SOFT,5.0,True,11.0,1,90.038,4190.138,4100.1,37.0,49.3,6.0,False,False,False,False,False,False,False,False,False,True,False
+TSU,22,AlphaTauri,6.0,1.0,SOFT,6.0,True,11.0,1,90.018,4280.156,4190.138,36.9,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+TSU,22,AlphaTauri,7.0,1.0,SOFT,7.0,True,10.0,12,90.32,4370.476,4280.156,36.8,49.5,6.0,False,False,False,False,False,False,True,False,False,False,False
+TSU,22,AlphaTauri,8.0,1.0,SOFT,8.0,True,10.0,1,90.237,4460.713,4370.476,37.0,49.5,6.0,False,False,False,False,False,False,False,False,True,False,False
+TSU,22,AlphaTauri,9.0,1.0,SOFT,9.0,True,10.0,12,90.644,4551.357,4460.713,36.9,49.3,6.0,False,False,False,False,False,False,True,False,False,False,False
+TSU,22,AlphaTauri,10.0,1.0,SOFT,10.0,True,10.0,1,90.872,4642.229,4551.357,37.0,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+TSU,22,AlphaTauri,11.0,1.0,SOFT,11.0,True,9.0,1,93.713,4735.942,4642.229,36.9,49.7,6.0,False,True,False,False,True,False,False,False,False,False,False
+TSU,22,AlphaTauri,12.0,2.0,MEDIUM,1.0,True,14.0,1,108.5,4844.442,4735.942,37.0,49.7,6.0,False,False,True,False,True,False,False,False,False,False,False
+TSU,22,AlphaTauri,13.0,2.0,MEDIUM,2.0,True,12.0,1,88.956,4933.398,4844.442,36.9,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+TSU,22,AlphaTauri,14.0,2.0,MEDIUM,3.0,True,11.0,1,88.671,5022.069,4933.398,36.8,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+TSU,22,AlphaTauri,15.0,2.0,MEDIUM,4.0,True,10.0,1,89.201,5111.27,5022.069,36.8,49.7,5.0,False,False,False,False,False,False,False,False,False,True,False
+TSU,22,AlphaTauri,16.0,2.0,MEDIUM,5.0,True,10.0,1,89.23,5200.5,5111.27,36.6,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+TSU,22,AlphaTauri,17.0,2.0,MEDIUM,6.0,True,10.0,1,89.295,5289.795,5200.5,36.7,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+TSU,22,AlphaTauri,18.0,2.0,MEDIUM,7.0,True,10.0,1,89.249,5379.044,5289.795,37.2,49.7,5.0,False,False,False,False,False,False,False,False,False,True,False
+TSU,22,AlphaTauri,19.0,2.0,MEDIUM,8.0,True,10.0,1,89.691,5468.735,5379.044,37.1,49.7,5.0,False,False,False,False,False,False,False,False,False,True,False
+TSU,22,AlphaTauri,20.0,2.0,MEDIUM,9.0,True,10.0,1,89.43,5558.165,5468.735,37.1,49.7,5.0,False,False,False,False,False,False,False,False,False,True,False
+TSU,22,AlphaTauri,21.0,2.0,MEDIUM,10.0,True,9.0,1,89.778,5647.943,5558.165,37.0,49.0,6.0,False,False,False,False,False,False,False,False,False,True,False
+TSU,22,AlphaTauri,22.0,2.0,MEDIUM,11.0,True,9.0,1,89.485,5737.428,5647.943,37.0,49.0,6.0,False,False,False,False,False,False,False,False,False,True,False
+TSU,22,AlphaTauri,23.0,2.0,MEDIUM,12.0,True,9.0,1,89.96,5827.388,5737.428,37.1,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+TSU,22,AlphaTauri,24.0,2.0,MEDIUM,13.0,True,9.0,1,89.536,5916.924,5827.388,37.0,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+TSU,22,AlphaTauri,25.0,2.0,MEDIUM,14.0,True,9.0,1,89.884,6006.808,5916.924,37.0,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+TSU,22,AlphaTauri,26.0,2.0,MEDIUM,15.0,True,9.0,1,90.021,6096.829,6006.808,37.0,49.4,7.0,False,False,False,False,False,False,False,False,False,True,False
+TSU,22,AlphaTauri,27.0,2.0,MEDIUM,16.0,True,9.0,1,89.746,6186.575,6096.829,37.0,49.4,7.0,False,False,False,False,False,False,False,False,False,True,False
+TSU,22,AlphaTauri,28.0,2.0,MEDIUM,17.0,True,8.0,1,89.653,6276.228,6186.575,37.0,49.4,7.0,False,False,False,False,False,False,False,False,False,True,False
+TSU,22,AlphaTauri,29.0,2.0,MEDIUM,18.0,True,8.0,1,89.742,6365.97,6276.228,37.2,49.3,7.0,False,False,False,False,False,False,False,False,False,True,False
+TSU,22,AlphaTauri,30.0,2.0,MEDIUM,19.0,True,8.0,1,89.796,6455.766,6365.97,37.2,49.3,6.0,False,False,False,False,False,False,False,False,False,True,False
+TSU,22,AlphaTauri,31.0,2.0,MEDIUM,20.0,True,8.0,1,89.48,6545.246,6455.766,37.2,49.3,6.0,False,False,False,False,False,False,False,False,False,True,False
+TSU,22,AlphaTauri,32.0,2.0,MEDIUM,21.0,True,8.0,1,93.438,6638.684,6545.246,37.1,49.5,6.0,False,True,False,False,True,False,False,False,False,False,False
+TSU,22,AlphaTauri,33.0,3.0,SOFT,4.0,False,10.0,1,107.423,6746.107,6638.684,36.7,49.3,6.0,False,False,True,False,True,False,False,False,False,False,False
+TSU,22,AlphaTauri,34.0,3.0,SOFT,5.0,False,11.0,1,89.888,6835.995,6746.107,36.7,49.2,7.0,False,False,False,False,False,False,False,False,False,True,False
+TSU,22,AlphaTauri,35.0,3.0,SOFT,6.0,False,11.0,1,88.625,6924.62,6835.995,36.6,49.1,7.0,False,False,False,False,False,False,False,False,False,True,False
+TSU,22,AlphaTauri,36.0,3.0,SOFT,7.0,False,11.0,1,88.304,7012.924,6924.62,36.6,49.0,7.0,False,False,False,False,False,False,False,False,False,True,False
+TSU,22,AlphaTauri,37.0,3.0,SOFT,8.0,False,11.0,1,88.036,7100.96,7012.924,36.8,49.3,7.0,False,False,False,False,False,False,False,False,False,True,False
+TSU,22,AlphaTauri,38.0,3.0,SOFT,9.0,False,11.0,1,88.142,7189.102,7100.96,36.9,49.1,7.0,False,False,False,False,False,False,False,False,False,True,False
+TSU,22,AlphaTauri,39.0,3.0,SOFT,10.0,False,11.0,1,88.255,7277.357,7189.102,36.8,49.1,8.0,False,False,False,False,False,False,False,False,False,True,False
+TSU,22,AlphaTauri,40.0,3.0,SOFT,11.0,False,11.0,1,88.531,7365.888,7277.357,36.8,49.0,8.0,False,False,False,False,False,False,False,False,False,True,False
+TSU,22,AlphaTauri,41.0,3.0,SOFT,12.0,False,11.0,1,88.571,7454.459,7365.888,36.6,49.0,7.0,False,False,False,False,False,False,False,False,False,True,False
+TSU,22,AlphaTauri,42.0,3.0,SOFT,13.0,False,10.0,1,88.416,7542.875,7454.459,36.6,49.0,7.0,False,False,False,False,False,False,False,False,False,True,False
+TSU,22,AlphaTauri,43.0,3.0,SOFT,14.0,False,10.0,1,88.513,7631.388,7542.875,36.6,48.7,8.0,False,False,False,False,False,False,False,False,False,True,False
+TSU,22,AlphaTauri,44.0,3.0,SOFT,15.0,False,10.0,1,88.316,7719.704,7631.388,36.6,49.1,8.0,False,False,False,False,False,False,False,False,False,True,False
+TSU,22,AlphaTauri,45.0,3.0,SOFT,16.0,False,10.0,1,88.34,7808.044,7719.704,36.7,49.1,8.0,False,False,False,False,False,False,False,False,False,True,False
+TSU,22,AlphaTauri,46.0,3.0,SOFT,17.0,False,10.0,1,88.019,7896.063,7808.044,36.8,49.0,7.0,False,False,False,False,False,False,False,False,False,True,False
+TSU,22,AlphaTauri,47.0,3.0,SOFT,18.0,False,10.0,1,87.877,7983.94,7896.063,36.8,49.0,7.0,False,False,False,False,False,False,False,False,False,True,False
+TSU,22,AlphaTauri,48.0,3.0,SOFT,19.0,False,10.0,1,88.182,8072.122,7983.94,36.6,49.0,8.0,False,False,False,False,False,False,False,False,False,True,False
+TSU,22,AlphaTauri,49.0,3.0,SOFT,20.0,False,10.0,1,88.441,8160.563,8072.122,36.5,49.0,8.0,False,False,False,False,False,False,False,False,False,True,False
+TSU,22,AlphaTauri,50.0,3.0,SOFT,21.0,False,10.0,1,88.615,8249.178,8160.563,36.9,48.8,7.0,False,False,False,False,False,False,False,False,False,True,False
+TSU,22,AlphaTauri,51.0,3.0,SOFT,22.0,False,10.0,1,88.793,8337.971,8249.178,36.9,48.8,7.0,False,False,False,False,False,False,False,False,False,True,False
+TSU,22,AlphaTauri,52.0,3.0,SOFT,23.0,False,9.0,1,92.915,8430.886,8337.971,36.9,48.9,7.0,False,True,False,False,True,False,False,False,False,False,False
+TSU,22,AlphaTauri,53.0,4.0,SOFT,4.0,False,11.0,1,105.466,8536.352,8430.886,36.6,48.5,8.0,False,False,True,False,True,False,False,False,False,False,False
+TSU,22,AlphaTauri,54.0,4.0,SOFT,5.0,False,11.0,1,87.131,8623.483,8536.352,36.6,48.4,8.0,False,False,False,False,False,False,False,False,False,True,False
+TSU,22,AlphaTauri,55.0,4.0,SOFT,6.0,False,11.0,1,87.474,8710.957,8623.483,36.5,48.3,9.0,False,False,False,False,False,False,False,False,False,True,False
+TSU,22,AlphaTauri,56.0,4.0,SOFT,7.0,False,10.0,1,87.078,8798.035,8710.957,36.4,48.4,8.0,False,False,False,False,False,False,False,False,False,True,False
+TSU,22,AlphaTauri,57.0,4.0,SOFT,8.0,False,10.0,1,86.859,8884.894,8798.035,36.3,48.4,8.0,False,False,False,False,False,False,False,False,False,True,False
+TSU,22,AlphaTauri,58.0,4.0,SOFT,9.0,False,10.0,1,86.974,8971.868,8884.894,36.3,48.3,8.0,False,False,False,False,False,False,False,False,False,True,False
+TSU,22,AlphaTauri,59.0,4.0,SOFT,10.0,False,10.0,1,86.828,9058.696,8971.868,36.3,48.3,9.0,False,False,False,False,False,False,False,False,False,True,False
+TSU,22,AlphaTauri,60.0,4.0,SOFT,11.0,False,10.0,1,87.151,9145.847,9058.696,36.4,48.1,11.0,False,False,False,False,False,False,False,False,False,True,False
+TSU,22,AlphaTauri,61.0,4.0,SOFT,12.0,False,10.0,1,87.334,9233.181,9145.847,36.5,47.9,9.0,False,False,False,False,False,False,False,False,False,True,False
+TSU,22,AlphaTauri,62.0,4.0,SOFT,13.0,False,10.0,1,87.784,9320.965,9233.181,36.5,48.0,8.0,False,False,False,False,False,False,False,False,False,True,False
+TSU,22,AlphaTauri,63.0,4.0,SOFT,14.0,False,10.0,1,87.159,9408.124,9320.965,36.4,48.0,8.0,False,False,False,False,False,False,False,False,False,True,False
+TSU,22,AlphaTauri,64.0,4.0,SOFT,15.0,False,10.0,1,87.826,9495.95,9408.124,36.4,48.1,7.0,False,False,False,False,False,False,False,False,False,True,False
+TSU,22,AlphaTauri,65.0,4.0,SOFT,16.0,False,10.0,1,88.314,9584.264,9495.95,36.4,48.1,7.0,False,False,False,False,False,False,False,False,False,True,False
+VET,5,Aston Martin,1.0,1.0,SOFT,4.0,False,13.0,12,97.914,3831.058,3732.915,36.6,49.3,6.0,False,False,False,False,True,False,True,False,False,False,False
+VET,5,Aston Martin,2.0,1.0,SOFT,5.0,False,13.0,1,90.959,3922.017,3831.058,36.7,49.4,7.0,False,False,False,False,False,False,False,False,False,True,False
+VET,5,Aston Martin,3.0,1.0,SOFT,6.0,False,13.0,1,90.09,4012.107,3922.017,36.9,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+VET,5,Aston Martin,4.0,1.0,SOFT,7.0,False,13.0,1,89.876,4101.983,4012.107,37.0,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+VET,5,Aston Martin,5.0,1.0,SOFT,8.0,False,13.0,1,90.074,4192.057,4101.983,37.0,49.3,6.0,False,False,False,False,False,False,False,False,False,True,False
+VET,5,Aston Martin,6.0,1.0,SOFT,9.0,False,13.0,1,90.45,4282.507,4192.057,36.9,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+VET,5,Aston Martin,7.0,1.0,SOFT,10.0,False,14.0,12,91.635,4374.142,4282.507,36.8,49.5,6.0,False,False,False,False,False,False,True,False,False,False,False
+VET,5,Aston Martin,8.0,1.0,SOFT,11.0,False,14.0,1,90.72,4464.862,4374.142,37.0,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+VET,5,Aston Martin,9.0,1.0,SOFT,12.0,False,14.0,12,91.1,4555.962,4464.862,36.9,49.3,6.0,False,False,False,False,False,False,True,False,False,False,False
+VET,5,Aston Martin,10.0,1.0,SOFT,13.0,False,12.0,1,91.398,4647.36,4555.962,37.0,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+VET,5,Aston Martin,11.0,1.0,SOFT,14.0,False,11.0,1,90.561,4737.921,4647.36,36.9,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+VET,5,Aston Martin,12.0,1.0,SOFT,15.0,False,9.0,1,90.542,4828.463,4737.921,37.0,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+VET,5,Aston Martin,13.0,1.0,SOFT,16.0,False,7.0,1,90.444,4918.907,4828.463,37.0,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+VET,5,Aston Martin,14.0,1.0,SOFT,17.0,False,6.0,1,90.653,5009.56,4918.907,36.8,49.7,6.0,False,False,False,False,False,False,False,False,True,False,False
+VET,5,Aston Martin,15.0,1.0,SOFT,18.0,False,6.0,1,90.948,5100.508,5009.56,36.8,49.7,5.0,False,False,False,False,False,False,False,False,False,True,False
+VET,5,Aston Martin,16.0,1.0,SOFT,19.0,False,6.0,1,90.37,5190.878,5100.508,36.6,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+VET,5,Aston Martin,17.0,1.0,SOFT,20.0,False,7.0,1,91.784,5282.662,5190.878,36.7,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+VET,5,Aston Martin,18.0,1.0,SOFT,21.0,False,8.0,1,91.338,5374.0,5282.662,37.2,49.7,5.0,False,False,False,False,False,False,False,False,False,True,False
+VET,5,Aston Martin,19.0,1.0,SOFT,22.0,False,8.0,1,90.47,5464.47,5374.0,37.1,49.7,5.0,False,False,False,False,False,False,False,False,False,True,False
+VET,5,Aston Martin,20.0,1.0,SOFT,23.0,False,8.0,1,90.645,5555.115,5464.47,37.1,49.7,5.0,False,False,False,False,False,False,False,False,False,True,False
+VET,5,Aston Martin,21.0,1.0,SOFT,24.0,False,10.0,1,94.637,5649.752,5555.115,37.0,49.0,6.0,False,True,False,False,True,False,False,False,False,False,False
+VET,5,Aston Martin,22.0,2.0,SOFT,4.0,False,17.0,1,107.632,5757.384,5649.752,37.0,49.0,6.0,False,False,True,False,True,False,False,False,False,False,False
+VET,5,Aston Martin,23.0,2.0,SOFT,5.0,False,16.0,1,89.014,5846.398,5757.384,37.1,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+VET,5,Aston Martin,24.0,2.0,SOFT,6.0,False,16.0,1,88.814,5935.212,5846.398,37.0,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+VET,5,Aston Martin,25.0,2.0,SOFT,7.0,False,16.0,1,88.8,6024.012,5935.212,37.0,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+VET,5,Aston Martin,26.0,2.0,SOFT,8.0,False,16.0,1,89.347,6113.359,6024.012,37.0,49.4,7.0,False,False,False,False,False,False,False,False,False,True,False
+VET,5,Aston Martin,27.0,2.0,SOFT,9.0,False,15.0,1,90.684,6204.043,6113.359,37.0,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+VET,5,Aston Martin,28.0,2.0,SOFT,10.0,False,13.0,1,89.055,6293.098,6204.043,37.0,49.4,7.0,False,False,False,False,False,False,False,False,False,True,False
+VET,5,Aston Martin,29.0,2.0,SOFT,11.0,False,12.0,1,90.368,6383.466,6293.098,37.2,49.3,6.0,False,False,False,False,False,False,False,False,False,True,False
+VET,5,Aston Martin,30.0,2.0,SOFT,12.0,False,13.0,1,89.393,6472.859,6383.466,37.2,49.3,6.0,False,False,False,False,False,False,False,False,False,True,False
+VET,5,Aston Martin,31.0,2.0,SOFT,13.0,False,12.0,1,88.715,6561.574,6472.859,37.1,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+VET,5,Aston Martin,32.0,2.0,SOFT,14.0,False,10.0,1,88.556,6650.13,6561.574,37.1,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+VET,5,Aston Martin,33.0,2.0,SOFT,15.0,False,9.0,1,88.729,6738.859,6650.13,36.7,49.3,6.0,False,False,False,False,False,False,False,False,False,True,False
+VET,5,Aston Martin,34.0,2.0,SOFT,16.0,False,8.0,1,88.676,6827.535,6738.859,36.7,49.2,7.0,False,False,False,False,False,False,False,False,False,True,False
+VET,5,Aston Martin,35.0,2.0,SOFT,17.0,False,8.0,1,88.624,6916.159,6827.535,36.6,49.1,7.0,False,False,False,False,False,False,False,False,False,True,False
+VET,5,Aston Martin,36.0,2.0,SOFT,18.0,False,8.0,1,89.603,7005.762,6916.159,36.6,49.0,7.0,False,False,False,False,False,False,False,False,False,True,False
+VET,5,Aston Martin,37.0,2.0,SOFT,19.0,False,8.0,1,88.58,7094.342,7005.762,36.8,49.3,7.0,False,False,False,False,False,False,False,False,False,True,False
+VET,5,Aston Martin,38.0,2.0,SOFT,20.0,False,8.0,1,88.876,7183.218,7094.342,36.9,49.1,7.0,False,False,False,False,False,False,False,False,True,False,False
+VET,5,Aston Martin,39.0,2.0,SOFT,21.0,False,9.0,1,89.96,7273.178,7183.218,36.7,49.1,7.0,False,False,False,False,False,False,False,False,False,True,False
+VET,5,Aston Martin,40.0,2.0,SOFT,22.0,False,9.0,1,89.423,7362.601,7273.178,36.8,49.0,8.0,False,False,False,False,False,False,False,False,False,True,False
+VET,5,Aston Martin,41.0,2.0,SOFT,23.0,False,9.0,1,89.357,7451.958,7362.601,36.6,49.0,8.0,False,False,False,False,False,False,False,False,False,True,False
+VET,5,Aston Martin,42.0,2.0,SOFT,24.0,False,11.0,1,93.219,7545.177,7451.958,36.6,49.0,7.0,False,True,False,False,True,False,False,False,False,False,False
+VET,5,Aston Martin,43.0,3.0,MEDIUM,2.0,False,14.0,1,107.252,7652.429,7545.177,36.6,48.9,8.0,False,False,True,False,True,False,False,False,False,False,False
+VET,5,Aston Martin,44.0,3.0,MEDIUM,3.0,False,14.0,1,87.857,7740.286,7652.429,36.6,49.1,8.0,False,False,False,False,False,False,False,False,False,True,False
+VET,5,Aston Martin,45.0,3.0,MEDIUM,4.0,False,13.0,1,88.152,7828.438,7740.286,36.8,49.1,8.0,False,False,False,False,False,False,False,False,False,True,False
+VET,5,Aston Martin,46.0,3.0,MEDIUM,5.0,False,13.0,1,88.283,7916.721,7828.438,36.8,49.0,7.0,False,False,False,False,False,False,False,False,False,True,False
+VET,5,Aston Martin,47.0,3.0,MEDIUM,6.0,False,13.0,1,88.027,8004.748,7916.721,36.6,49.0,7.0,False,False,False,False,False,False,False,False,False,True,False
+VET,5,Aston Martin,48.0,3.0,MEDIUM,7.0,False,12.0,1,88.012,8092.76,8004.748,36.6,49.0,8.0,False,False,False,False,False,False,False,False,False,True,False
+VET,5,Aston Martin,49.0,3.0,MEDIUM,8.0,False,12.0,1,88.126,8180.886,8092.76,36.8,48.8,8.0,False,False,False,False,False,False,False,False,False,True,False
+VET,5,Aston Martin,50.0,3.0,MEDIUM,9.0,False,12.0,1,89.925,8270.811,8180.886,36.9,48.8,7.0,False,False,False,False,False,False,False,False,False,True,False
+VET,5,Aston Martin,51.0,3.0,MEDIUM,10.0,False,12.0,1,90.404,8361.215,8270.811,36.9,48.9,7.0,False,False,False,False,False,False,False,False,False,True,False
+VET,5,Aston Martin,52.0,3.0,MEDIUM,11.0,False,12.0,1,88.248,8449.463,8361.215,36.9,48.9,7.0,False,False,False,False,False,False,False,False,False,True,False
+VET,5,Aston Martin,53.0,3.0,MEDIUM,12.0,False,12.0,1,89.008,8538.471,8449.463,36.6,48.5,8.0,False,False,False,False,False,False,False,False,False,True,False
+VET,5,Aston Martin,54.0,3.0,MEDIUM,13.0,False,12.0,1,88.35,8626.821,8538.471,36.6,48.4,8.0,False,False,False,False,False,False,False,False,False,True,False
+VET,5,Aston Martin,55.0,3.0,MEDIUM,14.0,False,12.0,1,88.187,8715.008,8626.821,36.5,48.3,9.0,False,False,False,False,False,False,False,False,False,True,False
+VET,5,Aston Martin,56.0,3.0,MEDIUM,15.0,False,12.0,1,88.392,8803.4,8715.008,36.4,48.4,8.0,False,False,False,False,False,False,False,False,False,True,False
+VET,5,Aston Martin,57.0,3.0,MEDIUM,16.0,False,12.0,1,88.67,8892.07,8803.4,36.3,48.4,8.0,False,False,False,False,False,False,False,False,False,True,False
+VET,5,Aston Martin,58.0,3.0,MEDIUM,17.0,False,12.0,1,89.301,8981.371,8892.07,36.3,48.3,8.0,False,False,False,False,False,False,False,False,False,True,False
+VET,5,Aston Martin,59.0,3.0,MEDIUM,18.0,False,11.0,1,87.629,9069.0,8981.371,36.3,48.3,9.0,False,False,False,False,False,False,False,False,False,True,False
+VET,5,Aston Martin,60.0,3.0,MEDIUM,19.0,False,11.0,1,89.599,9158.599,9069.0,36.4,48.1,11.0,False,False,False,False,False,False,False,False,False,True,False
+VET,5,Aston Martin,61.0,3.0,MEDIUM,20.0,False,11.0,1,88.249,9246.848,9158.599,36.5,47.9,9.0,False,False,False,False,False,False,False,False,False,True,False
+VET,5,Aston Martin,62.0,3.0,MEDIUM,21.0,False,11.0,1,88.376,9335.224,9246.848,36.5,48.0,8.0,False,False,False,False,False,False,False,False,False,True,False
+VET,5,Aston Martin,63.0,3.0,MEDIUM,22.0,False,11.0,1,88.465,9423.689,9335.224,36.4,48.0,8.0,False,False,False,False,False,False,False,False,False,True,False
+VET,5,Aston Martin,64.0,3.0,MEDIUM,23.0,False,11.0,1,88.353,9512.042,9423.689,36.4,48.1,7.0,False,False,False,False,False,False,False,False,False,True,False
+VET,5,Aston Martin,65.0,3.0,MEDIUM,24.0,False,11.0,1,88.2,9600.242,9512.042,36.4,48.1,7.0,False,False,False,False,False,False,False,False,False,True,False
+RIC,3,McLaren,1.0,1.0,SOFT,4.0,False,8.0,12,95.429,3828.573,3732.915,36.6,49.3,6.0,False,False,False,False,True,False,True,False,False,False,False
+RIC,3,McLaren,2.0,1.0,SOFT,5.0,False,8.0,1,89.663,3918.236,3828.573,36.7,49.4,7.0,False,False,False,False,False,False,False,False,False,True,False
+RIC,3,McLaren,3.0,1.0,SOFT,6.0,False,8.0,1,89.28,4007.516,3918.236,36.9,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+RIC,3,McLaren,4.0,1.0,SOFT,7.0,False,8.0,1,89.651,4097.167,4007.516,37.0,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+RIC,3,McLaren,5.0,1.0,SOFT,8.0,False,9.0,1,90.979,4188.146,4097.167,37.0,49.3,6.0,False,False,False,False,False,False,False,False,False,True,False
+RIC,3,McLaren,6.0,1.0,SOFT,9.0,False,9.0,1,89.981,4278.127,4188.146,36.9,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+RIC,3,McLaren,7.0,1.0,SOFT,10.0,False,8.0,12,90.399,4368.526,4278.127,36.8,49.5,6.0,False,False,False,False,False,False,True,False,False,False,False
+RIC,3,McLaren,8.0,1.0,SOFT,11.0,False,8.0,1,90.159,4458.685,4368.526,37.0,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+RIC,3,McLaren,9.0,1.0,SOFT,12.0,False,9.0,12,91.767,4550.452,4458.685,36.9,49.3,6.0,False,False,False,False,False,False,True,False,False,False,False
+RIC,3,McLaren,10.0,1.0,SOFT,13.0,False,9.0,1,91.519,4641.971,4550.452,37.0,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+RIC,3,McLaren,11.0,1.0,SOFT,14.0,False,10.0,1,95.648,4737.619,4641.971,36.9,49.7,6.0,False,True,False,False,True,False,False,False,False,False,False
+RIC,3,McLaren,12.0,2.0,SOFT,4.0,False,15.0,1,107.813,4845.432,4737.619,37.0,49.7,6.0,False,False,True,False,True,False,False,False,False,False,False
+RIC,3,McLaren,13.0,2.0,SOFT,5.0,False,13.0,1,89.034,4934.466,4845.432,36.9,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+RIC,3,McLaren,14.0,2.0,SOFT,6.0,False,13.0,1,89.366,5023.832,4934.466,36.8,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+RIC,3,McLaren,15.0,2.0,SOFT,7.0,False,12.0,1,89.387,5113.219,5023.832,36.7,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+RIC,3,McLaren,16.0,2.0,SOFT,8.0,False,12.0,1,89.861,5203.08,5113.219,36.6,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+RIC,3,McLaren,17.0,2.0,SOFT,9.0,False,12.0,1,89.864,5292.944,5203.08,36.7,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+RIC,3,McLaren,18.0,2.0,SOFT,10.0,False,12.0,1,90.118,5383.062,5292.944,37.2,49.7,5.0,False,False,False,False,False,False,False,False,False,True,False
+RIC,3,McLaren,19.0,2.0,SOFT,11.0,False,13.0,1,91.258,5474.32,5383.062,37.1,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+RIC,3,McLaren,20.0,2.0,SOFT,12.0,False,13.0,1,90.123,5564.443,5474.32,37.1,49.7,5.0,False,False,False,False,False,False,False,False,False,True,False
+RIC,3,McLaren,21.0,2.0,SOFT,13.0,False,13.0,1,90.173,5654.616,5564.443,37.1,49.0,6.0,False,False,False,False,False,False,False,False,False,True,False
+RIC,3,McLaren,22.0,2.0,SOFT,14.0,False,12.0,1,90.139,5744.755,5654.616,37.0,49.0,6.0,False,False,False,False,False,False,False,False,False,True,False
+RIC,3,McLaren,23.0,2.0,SOFT,15.0,False,12.0,1,90.16,5834.915,5744.755,37.1,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+RIC,3,McLaren,24.0,2.0,SOFT,16.0,False,12.0,1,89.992,5924.907,5834.915,37.0,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+RIC,3,McLaren,25.0,2.0,SOFT,17.0,False,12.0,1,90.297,6015.204,5924.907,37.0,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+RIC,3,McLaren,26.0,2.0,SOFT,18.0,False,12.0,1,90.299,6105.503,6015.204,37.0,49.4,7.0,False,False,False,False,False,False,False,False,False,True,False
+RIC,3,McLaren,27.0,2.0,SOFT,19.0,False,12.0,1,90.188,6195.691,6105.503,37.0,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+RIC,3,McLaren,28.0,2.0,SOFT,20.0,False,11.0,1,90.606,6286.297,6195.691,37.0,49.4,7.0,False,False,False,False,False,False,False,False,False,True,False
+RIC,3,McLaren,29.0,2.0,SOFT,21.0,False,11.0,1,90.702,6376.999,6286.297,37.2,49.3,6.0,False,False,False,False,False,False,False,False,False,True,False
+RIC,3,McLaren,30.0,2.0,SOFT,22.0,False,10.0,1,90.342,6467.341,6376.999,37.2,49.3,6.0,False,False,False,False,False,False,False,False,False,True,False
+RIC,3,McLaren,31.0,2.0,SOFT,23.0,False,11.0,1,94.152,6561.493,6467.341,37.1,49.5,6.0,False,True,False,False,True,False,False,False,False,False,False
+RIC,3,McLaren,32.0,3.0,MEDIUM,1.0,True,13.0,1,107.364,6668.857,6561.493,37.1,49.5,6.0,False,False,True,False,True,False,False,False,False,False,False
+RIC,3,McLaren,33.0,3.0,MEDIUM,2.0,True,13.0,1,88.741,6757.598,6668.857,36.7,49.3,6.0,False,False,False,False,False,False,False,False,False,True,False
+RIC,3,McLaren,34.0,3.0,MEDIUM,3.0,True,13.0,1,88.271,6845.869,6757.598,36.7,49.2,7.0,False,False,False,False,False,False,False,False,False,True,False
+RIC,3,McLaren,35.0,3.0,MEDIUM,4.0,True,13.0,1,88.397,6934.266,6845.869,36.6,49.1,7.0,False,False,False,False,False,False,False,False,False,True,False
+RIC,3,McLaren,36.0,3.0,MEDIUM,5.0,True,13.0,1,88.475,7022.741,6934.266,36.6,49.0,7.0,False,False,False,False,False,False,False,False,False,True,False
+RIC,3,McLaren,37.0,3.0,MEDIUM,6.0,True,13.0,1,88.418,7111.159,7022.741,36.8,49.3,7.0,False,False,False,False,False,False,False,False,False,True,False
+RIC,3,McLaren,38.0,3.0,MEDIUM,7.0,True,13.0,1,88.575,7199.734,7111.159,36.9,49.1,7.0,False,False,False,False,False,False,False,False,False,True,False
+RIC,3,McLaren,39.0,3.0,MEDIUM,8.0,True,13.0,1,88.594,7288.328,7199.734,36.8,49.1,8.0,False,False,False,False,False,False,False,False,False,True,False
+RIC,3,McLaren,40.0,3.0,MEDIUM,9.0,True,13.0,1,88.871,7377.199,7288.328,36.8,49.0,8.0,False,False,False,False,False,False,False,False,False,True,False
+RIC,3,McLaren,41.0,3.0,MEDIUM,10.0,True,13.0,1,89.17,7466.369,7377.199,36.6,49.0,7.0,False,False,False,False,False,False,False,False,False,True,False
+RIC,3,McLaren,42.0,3.0,MEDIUM,11.0,True,13.0,1,88.95,7555.319,7466.369,36.6,49.0,7.0,False,False,False,False,False,False,False,False,False,True,False
+RIC,3,McLaren,43.0,3.0,MEDIUM,12.0,True,12.0,1,89.014,7644.333,7555.319,36.6,48.9,8.0,False,False,False,False,False,False,False,False,False,True,False
+RIC,3,McLaren,44.0,3.0,MEDIUM,13.0,True,12.0,1,89.384,7733.717,7644.333,36.6,49.1,8.0,False,False,False,False,False,False,False,False,False,True,False
+RIC,3,McLaren,45.0,3.0,MEDIUM,14.0,True,12.0,1,89.152,7822.869,7733.717,36.8,49.1,8.0,False,False,False,False,False,False,False,False,False,True,False
+RIC,3,McLaren,46.0,3.0,MEDIUM,15.0,True,12.0,1,89.303,7912.172,7822.869,36.8,49.0,7.0,False,False,False,False,False,False,False,False,False,True,False
+RIC,3,McLaren,47.0,3.0,MEDIUM,16.0,True,12.0,1,89.148,8001.32,7912.172,36.6,49.0,7.0,False,False,False,False,False,False,False,False,False,True,False
+RIC,3,McLaren,48.0,3.0,MEDIUM,17.0,True,13.0,1,92.494,8093.814,8001.32,36.6,49.0,8.0,False,True,False,False,True,False,False,False,False,False,False
+RIC,3,McLaren,49.0,4.0,SOFT,4.0,False,13.0,1,107.158,8200.972,8093.814,36.8,48.8,8.0,False,False,True,False,True,False,False,False,False,False,False
+RIC,3,McLaren,50.0,4.0,SOFT,5.0,False,13.0,1,87.636,8288.608,8200.972,36.9,48.8,7.0,False,False,False,False,False,False,False,False,False,True,False
+RIC,3,McLaren,51.0,4.0,SOFT,6.0,False,13.0,1,87.36,8375.968,8288.608,36.9,48.9,7.0,False,False,False,False,False,False,False,False,False,True,False
+RIC,3,McLaren,52.0,4.0,SOFT,7.0,False,13.0,1,87.388,8463.356,8375.968,36.9,48.9,7.0,False,False,False,False,False,False,False,False,False,True,False
+RIC,3,McLaren,53.0,4.0,SOFT,8.0,False,13.0,1,87.376,8550.732,8463.356,36.6,48.5,8.0,False,False,False,False,False,False,False,False,False,True,False
+RIC,3,McLaren,54.0,4.0,SOFT,9.0,False,13.0,1,87.285,8638.017,8550.732,36.6,48.4,8.0,False,False,False,False,False,False,False,False,False,True,False
+RIC,3,McLaren,55.0,4.0,SOFT,10.0,False,13.0,1,88.545,8726.562,8638.017,36.5,48.3,9.0,False,False,False,False,False,False,False,False,False,True,False
+RIC,3,McLaren,56.0,4.0,SOFT,11.0,False,13.0,1,89.196,8815.758,8726.562,36.4,48.4,8.0,False,False,False,False,False,False,False,False,False,True,False
+RIC,3,McLaren,57.0,4.0,SOFT,12.0,False,13.0,1,89.49,8905.248,8815.758,36.3,48.4,7.0,False,False,False,False,False,False,False,False,False,True,False
+RIC,3,McLaren,58.0,4.0,SOFT,13.0,False,13.0,1,88.071,8993.319,8905.248,36.3,48.3,8.0,False,False,False,False,False,False,False,False,False,True,False
+RIC,3,McLaren,59.0,4.0,SOFT,14.0,False,13.0,1,87.956,9081.275,8993.319,36.4,48.2,9.0,False,False,False,False,False,False,False,False,False,True,False
+RIC,3,McLaren,60.0,4.0,SOFT,15.0,False,13.0,1,88.076,9169.351,9081.275,36.4,48.1,11.0,False,False,False,False,False,False,False,False,False,True,False
+RIC,3,McLaren,61.0,4.0,SOFT,16.0,False,13.0,1,88.175,9257.526,9169.351,36.5,48.0,9.0,False,False,False,False,False,False,False,False,False,True,False
+RIC,3,McLaren,62.0,4.0,SOFT,17.0,False,13.0,1,88.526,9346.052,9257.526,36.5,48.0,8.0,False,False,False,False,False,False,False,False,False,True,False
+RIC,3,McLaren,63.0,4.0,SOFT,18.0,False,13.0,1,89.164,9435.216,9346.052,36.5,47.9,8.0,False,False,False,False,False,False,False,False,False,True,False
+RIC,3,McLaren,64.0,4.0,SOFT,19.0,False,12.0,1,89.12,9524.336,9435.216,36.4,48.1,7.0,False,False,False,False,False,False,False,False,False,True,False
+RIC,3,McLaren,65.0,4.0,SOFT,20.0,False,12.0,1,88.96,9613.296,9524.336,36.4,48.1,7.0,False,False,False,False,False,False,False,False,False,True,False
+GAS,10,AlphaTauri,1.0,1.0,SOFT,1.0,True,12.0,12,97.54,3830.684,3732.915,36.6,49.3,6.0,False,False,False,False,True,False,True,False,False,False,False
+GAS,10,AlphaTauri,2.0,1.0,SOFT,2.0,True,12.0,1,90.898,3921.582,3830.684,36.7,49.4,7.0,False,False,False,False,False,False,False,False,False,True,False
+GAS,10,AlphaTauri,3.0,1.0,SOFT,3.0,True,12.0,1,89.831,4011.413,3921.582,36.9,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+GAS,10,AlphaTauri,4.0,1.0,SOFT,4.0,True,12.0,1,89.589,4101.002,4011.413,37.0,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+GAS,10,AlphaTauri,5.0,1.0,SOFT,5.0,True,12.0,1,89.981,4190.983,4101.002,37.0,49.3,6.0,False,False,False,False,False,False,False,False,False,True,False
+GAS,10,AlphaTauri,6.0,1.0,SOFT,6.0,True,12.0,1,89.945,4280.928,4190.983,36.9,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+GAS,10,AlphaTauri,7.0,1.0,SOFT,7.0,True,12.0,12,91.338,4372.266,4280.928,36.8,49.5,6.0,False,False,False,False,False,False,True,False,False,False,False
+GAS,10,AlphaTauri,8.0,1.0,SOFT,8.0,True,12.0,1,90.773,4463.039,4372.266,37.0,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+GAS,10,AlphaTauri,9.0,1.0,SOFT,9.0,True,13.0,12,91.738,4554.777,4463.039,36.9,49.3,6.0,False,False,False,False,False,False,True,False,False,False,False
+GAS,10,AlphaTauri,10.0,1.0,SOFT,10.0,True,14.0,1,95.542,4650.319,4554.777,37.0,49.7,6.0,False,True,False,False,True,False,False,False,False,False,False
+GAS,10,AlphaTauri,11.0,2.0,MEDIUM,1.0,True,17.0,1,106.89,4757.209,4650.319,37.0,49.7,6.0,False,False,True,False,True,False,False,False,False,False,False
+GAS,10,AlphaTauri,12.0,2.0,MEDIUM,2.0,True,16.0,1,89.513,4846.722,4757.209,37.0,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+GAS,10,AlphaTauri,13.0,2.0,MEDIUM,3.0,True,15.0,1,90.112,4936.834,4846.722,36.9,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+GAS,10,AlphaTauri,14.0,2.0,MEDIUM,4.0,True,15.0,1,89.332,5026.166,4936.834,36.8,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+GAS,10,AlphaTauri,15.0,2.0,MEDIUM,5.0,True,14.0,1,89.404,5115.57,5026.166,36.7,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+GAS,10,AlphaTauri,16.0,2.0,MEDIUM,6.0,True,14.0,1,89.868,5205.438,5115.57,36.6,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+GAS,10,AlphaTauri,17.0,2.0,MEDIUM,7.0,True,14.0,1,89.961,5295.399,5205.438,36.9,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+GAS,10,AlphaTauri,18.0,2.0,MEDIUM,8.0,True,14.0,1,90.089,5385.488,5295.399,37.2,49.7,5.0,False,False,False,False,False,False,False,False,False,True,False
+GAS,10,AlphaTauri,19.0,2.0,MEDIUM,9.0,True,14.0,1,90.447,5475.935,5385.488,37.1,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+GAS,10,AlphaTauri,20.0,2.0,MEDIUM,10.0,True,14.0,1,90.364,5566.299,5475.935,37.1,49.7,5.0,False,False,False,False,False,False,False,False,False,True,False
+GAS,10,AlphaTauri,21.0,2.0,MEDIUM,11.0,True,14.0,1,90.531,5656.83,5566.299,37.1,49.0,6.0,False,False,False,False,False,False,False,False,False,True,False
+GAS,10,AlphaTauri,22.0,2.0,MEDIUM,12.0,True,14.0,1,91.754,5748.584,5656.83,37.0,49.0,6.0,False,False,False,False,False,False,False,False,False,True,False
+GAS,10,AlphaTauri,23.0,2.0,MEDIUM,13.0,True,14.0,1,90.36,5838.944,5748.584,37.1,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+GAS,10,AlphaTauri,24.0,2.0,MEDIUM,14.0,True,14.0,1,90.532,5929.476,5838.944,37.0,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+GAS,10,AlphaTauri,25.0,2.0,MEDIUM,15.0,True,14.0,1,90.252,6019.728,5929.476,37.0,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+GAS,10,AlphaTauri,26.0,2.0,MEDIUM,16.0,True,14.0,1,90.82,6110.548,6019.728,37.0,49.4,7.0,False,False,False,False,False,False,False,False,False,True,False
+GAS,10,AlphaTauri,27.0,2.0,MEDIUM,17.0,True,14.0,1,91.82,6202.368,6110.548,37.0,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+GAS,10,AlphaTauri,28.0,2.0,MEDIUM,18.0,True,12.0,1,90.191,6292.559,6202.368,37.0,49.4,7.0,False,False,False,False,False,False,False,False,False,True,False
+GAS,10,AlphaTauri,29.0,2.0,MEDIUM,19.0,True,14.0,1,94.406,6386.965,6292.559,37.2,49.3,6.0,False,True,False,False,True,False,False,False,False,False,False
+GAS,10,AlphaTauri,30.0,3.0,SOFT,4.0,False,14.0,1,112.145,6499.11,6386.965,37.2,49.3,6.0,False,False,True,False,True,False,False,False,False,False,False
+GAS,10,AlphaTauri,31.0,3.0,SOFT,5.0,False,14.0,1,88.16,6587.27,6499.11,37.1,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+GAS,10,AlphaTauri,32.0,3.0,SOFT,6.0,False,14.0,1,88.005,6675.275,6587.27,37.0,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+GAS,10,AlphaTauri,33.0,3.0,SOFT,7.0,False,14.0,1,88.19,6763.465,6675.275,36.7,49.3,6.0,False,False,False,False,False,False,False,False,False,True,False
+GAS,10,AlphaTauri,34.0,3.0,SOFT,8.0,False,14.0,1,88.216,6851.681,6763.465,36.7,49.2,7.0,False,False,False,False,False,False,False,False,False,True,False
+GAS,10,AlphaTauri,35.0,3.0,SOFT,9.0,False,14.0,1,88.136,6939.817,6851.681,36.6,49.1,7.0,False,False,False,False,False,False,False,False,False,True,False
+GAS,10,AlphaTauri,36.0,3.0,SOFT,10.0,False,14.0,1,88.448,7028.265,6939.817,36.6,49.0,7.0,False,False,False,False,False,False,False,False,False,True,False
+GAS,10,AlphaTauri,37.0,3.0,SOFT,11.0,False,14.0,1,88.327,7116.592,7028.265,36.8,49.3,7.0,False,False,False,False,False,False,False,False,False,True,False
+GAS,10,AlphaTauri,38.0,3.0,SOFT,12.0,False,14.0,1,88.808,7205.4,7116.592,36.9,49.1,7.0,False,False,False,False,False,False,False,False,False,True,False
+GAS,10,AlphaTauri,39.0,3.0,SOFT,13.0,False,14.0,1,88.632,7294.032,7205.4,36.8,49.1,8.0,False,False,False,False,False,False,False,False,False,True,False
+GAS,10,AlphaTauri,40.0,3.0,SOFT,14.0,False,14.0,1,88.617,7382.649,7294.032,36.8,49.0,8.0,False,False,False,False,False,False,False,False,False,True,False
+GAS,10,AlphaTauri,41.0,3.0,SOFT,15.0,False,14.0,1,90.683,7473.332,7382.649,36.6,49.0,7.0,False,False,False,False,False,False,False,False,False,True,False
+GAS,10,AlphaTauri,42.0,3.0,SOFT,16.0,False,14.0,1,88.748,7562.08,7473.332,36.6,49.0,7.0,False,False,False,False,False,False,False,False,False,True,False
+GAS,10,AlphaTauri,43.0,3.0,SOFT,17.0,False,13.0,1,88.986,7651.066,7562.08,36.6,48.9,8.0,False,False,False,False,False,False,False,False,False,True,False
+GAS,10,AlphaTauri,44.0,3.0,SOFT,18.0,False,13.0,1,88.985,7740.051,7651.066,36.6,49.1,8.0,False,False,False,False,False,False,False,False,False,True,False
+GAS,10,AlphaTauri,45.0,3.0,SOFT,19.0,False,14.0,1,90.422,7830.473,7740.051,36.8,49.1,8.0,False,False,False,False,False,False,False,False,False,True,False
+GAS,10,AlphaTauri,46.0,3.0,SOFT,20.0,False,14.0,1,93.241,7923.714,7830.473,36.8,49.0,7.0,False,True,False,False,True,False,False,False,False,False,False
+GAS,10,AlphaTauri,47.0,4.0,SOFT,4.0,False,14.0,1,106.282,8029.996,7923.714,36.6,49.0,7.0,False,False,True,False,True,False,False,False,False,False,False
+GAS,10,AlphaTauri,48.0,4.0,SOFT,5.0,False,14.0,1,87.003,8116.999,8029.996,36.5,49.0,8.0,False,False,False,False,False,False,False,False,False,True,False
+GAS,10,AlphaTauri,49.0,4.0,SOFT,6.0,False,14.0,1,87.243,8204.242,8116.999,36.8,48.8,8.0,False,False,False,False,False,False,False,False,False,True,False
+GAS,10,AlphaTauri,50.0,4.0,SOFT,7.0,False,14.0,1,87.025,8291.267,8204.242,36.9,48.8,7.0,False,False,False,False,False,False,False,False,False,True,False
+GAS,10,AlphaTauri,51.0,4.0,SOFT,8.0,False,14.0,1,86.987,8378.254,8291.267,36.9,48.9,7.0,False,False,False,False,False,False,False,False,False,True,False
+GAS,10,AlphaTauri,52.0,4.0,SOFT,9.0,False,14.0,1,86.998,8465.252,8378.254,36.9,48.9,7.0,False,False,False,False,False,False,False,False,False,True,False
+GAS,10,AlphaTauri,53.0,4.0,SOFT,10.0,False,14.0,1,87.009,8552.261,8465.252,36.6,48.5,8.0,False,False,False,False,False,False,False,False,False,True,False
+GAS,10,AlphaTauri,54.0,4.0,SOFT,11.0,False,14.0,1,87.275,8639.536,8552.261,36.6,48.4,8.0,False,False,False,False,False,False,False,False,False,True,False
+GAS,10,AlphaTauri,55.0,4.0,SOFT,12.0,False,14.0,1,89.596,8729.132,8639.536,36.5,48.3,9.0,False,False,False,False,False,False,False,False,False,True,False
+GAS,10,AlphaTauri,56.0,4.0,SOFT,13.0,False,14.0,1,89.681,8818.813,8729.132,36.4,48.4,8.0,False,False,False,False,False,False,False,False,False,True,False
+GAS,10,AlphaTauri,57.0,4.0,SOFT,14.0,False,14.0,1,88.002,8906.815,8818.813,36.3,48.4,7.0,False,False,False,False,False,False,False,False,False,True,False
+GAS,10,AlphaTauri,58.0,4.0,SOFT,15.0,False,14.0,1,87.911,8994.726,8906.815,36.3,48.3,8.0,False,False,False,False,False,False,False,False,False,True,False
+GAS,10,AlphaTauri,59.0,4.0,SOFT,16.0,False,14.0,1,88.154,9082.88,8994.726,36.4,48.2,9.0,False,False,False,False,False,False,False,False,False,True,False
+GAS,10,AlphaTauri,60.0,4.0,SOFT,17.0,False,14.0,1,88.3,9171.18,9082.88,36.4,48.1,11.0,False,False,False,False,False,False,False,False,False,True,False
+GAS,10,AlphaTauri,61.0,4.0,SOFT,18.0,False,14.0,1,88.145,9259.325,9171.18,36.5,48.0,9.0,False,False,False,False,False,False,False,False,False,True,False
+GAS,10,AlphaTauri,62.0,4.0,SOFT,19.0,False,14.0,1,88.352,9347.677,9259.325,36.5,48.0,8.0,False,False,False,False,False,False,False,False,False,True,False
+GAS,10,AlphaTauri,63.0,4.0,SOFT,20.0,False,14.0,1,88.873,9436.55,9347.677,36.5,47.9,8.0,False,False,False,False,False,False,False,False,False,True,False
+GAS,10,AlphaTauri,64.0,4.0,SOFT,21.0,False,14.0,1,89.664,9526.214,9436.55,36.4,48.1,7.0,False,False,False,False,False,False,False,False,False,True,False
+GAS,10,AlphaTauri,65.0,4.0,SOFT,22.0,False,13.0,1,88.352,9614.566,9526.214,36.4,47.8,8.0,False,False,False,False,False,False,False,False,False,True,False
+MSC,47,Haas F1 Team,1.0,1.0,SOFT,3.0,False,6.0,12,94.018,3827.162,3732.915,36.6,49.3,6.0,False,False,False,False,True,False,True,False,False,False,False
+MSC,47,Haas F1 Team,2.0,1.0,SOFT,4.0,False,6.0,1,89.013,3916.175,3827.162,36.7,49.4,7.0,False,False,False,False,False,False,False,False,False,True,False
+MSC,47,Haas F1 Team,3.0,1.0,SOFT,5.0,False,6.0,1,89.329,4005.504,3916.175,36.9,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+MSC,47,Haas F1 Team,4.0,1.0,SOFT,6.0,False,7.0,1,90.6,4096.104,4005.504,37.0,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+MSC,47,Haas F1 Team,5.0,1.0,SOFT,7.0,False,7.0,1,90.017,4186.121,4096.104,37.0,49.3,6.0,False,False,False,False,False,False,False,False,False,True,False
+MSC,47,Haas F1 Team,6.0,1.0,SOFT,8.0,False,8.0,1,90.939,4277.06,4186.121,36.9,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+MSC,47,Haas F1 Team,7.0,1.0,SOFT,9.0,False,7.0,12,90.338,4367.398,4277.06,36.8,49.5,6.0,False,False,False,False,False,False,True,False,False,False,False
+MSC,47,Haas F1 Team,8.0,1.0,SOFT,10.0,False,7.0,1,90.32,4457.718,4367.398,37.0,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+MSC,47,Haas F1 Team,9.0,1.0,SOFT,11.0,False,7.0,12,90.732,4548.45,4457.718,36.9,49.3,6.0,False,False,False,False,False,False,True,False,False,False,False
+MSC,47,Haas F1 Team,10.0,1.0,SOFT,12.0,False,8.0,1,92.107,4640.557,4548.45,37.0,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+MSC,47,Haas F1 Team,11.0,1.0,SOFT,13.0,False,8.0,1,90.888,4731.445,4640.557,36.9,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+MSC,47,Haas F1 Team,12.0,1.0,SOFT,14.0,False,8.0,1,94.895,4826.34,4731.445,37.0,49.7,6.0,False,True,False,False,True,False,False,False,False,False,False
+MSC,47,Haas F1 Team,13.0,2.0,SOFT,4.0,False,14.0,1,109.062,4935.402,4826.34,36.9,49.7,6.0,False,False,True,False,True,False,False,False,False,False,False
+MSC,47,Haas F1 Team,14.0,2.0,SOFT,5.0,False,14.0,1,89.048,5024.45,4935.402,36.8,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+MSC,47,Haas F1 Team,15.0,2.0,SOFT,6.0,False,13.0,1,89.453,5113.903,5024.45,36.7,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+MSC,47,Haas F1 Team,16.0,2.0,SOFT,7.0,False,13.0,1,89.815,5203.718,5113.903,36.6,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+MSC,47,Haas F1 Team,17.0,2.0,SOFT,8.0,False,13.0,1,90.113,5293.831,5203.718,36.9,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+MSC,47,Haas F1 Team,18.0,2.0,SOFT,9.0,False,13.0,1,89.688,5383.519,5293.831,37.2,49.7,5.0,False,False,False,False,False,False,False,False,False,True,False
+MSC,47,Haas F1 Team,19.0,2.0,SOFT,10.0,False,12.0,1,89.215,5472.734,5383.519,37.1,49.7,5.0,False,False,False,False,False,False,False,False,False,True,False
+MSC,47,Haas F1 Team,20.0,2.0,SOFT,11.0,False,12.0,1,90.038,5562.772,5472.734,37.1,49.7,5.0,False,False,False,False,False,False,False,False,False,True,False
+MSC,47,Haas F1 Team,21.0,2.0,SOFT,12.0,False,12.0,1,90.042,5652.814,5562.772,37.0,49.0,6.0,False,False,False,False,False,False,False,False,False,True,False
+MSC,47,Haas F1 Team,22.0,2.0,SOFT,13.0,False,11.0,1,90.122,5742.936,5652.814,37.0,49.0,6.0,False,False,False,False,False,False,False,False,False,True,False
+MSC,47,Haas F1 Team,23.0,2.0,SOFT,14.0,False,11.0,1,89.993,5832.929,5742.936,37.1,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+MSC,47,Haas F1 Team,24.0,2.0,SOFT,15.0,False,11.0,1,89.768,5922.697,5832.929,37.0,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+MSC,47,Haas F1 Team,25.0,2.0,SOFT,16.0,False,11.0,1,89.97,6012.667,5922.697,37.0,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+MSC,47,Haas F1 Team,26.0,2.0,SOFT,17.0,False,11.0,1,90.457,6103.124,6012.667,37.0,49.4,7.0,False,False,False,False,False,False,False,False,False,True,False
+MSC,47,Haas F1 Team,27.0,2.0,SOFT,18.0,False,11.0,1,90.17,6193.294,6103.124,37.0,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+MSC,47,Haas F1 Team,28.0,2.0,SOFT,19.0,False,10.0,1,90.905,6284.199,6193.294,37.0,49.4,7.0,False,False,False,False,False,False,False,False,False,True,False
+MSC,47,Haas F1 Team,29.0,2.0,SOFT,20.0,False,10.0,1,90.515,6374.714,6284.199,37.2,49.3,6.0,False,False,False,False,False,False,False,False,False,True,False
+MSC,47,Haas F1 Team,30.0,2.0,SOFT,21.0,False,11.0,1,94.265,6468.979,6374.714,37.2,49.3,6.0,False,True,False,False,True,False,False,False,False,False,False
+MSC,47,Haas F1 Team,31.0,3.0,MEDIUM,1.0,True,13.0,1,106.912,6575.891,6468.979,37.1,49.5,6.0,False,False,True,False,True,False,False,False,True,False,False
+MSC,47,Haas F1 Team,32.0,3.0,MEDIUM,2.0,True,12.0,1,87.447,6663.338,6575.891,37.1,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+MSC,47,Haas F1 Team,33.0,3.0,MEDIUM,3.0,True,12.0,1,87.654,6750.992,6663.338,36.7,49.3,6.0,False,False,False,False,False,False,False,False,False,True,False
+MSC,47,Haas F1 Team,34.0,3.0,MEDIUM,4.0,True,12.0,1,87.939,6838.931,6750.992,36.7,49.2,7.0,False,False,False,False,False,False,False,False,False,True,False
+MSC,47,Haas F1 Team,35.0,3.0,MEDIUM,5.0,True,12.0,1,88.456,6927.387,6838.931,36.6,49.1,7.0,False,False,False,False,False,False,False,False,False,True,False
+MSC,47,Haas F1 Team,36.0,3.0,MEDIUM,6.0,True,12.0,1,88.359,7015.746,6927.387,36.6,49.0,7.0,False,False,False,False,False,False,False,False,False,True,False
+MSC,47,Haas F1 Team,37.0,3.0,MEDIUM,7.0,True,12.0,1,88.609,7104.355,7015.746,36.8,49.3,7.0,False,False,False,False,False,False,False,False,False,True,False
+MSC,47,Haas F1 Team,38.0,3.0,MEDIUM,8.0,True,12.0,1,88.703,7193.058,7104.355,36.9,49.1,7.0,False,False,False,False,False,False,False,False,False,True,False
+MSC,47,Haas F1 Team,39.0,3.0,MEDIUM,9.0,True,12.0,1,89.311,7282.369,7193.058,36.8,49.1,8.0,False,False,False,False,False,False,False,False,False,True,False
+MSC,47,Haas F1 Team,40.0,3.0,MEDIUM,10.0,True,12.0,1,89.501,7371.87,7282.369,36.8,49.0,8.0,False,False,False,False,False,False,False,False,False,True,False
+MSC,47,Haas F1 Team,41.0,3.0,MEDIUM,11.0,True,12.0,1,89.351,7461.221,7371.87,36.6,49.0,7.0,False,False,False,False,False,False,False,False,False,True,False
+MSC,47,Haas F1 Team,42.0,3.0,MEDIUM,12.0,True,12.0,1,88.695,7549.916,7461.221,36.6,49.0,7.0,False,False,False,False,False,False,False,False,False,True,False
+MSC,47,Haas F1 Team,43.0,3.0,MEDIUM,13.0,True,11.0,1,88.835,7638.751,7549.916,36.6,48.9,8.0,False,False,False,False,False,False,False,False,False,True,False
+MSC,47,Haas F1 Team,44.0,3.0,MEDIUM,14.0,True,11.0,1,89.146,7727.897,7638.751,36.6,49.1,8.0,False,False,False,False,False,False,False,False,False,True,False
+MSC,47,Haas F1 Team,45.0,3.0,MEDIUM,15.0,True,11.0,1,88.939,7816.836,7727.897,36.8,49.1,8.0,False,False,False,False,False,False,False,False,False,True,False
+MSC,47,Haas F1 Team,46.0,3.0,MEDIUM,16.0,True,11.0,1,89.038,7905.874,7816.836,36.8,49.0,7.0,False,False,False,False,False,False,False,False,False,True,False
+MSC,47,Haas F1 Team,47.0,3.0,MEDIUM,17.0,True,11.0,1,89.074,7994.948,7905.874,36.6,49.0,7.0,False,False,False,False,False,False,False,False,False,True,False
+MSC,47,Haas F1 Team,48.0,3.0,MEDIUM,18.0,True,11.0,1,88.779,8083.727,7994.948,36.6,49.0,8.0,False,False,False,False,False,False,False,False,False,True,False
+MSC,47,Haas F1 Team,49.0,3.0,MEDIUM,19.0,True,11.0,1,89.192,8172.919,8083.727,36.5,49.0,8.0,False,False,False,False,False,False,False,False,False,True,False
+MSC,47,Haas F1 Team,50.0,3.0,MEDIUM,20.0,True,11.0,1,89.326,8262.245,8172.919,36.9,48.8,7.0,False,False,False,False,False,False,False,False,False,True,False
+MSC,47,Haas F1 Team,51.0,3.0,MEDIUM,21.0,True,11.0,1,88.974,8351.219,8262.245,36.9,48.8,7.0,False,False,False,False,False,False,False,False,False,True,False
+MSC,47,Haas F1 Team,52.0,3.0,MEDIUM,22.0,True,11.0,1,89.255,8440.474,8351.219,36.9,48.9,7.0,False,False,False,False,False,False,False,False,False,True,False
+MSC,47,Haas F1 Team,53.0,3.0,MEDIUM,23.0,True,10.0,1,90.819,8531.293,8440.474,36.7,48.8,7.0,False,False,False,False,False,False,False,False,False,True,False
+MSC,47,Haas F1 Team,54.0,3.0,MEDIUM,24.0,True,9.0,1,88.916,8620.209,8531.293,36.6,48.4,8.0,False,False,False,False,False,False,False,False,False,True,False
+MSC,47,Haas F1 Team,55.0,3.0,MEDIUM,25.0,True,10.0,1,90.575,8710.784,8620.209,36.5,48.3,9.0,False,False,False,False,False,False,False,False,False,True,False
+MSC,47,Haas F1 Team,56.0,3.0,MEDIUM,26.0,True,11.0,1,90.482,8801.266,8710.784,36.4,48.4,8.0,False,False,False,False,False,False,False,False,False,True,False
+MSC,47,Haas F1 Team,57.0,3.0,MEDIUM,27.0,True,11.0,1,89.673,8890.939,8801.266,36.3,48.4,8.0,False,False,False,False,False,False,False,False,False,True,False
+MSC,47,Haas F1 Team,58.0,3.0,MEDIUM,28.0,True,11.0,1,90.104,8981.043,8890.939,36.3,48.3,8.0,False,False,False,False,False,False,False,False,False,True,False
+MSC,47,Haas F1 Team,59.0,3.0,MEDIUM,29.0,True,12.0,1,91.964,9073.007,8981.043,36.3,48.3,9.0,False,False,False,False,False,False,False,False,False,True,False
+MSC,47,Haas F1 Team,60.0,3.0,MEDIUM,30.0,True,12.0,1,89.737,9162.744,9073.007,36.4,48.1,11.0,False,False,False,False,False,False,False,False,False,True,False
+MSC,47,Haas F1 Team,61.0,3.0,MEDIUM,31.0,True,12.0,1,92.02,9254.764,9162.744,36.5,48.0,9.0,False,False,False,False,False,False,False,False,False,True,False
+MSC,47,Haas F1 Team,62.0,3.0,MEDIUM,32.0,True,12.0,1,90.413,9345.177,9254.764,36.5,48.0,8.0,False,False,False,False,False,False,False,False,False,True,False
+MSC,47,Haas F1 Team,63.0,3.0,MEDIUM,33.0,True,12.0,1,89.727,9434.904,9345.177,36.5,47.9,8.0,False,False,False,False,False,False,False,False,False,True,False
+MSC,47,Haas F1 Team,64.0,3.0,MEDIUM,34.0,True,13.0,1,91.005,9525.909,9434.904,36.4,48.1,7.0,False,False,False,False,False,False,False,False,False,True,False
+MSC,47,Haas F1 Team,65.0,3.0,MEDIUM,35.0,True,14.0,1,91.153,9617.062,9525.909,36.4,47.8,8.0,False,False,False,False,False,False,False,False,False,True,False
+STR,18,Aston Martin,1.0,1.0,SOFT,4.0,False,14.0,12,98.434,3831.578,3732.915,36.6,49.3,6.0,False,False,False,False,True,False,True,False,False,False,False
+STR,18,Aston Martin,2.0,1.0,SOFT,5.0,False,14.0,1,91.063,3922.641,3831.578,36.7,49.4,7.0,False,False,False,False,False,False,False,False,False,True,False
+STR,18,Aston Martin,3.0,1.0,SOFT,6.0,False,14.0,1,90.49,4013.131,3922.641,36.9,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+STR,18,Aston Martin,4.0,1.0,SOFT,7.0,False,14.0,1,89.978,4103.109,4013.131,37.0,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+STR,18,Aston Martin,5.0,1.0,SOFT,8.0,False,15.0,1,91.223,4194.332,4103.109,37.0,49.3,6.0,False,False,False,False,False,False,False,False,False,True,False
+STR,18,Aston Martin,6.0,1.0,SOFT,9.0,False,16.0,1,91.457,4285.789,4194.332,36.9,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+STR,18,Aston Martin,7.0,1.0,SOFT,10.0,False,16.0,12,91.49,4377.279,4285.789,36.8,49.5,6.0,False,False,False,False,False,False,True,False,False,False,False
+STR,18,Aston Martin,8.0,1.0,SOFT,11.0,False,16.0,12,90.867,4468.146,4377.279,37.0,49.5,6.0,False,False,False,False,False,False,True,False,False,False,False
+STR,18,Aston Martin,9.0,1.0,SOFT,12.0,False,16.0,21,91.22,4559.366,4468.146,36.9,49.3,6.0,False,False,False,False,False,False,True,False,False,False,False
+STR,18,Aston Martin,10.0,1.0,SOFT,13.0,False,15.0,1,91.32,4650.686,4559.366,37.0,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+STR,18,Aston Martin,11.0,1.0,SOFT,14.0,False,12.0,1,90.851,4741.537,4650.686,36.9,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+STR,18,Aston Martin,12.0,1.0,SOFT,15.0,False,10.0,1,90.736,4832.273,4741.537,37.0,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+STR,18,Aston Martin,13.0,1.0,SOFT,16.0,False,8.0,1,90.433,4922.706,4832.273,37.0,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+STR,18,Aston Martin,14.0,1.0,SOFT,17.0,False,9.0,1,94.527,5017.233,4922.706,36.8,49.7,6.0,False,True,False,False,True,False,False,False,False,False,False
+STR,18,Aston Martin,15.0,2.0,SOFT,4.0,False,18.0,1,109.072,5126.305,5017.233,36.7,49.7,6.0,False,False,True,False,True,False,False,False,False,False,False
+STR,18,Aston Martin,16.0,2.0,SOFT,5.0,False,17.0,1,88.761,5215.066,5126.305,36.6,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+STR,18,Aston Martin,17.0,2.0,SOFT,6.0,False,17.0,1,88.888,5303.954,5215.066,36.9,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+STR,18,Aston Martin,18.0,2.0,SOFT,7.0,False,17.0,1,88.532,5392.486,5303.954,37.2,49.7,5.0,False,False,False,False,False,False,False,False,False,True,False
+STR,18,Aston Martin,19.0,2.0,SOFT,8.0,False,17.0,1,89.025,5481.511,5392.486,37.1,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+STR,18,Aston Martin,20.0,2.0,SOFT,9.0,False,17.0,1,89.374,5570.885,5481.511,37.1,49.7,5.0,False,False,False,False,False,False,False,False,False,True,False
+STR,18,Aston Martin,21.0,2.0,SOFT,10.0,False,17.0,1,89.964,5660.849,5570.885,37.1,49.0,6.0,False,False,False,False,False,False,False,False,False,True,False
+STR,18,Aston Martin,22.0,2.0,SOFT,11.0,False,15.0,1,90.203,5751.052,5660.849,37.0,49.0,6.0,False,False,False,False,False,False,False,False,False,True,False
+STR,18,Aston Martin,23.0,2.0,SOFT,12.0,False,15.0,1,89.298,5840.35,5751.052,37.1,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+STR,18,Aston Martin,24.0,2.0,SOFT,13.0,False,15.0,1,89.992,5930.342,5840.35,37.0,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+STR,18,Aston Martin,25.0,2.0,SOFT,14.0,False,15.0,1,89.957,6020.299,5930.342,37.0,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+STR,18,Aston Martin,26.0,2.0,SOFT,15.0,False,15.0,1,90.687,6110.986,6020.299,37.0,49.4,7.0,False,False,False,False,False,False,False,False,False,True,False
+STR,18,Aston Martin,27.0,2.0,SOFT,16.0,False,17.0,1,105.403,6216.389,6110.986,37.0,49.4,6.0,False,True,False,False,True,False,False,False,False,False,False
+STR,18,Aston Martin,28.0,3.0,MEDIUM,2.0,False,17.0,1,110.401,6326.79,6216.389,37.2,49.3,7.0,False,False,True,False,True,False,False,False,False,False,False
+STR,18,Aston Martin,29.0,3.0,MEDIUM,3.0,False,15.0,1,89.823,6416.613,6326.79,37.2,49.3,6.0,False,False,False,False,False,False,False,False,False,True,False
+STR,18,Aston Martin,30.0,3.0,MEDIUM,4.0,False,15.0,1,88.99,6505.603,6416.613,37.2,49.3,6.0,False,False,False,False,False,False,False,False,False,True,False
+STR,18,Aston Martin,31.0,3.0,MEDIUM,5.0,False,15.0,1,88.943,6594.546,6505.603,37.1,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+STR,18,Aston Martin,32.0,3.0,MEDIUM,6.0,False,15.0,1,89.034,6683.58,6594.546,37.0,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+STR,18,Aston Martin,33.0,3.0,MEDIUM,7.0,False,15.0,1,88.746,6772.326,6683.58,36.7,49.3,6.0,False,False,False,False,False,False,False,False,False,True,False
+STR,18,Aston Martin,34.0,3.0,MEDIUM,8.0,False,15.0,1,88.744,6861.07,6772.326,36.7,49.1,7.0,False,False,False,False,False,False,False,False,False,True,False
+STR,18,Aston Martin,35.0,3.0,MEDIUM,9.0,False,15.0,1,90.825,6951.895,6861.07,36.6,49.1,7.0,False,False,False,False,False,False,False,False,False,True,False
+STR,18,Aston Martin,36.0,3.0,MEDIUM,10.0,False,15.0,1,88.816,7040.711,6951.895,36.6,49.0,7.0,False,False,False,False,False,False,False,False,False,True,False
+STR,18,Aston Martin,37.0,3.0,MEDIUM,11.0,False,15.0,1,88.436,7129.147,7040.711,36.8,49.3,7.0,False,False,False,False,False,False,False,False,False,True,False
+STR,18,Aston Martin,38.0,3.0,MEDIUM,12.0,False,15.0,1,88.865,7218.012,7129.147,36.7,49.1,7.0,False,False,False,False,False,False,False,False,False,True,False
+STR,18,Aston Martin,39.0,3.0,MEDIUM,13.0,False,15.0,1,89.218,7307.23,7218.012,36.8,49.1,8.0,False,False,False,False,False,False,False,False,False,True,False
+STR,18,Aston Martin,40.0,3.0,MEDIUM,14.0,False,15.0,1,89.108,7396.338,7307.23,36.6,49.0,8.0,False,False,False,False,False,False,False,False,False,True,False
+STR,18,Aston Martin,41.0,3.0,MEDIUM,15.0,False,15.0,1,88.85,7485.188,7396.338,36.6,49.0,7.0,False,False,False,False,False,False,False,False,False,True,False
+STR,18,Aston Martin,42.0,3.0,MEDIUM,16.0,False,15.0,1,90.363,7575.551,7485.188,36.6,48.7,8.0,False,False,False,False,False,False,False,False,False,True,False
+STR,18,Aston Martin,43.0,3.0,MEDIUM,17.0,False,15.0,1,90.323,7665.874,7575.551,36.6,48.9,8.0,False,False,False,False,False,False,False,False,False,True,False
+STR,18,Aston Martin,44.0,3.0,MEDIUM,18.0,False,15.0,1,92.587,7758.461,7665.874,36.7,49.1,8.0,False,False,False,False,False,False,False,False,False,True,False
+STR,18,Aston Martin,45.0,3.0,MEDIUM,19.0,False,15.0,1,89.851,7848.312,7758.461,36.8,49.1,8.0,False,False,False,False,False,False,False,False,False,True,False
+STR,18,Aston Martin,46.0,3.0,MEDIUM,20.0,False,15.0,1,93.415,7941.727,7848.312,36.8,49.0,7.0,False,True,False,False,True,False,False,False,False,False,False
+STR,18,Aston Martin,47.0,4.0,SOFT,1.0,False,17.0,1,107.64,8049.367,7941.727,36.6,49.0,7.0,False,False,True,False,True,False,False,False,False,False,False
+STR,18,Aston Martin,48.0,4.0,SOFT,2.0,False,17.0,1,87.376,8136.743,8049.367,36.5,49.0,8.0,False,False,False,False,False,False,False,False,False,True,False
+STR,18,Aston Martin,49.0,4.0,SOFT,3.0,False,17.0,1,89.066,8225.809,8136.743,36.8,48.8,8.0,False,False,False,False,False,False,False,False,False,True,False
+STR,18,Aston Martin,50.0,4.0,SOFT,4.0,False,17.0,1,88.026,8313.835,8225.809,36.9,48.8,7.0,False,False,False,False,False,False,False,False,False,True,False
+STR,18,Aston Martin,51.0,4.0,SOFT,5.0,False,15.0,1,87.943,8401.778,8313.835,36.9,48.9,7.0,False,False,False,False,False,False,False,False,False,True,False
+STR,18,Aston Martin,52.0,4.0,SOFT,6.0,False,15.0,1,89.291,8491.069,8401.778,36.7,48.8,7.0,False,False,False,False,False,False,False,False,False,True,False
+STR,18,Aston Martin,53.0,4.0,SOFT,7.0,False,15.0,1,86.916,8577.985,8491.069,36.6,48.5,8.0,False,False,False,False,False,False,False,False,False,True,False
+STR,18,Aston Martin,54.0,4.0,SOFT,8.0,False,15.0,1,86.876,8664.861,8577.985,36.5,48.3,9.0,False,False,False,False,False,False,False,False,False,True,False
+STR,18,Aston Martin,55.0,4.0,SOFT,9.0,False,15.0,1,87.677,8752.538,8664.861,36.5,48.3,9.0,False,False,False,False,False,False,False,False,False,True,False
+STR,18,Aston Martin,56.0,4.0,SOFT,10.0,False,15.0,1,88.016,8840.554,8752.538,36.3,48.4,8.0,False,False,False,False,False,False,False,False,False,True,False
+STR,18,Aston Martin,57.0,4.0,SOFT,11.0,False,15.0,1,87.733,8928.287,8840.554,36.3,48.4,7.0,False,False,False,False,False,False,False,False,False,True,False
+STR,18,Aston Martin,58.0,4.0,SOFT,12.0,False,15.0,1,88.243,9016.53,8928.287,36.3,48.3,9.0,False,False,False,False,False,False,False,False,False,True,False
+STR,18,Aston Martin,59.0,4.0,SOFT,13.0,False,15.0,1,88.217,9104.747,9016.53,36.4,48.2,9.0,False,False,False,False,False,False,False,False,False,True,False
+STR,18,Aston Martin,60.0,4.0,SOFT,14.0,False,15.0,1,88.025,9192.772,9104.747,36.4,48.1,11.0,False,False,False,False,False,False,False,False,False,True,False
+STR,18,Aston Martin,61.0,4.0,SOFT,15.0,False,15.0,1,88.153,9280.925,9192.772,36.5,48.0,9.0,False,False,False,False,False,False,False,False,False,True,False
+STR,18,Aston Martin,62.0,4.0,SOFT,16.0,False,15.0,1,88.487,9369.412,9280.925,36.5,48.0,8.0,False,False,False,False,False,False,False,False,False,True,False
+STR,18,Aston Martin,63.0,4.0,SOFT,17.0,False,15.0,1,88.624,9458.036,9369.412,36.5,47.9,8.0,False,False,False,False,False,False,False,False,False,True,False
+STR,18,Aston Martin,64.0,4.0,SOFT,18.0,False,15.0,1,88.064,9546.1,9458.036,36.4,48.1,7.0,False,False,False,False,False,False,False,False,False,True,False
+STR,18,Aston Martin,65.0,4.0,SOFT,19.0,False,15.0,1,89.85,9635.95,9546.1,36.4,47.8,8.0,False,False,False,False,False,False,False,False,False,True,False
+LAT,6,Williams,1.0,1.0,SOFT,1.0,True,18.0,12,100.512,3833.656,3732.915,36.6,49.3,6.0,False,False,False,False,True,False,True,False,False,False,False
+LAT,6,Williams,2.0,1.0,SOFT,2.0,True,18.0,1,91.197,3924.853,3833.656,36.7,49.4,7.0,False,False,False,False,False,False,False,False,False,True,False
+LAT,6,Williams,3.0,1.0,SOFT,3.0,True,18.0,1,91.102,4015.955,3924.853,36.9,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+LAT,6,Williams,4.0,1.0,SOFT,4.0,True,18.0,1,90.425,4106.38,4015.955,37.0,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+LAT,6,Williams,5.0,1.0,SOFT,5.0,True,18.0,1,90.854,4197.234,4106.38,37.0,49.3,6.0,False,False,False,False,False,False,False,False,False,True,False
+LAT,6,Williams,6.0,1.0,SOFT,6.0,True,18.0,1,91.335,4288.569,4197.234,36.9,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+LAT,6,Williams,7.0,1.0,SOFT,7.0,True,18.0,12,91.34,4379.909,4288.569,36.8,49.5,6.0,False,False,False,False,False,False,True,False,False,False,False
+LAT,6,Williams,8.0,1.0,SOFT,8.0,True,18.0,12,91.341,4471.25,4379.909,37.0,49.5,6.0,False,False,False,False,False,False,True,False,False,False,False
+LAT,6,Williams,9.0,1.0,SOFT,9.0,True,18.0,21,91.727,4562.977,4471.25,36.9,49.3,6.0,False,False,False,False,False,False,True,False,False,False,False
+LAT,6,Williams,10.0,1.0,SOFT,10.0,True,18.0,1,91.817,4654.794,4562.977,37.0,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+LAT,6,Williams,11.0,1.0,SOFT,11.0,True,13.0,1,91.592,4746.386,4654.794,36.9,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+LAT,6,Williams,12.0,1.0,SOFT,12.0,True,12.0,1,94.853,4841.239,4746.386,37.0,49.7,6.0,False,True,False,False,True,False,False,False,False,False,False
+LAT,6,Williams,13.0,2.0,MEDIUM,1.0,True,19.0,1,109.125,4950.364,4841.239,36.9,49.7,6.0,False,False,True,False,True,False,False,False,False,False,False
+LAT,6,Williams,14.0,2.0,MEDIUM,2.0,True,19.0,1,89.8,5040.164,4950.364,36.8,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+LAT,6,Williams,15.0,2.0,MEDIUM,3.0,True,19.0,1,89.68,5129.844,5040.164,36.7,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+LAT,6,Williams,16.0,2.0,MEDIUM,4.0,True,19.0,1,89.995,5219.839,5129.844,36.6,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+LAT,6,Williams,17.0,2.0,MEDIUM,5.0,True,19.0,1,90.593,5310.432,5219.839,36.9,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+LAT,6,Williams,18.0,2.0,MEDIUM,6.0,True,19.0,1,90.305,5400.737,5310.432,37.2,49.7,5.0,False,False,False,False,False,False,False,False,False,True,False
+LAT,6,Williams,19.0,2.0,MEDIUM,7.0,True,19.0,1,90.851,5491.588,5400.737,37.1,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+LAT,6,Williams,20.0,2.0,MEDIUM,8.0,True,19.0,1,91.86,5583.448,5491.588,37.1,49.7,5.0,False,False,False,False,False,False,False,False,False,True,False
+LAT,6,Williams,21.0,2.0,MEDIUM,9.0,True,18.0,1,90.343,5673.791,5583.448,37.1,49.0,6.0,False,False,False,False,False,False,False,False,False,True,False
+LAT,6,Williams,22.0,2.0,MEDIUM,10.0,True,18.0,1,91.289,5765.08,5673.791,37.0,49.0,6.0,False,False,False,False,False,False,False,False,False,True,False
+LAT,6,Williams,23.0,2.0,MEDIUM,11.0,True,17.0,1,90.736,5855.816,5765.08,37.1,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+LAT,6,Williams,24.0,2.0,MEDIUM,12.0,True,17.0,1,90.925,5946.741,5855.816,37.0,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+LAT,6,Williams,25.0,2.0,MEDIUM,13.0,True,18.0,1,91.835,6038.576,5946.741,37.0,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+LAT,6,Williams,26.0,2.0,MEDIUM,14.0,True,18.0,1,94.403,6132.979,6038.576,37.0,49.4,7.0,False,True,False,False,True,False,False,False,False,False,False
+LAT,6,Williams,27.0,3.0,SOFT,1.0,True,19.0,1,108.12,6241.099,6132.979,37.0,49.4,6.0,False,False,True,False,True,False,False,False,False,False,False
+LAT,6,Williams,28.0,3.0,SOFT,2.0,True,18.0,1,89.601,6330.7,6241.099,37.2,49.3,7.0,False,False,False,False,False,False,False,False,False,True,False
+LAT,6,Williams,29.0,3.0,SOFT,3.0,True,16.0,1,89.282,6419.982,6330.7,37.2,49.3,6.0,False,False,False,False,False,False,False,False,False,True,False
+LAT,6,Williams,30.0,3.0,SOFT,4.0,True,16.0,1,89.083,6509.065,6419.982,37.2,49.3,6.0,False,False,False,False,False,False,False,False,False,True,False
+LAT,6,Williams,31.0,3.0,SOFT,5.0,True,16.0,1,89.187,6598.252,6509.065,37.1,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+LAT,6,Williams,32.0,3.0,SOFT,6.0,True,16.0,1,89.621,6687.873,6598.252,37.0,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+LAT,6,Williams,33.0,3.0,SOFT,7.0,True,16.0,1,90.987,6778.86,6687.873,36.7,49.3,6.0,False,False,False,False,False,False,False,False,False,True,False
+LAT,6,Williams,34.0,3.0,SOFT,8.0,True,16.0,1,89.286,6868.146,6778.86,36.7,49.1,7.0,False,False,False,False,False,False,False,False,False,True,False
+LAT,6,Williams,35.0,3.0,SOFT,9.0,True,16.0,1,89.831,6957.977,6868.146,36.6,49.1,7.0,False,False,False,False,False,False,False,False,False,True,False
+LAT,6,Williams,36.0,3.0,SOFT,10.0,True,16.0,1,89.764,7047.741,6957.977,36.6,49.0,7.0,False,False,False,False,False,False,False,False,False,True,False
+LAT,6,Williams,37.0,3.0,SOFT,11.0,True,16.0,1,89.756,7137.497,7047.741,36.8,49.3,7.0,False,False,False,False,False,False,False,False,False,True,False
+LAT,6,Williams,38.0,3.0,SOFT,12.0,True,16.0,1,90.934,7228.431,7137.497,36.7,49.1,7.0,False,False,False,False,False,False,False,False,False,True,False
+LAT,6,Williams,39.0,3.0,SOFT,13.0,True,16.0,1,90.079,7318.51,7228.431,36.8,49.1,8.0,False,False,False,False,False,False,False,False,False,True,False
+LAT,6,Williams,40.0,3.0,SOFT,14.0,True,16.0,1,90.826,7409.336,7318.51,36.6,49.0,8.0,False,False,False,False,False,False,False,False,False,True,False
+LAT,6,Williams,41.0,3.0,SOFT,15.0,True,16.0,1,89.444,7498.78,7409.336,36.6,49.0,7.0,False,False,False,False,False,False,False,False,False,True,False
+LAT,6,Williams,42.0,3.0,SOFT,16.0,True,16.0,1,89.831,7588.611,7498.78,36.6,48.7,8.0,False,False,False,False,False,False,False,False,False,True,False
+LAT,6,Williams,43.0,3.0,SOFT,17.0,True,16.0,1,89.491,7678.102,7588.611,36.6,48.9,8.0,False,False,False,False,False,False,False,False,False,True,False
+LAT,6,Williams,44.0,3.0,SOFT,18.0,True,16.0,1,89.616,7767.718,7678.102,36.7,49.1,8.0,False,False,False,False,False,False,False,False,False,True,False
+LAT,6,Williams,45.0,3.0,SOFT,19.0,True,16.0,1,90.104,7857.822,7767.718,36.8,49.1,8.0,False,False,False,False,False,False,False,False,False,True,False
+LAT,6,Williams,46.0,3.0,SOFT,20.0,True,16.0,1,91.441,7949.263,7857.822,36.8,49.0,7.0,False,False,False,False,False,False,False,False,False,True,False
+LAT,6,Williams,47.0,3.0,SOFT,21.0,True,15.0,1,89.944,8039.207,7949.263,36.6,49.0,7.0,False,False,False,False,False,False,False,False,False,True,False
+LAT,6,Williams,48.0,3.0,SOFT,22.0,True,15.0,1,90.109,8129.316,8039.207,36.5,49.0,8.0,False,False,False,False,False,False,False,False,False,True,False
+LAT,6,Williams,49.0,3.0,SOFT,23.0,True,15.0,1,89.908,8219.224,8129.316,36.8,48.8,8.0,False,False,False,False,False,False,False,False,False,True,False
+LAT,6,Williams,50.0,3.0,SOFT,24.0,True,15.0,1,93.887,8313.111,8219.224,36.9,48.8,7.0,False,True,False,False,True,False,False,False,False,False,False
+LAT,6,Williams,51.0,4.0,SOFT,4.0,False,17.0,1,108.759,8421.87,8313.111,36.9,48.9,7.0,False,False,True,False,True,False,False,False,False,False,False
+LAT,6,Williams,52.0,4.0,SOFT,5.0,False,17.0,1,87.246,8509.116,8421.87,36.7,48.8,7.0,False,False,False,False,False,False,False,False,False,True,False
+LAT,6,Williams,53.0,4.0,SOFT,6.0,False,17.0,1,87.614,8596.73,8509.116,36.6,48.4,8.0,False,False,False,False,False,False,False,False,False,True,False
+LAT,6,Williams,54.0,4.0,SOFT,7.0,False,17.0,1,87.772,8684.502,8596.73,36.5,48.3,9.0,False,False,False,False,False,False,False,False,False,True,False
+LAT,6,Williams,55.0,4.0,SOFT,8.0,False,17.0,1,87.762,8772.264,8684.502,36.5,48.3,9.0,False,False,False,False,False,False,False,False,False,True,False
+LAT,6,Williams,56.0,4.0,SOFT,9.0,False,17.0,1,88.454,8860.718,8772.264,36.3,48.4,8.0,False,False,False,False,False,False,False,False,False,True,False
+LAT,6,Williams,57.0,4.0,SOFT,10.0,False,17.0,1,90.052,8950.77,8860.718,36.3,48.4,7.0,False,False,False,False,False,False,False,False,False,True,False
+LAT,6,Williams,58.0,4.0,SOFT,11.0,False,17.0,1,88.926,9039.696,8950.77,36.3,48.3,9.0,False,False,False,False,False,False,False,False,False,True,False
+LAT,6,Williams,59.0,4.0,SOFT,12.0,False,17.0,1,90.348,9130.044,9039.696,36.4,48.2,9.0,False,False,False,False,False,False,False,False,False,True,False
+LAT,6,Williams,60.0,4.0,SOFT,13.0,False,17.0,1,88.671,9218.715,9130.044,36.5,47.9,9.0,False,False,False,False,False,False,False,False,False,True,False
+LAT,6,Williams,61.0,4.0,SOFT,14.0,False,17.0,1,89.25,9307.965,9218.715,36.5,48.0,9.0,False,False,False,False,False,False,False,False,False,True,False
+LAT,6,Williams,62.0,4.0,SOFT,15.0,False,16.0,1,88.7,9396.665,9307.965,36.4,48.0,8.0,False,False,False,False,False,False,False,False,False,True,False
+LAT,6,Williams,63.0,4.0,SOFT,16.0,False,16.0,1,91.986,9488.651,9396.665,36.5,47.9,8.0,False,False,False,False,False,False,False,False,False,True,False
+LAT,6,Williams,64.0,4.0,SOFT,17.0,False,16.0,1,89.424,9578.075,9488.651,36.4,48.1,7.0,False,False,False,False,False,False,False,False,False,True,False
+MAG,20,Haas F1 Team,1.0,1.0,SOFT,3.0,False,20.0,12,135.888,3869.032,3732.915,36.7,49.4,7.0,False,True,False,False,True,False,True,False,False,False,False
+MAG,20,Haas F1 Team,2.0,2.0,MEDIUM,1.0,True,20.0,1,113.833,3982.865,3869.032,36.9,49.4,6.0,False,False,True,False,True,False,False,False,False,False,False
+MAG,20,Haas F1 Team,3.0,2.0,MEDIUM,2.0,True,20.0,1,87.537,4070.402,3982.865,36.9,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+MAG,20,Haas F1 Team,4.0,2.0,MEDIUM,3.0,True,20.0,1,87.693,4158.095,4070.402,37.0,49.3,6.0,False,False,False,False,False,False,False,False,False,True,False
+MAG,20,Haas F1 Team,5.0,2.0,MEDIUM,4.0,True,20.0,1,88.24,4246.335,4158.095,37.0,49.3,6.0,False,False,False,False,False,False,False,False,False,True,False
+MAG,20,Haas F1 Team,6.0,2.0,MEDIUM,5.0,True,20.0,12,88.784,4335.119,4246.335,36.8,49.5,6.0,False,False,False,False,False,False,True,False,False,False,False
+MAG,20,Haas F1 Team,7.0,2.0,MEDIUM,6.0,True,20.0,1,89.243,4424.362,4335.119,37.0,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+MAG,20,Haas F1 Team,8.0,2.0,MEDIUM,7.0,True,20.0,12,89.59,4513.952,4424.362,36.9,49.3,6.0,False,False,False,False,False,False,True,False,False,False,False
+MAG,20,Haas F1 Team,9.0,2.0,MEDIUM,8.0,True,20.0,1,90.216,4604.168,4513.952,37.0,49.6,6.0,False,False,False,False,False,False,False,False,False,True,False
+MAG,20,Haas F1 Team,10.0,2.0,MEDIUM,9.0,True,20.0,1,89.636,4693.804,4604.168,36.9,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+MAG,20,Haas F1 Team,11.0,2.0,MEDIUM,10.0,True,20.0,1,89.855,4783.659,4693.804,37.0,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+MAG,20,Haas F1 Team,12.0,2.0,MEDIUM,11.0,True,20.0,1,89.543,4873.202,4783.659,37.0,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+MAG,20,Haas F1 Team,13.0,2.0,MEDIUM,12.0,True,20.0,1,89.792,4962.994,4873.202,36.9,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+MAG,20,Haas F1 Team,14.0,2.0,MEDIUM,13.0,True,20.0,1,89.778,5052.772,4962.994,36.8,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+MAG,20,Haas F1 Team,15.0,2.0,MEDIUM,14.0,True,20.0,1,89.835,5142.607,5052.772,36.7,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+MAG,20,Haas F1 Team,16.0,2.0,MEDIUM,15.0,True,20.0,1,91.431,5234.038,5142.607,36.7,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+MAG,20,Haas F1 Team,17.0,2.0,MEDIUM,16.0,True,20.0,1,90.01,5324.048,5234.038,36.9,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+MAG,20,Haas F1 Team,18.0,2.0,MEDIUM,17.0,True,20.0,1,90.358,5414.406,5324.048,37.1,49.7,5.0,False,False,False,False,False,False,False,False,False,True,False
+MAG,20,Haas F1 Team,19.0,2.0,MEDIUM,18.0,True,20.0,1,90.199,5504.605,5414.406,37.1,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+MAG,20,Haas F1 Team,20.0,2.0,MEDIUM,19.0,True,20.0,1,90.563,5595.168,5504.605,37.0,49.0,6.0,False,False,False,False,False,False,False,False,False,True,False
+MAG,20,Haas F1 Team,21.0,2.0,MEDIUM,20.0,True,20.0,1,89.849,5685.017,5595.168,37.1,49.0,6.0,False,False,False,False,False,False,False,False,False,True,False
+MAG,20,Haas F1 Team,22.0,2.0,MEDIUM,21.0,True,20.0,1,90.554,5775.571,5685.017,37.1,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+MAG,20,Haas F1 Team,23.0,2.0,MEDIUM,22.0,True,20.0,1,90.757,5866.328,5775.571,37.1,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+MAG,20,Haas F1 Team,24.0,2.0,MEDIUM,23.0,True,20.0,1,90.558,5956.886,5866.328,37.0,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+MAG,20,Haas F1 Team,25.0,2.0,MEDIUM,24.0,True,20.0,1,92.489,6049.375,5956.886,37.0,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+MAG,20,Haas F1 Team,26.0,2.0,MEDIUM,25.0,True,19.0,1,91.847,6141.222,6049.375,37.0,49.4,7.0,False,False,False,False,False,False,False,False,False,True,False
+MAG,20,Haas F1 Team,27.0,2.0,MEDIUM,26.0,True,18.0,1,91.143,6232.365,6141.222,37.0,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+MAG,20,Haas F1 Team,28.0,2.0,MEDIUM,27.0,True,16.0,1,91.137,6323.502,6232.365,37.2,49.3,7.0,False,False,False,False,False,False,False,False,False,True,False
+MAG,20,Haas F1 Team,29.0,2.0,MEDIUM,28.0,True,17.0,1,99.076,6422.578,6323.502,37.2,49.3,6.0,False,True,False,False,True,False,False,False,False,False,False
+MAG,20,Haas F1 Team,30.0,3.0,HARD,1.0,True,18.0,1,110.257,6532.835,6422.578,37.2,49.3,6.0,False,False,True,False,True,False,False,False,True,False,False
+MAG,20,Haas F1 Team,31.0,3.0,HARD,2.0,True,18.0,1,88.569,6621.404,6532.835,37.1,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+MAG,20,Haas F1 Team,32.0,3.0,HARD,3.0,True,18.0,1,87.756,6709.16,6621.404,37.0,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+MAG,20,Haas F1 Team,33.0,3.0,HARD,4.0,True,18.0,1,87.991,6797.151,6709.16,36.7,49.2,7.0,False,False,False,False,False,False,False,False,False,True,False
+MAG,20,Haas F1 Team,34.0,3.0,HARD,5.0,True,18.0,1,87.746,6884.897,6797.151,36.7,49.1,7.0,False,False,False,False,False,False,False,False,False,True,False
+MAG,20,Haas F1 Team,35.0,3.0,HARD,6.0,True,18.0,1,88.117,6973.014,6884.897,36.6,49.1,7.0,False,False,False,False,False,False,False,False,False,True,False
+MAG,20,Haas F1 Team,36.0,3.0,HARD,7.0,True,18.0,1,88.223,7061.237,6973.014,36.6,49.0,7.0,False,False,False,False,False,False,False,False,False,True,False
+MAG,20,Haas F1 Team,37.0,3.0,HARD,8.0,True,18.0,1,88.37,7149.607,7061.237,36.8,49.3,7.0,False,False,False,False,False,False,False,False,False,True,False
+MAG,20,Haas F1 Team,38.0,3.0,HARD,9.0,True,18.0,1,88.926,7238.533,7149.607,36.7,49.1,7.0,False,False,False,False,False,False,False,False,False,True,False
+MAG,20,Haas F1 Team,39.0,3.0,HARD,10.0,True,18.0,1,89.578,7328.111,7238.533,36.8,49.1,8.0,False,False,False,False,False,False,False,False,False,True,False
+MAG,20,Haas F1 Team,40.0,3.0,HARD,11.0,True,17.0,1,88.467,7416.578,7328.111,36.6,49.0,8.0,False,False,False,False,False,False,False,False,False,True,False
+MAG,20,Haas F1 Team,41.0,3.0,HARD,12.0,True,17.0,1,92.026,7508.604,7416.578,36.6,49.0,7.0,False,False,False,False,False,False,False,False,False,True,False
+MAG,20,Haas F1 Team,42.0,3.0,HARD,13.0,True,17.0,1,89.278,7597.882,7508.604,36.6,48.7,8.0,False,False,False,False,False,False,False,False,False,True,False
+MAG,20,Haas F1 Team,43.0,3.0,HARD,14.0,True,17.0,1,89.124,7687.006,7597.882,36.6,48.9,8.0,False,False,False,False,False,False,False,False,False,True,False
+MAG,20,Haas F1 Team,44.0,3.0,HARD,15.0,True,17.0,1,89.178,7776.184,7687.006,36.7,49.1,8.0,False,False,False,False,False,False,False,False,False,True,False
+MAG,20,Haas F1 Team,45.0,3.0,HARD,16.0,True,17.0,1,90.581,7866.765,7776.184,36.8,49.1,8.0,False,False,False,False,False,False,False,False,False,True,False
+MAG,20,Haas F1 Team,46.0,3.0,HARD,17.0,True,17.0,1,89.431,7956.196,7866.765,36.8,49.0,7.0,False,False,False,False,False,False,False,False,False,True,False
+MAG,20,Haas F1 Team,47.0,3.0,HARD,18.0,True,16.0,1,88.999,8045.195,7956.196,36.6,49.0,7.0,False,False,False,False,False,False,False,False,False,True,False
+MAG,20,Haas F1 Team,48.0,3.0,HARD,19.0,True,16.0,1,88.908,8134.103,8045.195,36.5,49.0,8.0,False,False,False,False,False,False,False,False,False,True,False
+MAG,20,Haas F1 Team,49.0,3.0,HARD,20.0,True,16.0,1,88.765,8222.868,8134.103,36.8,48.8,8.0,False,False,False,False,False,False,False,False,False,True,False
+MAG,20,Haas F1 Team,50.0,3.0,HARD,21.0,True,16.0,1,90.635,8313.503,8222.868,36.9,48.8,7.0,False,False,False,False,False,False,False,False,False,True,False
+MAG,20,Haas F1 Team,51.0,3.0,HARD,22.0,True,16.0,1,91.497,8405.0,8313.503,36.9,48.9,7.0,False,False,False,False,False,False,False,False,False,True,False
+MAG,20,Haas F1 Team,52.0,3.0,HARD,23.0,True,16.0,1,89.659,8494.659,8405.0,36.7,48.8,7.0,False,False,False,False,False,False,False,False,False,True,False
+MAG,20,Haas F1 Team,53.0,3.0,HARD,24.0,True,16.0,1,89.876,8584.535,8494.659,36.6,48.5,8.0,False,False,False,False,False,False,False,False,False,True,False
+MAG,20,Haas F1 Team,54.0,3.0,HARD,25.0,True,16.0,1,89.583,8674.118,8584.535,36.5,48.3,9.0,False,False,False,False,False,False,False,False,False,True,False
+MAG,20,Haas F1 Team,55.0,3.0,HARD,26.0,True,16.0,1,89.74,8763.858,8674.118,36.5,48.3,9.0,False,False,False,False,False,False,False,False,False,True,False
+MAG,20,Haas F1 Team,56.0,3.0,HARD,27.0,True,16.0,1,90.087,8853.945,8763.858,36.3,48.4,8.0,False,False,False,False,False,False,False,False,False,True,False
+MAG,20,Haas F1 Team,57.0,3.0,HARD,28.0,True,16.0,1,89.676,8943.621,8853.945,36.3,48.4,7.0,False,False,False,False,False,False,False,False,False,True,False
+MAG,20,Haas F1 Team,58.0,3.0,HARD,29.0,True,16.0,1,90.126,9033.747,8943.621,36.3,48.3,9.0,False,False,False,False,False,False,False,False,False,True,False
+MAG,20,Haas F1 Team,59.0,3.0,HARD,30.0,True,16.0,1,91.259,9125.006,9033.747,36.4,48.2,9.0,False,False,False,False,False,False,False,False,False,True,False
+MAG,20,Haas F1 Team,60.0,3.0,HARD,31.0,True,16.0,1,92.217,9217.223,9125.006,36.5,47.9,9.0,False,False,False,False,False,False,False,False,False,True,False
+MAG,20,Haas F1 Team,61.0,3.0,HARD,32.0,True,16.0,1,90.304,9307.527,9217.223,36.5,48.0,9.0,False,False,False,False,False,False,False,False,False,True,False
+MAG,20,Haas F1 Team,62.0,3.0,HARD,33.0,True,17.0,1,93.41,9400.937,9307.527,36.4,48.0,8.0,False,False,False,False,False,False,False,False,False,True,False
+MAG,20,Haas F1 Team,63.0,3.0,HARD,34.0,True,17.0,1,92.247,9493.184,9400.937,36.5,47.9,8.0,False,False,False,False,False,False,False,False,False,True,False
+MAG,20,Haas F1 Team,64.0,3.0,HARD,35.0,True,17.0,1,93.091,9586.275,9493.184,36.4,48.1,7.0,False,False,False,False,False,False,False,False,False,True,False
+ALB,23,Williams,1.0,1.0,SOFT,1.0,True,16.0,12,99.503,3832.647,3732.915,36.6,49.3,6.0,False,False,False,False,True,False,True,False,False,False,False
+ALB,23,Williams,2.0,1.0,SOFT,2.0,True,16.0,1,91.252,3923.899,3832.647,36.7,49.4,7.0,False,False,False,False,False,False,False,False,False,True,False
+ALB,23,Williams,3.0,1.0,SOFT,3.0,True,17.0,1,91.561,4015.46,3923.899,36.9,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+ALB,23,Williams,4.0,1.0,SOFT,4.0,True,17.0,1,90.224,4105.684,4015.46,37.0,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+ALB,23,Williams,5.0,1.0,SOFT,5.0,True,17.0,1,90.495,4196.179,4105.684,37.0,49.3,6.0,False,False,False,False,False,False,False,False,False,True,False
+ALB,23,Williams,6.0,1.0,SOFT,6.0,True,17.0,1,91.25,4287.429,4196.179,36.9,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+ALB,23,Williams,7.0,1.0,SOFT,7.0,True,17.0,12,91.389,4378.818,4287.429,36.8,49.5,6.0,False,False,False,False,False,False,True,False,False,False,False
+ALB,23,Williams,8.0,1.0,SOFT,8.0,True,17.0,12,91.244,4470.062,4378.818,37.0,49.5,6.0,False,False,False,False,False,False,True,False,False,False,False
+ALB,23,Williams,9.0,1.0,SOFT,9.0,True,17.0,21,91.741,4561.803,4470.062,36.9,49.3,6.0,False,False,False,False,False,False,True,False,False,False,False
+ALB,23,Williams,10.0,1.0,SOFT,10.0,True,17.0,1,91.667,4653.47,4561.803,37.0,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+ALB,23,Williams,11.0,1.0,SOFT,11.0,True,14.0,1,94.915,4748.385,4653.47,36.9,49.7,6.0,False,True,False,False,True,False,False,False,False,False,False
+ALB,23,Williams,12.0,2.0,MEDIUM,1.0,True,19.0,1,108.446,4856.831,4748.385,37.0,49.7,6.0,False,False,True,False,True,False,False,False,False,False,False
+ALB,23,Williams,13.0,2.0,MEDIUM,2.0,True,18.0,1,89.34,4946.171,4856.831,36.9,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+ALB,23,Williams,14.0,2.0,MEDIUM,3.0,True,18.0,1,89.639,5035.81,4946.171,36.8,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+ALB,23,Williams,15.0,2.0,MEDIUM,4.0,True,17.0,1,90.237,5126.047,5035.81,36.7,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+ALB,23,Williams,16.0,2.0,MEDIUM,5.0,True,18.0,1,91.254,5217.301,5126.047,36.6,49.7,6.0,False,False,False,False,False,False,False,False,True,False,False
+ALB,23,Williams,17.0,2.0,MEDIUM,6.0,True,18.0,1,91.213,5308.514,5217.301,36.9,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+ALB,23,Williams,18.0,2.0,MEDIUM,7.0,True,18.0,1,91.167,5399.681,5308.514,37.2,49.7,5.0,False,False,False,False,False,False,False,False,False,True,False
+ALB,23,Williams,19.0,2.0,MEDIUM,8.0,True,18.0,1,91.396,5491.077,5399.681,37.1,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+ALB,23,Williams,20.0,2.0,MEDIUM,9.0,True,18.0,1,91.912,5582.989,5491.077,37.1,49.7,5.0,False,False,False,False,False,False,False,False,False,True,False
+ALB,23,Williams,21.0,2.0,MEDIUM,10.0,True,19.0,1,92.144,5675.133,5582.989,37.1,49.0,6.0,False,False,False,False,False,False,False,False,False,True,False
+ALB,23,Williams,22.0,2.0,MEDIUM,11.0,True,19.0,1,92.098,5767.231,5675.133,37.0,49.0,6.0,False,False,False,False,False,False,False,False,False,True,False
+ALB,23,Williams,23.0,2.0,MEDIUM,12.0,True,18.0,1,91.525,5858.756,5767.231,37.1,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+ALB,23,Williams,24.0,2.0,MEDIUM,13.0,True,19.0,1,91.595,5950.351,5858.756,37.0,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+ALB,23,Williams,25.0,2.0,MEDIUM,14.0,True,19.0,1,95.378,6045.729,5950.351,37.0,49.4,6.0,False,True,False,False,True,False,False,False,False,False,False
+ALB,23,Williams,26.0,3.0,SOFT,1.0,True,20.0,1,108.293,6154.022,6045.729,37.0,49.4,7.0,False,False,True,False,True,False,False,False,False,False,False
+ALB,23,Williams,27.0,3.0,SOFT,2.0,True,20.0,1,89.46,6243.482,6154.022,37.0,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+ALB,23,Williams,28.0,3.0,SOFT,3.0,True,19.0,1,89.605,6333.087,6243.482,37.2,49.3,7.0,False,False,False,False,False,False,False,False,False,True,False
+ALB,23,Williams,29.0,3.0,SOFT,4.0,True,18.0,1,89.801,6422.888,6333.087,37.2,49.3,6.0,False,False,False,False,False,False,False,False,False,True,False
+ALB,23,Williams,30.0,3.0,SOFT,5.0,True,17.0,1,89.939,6512.827,6422.888,37.2,49.3,6.0,False,False,False,False,False,False,False,False,False,True,False
+ALB,23,Williams,31.0,3.0,SOFT,6.0,True,17.0,1,90.928,6603.755,6512.827,37.1,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+ALB,23,Williams,32.0,3.0,SOFT,7.0,True,17.0,1,90.177,6693.932,6603.755,37.0,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+ALB,23,Williams,33.0,3.0,SOFT,8.0,True,17.0,1,91.53,6785.462,6693.932,36.7,49.3,6.0,False,False,False,False,False,False,False,False,False,True,False
+ALB,23,Williams,34.0,3.0,SOFT,9.0,True,17.0,1,90.018,6875.48,6785.462,36.7,49.1,7.0,False,False,False,False,False,False,False,False,False,True,False
+ALB,23,Williams,35.0,3.0,SOFT,10.0,True,17.0,1,89.893,6965.373,6875.48,36.6,49.1,7.0,False,False,False,False,False,False,False,False,False,True,False
+ALB,23,Williams,36.0,3.0,SOFT,11.0,True,17.0,1,89.988,7055.361,6965.373,36.6,49.0,7.0,False,False,False,False,False,False,False,False,True,False,False
+ALB,23,Williams,37.0,3.0,SOFT,12.0,True,17.0,1,91.314,7146.675,7055.361,36.8,49.3,7.0,False,False,False,False,False,False,False,False,False,True,False
+ALB,23,Williams,38.0,3.0,SOFT,13.0,True,17.0,1,90.364,7237.039,7146.675,36.7,49.1,7.0,False,False,False,False,False,False,False,False,False,True,False
+ALB,23,Williams,39.0,3.0,SOFT,14.0,True,17.0,1,90.624,7327.663,7237.039,36.8,49.1,8.0,False,False,False,False,False,False,False,False,True,False,False
+ALB,23,Williams,40.0,3.0,SOFT,15.0,True,18.0,1,93.007,7420.67,7327.663,36.6,49.0,8.0,False,False,False,False,False,False,False,False,False,True,False
+ALB,23,Williams,41.0,3.0,SOFT,16.0,True,18.0,1,90.916,7511.586,7420.67,36.6,49.0,7.0,False,False,False,False,False,False,False,False,False,True,False
+ALB,23,Williams,42.0,3.0,SOFT,17.0,True,18.0,1,91.363,7602.949,7511.586,36.6,48.7,8.0,False,False,False,False,False,False,False,False,False,True,False
+ALB,23,Williams,43.0,3.0,SOFT,18.0,True,18.0,1,91.617,7694.566,7602.949,36.6,49.1,8.0,False,False,False,False,False,False,False,False,False,True,False
+ALB,23,Williams,44.0,3.0,SOFT,19.0,True,18.0,1,90.755,7785.321,7694.566,36.7,49.1,8.0,False,False,False,False,False,False,False,False,False,True,False
+ALB,23,Williams,45.0,3.0,SOFT,20.0,True,18.0,1,94.44,7879.761,7785.321,36.8,49.0,7.0,False,True,False,False,True,False,False,False,False,False,False
+ALB,23,Williams,46.0,4.0,MEDIUM,1.0,True,18.0,1,109.747,7989.508,7879.761,36.8,49.0,7.0,False,False,True,False,True,False,False,False,False,False,False
+ALB,23,Williams,47.0,4.0,MEDIUM,2.0,True,18.0,1,88.903,8078.411,7989.508,36.6,49.0,8.0,False,False,False,False,False,False,False,False,False,True,False
+ALB,23,Williams,48.0,4.0,MEDIUM,3.0,True,18.0,1,89.331,8167.742,8078.411,36.5,49.0,8.0,False,False,False,False,False,False,False,False,False,True,False
+ALB,23,Williams,49.0,4.0,MEDIUM,4.0,True,18.0,1,89.333,8257.075,8167.742,36.9,48.8,7.0,False,False,False,False,False,False,False,False,False,True,False
+ALB,23,Williams,50.0,4.0,MEDIUM,5.0,True,18.0,1,89.544,8346.619,8257.075,36.9,48.8,7.0,False,False,False,False,False,False,False,False,False,True,False
+ALB,23,Williams,51.0,4.0,MEDIUM,6.0,True,18.0,1,89.287,8435.906,8346.619,36.9,48.9,7.0,False,False,False,False,False,False,False,False,False,True,False
+ALB,23,Williams,52.0,4.0,MEDIUM,7.0,True,18.0,1,90.629,8526.535,8435.906,36.7,48.8,7.0,False,False,False,False,False,False,False,False,False,True,False
+ALB,23,Williams,53.0,4.0,MEDIUM,8.0,True,18.0,1,89.561,8616.096,8526.535,36.6,48.4,8.0,False,False,False,False,False,False,False,False,False,True,False
+ALB,23,Williams,54.0,4.0,MEDIUM,9.0,True,18.0,1,94.61,8710.706,8616.096,36.5,48.3,9.0,False,True,False,False,True,False,False,False,False,False,False
+ALB,23,Williams,55.0,5.0,SOFT,4.0,False,18.0,1,109.761,8820.467,8710.706,36.4,48.4,8.0,False,False,True,False,True,False,False,False,False,False,False
+ALB,23,Williams,56.0,5.0,SOFT,5.0,False,18.0,1,88.281,8908.748,8820.467,36.3,48.4,7.0,False,False,False,False,False,False,False,False,False,True,False
+ALB,23,Williams,57.0,5.0,SOFT,6.0,False,18.0,1,88.493,8997.241,8908.748,36.3,48.3,8.0,False,False,False,False,False,False,False,False,False,True,False
+ALB,23,Williams,58.0,5.0,SOFT,7.0,False,18.0,1,88.79,9086.031,8997.241,36.4,48.2,9.0,False,False,False,False,False,False,False,False,False,True,False
+ALB,23,Williams,59.0,5.0,SOFT,8.0,False,18.0,1,88.712,9174.743,9086.031,36.4,48.1,11.0,False,False,False,False,False,False,False,False,False,True,False
+ALB,23,Williams,60.0,5.0,SOFT,9.0,False,18.0,1,90.057,9264.8,9174.743,36.5,48.0,9.0,False,False,False,False,False,False,False,False,False,True,False
+ALB,23,Williams,61.0,5.0,SOFT,10.0,False,18.0,1,89.229,9354.029,9264.8,36.5,48.0,8.0,False,False,False,False,False,False,False,False,False,True,False
+ALB,23,Williams,62.0,5.0,SOFT,11.0,False,18.0,1,90.496,9444.525,9354.029,36.5,47.9,8.0,False,False,False,False,False,False,False,False,True,False,False
+ALB,23,Williams,63.0,5.0,SOFT,12.0,False,18.0,1,89.829,9534.354,9444.525,36.4,48.1,7.0,False,False,False,False,False,False,False,False,False,True,False
+ALB,23,Williams,64.0,5.0,SOFT,13.0,False,18.0,1,89.593,9623.947,9534.354,36.4,47.8,8.0,False,False,False,False,False,False,False,False,False,True,False
+ZHO,24,Alfa Romeo,1.0,1.0,SOFT,1.0,True,17.0,12,99.84,3832.984,3732.915,36.6,49.3,6.0,False,False,False,False,True,False,True,False,False,False,False
+ZHO,24,Alfa Romeo,2.0,1.0,SOFT,2.0,True,17.0,1,91.212,3924.196,3832.984,36.7,49.4,7.0,False,False,False,False,False,False,False,False,False,True,False
+ZHO,24,Alfa Romeo,3.0,1.0,SOFT,3.0,True,16.0,1,90.169,4014.365,3924.196,36.9,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+ZHO,24,Alfa Romeo,4.0,1.0,SOFT,4.0,True,16.0,1,89.824,4104.189,4014.365,37.0,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+ZHO,24,Alfa Romeo,5.0,1.0,SOFT,5.0,True,16.0,1,90.451,4194.64,4104.189,37.0,49.3,6.0,False,False,False,False,False,False,False,False,False,True,False
+ZHO,24,Alfa Romeo,6.0,1.0,SOFT,6.0,True,15.0,1,90.711,4285.351,4194.64,36.9,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+ZHO,24,Alfa Romeo,7.0,1.0,SOFT,7.0,True,15.0,12,90.865,4376.216,4285.351,36.8,49.5,6.0,False,False,False,False,False,False,True,False,False,False,False
+ZHO,24,Alfa Romeo,8.0,1.0,SOFT,8.0,True,15.0,12,90.614,4466.83,4376.216,37.0,49.5,6.0,False,False,False,False,False,False,True,False,False,False,False
+ZHO,24,Alfa Romeo,9.0,1.0,SOFT,9.0,True,15.0,21,90.975,4557.805,4466.83,36.9,49.3,6.0,False,False,False,False,False,False,True,False,False,False,False
+ZHO,24,Alfa Romeo,10.0,1.0,SOFT,10.0,True,16.0,1,94.924,4652.729,4557.805,37.0,49.7,6.0,False,True,False,False,True,False,False,False,False,False,False
+ZHO,24,Alfa Romeo,11.0,2.0,MEDIUM,1.0,True,18.0,1,107.447,4760.176,4652.729,37.0,49.7,6.0,False,False,True,False,True,False,False,False,False,False,False
+ZHO,24,Alfa Romeo,12.0,2.0,MEDIUM,2.0,True,17.0,1,88.415,4848.591,4760.176,37.0,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+ZHO,24,Alfa Romeo,13.0,2.0,MEDIUM,3.0,True,16.0,1,89.842,4938.433,4848.591,36.9,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+ZHO,24,Alfa Romeo,14.0,2.0,MEDIUM,4.0,True,16.0,1,89.488,5027.921,4938.433,36.8,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+ZHO,24,Alfa Romeo,15.0,2.0,MEDIUM,5.0,True,15.0,1,89.12,5117.041,5027.921,36.7,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+ZHO,24,Alfa Romeo,16.0,2.0,MEDIUM,6.0,True,15.0,1,89.711,5206.752,5117.041,36.6,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+ZHO,24,Alfa Romeo,17.0,2.0,MEDIUM,7.0,True,15.0,1,89.587,5296.339,5206.752,36.9,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+ZHO,24,Alfa Romeo,18.0,2.0,MEDIUM,8.0,True,15.0,1,89.745,5386.084,5296.339,37.2,49.7,5.0,False,False,False,False,False,False,False,False,False,True,False
+ZHO,24,Alfa Romeo,19.0,2.0,MEDIUM,9.0,True,15.0,1,90.566,5476.65,5386.084,37.1,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+ZHO,24,Alfa Romeo,20.0,2.0,MEDIUM,10.0,True,15.0,1,90.247,5566.897,5476.65,37.1,49.7,5.0,False,False,False,False,False,False,False,False,False,True,False
+ZHO,24,Alfa Romeo,21.0,2.0,MEDIUM,11.0,True,15.0,1,90.375,5657.272,5566.897,37.1,49.0,6.0,False,False,False,False,False,False,False,False,False,True,False
+ZHO,24,Alfa Romeo,22.0,2.0,MEDIUM,12.0,True,13.0,1,90.033,5747.305,5657.272,37.0,49.0,6.0,False,False,False,False,False,False,False,False,False,True,False
+ZHO,24,Alfa Romeo,23.0,2.0,MEDIUM,13.0,True,13.0,1,90.005,5837.31,5747.305,37.1,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+ZHO,24,Alfa Romeo,24.0,2.0,MEDIUM,14.0,True,13.0,1,89.869,5927.179,5837.31,37.0,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+ZHO,24,Alfa Romeo,25.0,2.0,MEDIUM,15.0,True,13.0,1,90.114,6017.293,5927.179,37.0,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+ZHO,24,Alfa Romeo,26.0,2.0,MEDIUM,16.0,True,13.0,1,90.163,6107.456,6017.293,37.0,49.4,7.0,False,False,False,False,False,False,False,False,False,True,False
+ZHO,24,Alfa Romeo,27.0,2.0,MEDIUM,17.0,True,13.0,1,89.942,6197.398,6107.456,37.0,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+ZHO,24,Alfa Romeo,28.0,2.0,MEDIUM,18.0,True,15.0,1,111.317,6308.715,6197.398,37.0,49.4,7.0,False,True,False,False,True,False,False,False,False,False,False
+LEC,16,Ferrari,1.0,1.0,SOFT,1.0,True,1.0,12,88.746,3821.89,3732.915,36.6,49.3,6.0,False,False,False,False,True,False,True,False,False,False,False
+LEC,16,Ferrari,2.0,1.0,SOFT,2.0,True,1.0,1,87.627,3909.517,3821.89,36.7,49.4,7.0,False,False,False,False,False,False,False,False,False,True,False
+LEC,16,Ferrari,3.0,1.0,SOFT,3.0,True,1.0,1,87.198,3996.715,3909.517,36.9,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+LEC,16,Ferrari,4.0,1.0,SOFT,4.0,True,1.0,1,87.671,4084.386,3996.715,36.9,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+LEC,16,Ferrari,5.0,1.0,SOFT,5.0,True,1.0,1,87.891,4172.277,4084.386,37.0,49.3,6.0,False,False,False,False,False,False,False,False,False,True,False
+LEC,16,Ferrari,6.0,1.0,SOFT,6.0,True,1.0,1,87.427,4259.704,4172.277,37.0,49.3,6.0,False,False,False,False,False,False,False,False,False,True,False
+LEC,16,Ferrari,7.0,1.0,SOFT,7.0,True,1.0,12,87.897,4347.601,4259.704,36.8,49.5,6.0,False,False,False,False,False,False,True,False,False,False,False
+LEC,16,Ferrari,8.0,1.0,SOFT,8.0,True,1.0,1,87.782,4435.383,4347.601,37.0,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+LEC,16,Ferrari,9.0,1.0,SOFT,9.0,True,1.0,12,88.364,4523.747,4435.383,36.9,49.3,6.0,False,False,False,False,False,False,True,False,False,False,False
+LEC,16,Ferrari,10.0,1.0,SOFT,10.0,True,1.0,1,88.721,4612.468,4523.747,37.0,49.6,6.0,False,False,False,False,False,False,False,False,False,True,False
+LEC,16,Ferrari,11.0,1.0,SOFT,11.0,True,1.0,1,88.976,4701.444,4612.468,36.9,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+LEC,16,Ferrari,12.0,1.0,SOFT,12.0,True,1.0,1,88.677,4790.121,4701.444,37.0,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+LEC,16,Ferrari,13.0,1.0,SOFT,13.0,True,1.0,1,88.375,4878.496,4790.121,37.0,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+LEC,16,Ferrari,14.0,1.0,SOFT,14.0,True,1.0,1,88.495,4966.991,4878.496,36.9,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+LEC,16,Ferrari,15.0,1.0,SOFT,15.0,True,1.0,1,88.386,5055.377,4966.991,36.8,49.7,5.0,False,False,False,False,False,False,False,False,False,True,False
+LEC,16,Ferrari,16.0,1.0,SOFT,16.0,True,1.0,1,88.512,5143.889,5055.377,36.7,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+LEC,16,Ferrari,17.0,1.0,SOFT,17.0,True,1.0,1,88.377,5232.266,5143.889,36.6,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+LEC,16,Ferrari,18.0,1.0,SOFT,18.0,True,1.0,1,88.099,5320.365,5232.266,36.9,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+LEC,16,Ferrari,19.0,1.0,SOFT,19.0,True,1.0,1,88.8,5409.165,5320.365,37.2,49.7,5.0,False,False,False,False,False,False,False,False,False,True,False
+LEC,16,Ferrari,20.0,1.0,SOFT,20.0,True,1.0,1,88.899,5498.064,5409.165,37.1,49.7,6.0,False,False,False,False,False,False,False,False,False,True,False
+LEC,16,Ferrari,21.0,1.0,SOFT,21.0,True,1.0,1,93.256,5591.32,5498.064,37.1,49.7,5.0,False,True,False,False,True,False,False,False,False,False,False
+LEC,16,Ferrari,22.0,2.0,MEDIUM,1.0,True,1.0,1,105.687,5697.007,5591.32,37.1,49.0,6.0,False,False,True,False,True,False,False,False,False,False,False
+LEC,16,Ferrari,23.0,2.0,MEDIUM,2.0,True,1.0,1,87.21,5784.217,5697.007,37.1,49.5,6.0,False,False,False,False,False,False,False,False,False,True,False
+LEC,16,Ferrari,24.0,2.0,MEDIUM,3.0,True,1.0,1,87.196,5871.413,5784.217,37.1,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+LEC,16,Ferrari,25.0,2.0,MEDIUM,4.0,True,1.0,1,87.03,5958.443,5871.413,37.0,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+LEC,16,Ferrari,26.0,2.0,MEDIUM,5.0,True,1.0,1,87.279,6045.722,5958.443,37.0,49.4,6.0,False,False,False,False,False,False,False,False,False,True,False
+LEC,16,Ferrari,27.0,2.0,MEDIUM,6.0,True,4.0,1,109.08,6154.802,6045.722,37.0,49.4,7.0,False,True,False,False,True,False,False,False,False,False,False

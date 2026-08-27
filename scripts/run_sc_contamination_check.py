@@ -19,7 +19,7 @@ if SC-touched stints predict systematically worse (or with a different-
 signed residual trend) than an ordinary LORO fold would, that is evidence
 of contamination this project has not yet caught.
 
-Writes ``reports/sc_contamination_check.md``.
+Writes ``reports/cross_series/sc_contamination_check.md``.
 
 Usage (from the repo root; offline)::
 
@@ -41,7 +41,11 @@ from src.degradation.model import fit_circuit, predict_shape  # noqa: E402
 from src.ingestion.config import REPORTS_DIR  # noqa: E402
 
 from src.ingestion.config import CIRCUITS  # noqa: E402
-SEASONS = (2023, 2024, 2025)
+#: The regulation-stable fitting window, from the config rather than repeated
+#: here. This was ``(2023, 2024, 2025)`` — a third copy of a season list that
+#: had already moved to 2022-2025, so this check silently ran on a narrower
+#: window than the model it is checking.
+from src.ingestion.config import PRE_ERA_SEASONS as SEASONS  # noqa: E402
 
 
 def _stint_touched_by_neutralisation(raw_laps: pd.DataFrame) -> set[str]:
@@ -50,6 +54,12 @@ def _stint_touched_by_neutralisation(raw_laps: pd.DataFrame) -> set[str]:
     the modelling frame itself only ever contains the green laps, so this
     has to be reconstructed from before that filter runs."""
     non_green = raw_laps[raw_laps["is_non_green"].fillna(False)]
+    # A lap can be non-green *and* carry no stint number — a car that never
+    # takes the restart, or a red-flagged lap the source leaves unattributed.
+    # It belongs to no stint, so it cannot mark one as touched, and casting it
+    # to int raises. None of the four originally scoped circuits had such a
+    # lap, which is why this only surfaced when the scope reached 26.
+    non_green = non_green[non_green["Stint"].notna()]
     ids = (
         non_green["race"] + "_" + non_green["Driver"] + "_S"
         + non_green["Stint"].astype(int).astype(str)
@@ -82,7 +92,14 @@ def main() -> int:
 
     ratios = []
     for circuit in CIRCUITS:
-        raw = load_circuit_laps(circuit, seasons=SEASONS)
+        # A circuit can be in scope before its first race — Madrid joins with
+        # the 2026 calendar and runs in September 2026. Recorded and skipped,
+        # never fatal: a rolling scope guarantees this state exists.
+        try:
+            raw = load_circuit_laps(circuit, seasons=SEASONS)
+        except ValueError:
+            lines.append(f"| {circuit} | -- | -- | -- | -- | no laps in {SEASONS} |")
+            continue
         touched_ids = _stint_touched_by_neutralisation(raw)
 
         frame, _ = build_modelling_frame(raw, circuit)
@@ -143,10 +160,11 @@ def main() -> int:
             )
     lines.append("")
 
-    REPORTS_DIR.mkdir(parents=True, exist_ok=True)
-    (REPORTS_DIR / "sc_contamination_check.md").write_text("\n".join(lines), encoding="utf-8")
+    out = REPORTS_DIR / "cross_series" / "sc_contamination_check.md"
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text("\n".join(lines), encoding="utf-8")
     print("\n".join(lines))
-    print(f"\nwrote {REPORTS_DIR / 'sc_contamination_check.md'}")
+    print(f"\nwrote {out}")
     return 0
 
 

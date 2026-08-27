@@ -152,7 +152,15 @@ def load_circuit_models() -> dict[str, CircuitModel]:
         # import time, which failed test *collection* — the least informative
         # possible symptom for "run scripts/run_degradation.py".
         if rows.empty:
-            unfitted.append(circuit)
+            unfitted.append(f"{circuit} (no degradation coefficients)")
+            continue
+        # The neutralisation layer reaches back further than the degradation
+        # window and is refreshed on its own schedule, so it can legitimately
+        # lag: a circuit fitted for degradation may have no SC posterior yet.
+        # Same treatment, same reason — a partially refreshed pipeline is a
+        # normal state and must not fail at import time.
+        if circuit not in sc.index:
+            unfitted.append(f"{circuit} (no safety-car posterior)")
             continue
         degradation: dict[str, tuple[CoefPosterior, ...]] = {}
         for _, row in rows.iterrows():
@@ -191,9 +199,28 @@ def load_circuit_models() -> dict[str, CircuitModel]:
         # Reported, never silent. A caller that gets fewer models than it
         # expected should be told why, and told the one command that fixes it.
         warnings.warn(
-            f"{len(unfitted)} circuit(s) have ingested laps but no fitted "
-            f"degradation coefficients, so they carry no model: "
-            f"{', '.join(sorted(unfitted))}. Run scripts/run_degradation.py.",
+            f"{len(unfitted)} circuit(s) have ingested laps but are missing a "
+            f"fitted layer, so they carry no model: {', '.join(sorted(unfitted))}. "
+            "Run scripts/run_degradation.py and scripts/run_safety_car.py.",
             stacklevel=2,
         )
     return models
+
+
+def race_laps(seasons: tuple[int, ...] | None = None) -> dict[str, int]:
+    """Scheduled race distance per circuit, from ``sessions.csv``.
+
+    Replaces a four-entry literal that was copied into two scripts. The scope
+    is 26 circuits now, and a hand-maintained dict of race lengths is a scope
+    definition in a third place — the copy that goes stale is always the one
+    nobody remembers editing.
+
+    Where a circuit appears in several seasons the **most recent** is used: a
+    race distance can change (Monaco ran 77 laps in 2022 and 78 in 2023), and
+    the newest scheduled length is the one a current-day scenario should use.
+    """
+    sessions = pd.read_csv(F1_DERIVED_DIR / "sessions.csv")
+    if seasons is not None:
+        sessions = sessions[sessions["season"].isin(seasons)]
+    newest = sessions.sort_values("season").drop_duplicates("circuit", keep="last")
+    return dict(zip(newest["circuit"], newest["scheduled_laps"].astype(int)))

@@ -17,12 +17,14 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from src.ingestion.config import F1_REPORTS_DIR  # noqa: E402
-from src.simulator.artifacts import load_circuit_models  # noqa: E402
+from src.simulator.artifacts import load_circuit_models, race_laps  # noqa: E402
 from src.simulator.engine import RivalSpec, Scenario, simulate  # noqa: E402
 from src.simulator.recommend import summarise, table_markdown  # noqa: E402
 
-#: Race lengths (scheduled laps) from data/derived/sessions.csv.
-RACE_LAPS = {"monaco": 78, "singapore": 62, "barcelona": 66, "suzuka": 53}
+#: Race lengths (scheduled laps), read from data/derived/f1/sessions.csv
+#: rather than listed here -- the scope is 26 circuits, and a literal is a
+#: scope definition in a place nobody remembers to edit.
+RACE_LAPS = race_laps()
 
 N_DRAWS = 5000
 SEED = 20260712

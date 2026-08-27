@@ -56,7 +56,9 @@ KALMAN_DEMO_CIRCUIT = "suzuka"
 KALMAN_DEMO_SEASON = 2023
 
 
-def coefficients_rows(fit: FitResult, cv_rmse_s: float) -> list[dict[str, object]]:
+def coefficients_rows(
+    fit: FitResult, cv_rmse_s: float, frame: pd.DataFrame | None = None
+) -> list[dict[str, object]]:
     """Flatten one fit into simulator-ready coefficient rows.
 
     Standard errors and the cluster count are written out alongside the
@@ -65,10 +67,46 @@ def coefficients_rows(fit: FitResult, cv_rmse_s: float) -> list[dict[str, object
     is only correct while the interval is a normal one — it stopped being so
     when inference went cluster-robust with a ``t(G-1)`` critical value.
     Publishing the estimate's own scale removes the guesswork.
+
+    ``compound_races`` and ``compound_race_concentration`` say **how much of a
+    per-compound coefficient rests on a single race**. Austin's SOFT slope is
+    fitted from 20 stints of which 19 are one event, so it is a measurement of
+    that race carrying a circuit's name, and a consumer deciding whether to
+    trust it across seasons should be told.
+
+    **It does not explain the physically impossible slopes, and this docstring
+    used to claim it did.** On a partially ingested scope Austin SOFT fitted
+    −0.379 s/lap — a tyre gaining four tenths a lap as it ages — with a
+    cluster-robust interval excluding zero, and its 95% concentration was the
+    obvious suspect. Completing the ingestion moved it to **+0.060** with the
+    concentration unchanged. Across all 73 coefficients the correlation between
+    concentration and slope is **−0.01**.
+
+    What actually produced it was two of Austin's four seasons being absent when
+    that fit ran. The lesson is not about clustering: a coefficient fitted on a
+    partially ingested scope can look precise and be impossible, and the fix was
+    more data rather than a better estimator.
+
+    Reported rather than filtered. A slope resting on one race is still a real
+    measurement, and publishing what it rests on is more useful than dropping it
+    and leaving the circuit with no coefficient at all.
     """
+    concentration: dict[str, tuple[int, float]] = {}
+    if frame is not None and {"Compound", "race", "stint_id"} <= set(frame.columns):
+        for compound, group in frame.groupby("Compound"):
+            per_race = group.groupby("race")["stint_id"].nunique()
+            total = int(per_race.sum())
+            concentration[str(compound)] = (
+                int(len(per_race)),
+                float(per_race.max() / total) if total else float("nan"),
+            )
+
     rows: list[dict[str, object]] = []
     for compound, coefs in fit.deg_coefs.items():
+        races, share = concentration.get(str(compound), (None, float("nan")))
         row: dict[str, object] = {
+            "compound_races": races,
+            "compound_race_concentration": share,
             "circuit": fit.circuit,
             "compound": compound,
             "degree": fit.degree,
@@ -119,11 +157,16 @@ def gp_robustness_section(circuits: tuple[str, ...]) -> list[str]:
     gp_r2: list[float] = []
     ols_wins = 0
 
+    unusable: list[str] = []
     for circuit in circuits:
         # Same regulation-stable window as the fits this is a robustness check
         # on -- otherwise the GP and OLS would be compared on a pooled
         # cross-era dataset neither model above is fit to.
-        laps = load_circuit_laps(circuit, seasons=PRE_ERA_SEASONS)
+        try:
+            laps = load_circuit_laps(circuit, seasons=PRE_ERA_SEASONS)
+        except ValueError as exc:
+            unusable.append(f"{circuit}: {exc}")
+            continue
         for held_out in sorted(laps["race"].unique()):
             train_laps = laps[laps["race"] != held_out]
             test_laps = laps[laps["race"] == held_out]
@@ -133,7 +176,20 @@ def gp_robustness_section(circuits: tuple[str, ...]) -> list[str]:
                 continue
 
             ols_fit = fit_circuit(train, circuit, degree=1)
-            gp_fit = fit_circuit_gp(train, circuit)
+            # The GP's marginal likelihood is optimised by L-BFGS over a
+            # Cholesky factorisation, and on some folds that hits a matrix
+            # SciPy refuses ("array must not contain infs or NaNs"). This is a
+            # **robustness diagnostic**, not the model the project reports, so
+            # a fold it cannot fit is dropped from the comparison rather than
+            # allowed to abort a run over 26 circuits and destroy the
+            # coefficient artifact the whole pipeline downstream depends on.
+            # Dropped folds are counted and reported: a diagnostic computed on
+            # an unstated subset is worse than one that says what it skipped.
+            try:
+                gp_fit = fit_circuit_gp(train, circuit)
+            except (ValueError, FloatingPointError) as exc:
+                unusable.append(f"{circuit} {held_out}: GP did not converge ({exc})")
+                continue
             fold: dict[str, tuple[float, float]] = {}
             for label, pred in (
                 ("ols", predict_shape(ols_fit, test)),
@@ -160,6 +216,14 @@ def gp_robustness_section(circuits: tuple[str, ...]) -> list[str]:
                 ols_wins += 1
 
     n = len(ols_rmse)
+    if not n:
+        return [
+            "## Is the instability an OLS artefact? A GP robustness check",
+            "",
+            "**Not computed this run**: no fold produced both an OLS and a GP "
+            f"prediction. {len(unusable)} fold(s) were unusable.",
+            "",
+        ]
     mean_ols, mean_gp = float(np.mean(ols_rmse)), float(np.mean(gp_rmse))
     mad = float(np.mean(np.abs(np.array(ols_rmse) - np.array(gp_rmse))))
     ols_le0 = sum(1 for r in ols_r2 if r <= 0)
@@ -176,9 +240,13 @@ def gp_robustness_section(circuits: tuple[str, ...]) -> list[str]:
         "demeaned metric the GP reduces to a 1-D curve in tyre age, so it can bend",
         "freely where a polynomial cannot.",
         "",
-        f"Result ({n} folds across {len(circuits)} circuits, "
-        f"{', '.join(circuits)}):",
+        f"Result ({n} folds across {len(circuits)} circuits):",
         "",
+        *([f"*{len(unusable)} fold(s) are excluded because the GP's marginal "
+           "likelihood did not converge on them — a Cholesky factorisation that "
+           "SciPy rejects. They are dropped from both sides of the comparison, "
+           "so the two models are always scored on identical folds.*", ""]
+          if unusable else []),
         "| Model | Mean CV RMSE (s) | Folds won | Out-of-sample R² |",
         "|---|---|---|---|",
         f"| OLS (fixed effects, degree 1) | {mean_ols:.3f} | {ols_wins} / {n} "
@@ -443,12 +511,25 @@ def main() -> int:
     ]
     all_coef_rows: list[dict[str, object]] = []
 
+    unfittable: list[str] = []
     for circuit in CIRCUITS:
         # Fit on the regulation-stable window only. Pooling the 2026 era in
         # would silently average a tyre-age slope across a regulation
         # boundary; the new era is instead held out and tested explicitly
         # (see era_transfer_section).
-        laps = load_circuit_laps(circuit, seasons=PRE_ERA_SEASONS)
+        #
+        # A circuit can legitimately have nothing in this window. Madrid enters
+        # the scope with the 2026 calendar and its first race has not been run;
+        # a returning circuit can appear in the new era only. The scope is
+        # rolling by design, so this is a skip to record — the same discipline
+        # ``pipeline.run_all`` applies to a round that has not happened yet —
+        # not a reason to abort a run over 26 circuits.
+        try:
+            laps = load_circuit_laps(circuit, seasons=PRE_ERA_SEASONS)
+        except ValueError as exc:
+            unfittable.append(f"{circuit}: {exc}")
+            print(f"{circuit}: skipped — {exc}", flush=True)
+            continue
         frame, diag = build_modelling_frame(laps, circuit)
         print(f"{circuit}: {diag.after_min_stint} laps, {diag.n_stints} stints", flush=True)
 
@@ -458,7 +539,7 @@ def main() -> int:
         selected = min(DEGREES, key=lambda d: mean_rmse(cv[d]))
         fit = fit_circuit(frame, circuit, degree=selected)
         degradation_figure(frame, fit, F1_REPORTS_DIR / "figures" / f"degradation_{circuit}.png")
-        all_coef_rows += coefficients_rows(fit, mean_rmse(cv[selected]))
+        all_coef_rows += coefficients_rows(fit, mean_rmse(cv[selected]), frame)
 
         report += [
             f"## {circuit}",
@@ -548,7 +629,14 @@ def main() -> int:
         F1_DERIVED_DIR / "degradation_coefficients.csv", index=False
     )
     (F1_REPORTS_DIR / "degradation_phase2.md").write_text("\n".join(report), encoding="utf-8")
-    print(f"\nWrote reports/degradation_phase2.md and {len(all_coef_rows)} coefficient rows.")
+    fitted = len(CIRCUITS) - len(unfittable)
+    print(f"\nWrote reports/f1/degradation_phase2.md: {fitted} of {len(CIRCUITS)} "
+          f"circuits fitted, {len(all_coef_rows)} coefficient rows.")
+    if unfittable:
+        print(f"{len(unfittable)} circuit(s) had no laps in the fitting window "
+              f"{PRE_ERA_SEASONS}:")
+        for line in unfittable:
+            print(f"  - {line}")
     return 0
 
 

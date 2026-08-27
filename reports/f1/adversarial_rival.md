@@ -38,35 +38,44 @@ You are 1.2 s behind a rival of equal pace, both on 22-lap-old mediums at
 lap 38; the rival's announced plan is to stop on lap 48. Your only real route
 past is the undercut.
 
-**Monaco** (measured swap rate 0.0038 — very sticky):
+**Monaco** (measured swap rate **0.0047** — very sticky):
 
 | | Your win probability |
 |---|---|
-| Undercut on lap 39, rival stays on plan (lap 48) | **0.54** — the undercut works and Monaco locks it in |
-| Same undercut, but the rival **covers** (also pits lap 39) | **0.46** |
-| Naive optimum (lap 39), assuming no reaction | 0.54 |
-| ...its real value once the rival covers | 0.46 |
-| Cover-aware (Stackelberg) optimum | 0.46 |
-| **Win probability given away by ignoring the cover** | **~0.08** |
+| Naive optimum, assuming the rival keeps its announced plan | **0.479** |
+| ...its real value once the rival covers | **0.465** |
+| Cover-aware (Stackelberg) optimum, stop on lap 47 | 0.466 |
+| **Win probability given away by ignoring the cover** | **+0.015** |
 
-**Barcelona** (measured swap rate 0.0373 — fluid):
+**Barcelona** (measured swap rate **0.0366** — fluid):
 
 | | Your win probability |
 |---|---|
-| Undercut on lap 39, rival stays on plan | 0.45 — lower: even a won undercut can be undone on track here |
-| Same undercut, rival **covers** (pits lap 41) | 0.35 |
-| Cover-aware optimum (shifts to lap 42) | 0.40 |
-| **Win probability given away by ignoring the cover** | **~0.09** |
+| Naive optimum, assuming the rival keeps its announced plan | **0.751** |
+| ...its real value once the rival covers | **0.400** |
+| Cover-aware (Stackelberg) optimum, stop on lap 41 | 0.413 |
+| **Win probability given away by ignoring the cover** | **+0.351** |
 
 Two things the model gets right, straight from the measured primitives:
 
-- **The cover is worth ~8-9 points of win probability.** A frozen-rival
-  simulator that assumes the announced plan overstates the undercut by exactly
-  that much — the objection a real strategist raises, now quantified.
-- **The same undercut is worth more at Monaco than at Barcelona.** Winning the
-  pit exchange is decisive where position is sticky and only provisional where
-  it is fluid — the track-position layer feeding straight into the strategy
-  call.
+- **The cover is worth what the track lets it be worth.** A frozen-rival
+  simulator overstates the undercut by **+0.352** at Barcelona and by only
+  **+0.015** at Monaco, on the same scenario shape and each circuit's own
+  measured swap rate (0.0366 against 0.0047).
+- **That ordering is the whole point, and it is the reverse of the intuition.**
+  The cover matters where **overtaking is possible**: at Barcelona denying the
+  undercut genuinely costs you the place, while at Monaco you were not going to
+  get past anyway, so whether the rival covers barely moves the outcome. The
+  track-position layer feeds straight into the strategy call, and the direction
+  it pushes is measurable rather than assumed.
+
+> **These numbers were previously reported as "~8-9 points" at Monaco.** They
+> were computed when the F1 model covered four circuits and Monaco's swap rate
+> was measured at 0.0038 on three seasons; it is 0.0047 on four, and Barcelona's
+> fit gained a season. Nothing generates this report, so nothing recomputed it —
+> the same defect this project has now hit three times. `tests/test_adversarial.py`
+> reads each circuit's swap rate from the committed artifact instead of carrying
+> its own copy, so a re-measurement moves the test with the data.
 
 ## What is and isn't modelled (stated, not hidden)
 
@@ -98,9 +107,17 @@ very simulator, i.e. on fabricated experience; this stays on measured primitives
 
 The rival's larger strategy set **contains** the lap-only one, so under
 seed-matched draws a compound-aware cover can only make a frozen-rival plan
-*more* optimistic, never less — a game-theoretic invariant the tests pin. On a
-worked Barcelona duel it is not marginal: the naive plan's overstatement rises
-from **0.143** (lap-only cover) to **0.187** once the rival may also switch
-tyre, and the cover it picks is an *earlier stop onto SOFT* — undercut pace, not
-just undercut timing. Ignoring a rival's compound response is therefore a second,
-measurable way a frozen-rival simulator flatters your own plan.
+*more* optimistic, never less. That is a game-theoretic invariant and the tests
+pin it.
+
+**How much it adds is contingent, and on the current model it adds nothing.** On
+the worked Barcelona duel both covers overstate by **+0.352**, because the
+compound-aware rival's best response is already `(lap 41, HARD)` — the same tyre
+the lap-only rival was taking. An earlier version of this section reported the
+overstatement rising from 0.143 to 0.187 with the rival switching to SOFT; that
+was true of a Barcelona model fitted on three seasons, and adding 2022 changed
+which compound the cover prefers.
+
+The invariant is the durable claim. The size of the gap is a property of a
+particular circuit's fitted compounds, and reporting it as a general finding was
+the overreach.

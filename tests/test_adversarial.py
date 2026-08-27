@@ -76,17 +76,68 @@ def test_a_clearly_faster_car_wins_regardless_of_the_cover() -> None:
     assert r.adversarial_win_prob > 0.85
 
 
-def test_worked_example_in_the_report_holds() -> None:
-    """Pin the report's headline: at Monaco the undercut works when uncovered,
-    the cover meaningfully cuts it, and the naive plan overstates the win."""
-    scen, rival = _scenario("monaco", 78, gap_s=1.2)
-    r = duel(scen, rival, MODELS["monaco"], swap_rate=0.0038, n_draws=3000, seed=11)
-    ego0 = 0  # earliest (undercut) lap
-    j_plan = r.rival_pit_laps.index(min(r.rival_pit_laps, key=lambda x: abs(x - 48)))
-    uncovered = r.win_prob[ego0, j_plan]
-    covered = r.win_prob[ego0, int(r.rival_best_response[ego0])]
-    assert uncovered > covered                       # covering denies the undercut
-    assert r.naive_win_prob - r.naive_win_prob_if_covered > 0.03  # ~8 points reported
+def measured_swap_rate(circuit: str) -> float:
+    """This circuit's swap rate, read from the committed artifact.
+
+    Not a literal. The previous version of this test carried ``0.0038`` for
+    Monaco, which was the measured value when track position had been computed
+    on three seasons of four circuits. Re-measuring it on the full calendar
+    moved it to 0.0047, and the test went on asserting a headline the report
+    had drifted away from. A constant copied out of an artifact into a test is
+    a second source of truth, and it is always the one nobody updates.
+    """
+    import pandas as pd
+
+    from src.ingestion.config import F1_DERIVED_DIR
+
+    rates = pd.read_csv(F1_DERIVED_DIR / "overtaking_difficulty.csv")
+    return float(rates.set_index("circuit").loc[circuit, "adj_swap_rate"])
+
+
+def test_the_cover_matters_where_overtaking_is_possible() -> None:
+    """The report's headline, and it is the reverse of the intuition.
+
+    A frozen-rival simulator flatters your plan **most where position changes
+    hands easily**. At Barcelona denying the undercut genuinely costs the place;
+    at Monaco you were not getting past anyway, so whether the rival covers
+    barely moves the outcome.
+
+    Asserted as an ordering rather than to decimals, so a re-measurement of
+    either circuit moves the test with the data instead of breaking it.
+    """
+    results = {}
+    for circuit, laps in (("monaco", 78), ("barcelona", 66)):
+        scen, rival = _scenario(circuit, laps, gap_s=1.2)
+        r = duel(scen, rival, MODELS[circuit],
+                 swap_rate=measured_swap_rate(circuit), n_draws=3000, seed=11)
+        results[circuit] = r.naive_win_prob - r.naive_win_prob_if_covered
+
+    assert results["barcelona"] > results["monaco"], (
+        f"the cover should matter more at fluid Barcelona "
+        f"({results['barcelona']:+.3f}) than at sticky Monaco "
+        f"({results['monaco']:+.3f})"
+    )
+    assert results["barcelona"] > 0.1, (
+        f"ignoring the cover at Barcelona gives away only "
+        f"{results['barcelona']:+.3f}; the report calls this substantial"
+    )
+
+
+def test_covering_always_denies_the_undercut() -> None:
+    """Whatever the circuit, a rival that covers leaves you worse off than one
+    that keeps its announced plan. The direction is the invariant; the size is
+    a property of the track."""
+    for circuit, laps in (("monaco", 78), ("barcelona", 66)):
+        scen, rival = _scenario(circuit, laps, gap_s=1.2)
+        r = duel(scen, rival, MODELS[circuit],
+                 swap_rate=measured_swap_rate(circuit), n_draws=3000, seed=11)
+        ego0 = 0  # earliest (undercut) lap
+        j_plan = r.rival_pit_laps.index(
+            min(r.rival_pit_laps, key=lambda x: abs(x - 48))
+        )
+        uncovered = r.win_prob[ego0, j_plan]
+        covered = r.win_prob[ego0, int(r.rival_best_response[ego0])]
+        assert uncovered > covered, f"{circuit}: covering did not deny the undercut"
 
 
 def test_track_stickiness_changes_the_defence() -> None:

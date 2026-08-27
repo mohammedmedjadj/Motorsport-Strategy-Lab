@@ -63,6 +63,7 @@ stint contains a red flag (tyre sets may change without a pit stop).
 | 2024_monaco | 1237 | 1168 | 94.4% | 23 | 23 | 11 | 50 | 0 | 54 | 0 | 5 | 20 |
 | 2024_montreal | 1272 | 251 | 19.7% | 45 | 44 | 5 | 250 | 846 | 317 | 0 | 29 | 0 |
 | 2024_barcelona | 1310 | 1192 | 91.0% | 42 | 43 | 0 | 104 | 0 | 0 | 0 | 14 | 0 |
+| 2024_red_bull_ring | 1405 | 1240 | 88.3% | 46 | 46 | 0 | 136 | 0 | 49 | 0 | 14 | 0 |
 | 2024_silverstone | 960 | 658 | 68.5% | 46 | 46 | 0 | 110 | 234 | 0 | 0 | 9 | 0 |
 | 2024_hungaroring | 1355 | 1228 | 90.6% | 41 | 41 | 0 | 101 | 0 | 21 | 0 | 5 | 0 |
 | 2024_spa | 841 | 725 | 86.2% | 35 | 34 | 1 | 90 | 0 | 19 | 0 | 10 | 0 |
@@ -89,43 +90,42 @@ stint contains a red flag (tyre sets may change without a pit stop).
 | 2025_red_bull_ring | 1126 | 984 | 87.4% | 33 | 32 | 2 | 116 | 0 | 69 | 0 | 11 | 0 |
 | 2025_silverstone | 825 | 138 | 16.7% | 36 | 40 | 91 | 329 | 608 | 340 | 0 | 13 | 0 |
 | 2025_spa | 879 | 602 | 68.5% | 26 | 46 | 60 | 132 | 240 | 80 | 0 | 13 | 0 |
+| 2025_hungaroring | 1368 | 1275 | 93.2% | 30 | 30 | 0 | 79 | 0 | 0 | 0 | 15 | 0 |
+| 2025_zandvoort | 1364 | 998 | 73.2% | 40 | 40 | 2 | 323 | 0 | 316 | 0 | 9 | 0 |
+| 2025_monza | 974 | 878 | 90.1% | 20 | 21 | 0 | 58 | 0 | 19 | 0 | 21 | 0 |
+| 2025_baku | 968 | 796 | 82.2% | 21 | 21 | 58 | 113 | 0 | 140 | 0 | 1 | 0 |
 | 2025_singapore | 1229 | 1106 | 90.0% | 23 | 25 | 0 | 66 | 0 | 40 | 0 | 19 | 0 |
+| 2025_austin | 1067 | 898 | 84.2% | 21 | 21 | 1 | 104 | 0 | 103 | 0 | 31 | 0 |
+| 2025_mexico_city | 1263 | 1103 | 87.3% | 30 | 27 | 1 | 110 | 0 | 82 | 0 | 9 | 0 |
+| 2025_interlagos | 1251 | 1032 | 82.5% | 38 | 39 | 2 | 202 | 0 | 151 | 0 | 1 | 0 |
+| 2025_las_vegas | 886 | 760 | 85.8% | 25 | 24 | 2 | 126 | 0 | 93 | 0 | 0 | 0 |
+| 2025_losail | 1067 | 904 | 84.7% | 44 | 42 | 3 | 145 | 0 | 77 | 0 | 18 | 0 |
+| 2025_yas_marina | 1156 | 1044 | 90.3% | 27 | 27 | 0 | 74 | 0 | 0 | 0 | 39 | 0 |
+| 2026_melbourne | 1006 | 829 | 82.4% | 33 | 32 | 6 | 171 | 0 | 127 | 0 | 5 | 0 |
+| 2026_shanghai | 920 | 735 | 79.9% | 21 | 19 | 16 | 104 | 0 | 167 | 0 | 5 | 0 |
 | 2026_suzuka | 1107 | 913 | 82.5% | 30 | 29 | 21 | 184 | 0 | 140 | 0 | 6 | 0 |
+| 2026_miami | 1040 | 783 | 75.3% | 24 | 23 | 7 | 182 | 0 | 188 | 0 | 13 | 0 |
+| 2026_montreal | 1211 | 907 | 74.9% | 36 | 35 | 5 | 166 | 14 | 223 | 0 | 35 | 0 |
 | 2026_monaco | 1452 | 1136 | 78.2% | 89 | 87 | 37 | 275 | 0 | 247 | 0 | 25 | 32 |
+| 2026_barcelona | 1236 | 1016 | 82.2% | 53 | 49 | 3 | 201 | 0 | 100 | 0 | 13 | 0 |
+| 2026_red_bull_ring | 1339 | 1142 | 85.3% | 44 | 41 | 1 | 175 | 0 | 89 | 0 | 17 | 0 |
+| 2026_silverstone | 1113 | 808 | 72.6% | 52 | 52 | 21 | 257 | 0 | 237 | 0 | 18 | 0 |
+| 2026_spa | 872 | 674 | 77.3% | 30 | 28 | 62 | 169 | 0 | 164 | 0 | 9 | 0 |
+| 2026_hungaroring | 1431 | 1239 | 86.6% | 47 | 46 | 2 | 136 | 0 | 84 | 0 | 16 | 0 |
+| 2026_zandvoort | 1368 | 1082 | 79.1% | 68 | 65 | 47 | 249 | 0 | 176 | 0 | 10 | 42 |
 
-**Overall: 70583/91080 laps kept for pace analysis (77.5%).**
+**Overall: 90726/115385 laps kept for pace analysis (78.6%).**
 
 ## Races skipped (not available at ingest time)
 
-- 2024_red_bull_ring: DataNotLoadedError: The data you are trying to access has not been loaded yet. See `Session.load`
-- 2025_hungaroring: DataNotLoadedError: The data you are trying to access has not been loaded yet. See `Session.load`
-- 2025_zandvoort: RateLimitExceededError: any API: 500 calls/h
-- 2025_monza: RateLimitExceededError: any API: 500 calls/h
-- 2025_baku: RateLimitExceededError: any API: 500 calls/h
-- 2025_austin: RateLimitExceededError: any API: 500 calls/h
-- 2025_mexico_city: RateLimitExceededError: any API: 500 calls/h
-- 2025_interlagos: RateLimitExceededError: any API: 500 calls/h
-- 2025_las_vegas: RateLimitExceededError: any API: 500 calls/h
-- 2025_losail: RateLimitExceededError: any API: 500 calls/h
-- 2025_yas_marina: RateLimitExceededError: any API: 500 calls/h
-- 2026_melbourne: RateLimitExceededError: any API: 500 calls/h
-- 2026_shanghai: RateLimitExceededError: any API: 500 calls/h
-- 2026_miami: RateLimitExceededError: any API: 500 calls/h
-- 2026_montreal: RateLimitExceededError: any API: 500 calls/h
-- 2026_barcelona: RateLimitExceededError: any API: 500 calls/h
-- 2026_red_bull_ring: RateLimitExceededError: any API: 500 calls/h
-- 2026_silverstone: RateLimitExceededError: any API: 500 calls/h
-- 2026_spa: RateLimitExceededError: any API: 500 calls/h
-- 2026_hungaroring: RateLimitExceededError: any API: 500 calls/h
-- 2026_zandvoort: RateLimitExceededError: any API: 500 calls/h
-- 2026_monza: RateLimitExceededError: any API: 500 calls/h
-- 2026_madrid: RateLimitExceededError: any API: 500 calls/h
-- 2026_baku: RateLimitExceededError: any API: 500 calls/h
-- 2026_bahrain: RateLimitExceededError: any API: 500 calls/h
-- 2026_singapore: RateLimitExceededError: any API: 500 calls/h
-- 2026_austin: RateLimitExceededError: any API: 500 calls/h
-- 2026_mexico_city: RateLimitExceededError: any API: 500 calls/h
-- 2026_interlagos: RateLimitExceededError: any API: 500 calls/h
-- 2026_las_vegas: RateLimitExceededError: any API: 500 calls/h
-- 2026_losail: RateLimitExceededError: any API: 500 calls/h
-- 2026_yas_marina: RateLimitExceededError: any API: 500 calls/h
+- 2026_monza: DataNotLoadedError: The data you are trying to access has not been loaded yet. See `Session.load`
+- 2026_madrid: DataNotLoadedError: The data you are trying to access has not been loaded yet. See `Session.load`
+- 2026_baku: DataNotLoadedError: The data you are trying to access has not been loaded yet. See `Session.load`
+- 2026_bahrain: DataNotLoadedError: The data you are trying to access has not been loaded yet. See `Session.load`
+- 2026_singapore: DataNotLoadedError: The data you are trying to access has not been loaded yet. See `Session.load`
+- 2026_austin: DataNotLoadedError: The data you are trying to access has not been loaded yet. See `Session.load`
+- 2026_mexico_city: DataNotLoadedError: The data you are trying to access has not been loaded yet. See `Session.load`
+- 2026_interlagos: DataNotLoadedError: The data you are trying to access has not been loaded yet. See `Session.load`
+- 2026_las_vegas: DataNotLoadedError: The data you are trying to access has not been loaded yet. See `Session.load`
+- 2026_losail: DataNotLoadedError: The data you are trying to access has not been loaded yet. See `Session.load`
+- 2026_yas_marina: DataNotLoadedError: The data you are trying to access has not been loaded yet. See `Session.load`

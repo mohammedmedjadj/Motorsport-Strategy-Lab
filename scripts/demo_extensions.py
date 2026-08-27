@@ -29,11 +29,14 @@ from src.degradation.dataset import build_modelling_frame  # noqa: E402
 from src.degradation.gp_model import fit_circuit_gp, predict_shape_gp  # noqa: E402
 from src.degradation.kalman import filter_stint  # noqa: E402
 from src.degradation.model import fit_circuit, predict_shape  # noqa: E402
-from src.simulator.artifacts import load_circuit_models  # noqa: E402
+from src.simulator.artifacts import load_circuit_models, race_laps  # noqa: E402
 from src.simulator.engine import RivalSpec, Scenario, simulate  # noqa: E402
 from src.simulator.recommend import pareto_front, summarise  # noqa: E402
 
-RACE_LAPS = {"monaco": 78, "singapore": 62, "barcelona": 66, "suzuka": 53}
+#: Race lengths (scheduled laps), read from data/derived/f1/sessions.csv
+#: rather than listed here -- the scope is 26 circuits, and a literal is a
+#: scope definition in a place nobody remembers to edit.
+RACE_LAPS = race_laps()
 
 
 def _scenario(circuit: str, total_laps: int) -> Scenario:
