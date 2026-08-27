@@ -22,6 +22,12 @@ demo = ["streamlit>=1.60"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-q"
+markers = [
+    # Reaches the network. Such a test skips itself when the call fails, so the
+    # suite still passes offline -- the marker exists so a run can deselect them
+    # deliberately (`-m "not network"`) rather than relying on the skip.
+    "network: needs an upstream API (FastF1's schedule); skips itself offline",
+]
 
 [tool.setuptools.packages.find]
 where = ["."]

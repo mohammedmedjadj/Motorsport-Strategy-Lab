@@ -12,7 +12,7 @@ the two series share loader and estimator code
 `src/safety_car/endurance.py`, `src/simulator/endurance.py`) because the
 underlying problem — pit visit vs tyre change vs driver stint as three
 distinct signals — is genuinely the same, but every fitted number below is
-WEC's own, never pooled with IMSA's. See [`reports/methodology.md`](../methodology.md)
+WEC's own, never pooled with IMSA's. See [`reports/methodology.md`](../f1/methodology.md)
 for the sibling F1 report this one mirrors in structure.
 
 ## Abstract
@@ -79,10 +79,10 @@ are addressed here (§3.4's decision audit; the leave-one-season-out and
 leave-one-circuit-out protocols throughout §4), and a third, broader
 question — does *any* fitted quantity in this project generalise, not just
 degradation, and does the answer differ by series — is reported separately
-in [`reports/generalization_audit.md`](../generalization_audit.md), which
+in [`reports/generalization_audit.md`](../cross_series/generalization_audit.md), which
 runs the identical leave-one-out protocol on pit loss and neutralisation
 occurrence across all three series in this project. The F1 report
-([`reports/methodology.md`](../methodology.md), §1) covers F1-specific
+([`reports/methodology.md`](../f1/methodology.md), §1) covers F1-specific
 related work (Aguad & Thraves' Stackelberg pit-stop game; three
 learned-model pit-strategy systems; Pitwall) that is not re-litigated here
 since none of those five is endurance-specific.
@@ -289,7 +289,7 @@ appears twice in this project with different values**: the +0.209 above is
 the mean over the frozen 2023-2025 degradation scope (3 folds), matching
 `degradation_phase2.md`. The widened `ENDURANCE_SCOPE` artifact
 (`data/derived/endurance/endurance_degradation_loro.csv`, feeding
-[`reports/generalization_audit.md`](../generalization_audit.md)) adds a
+[`reports/generalization_audit.md`](../cross_series/generalization_audit.md)) adds a
 2022 fold and therefore reports **+0.217** over 4 folds (+0.049, +0.310,
 +0.266, +0.243). Neither
 is wrong; they are different fold sets, and the qualitative finding —

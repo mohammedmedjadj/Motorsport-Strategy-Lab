@@ -7,7 +7,7 @@ and IMSA are never pooled — they are different cars answering a different
 strategy question.*
 
 Phase 0 for this class is in
-[`reports/new_series_survey_phase0.md`](../new_series_survey_phase0.md): the
+[`reports/new_series_survey_phase0.md`](../../cross_series/new_series_survey_phase0.md): the
 source verification, the eligibility scan, the circuit-alias trap and the
 scope-key work that had to land before a second class could be added at all.
 This document is what the models say now that it has been.
@@ -36,7 +36,7 @@ GTD PRO's +0.0190 on the same circuits and the same code. 8 of 60 GTD races
 fit a negative slope (GTP: 5 of 33) — tyres apparently getting faster with
 age. Part of that is a race where fuel burn outweighs tyre wear seen through a
 single net coefficient; part is the unmodelled track-evolution term diagnosed
-in [`reports/track_evolution_omitted_variable.md`](../track_evolution_omitted_variable.md).
+in [`reports/track_evolution_omitted_variable.md`](../../cross_series/track_evolution_omitted_variable.md).
 Reported rather than clipped, and every slope here read as a lower bound.
 
 Standard errors are cluster-robust by car with a `t(G−1)` reference; with a
@@ -72,7 +72,7 @@ needs a *cheap stop* (no entry above 22.5 s pit loss is tyre-limited anywhere
 in 66 entries) and *real degradation*, and conditioned on stop cost the split
 happens inside every class. GT3 dominates the list because GT3 racing is where
 cheap stops are common. See
-[`reports/when_tyres_beat_fuel.md`](../when_tyres_beat_fuel.md).
+[`reports/when_tyres_beat_fuel.md`](../../cross_series/when_tyres_beat_fuel.md).
 
 At Laguna Seca the GTD optimum takes **six stops against a fuel minimum of
 two**. The five are the short sprint rounds, where the stop is cheap and a
@@ -155,11 +155,11 @@ magnitudes so no single large pair can carry the result, gives p = 0.096;
 dropping the still-in-progress 2026 season gives p = 0.094; restricting to the
 37 pairs where both classes fit a positive slope — excluding races hit by the
 [unmodelled track-evolution
-term](../track_evolution_omitted_variable.md) — gives p = 0.054.
+term](../../cross_series/track_evolution_omitted_variable.md) — gives p = 0.054.
 
 And the second natural experiment points the other way: **ELMS's LMP2 Pro/Am
 crews degrade −0.0053 s/lap *less* than its professionals** (17 pairs,
-p = 0.148). See [`reports/elms/crew_rating_findings.md`](../elms/crew_rating_findings.md).
+p = 0.148). See [`reports/elms/crew_rating_findings.md`](../../elms/crew_rating_findings.md).
 
 So the honest statement is unchanged from what this section said before the
 numbers were recomputed, even though every number in it moved: **this analysis
@@ -171,18 +171,18 @@ Both tests and their robustness variants are computed by
 `src/degradation/crew_rating.py` and pinned by `tests/test_crew_rating.py`.
 Until that module existed the comparison was run by hand and its published
 p-values had drifted a long way from the artifacts; the post-mortem is in
-[`reports/elms/crew_rating_findings.md`](../elms/crew_rating_findings.md) §6.
+[`reports/elms/crew_rating_findings.md`](../../elms/crew_rating_findings.md) §6.
 
 ## 7. What is not here
 
 - **Per-decision audit: now present** for both GT3 classes
-  ([`gt3_audit_cases.md`](gt3_audit_cases.md)), on the two circuits the
+  ([`gt3_audit_cases.md`](audit_cases.md)), on the two circuits the
   cross-series rule marks tyre-limited.
 - **No established amateur effect on degradation** — see §6. The design is in
   place and the measurement is inconclusive at 44 pairs, which is a different
   thing from an effect that is not there.
 - **No Balance-of-Performance term.** BoP shifts a car's pace level and the
   per-race intercepts absorb that completely (see
-  [`reports/new_series_survey_phase0.md`](../new_series_survey_phase0.md) §GT3);
+  [`reports/new_series_survey_phase0.md`](../../cross_series/new_series_survey_phase0.md) §GT3);
   what it can also do is move the tyre-wear slope, which would show up as
   between-race slope variation and is not separately identified here.

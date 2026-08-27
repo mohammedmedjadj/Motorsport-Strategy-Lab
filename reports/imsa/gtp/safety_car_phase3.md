@@ -6,13 +6,13 @@ editions. Estimates are posterior means with 95% equal-tailed credible
 intervals under a Jeffreys prior (`src/safety_car/model.py`, reused unchanged
 from F1: Beta-Binomial occurrence, Gamma-Poisson rate). Only event *extraction*
 is new, because this source encodes race control as a per-lap flag rather than
-`TrackStatus` intervals — see [Phase 0](data_availability_phase0.md) for how
+`TrackStatus` intervals — see [Phase 0](../data_availability_phase0.md) for how
 `FCY` was distinguished from the chequered flag (`FF`) and red flag (`RF`).
 
 IMSA shows **no Safety Car flag at all**. Both other endurance series in this
 project run one — WEC in 19 of 33 races
-([report](../wec/safety_car_phase3.md)), ELMS in 23 of 29
-([report](../elms/safety_car_phase3.md)) — so it is not an endurance-wide
+([report](../../wec/safety_car_phase3.md)), ELMS in 23 of 29
+([report](../../elms/safety_car_phase3.md)) — so it is not an endurance-wide
 convention but a difference between championships, which is the whole argument
 for never pooling their neutralisation models. Only Full Course Yellow is
 modelled here.

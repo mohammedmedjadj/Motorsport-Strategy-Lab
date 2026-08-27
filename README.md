@@ -13,7 +13,7 @@
 </p>
 
 <p align="center">
-  <a href="reports/methodology.md">Methodology</a> ·
+  <a href="reports/f1/methodology.md">Methodology</a> ·
   <a href="#key-findings-across-all-four-series">Key Findings</a> ·
   <a href="reports/f1/audit_cases.md">Audit Cases</a> ·
   <a href="#the-interactive-demo">Live Demo</a> ·
@@ -55,16 +55,16 @@ recorded.
 
 The strongest result the fourth series bought is cross-series and could not
 have been found in any one of them:
-[**when tyres beat fuel**](reports/when_tyres_beat_fuel.md) — an extra pit
+[**when tyres beat fuel**](reports/cross_series/when_tyres_beat_fuel.md) — an extra pit
 stop is worth its cost only where the stop is *cheap* (no entry above 22.5 s
-pit loss is tyre-limited in 66 circuit-class entries, p = 0.00001) **and** the
+pit loss is tyre-limited in 205 race-seasons, p = 1.1e-14) **and** the
 tyre is genuinely going away (p = 0.0013 among cheap-stop entries). Condition
 on stop cost and the car class stops mattering — GT3 dominated the earlier,
 narrower version of this finding only because GT3 racing is where cheap stops
 are common.
 
 A defect the same widening exposed, diagnosed and **not yet fixed**:
-[**track evolution is an omitted variable**](reports/track_evolution_omitted_variable.md).
+[**track evolution is an omitted variable**](reports/cross_series/track_evolution_omitted_variable.md).
 41 of 210 endurance races fit a negative degradation slope, and at ELMS
 Portimao 2023 — where the track dries by 17.8 s a lap over the race — the
 model attributes that improvement to tyre age with its sign inverted. Adding a
@@ -75,11 +75,11 @@ carrying on.
 
 Candidate sources beyond that are surveyed against this project's actual bar —
 per-lap flags and tyre age, not just lap times — in
-[`reports/new_series_survey_phase0.md`](reports/new_series_survey_phase0.md).
+[`reports/new_series_survey_phase0.md`](reports/cross_series/new_series_survey_phase0.md).
 **IMSA's two GT3 classes have since been built out**, each scoped separately:
 **GTD** (Pro/Am, 60 race-seasons over 2021-2026, 13 circuits) and **GTD PRO**
 (all-professional, 47 race-seasons over 2022-2026, 12 circuits), written up in
-[`reports/imsa/gtd_findings.md`](reports/imsa/gtd_findings.md). IndyCar is
+[`reports/imsa/gtd_findings.md`](reports/imsa/gtd/findings.md). IndyCar is
 declined on evidence, with the check that produced the decision written down.
 
 **Status:** F1, WEC and IMSA are complete end to end, phases 0-7 — data,
@@ -415,7 +415,313 @@ See [`reports/f1/degradation_history.md`](reports/f1/degradation_history.md),
 
 ---
 
+## IMSA
+
+IMSA is modelled as **three separate classes**, never pooled. They share a
+loader and model code; they share no fitted number. The split is not
+bookkeeping: the prototype and the GT3 classes **disagree on this project's
+headline endurance conclusion**. "Every measured race is fuel-limited on stop
+count" holds for GTP (one exception, Laguna Seca) and fails for GTD, which is
+tyre-limited at five circuits and takes six stops against a fuel minimum of
+two at Laguna Seca. Pooling them would have averaged that away.
+
+**Three branches, each with its own directory and its own complete tables**
+— [`reports/imsa/gtp/`](reports/imsa/gtp/) ·
+[`reports/imsa/gtd/`](reports/imsa/gtd/) ·
+[`reports/imsa/gtdpro/`](reports/imsa/gtdpro/), indexed by
+[`reports/imsa/README.md`](reports/imsa/README.md).
+
+| class | what it is | race-seasons | circuits | seasons | median slope | every race |
+|---|---|---|---|---|---|---|
+| **GTP** | manufacturer prototype (Hypercar-adjacent) | 33 | 10 | 2023–2026 | +0.0166 s/lap | [slopes](reports/imsa/gtp/degradation_all_races.md) · [strategy](reports/imsa/gtp/strategy_all_races.md) |
+| **GTD** | GT3, **Pro/Am** (mandatory bronze/silver driver) | 60 | 13 | 2021–2026 | +0.0200 s/lap | [slopes](reports/imsa/gtd/degradation_all_races.md) · [strategy](reports/imsa/gtd/strategy_all_races.md) |
+| **GTD PRO** | GT3, **all-professional** line-ups | 47 | 12 | 2022–2026 | +0.0190 s/lap | [slopes](reports/imsa/gtdpro/degradation_all_races.md) · [strategy](reports/imsa/gtdpro/strategy_all_races.md) |
+
+GTD and GTD PRO are the *same cars under the same Balance of Performance*.
+Keeping them apart is what makes the crew-rating question measurable at all:
+the class boundary *is* the crew rating, so no external driver-rating data is
+needed. Results in
+[`reports/imsa/gtd_findings.md`](reports/imsa/gtd/findings.md) §6.
+
+The IMSA WeatherTech SportsCar Championship needed the same treatment as
+WEC — FastF1 doesn't cover it either. IMSA shares its loader and model code
+with WEC (`src/data/endurance_loader.py`, `src/degradation/endurance.py`,
+`src/safety_car/endurance.py`, `src/simulator/endurance.py`), since both
+series face the same pit-visit/tyre-change/driver-stint distinction, but
+every number below comes from IMSA's own data and is never pooled with
+WEC's.
+
+### Data scope
+
+#### GTP (prototypes)
+
+**10 circuits over 2023-2026, 33 race-seasons.** The table below lists the
+four the build started from, chosen to span sprint and endurance formats; the
+scope was later widened to every eligible GTP race the source carries:
+
+| Circuit      | Seasons             | Race length   | Why it is in the set                                                       |
+| ------------ | ------------------- | ------------- | -------------------------------------------------------------------------- |
+| Watkins Glen | 2023, 2024, 2025    | 364 min       | Mid-length road course; the reference case for the whole build             |
+| Sebring      | 2023, 2024, 2025    | 723 min (12h) | The longest of the four scoped formats                                     |
+| Mosport      | **2023 only** | 162 min       | GTP, the current top prototype class, raced here only in 2023 — see below |
+| Road America | 2023, 2024, 2025    | 163 min       | Short sprint; surfaced a real data-quality bug, covered below              |
+
+63 GTP-class races are available across IMSA 2021-2026 in total, and all went
+into the neutralisation model (matching the "63 races pooled" in
+[`reports/imsa/safety_car_phase3.md`](reports/imsa/gtp/safety_car_phase3.md)). The
+10 race-seasons above (3+3+1+3) were selected for degradation and simulator
+work.
+
+Mosport's single season isn't a gap in this pipeline — it's a verified fact
+about the calendar. Checked directly against the source: Mosport ran DPi
+(GTP's predecessor class) in 2022 and GTD/GTDPRO/LMP2 in 2024-2025, but no
+GTP entry outside 2023. It's the IMSA equivalent of the COVID-era calendar
+gaps already documented on the F1 side.
+
+**What the verification caught:** see
+[`reports/imsa/data_availability_phase0.md`](reports/imsa/data_availability_phase0.md).
+Beyond the mixed-session and driver-stint traps shared with WEC (the #01 GTP
+car made 13 pit visits across only 4 driver stints at Watkins Glen — the gap
+is fuel-only stops), an earlier draft of that report claimed IMSA "ships no
+weather" as a fact about the whole series, based on a single race. With four
+races on hand, the truth turned out to be race-specific: two circuits have
+full weather coverage, two have none.
+
+### System overview
+
+| Layer                 | Module                                                                        | Key finding                                                                                                                           |
+| --------------------- | ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| 0. Data               | `src/data/` (shared with WEC)                                               | Pit visit, tyre change, and driver stint kept as three distinct signals rather than one                                               |
+| 1. Data quality       | [`reports/imsa/data_quality_phase1.md`](reports/imsa/gtp/data_quality_phase1.md) | 73.2% of raw laps kept across 140 race-seasons in three classes; Road America 2024 alone accounts for most of the cars dropped outright                 |
+| 2. Tyre degradation   | `src/degradation/endurance.py`                                              | Leave-one-race-out shows near-zero transfer at every GTP circuit (−0.014 to +0.058); Road America fits negative in two of its three GTP editions   |
+| 3. Neutralisations    | `src/safety_car/endurance.py`                                               | Full Course Yellow in 61 of 63 races — 100% at 14 of 17 events; **zero Safety Car events across all 63** — genuinely different from WEC |
+| 4. Strategy simulator | `src/simulator/endurance.py`                                                | Confidence tracks the degradation signal directly: decisive at Road America, honestly flat (under 2s spread) at Mosport               |
+| 5. Decision audit     | `src/audit/endurance_cases.py`                                              | Three real stop decisions replayed; model confidence at the recommended lap orders exactly as Road America > Watkins Glen > Mosport   |
+
+Reports: [data availability](reports/imsa/data_availability_phase0.md) ·
+[data quality](reports/imsa/gtp/data_quality_phase1.md) ·
+[degradation](reports/imsa/gtp/degradation_phase2.md) ·
+[neutralisations](reports/imsa/gtp/safety_car_phase3.md) ·
+[simulator](reports/imsa/gtp/simulator_phase4.md) ·
+[decision audit](reports/imsa/gtp/audit_cases.md) ·
+[methodology](reports/imsa/methodology.md)
+
+### Key results
+
+Degradation slopes don't transfer in the prototype class either. Leave-one-
+race-out per circuit — the exact F1 protocol — gives mean within-stint R²
+between **−0.014 and +0.058** across GTP's nine measured circuits: Sebring
+−0.002, Road America +0.001, Watkins Glen +0.013, up to Laguna Seca +0.058.
+No better than a flat line, sometimes worse. A separate leave-one-circuit-out
+test agrees. Two different, both harder-than-they-look questions, and the same
+answer from each: this project's central finding about degradation instability
+isn't a quirk of Formula 1.
+
+**The GT3 classes are the exception, and finding them changed the picture.**
+IMSA's Lime Rock reaches a mean R² of **+0.573** in GTD and +0.497 in GTD PRO,
+and Laguna Seca +0.273 and +0.256 — the four best transfers anywhere in this
+project, ahead of WEC's Bahrain (+0.217), which held that title until the GT3
+classes were scoped. Short circuits with cheap stops transfer; long ones with
+expensive stops do not. It is the same axis the cross-series pit-loss rule
+turns on, arrived at independently.
+
+A fuel/degradation split was tried here too, and rejected for the same
+reason as WEC: 85-100% of pit visits also change tyres, leaving fuel and
+tyre age correlated +0.83 to +1.00 after fixed effects at every circuit.
+Only the net slope is reported.
+
+Building the leave-one-season-out analysis surfaced a real bug. Road America
+2024's first fit produced a nonsense slope of −0.53 s/lap with a 13.9-second
+RMSE — an order of magnitude off every other race. The cause: laps 2 and 3 of
+that 62-lap sprint are a field-wide standing-start effect, every car running
+at roughly twice its normal pace, flagged "green" in the source data. The
+existing per-car traffic trim couldn't catch it, because in such a short race
+the anomaly compromises too large a share of each car's own laps and inflates
+that car's own cutoff right along with it. The fix adds a field-wide filter
+that runs before the per-car one (`src/degradation/endurance.py`), and it's
+regression-tested against both a synthetic case and the real race.
+
+IMSA and WEC turn out not to be interchangeable at all. An IMSA race is
+almost certain to see a Full Course Yellow (P = 0.96 series-wide, and every
+scoped circuit individually sits at 90-93%), and IMSA has never shown a
+Safety Car in 63 races — while WEC prefers the Safety Car over FCY at every
+one of its own scoped circuits.
+
+The simulator's confidence follows the strength of the underlying signal
+rather than defaulting to some fixed level of certainty: Road America, the
+one circuit with a statistically significant slope in every season checked,
+gives the most decisive recommendation of the four; Mosport, whose slope
+covers zero, spreads under two seconds across every candidate pit lap and
+says so rather than picking a winner anyway.
+
+### IMSA phase plan & Definition of Done
+
+| Phase                | Deliverable                                                                                                                       | Definition of Done                                                                                                                                                                 |
+| -------------------- | --------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 0. Data availability | [`reports/imsa/data_availability_phase0.md`](reports/imsa/data_availability_phase0.md)                                           | Source verified by direct query; scope frozen at 4 circuits, 1-3 seasons each; both verification traps documented and regression-tested                                            |
+| 1. Data quality      | [`reports/imsa/data_quality_phase1.md`](reports/imsa/gtp/data_quality_phase1.md)                                                     | Lap-level accounting for all 10 race-seasons, stage by stage, mirroring the F1 quality report                                                                                      |
+| 2. Degradation       | [`reports/imsa/degradation_phase2.md`](reports/imsa/gtp/degradation_phase2.md) + `src/degradation/endurance_validation.py` + tests | Net slope per circuit-season with CIs; leave-one-season-out and leave-one-circuit-out both run and clearly distinguished; the fuel/degradation split reported only as a diagnostic |
+| 3. Neutralisations   | [`reports/imsa/safety_car_phase3.md`](reports/imsa/gtp/safety_car_phase3.md) + tests                                                 | Per-circuit and series-wide Beta-Binomial/Gamma-Poisson posteriors on 63 races; the zero-Safety-Car case handled by the Jeffreys prior rather than hard-coded                      |
+| 4. Simulator         | [`reports/imsa/simulator_phase4.md`](reports/imsa/gtp/simulator_phase4.md) + tests                                                   | Fuel-range constraint enforced, one demo scenario per circuit, reproducible                                                                                                        |
+| 5. Decision audit    | [`reports/imsa/audit_cases.md`](reports/imsa/gtp/audit_cases.md) + `src/audit/endurance_cases.py` + tests                          | Three real stop decisions, states rebuilt from committed laps, replayed through the single-stop engine and compared quantitatively                                                 |
+| 6. Methodology       | [`reports/imsa/methodology.md`](reports/imsa/methodology.md)                                                                     | Full write-up — motivation, method, results, threats to validity, future work — every number traceable to project output, IMSA-only, never pooled with WEC                       |
+| 7. Packaging         | [`reports/imsa/packaging_phase7.md`](reports/imsa/packaging_phase7.md)                                                           | Runs from a fresh clone (104 endurance-scoped tests, offline); IMSA's own reproduction commands; upstream contribution ideas, including the one question worth asking the source  |
+
+### IMSA known limitations
+
+- Mosport has only one season of GTP data — a verified calendar fact, not a
+  gap in this pipeline (see Data scope above) — so it has no
+  leave-one-season-out result; the simulator's Mosport demo still runs on its
+  single available fit.
+- No tyre compound survives in the source, so degradation is a single net
+  slope rather than a per-compound curve.
+- No rivals, no track position, and no driver-stint regulatory constraints in
+  the simulator; IMSA is heavily multi-class (GTP/GTD/GTDPRO/LMP2/LMP3), and
+  a two-car rival abstraction wouldn't represent that honestly.
+- Road America's negative degradation slope is reported as measured, a
+  genuine open question rather than something smoothed over.
+- A **retrospective audit of real winners now exists** across IMSA and WEC
+  ([`reports/endurance_audit.md`](reports/cross_series/endurance_audit.md)) — real winning
+  stint lengths versus each circuit's fuel range.
+- A **per-decision audit, the IMSA analogue of F1's Phase 5, now exists**
+  ([`reports/imsa/audit_cases.md`](reports/imsa/gtp/audit_cases.md)): three real
+  stop decisions (an opportunistic FCY-onset stop at Watkins Glen, a routine
+  green-flag stop at Road America, an opportunistic FCY stop at the flat-
+  signal Mosport) replayed through the single-stop engine. Model confidence
+  at the recommended lap tracks the strength of each circuit's own
+  degradation signal exactly as Phase 4's demo scenarios found — decisive at
+  Road America (P(best) 0.92), still decisive at Watkins Glen (0.79), and
+  honestly uncertain at Mosport (0.34 on a 581s spread), where the "outside
+  the window" verdict is a real but low-confidence preference rather than a
+  confident correction.
+
+---
+
+## ELMS
+
+The European Le Mans Series is modelled as **two separate classes**, never
+pooled — `LMP2` and `LMP2 Pro/Am`. It shares its source and this project's
+code with WEC and IMSA, and shares no fitted number with either.
+
+ELMS was not added for breadth. It was added because it is the one series that
+could **falsify a hypothesis this project had carried since its F1 phase**, and
+it did.
+
+**Two branches, each with its own directory and its own complete tables** —
+[`reports/elms/lmp2/`](reports/elms/lmp2/) ·
+[`reports/elms/lmp2_proam/`](reports/elms/lmp2_proam/), indexed by
+[`reports/elms/README.md`](reports/elms/README.md).
+
+| class | what it is | race-seasons | circuits | seasons | median slope | every race |
+|---|---|---|---|---|---|---|
+| **LMP2** | near-spec Oreca 07 / Gibson, professional crews from 2023 | 25 | 9 | 2021–2025 | +0.0161 s/lap | [slopes](reports/elms/lmp2/degradation_all_races.md) · [strategy](reports/elms/lmp2/strategy_all_races.md) |
+| **LMP2 Pro/Am** | the same car, mandatory bronze-rated driver | 17 | 8 | 2023–2025 | +0.0205 s/lap | [slopes](reports/elms/lmp2_proam/degradation_all_races.md) · [strategy](reports/elms/lmp2_proam/strategy_all_races.md) |
+
+Before 2023 the `LMP2` label covers every entry rather than the professional
+subset. Every comparison between the two classes is restricted to 2023 on for
+that reason, and the restriction is enforced in code
+(`src/degradation/crew_rating.py`), not remembered.
+
+### Data scope
+
+**52,472 race laps across 42 race-seasons, 69.6% kept for modelling** (median
+per race). Nine circuits, all European:
+
+| circuit | LMP2 | LMP2 Pro/Am |
+|---|---|---|
+| Aragon | 2023 | 2023 |
+| Barcelona | 2022–2025 | 2023–2025 |
+| Imola | 2022, 2024, 2025 | 2024, 2025 |
+| Monza | 2022 | — |
+| Mugello | 2024 | 2024 |
+| Paul Ricard | 2022–2025 | 2023–2025 |
+| Portimao | 2021–2025 | 2023–2025 |
+| Silverstone | 2025 | 2025 |
+| Spa | 2021–2025 | 2023–2025 |
+
+Fields run 7–17 cars, so the cluster-robust `t(G−1)` reference is doing real
+work rather than being a formality: at 7 cars it is a `t(6)`, whose 95%
+interval is 22% wider than the normal's.
+
+### Key results
+
+**The control experiment, and it came back negative.** LMP2 is close to a
+one-make formula — one chassis, one engine — where Hypercar and GTP are
+manufacturer prototypes equalised by Balance of Performance. Degradation
+slopes that fail to transfer between seasons had an obvious candidate cause in
+heterogeneous, BoP-adjusted machinery. They still fail on a near-spec field.
+Leave-one-race-out mean within-stint R² is at or below zero at every circuit
+(Portimao **−0.067** for LMP2, **−0.455** for Pro/Am), so a slope fitted on a
+circuit's other seasons explains **none** of the held-out season's
+within-stint variance. **The instability is not the car.** A hypothesis
+carried since the F1 phase, closed by a negative control — which is the most
+useful thing this series contributed.
+
+**A third neutralisation regime.** 23 of 29 ELMS races see a Safety Car, at a
+posterior rate of 0.01592/lap, against WEC's 0.00605 and IMSA's prior floor of
+0.00004 — IMSA records none at all. Three series, three regimes, and the same
+conclusion every time this project has checked: a pooled "endurance"
+neutralisation model would describe none of them.
+
+**The second crew-rating experiment, and it disagrees with IMSA's.** Pro/Am
+crews degrade **−0.0053 s/lap *less*** than professionals over 17 matched
+pairs (p = 0.148), the opposite sign to IMSA's +0.0040 (p = 0.032). Neither
+survives its own robustness checks. See
+[`reports/elms/crew_rating_findings.md`](reports/elms/crew_rating_findings.md).
+
+**Fuel and degradation are not separable in a single ELMS race** — 0 of 42
+clear the threshold, against IMSA's 6 of 140 and WEC's 0 of 28. No ELMS round
+in scope is long enough to need the fuel-only splash stops that make IMSA's
+Sebring the one exception anywhere in this project.
+
+**Almost entirely fuel-limited.** Median pit loss **64.8 s** against a 24-lap
+fuel range — an expensive stop on a short tank. The one exception anywhere in
+ELMS is LMP2 at Mugello, whose 9.2 s pit loss is the cheapest in the series
+and which takes six stops against a fuel minimum of four. It is one of the
+nine entries behind the cross-series pit-loss rule.
+
+### ELMS phase plan & Definition of Done
+
+| Phase                | Deliverable                                                                       | Definition of Done                                                                                                                              |
+| -------------------- | --------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| 0. Data availability | [`reports/elms/data_availability_phase0.md`](reports/elms/data_availability_phase0.md) | Source verified by direct query; both LMP2 classes scoped separately, with the pre-2023 label change documented and regression-tested        |
+| 1. Data quality      | [`reports/elms/data_quality_phase1.md`](reports/elms/data_quality_phase1.md)           | Lap-level accounting for all 42 race-seasons, stage by stage, mirroring the WEC and IMSA quality reports                                     |
+| 2. Degradation       | [`reports/elms/degradation_phase2.md`](reports/elms/degradation_phase2.md)             | Net slope per circuit-season with cluster-robust CIs; the near-spec control result reported whichever way it came out                        |
+| 3. Neutralisations   | [`reports/elms/safety_car_phase3.md`](reports/elms/safety_car_phase3.md)               | Series-wide Beta-Binomial/Gamma-Poisson posteriors on 29 races; SC and FCY told apart empirically, and ELMS's own regime not pooled with either |
+| 4. Simulator         | [`reports/elms/simulator_phase4.md`](reports/elms/simulator_phase4.md)                 | Fuel-range constraint enforced, both classes modelled separately, reproducible                                                              |
+| 5. Decision audit    | [`reports/elms/audit_cases.md`](reports/elms/audit_cases.md)                           | Mugello 2024's double Safety Car stop replayed in both classes through the single-stop engine                                                |
+| 6. Methodology       | [`reports/elms/methodology.md`](reports/elms/methodology.md) + [`results.md`](reports/elms/results.md) + [`crew_rating_findings.md`](reports/elms/crew_rating_findings.md) | Full write-up — the falsifiable prediction stated before the fit, the result that closed it, threats to validity including one unfixed defect and one published figure that was wrong; ELMS-only, never pooled |
+| 7. Packaging         | [`reports/elms/packaging_phase7.md`](reports/elms/packaging_phase7.md)                 | Runs from a fresh clone, offline; ELMS's own reproduction commands                                                                           |
+
+### ELMS known limitations
+
+- **The negative slopes are a model defect, not a measurement.** 7 of 25 LMP2
+  and 5 of 17 Pro/Am races fit a negative net slope, and Portimao 2023 fits
+  −0.213 s/lap for a tyre that is wearing, because the track dries by 17.8 s a
+  lap over the race and the model carries no race-time term. Two corrections
+  were built for this, both validated on synthetic data and both **withdrawn
+  because the real-data refit was worse**. Read every ELMS slope as a lower
+  bound. Full diagnosis, including what is honestly not known:
+  [`reports/track_evolution_omitted_variable.md`](reports/cross_series/track_evolution_omitted_variable.md).
+- No tyre compound survives in the source, so degradation is a single net
+  slope rather than a per-compound curve.
+- Nine circuits, all European, and no round longer than four hours — so ELMS
+  says nothing about the 12- and 24-hour formats where WEC and IMSA differ
+  most.
+- The pit-stop comparison between the two classes shows a 10.3 s difference in
+  tyre-change premium, but their *fuel-only* stops also differ by 9.2 s, which
+  no driver rating should change. That is reported as unexplained rather than
+  as a crew finding.
+- No rivals and no track position in the simulator, as with WEC and IMSA.
+
+---
+
 ## WEC
+
+**One modelled class, Hypercar**, so WEC needs no class branch — the series
+directory *is* the class directory. Complete per-race tables:
+[`reports/wec/hypercar/`](reports/wec/hypercar/), indexed by
+[`reports/wec/README.md`](reports/wec/README.md).
 
 The World Endurance Championship needed its own ingestion path and its own
 fitted models — FastF1 only covers Formula 1 — built to the same standard as
@@ -560,7 +866,7 @@ numbers too, most visibly at Imola.
 - Imola's negative degradation slope and noticeably wider RMSE are reported
   as measured, not explained away.
 - A **retrospective audit of real winners now exists** for both endurance
-  series ([`reports/endurance_audit.md`](reports/endurance_audit.md)): 49 of 61
+  series ([`reports/endurance_audit.md`](reports/cross_series/endurance_audit.md)): 49 of 61
   scoped-race winners ran fuel-limited stints (WEC 25/28, IMSA 24/33),
   corroborating the multi-stop model's headline — that no scoped race is
   tyre-limited on stop count, which holds 21/21 circuits — against what teams
@@ -583,296 +889,6 @@ numbers too, most visibly at Imola.
   87.6% of the time; the falsifiable positive control (finish rate should drop
   as races get longer) holds — 24h races finish at 71.2% against 90.5-94.4%
   for 4-8h races.
-
----
-
-## IMSA
-
-IMSA is modelled as **three separate classes**, never pooled. They share a
-loader and model code; they share no fitted number. The split is not
-bookkeeping: the prototype and the GT3 classes **disagree on this project's
-headline endurance conclusion**. "Every measured race is fuel-limited on stop
-count" holds for GTP (one exception, Laguna Seca) and fails for GTD, which is
-tyre-limited at five circuits and takes six stops against a fuel minimum of
-two at Laguna Seca. Pooling them would have averaged that away.
-
-| class | what it is | race-seasons | circuits | seasons | median slope |
-|---|---|---|---|---|---|
-| **GTP** | manufacturer prototype (Hypercar-adjacent) | 33 | 10 | 2023–2026 | +0.0166 s/lap |
-| **GTD** | GT3, **Pro/Am** (mandatory bronze/silver driver) | 60 | 13 | 2021–2026 | +0.0200 s/lap |
-| **GTD PRO** | GT3, **all-professional** line-ups | 47 | 12 | 2022–2026 | +0.0190 s/lap |
-
-GTD and GTD PRO are the *same cars under the same Balance of Performance*.
-Keeping them apart is what makes the crew-rating question measurable at all:
-the class boundary *is* the crew rating, so no external driver-rating data is
-needed. Results in
-[`reports/imsa/gtd_findings.md`](reports/imsa/gtd_findings.md) §6.
-
-The IMSA WeatherTech SportsCar Championship needed the same treatment as
-WEC — FastF1 doesn't cover it either. IMSA shares its loader and model code
-with WEC (`src/data/endurance_loader.py`, `src/degradation/endurance.py`,
-`src/safety_car/endurance.py`, `src/simulator/endurance.py`), since both
-series face the same pit-visit/tyre-change/driver-stint distinction, but
-every number below comes from IMSA's own data and is never pooled with
-WEC's.
-
-### Data scope
-
-#### GTP (prototypes)
-
-**10 circuits over 2023-2026, 33 race-seasons.** The table below lists the
-four the build started from, chosen to span sprint and endurance formats; the
-scope was later widened to every eligible GTP race the source carries:
-
-| Circuit      | Seasons             | Race length   | Why it is in the set                                                       |
-| ------------ | ------------------- | ------------- | -------------------------------------------------------------------------- |
-| Watkins Glen | 2023, 2024, 2025    | 364 min       | Mid-length road course; the reference case for the whole build             |
-| Sebring      | 2023, 2024, 2025    | 723 min (12h) | The longest of the four scoped formats                                     |
-| Mosport      | **2023 only** | 162 min       | GTP, the current top prototype class, raced here only in 2023 — see below |
-| Road America | 2023, 2024, 2025    | 163 min       | Short sprint; surfaced a real data-quality bug, covered below              |
-
-63 GTP-class races are available across IMSA 2021-2026 in total, and all went
-into the neutralisation model (matching the "63 races pooled" in
-[`reports/imsa/safety_car_phase3.md`](reports/imsa/safety_car_phase3.md)). The
-10 race-seasons above (3+3+1+3) were selected for degradation and simulator
-work.
-
-Mosport's single season isn't a gap in this pipeline — it's a verified fact
-about the calendar. Checked directly against the source: Mosport ran DPi
-(GTP's predecessor class) in 2022 and GTD/GTDPRO/LMP2 in 2024-2025, but no
-GTP entry outside 2023. It's the IMSA equivalent of the COVID-era calendar
-gaps already documented on the F1 side.
-
-**What the verification caught:** see
-[`reports/imsa/data_availability_phase0.md`](reports/imsa/data_availability_phase0.md).
-Beyond the mixed-session and driver-stint traps shared with WEC (the #01 GTP
-car made 13 pit visits across only 4 driver stints at Watkins Glen — the gap
-is fuel-only stops), an earlier draft of that report claimed IMSA "ships no
-weather" as a fact about the whole series, based on a single race. With four
-races on hand, the truth turned out to be race-specific: two circuits have
-full weather coverage, two have none.
-
-### System overview
-
-| Layer                 | Module                                                                        | Key finding                                                                                                                           |
-| --------------------- | ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| 0. Data               | `src/data/` (shared with WEC)                                               | Pit visit, tyre change, and driver stint kept as three distinct signals rather than one                                               |
-| 1. Data quality       | [`reports/imsa/data_quality_phase1.md`](reports/imsa/data_quality_phase1.md) | 73.2% of raw laps kept across 140 race-seasons in three classes; Road America 2024 alone accounts for most of the cars dropped outright                 |
-| 2. Tyre degradation   | `src/degradation/endurance.py`                                              | Leave-one-race-out shows near-zero transfer at every GTP circuit (−0.014 to +0.058); Road America fits negative in two of its three GTP editions   |
-| 3. Neutralisations    | `src/safety_car/endurance.py`                                               | Full Course Yellow in 61 of 63 races — 100% at 14 of 17 events; **zero Safety Car events across all 63** — genuinely different from WEC |
-| 4. Strategy simulator | `src/simulator/endurance.py`                                                | Confidence tracks the degradation signal directly: decisive at Road America, honestly flat (under 2s spread) at Mosport               |
-| 5. Decision audit     | `src/audit/endurance_cases.py`                                              | Three real stop decisions replayed; model confidence at the recommended lap orders exactly as Road America > Watkins Glen > Mosport   |
-
-Reports: [data availability](reports/imsa/data_availability_phase0.md) ·
-[data quality](reports/imsa/data_quality_phase1.md) ·
-[degradation](reports/imsa/degradation_phase2.md) ·
-[neutralisations](reports/imsa/safety_car_phase3.md) ·
-[simulator](reports/imsa/simulator_phase4.md) ·
-[decision audit](reports/imsa/audit_cases.md) ·
-[methodology](reports/imsa/methodology.md)
-
-### Key results
-
-Degradation slopes don't transfer in the prototype class either. Leave-one-
-race-out per circuit — the exact F1 protocol — gives mean within-stint R²
-between **−0.014 and +0.058** across GTP's nine measured circuits: Sebring
-−0.002, Road America +0.001, Watkins Glen +0.013, up to Laguna Seca +0.058.
-No better than a flat line, sometimes worse. A separate leave-one-circuit-out
-test agrees. Two different, both harder-than-they-look questions, and the same
-answer from each: this project's central finding about degradation instability
-isn't a quirk of Formula 1.
-
-**The GT3 classes are the exception, and finding them changed the picture.**
-IMSA's Lime Rock reaches a mean R² of **+0.573** in GTD and +0.497 in GTD PRO,
-and Laguna Seca +0.273 and +0.256 — the four best transfers anywhere in this
-project, ahead of WEC's Bahrain (+0.217), which held that title until the GT3
-classes were scoped. Short circuits with cheap stops transfer; long ones with
-expensive stops do not. It is the same axis the cross-series pit-loss rule
-turns on, arrived at independently.
-
-A fuel/degradation split was tried here too, and rejected for the same
-reason as WEC: 85-100% of pit visits also change tyres, leaving fuel and
-tyre age correlated +0.83 to +1.00 after fixed effects at every circuit.
-Only the net slope is reported.
-
-Building the leave-one-season-out analysis surfaced a real bug. Road America
-2024's first fit produced a nonsense slope of −0.53 s/lap with a 13.9-second
-RMSE — an order of magnitude off every other race. The cause: laps 2 and 3 of
-that 62-lap sprint are a field-wide standing-start effect, every car running
-at roughly twice its normal pace, flagged "green" in the source data. The
-existing per-car traffic trim couldn't catch it, because in such a short race
-the anomaly compromises too large a share of each car's own laps and inflates
-that car's own cutoff right along with it. The fix adds a field-wide filter
-that runs before the per-car one (`src/degradation/endurance.py`), and it's
-regression-tested against both a synthetic case and the real race.
-
-IMSA and WEC turn out not to be interchangeable at all. An IMSA race is
-almost certain to see a Full Course Yellow (P = 0.96 series-wide, and every
-scoped circuit individually sits at 90-93%), and IMSA has never shown a
-Safety Car in 63 races — while WEC prefers the Safety Car over FCY at every
-one of its own scoped circuits.
-
-The simulator's confidence follows the strength of the underlying signal
-rather than defaulting to some fixed level of certainty: Road America, the
-one circuit with a statistically significant slope in every season checked,
-gives the most decisive recommendation of the four; Mosport, whose slope
-covers zero, spreads under two seconds across every candidate pit lap and
-says so rather than picking a winner anyway.
-
-### IMSA phase plan & Definition of Done
-
-| Phase                | Deliverable                                                                                                                       | Definition of Done                                                                                                                                                                 |
-| -------------------- | --------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 0. Data availability | [`reports/imsa/data_availability_phase0.md`](reports/imsa/data_availability_phase0.md)                                           | Source verified by direct query; scope frozen at 4 circuits, 1-3 seasons each; both verification traps documented and regression-tested                                            |
-| 1. Data quality      | [`reports/imsa/data_quality_phase1.md`](reports/imsa/data_quality_phase1.md)                                                     | Lap-level accounting for all 10 race-seasons, stage by stage, mirroring the F1 quality report                                                                                      |
-| 2. Degradation       | [`reports/imsa/degradation_phase2.md`](reports/imsa/degradation_phase2.md) + `src/degradation/endurance_validation.py` + tests | Net slope per circuit-season with CIs; leave-one-season-out and leave-one-circuit-out both run and clearly distinguished; the fuel/degradation split reported only as a diagnostic |
-| 3. Neutralisations   | [`reports/imsa/safety_car_phase3.md`](reports/imsa/safety_car_phase3.md) + tests                                                 | Per-circuit and series-wide Beta-Binomial/Gamma-Poisson posteriors on 63 races; the zero-Safety-Car case handled by the Jeffreys prior rather than hard-coded                      |
-| 4. Simulator         | [`reports/imsa/simulator_phase4.md`](reports/imsa/simulator_phase4.md) + tests                                                   | Fuel-range constraint enforced, one demo scenario per circuit, reproducible                                                                                                        |
-| 5. Decision audit    | [`reports/imsa/audit_cases.md`](reports/imsa/audit_cases.md) + `src/audit/endurance_cases.py` + tests                          | Three real stop decisions, states rebuilt from committed laps, replayed through the single-stop engine and compared quantitatively                                                 |
-| 6. Methodology       | [`reports/imsa/methodology.md`](reports/imsa/methodology.md)                                                                     | Full write-up — motivation, method, results, threats to validity, future work — every number traceable to project output, IMSA-only, never pooled with WEC                       |
-| 7. Packaging         | [`reports/imsa/packaging_phase7.md`](reports/imsa/packaging_phase7.md)                                                           | Runs from a fresh clone (104 endurance-scoped tests, offline); IMSA's own reproduction commands; upstream contribution ideas, including the one question worth asking the source  |
-
-### IMSA known limitations
-
-- Mosport has only one season of GTP data — a verified calendar fact, not a
-  gap in this pipeline (see Data scope above) — so it has no
-  leave-one-season-out result; the simulator's Mosport demo still runs on its
-  single available fit.
-- No tyre compound survives in the source, so degradation is a single net
-  slope rather than a per-compound curve.
-- No rivals, no track position, and no driver-stint regulatory constraints in
-  the simulator; IMSA is heavily multi-class (GTP/GTD/GTDPRO/LMP2/LMP3), and
-  a two-car rival abstraction wouldn't represent that honestly.
-- Road America's negative degradation slope is reported as measured, a
-  genuine open question rather than something smoothed over.
-- A **retrospective audit of real winners now exists** across IMSA and WEC
-  ([`reports/endurance_audit.md`](reports/endurance_audit.md)) — real winning
-  stint lengths versus each circuit's fuel range.
-- A **per-decision audit, the IMSA analogue of F1's Phase 5, now exists**
-  ([`reports/imsa/audit_cases.md`](reports/imsa/audit_cases.md)): three real
-  stop decisions (an opportunistic FCY-onset stop at Watkins Glen, a routine
-  green-flag stop at Road America, an opportunistic FCY stop at the flat-
-  signal Mosport) replayed through the single-stop engine. Model confidence
-  at the recommended lap tracks the strength of each circuit's own
-  degradation signal exactly as Phase 4's demo scenarios found — decisive at
-  Road America (P(best) 0.92), still decisive at Watkins Glen (0.79), and
-  honestly uncertain at Mosport (0.34 on a 581s spread), where the "outside
-  the window" verdict is a real but low-confidence preference rather than a
-  confident correction.
-
----
-
-## ELMS
-
-The European Le Mans Series is modelled as **two separate classes**, never
-pooled — `LMP2` and `LMP2 Pro/Am`. It shares its source and this project's
-code with WEC and IMSA, and shares no fitted number with either.
-
-ELMS was not added for breadth. It was added because it is the one series that
-could **falsify a hypothesis this project had carried since its F1 phase**, and
-it did.
-
-| class | what it is | race-seasons | circuits | seasons | median slope |
-|---|---|---|---|---|---|
-| **LMP2** | near-spec Oreca 07 / Gibson, professional crews from 2023 | 25 | 9 | 2021–2025 | +0.0161 s/lap |
-| **LMP2 Pro/Am** | the same car, mandatory bronze-rated driver | 17 | 8 | 2023–2025 | +0.0205 s/lap |
-
-Before 2023 the `LMP2` label covers every entry rather than the professional
-subset. Every comparison between the two classes is restricted to 2023 on for
-that reason, and the restriction is enforced in code
-(`src/degradation/crew_rating.py`), not remembered.
-
-### Data scope
-
-**52,472 race laps across 42 race-seasons, 69.6% kept for modelling** (median
-per race). Nine circuits, all European:
-
-| circuit | LMP2 | LMP2 Pro/Am |
-|---|---|---|
-| Aragon | 2023 | 2023 |
-| Barcelona | 2022–2025 | 2023–2025 |
-| Imola | 2022, 2024, 2025 | 2024, 2025 |
-| Monza | 2022 | — |
-| Mugello | 2024 | 2024 |
-| Paul Ricard | 2022–2025 | 2023–2025 |
-| Portimao | 2021–2025 | 2023–2025 |
-| Silverstone | 2025 | 2025 |
-| Spa | 2021–2025 | 2023–2025 |
-
-Fields run 7–17 cars, so the cluster-robust `t(G−1)` reference is doing real
-work rather than being a formality: at 7 cars it is a `t(6)`, whose 95%
-interval is 22% wider than the normal's.
-
-### Key results
-
-**The control experiment, and it came back negative.** LMP2 is close to a
-one-make formula — one chassis, one engine — where Hypercar and GTP are
-manufacturer prototypes equalised by Balance of Performance. Degradation
-slopes that fail to transfer between seasons had an obvious candidate cause in
-heterogeneous, BoP-adjusted machinery. They still fail on a near-spec field.
-Leave-one-race-out mean within-stint R² is at or below zero at every circuit
-(Portimao **−0.067** for LMP2, **−0.455** for Pro/Am), so a slope fitted on a
-circuit's other seasons explains **none** of the held-out season's
-within-stint variance. **The instability is not the car.** A hypothesis
-carried since the F1 phase, closed by a negative control — which is the most
-useful thing this series contributed.
-
-**A third neutralisation regime.** 23 of 29 ELMS races see a Safety Car, at a
-posterior rate of 0.01592/lap, against WEC's 0.00605 and IMSA's prior floor of
-0.00004 — IMSA records none at all. Three series, three regimes, and the same
-conclusion every time this project has checked: a pooled "endurance"
-neutralisation model would describe none of them.
-
-**The second crew-rating experiment, and it disagrees with IMSA's.** Pro/Am
-crews degrade **−0.0053 s/lap *less*** than professionals over 17 matched
-pairs (p = 0.148), the opposite sign to IMSA's +0.0040 (p = 0.032). Neither
-survives its own robustness checks. See
-[`reports/elms/crew_rating_findings.md`](reports/elms/crew_rating_findings.md).
-
-**Fuel and degradation are not separable in a single ELMS race** — 0 of 42
-clear the threshold, against IMSA's 6 of 140 and WEC's 0 of 28. No ELMS round
-in scope is long enough to need the fuel-only splash stops that make IMSA's
-Sebring the one exception anywhere in this project.
-
-**Almost entirely fuel-limited.** Median pit loss **64.8 s** against a 24-lap
-fuel range — an expensive stop on a short tank. The one exception anywhere in
-ELMS is LMP2 at Mugello, whose 9.2 s pit loss is the cheapest in the series
-and which takes six stops against a fuel minimum of four. It is one of the
-nine entries behind the cross-series pit-loss rule.
-
-### ELMS phase plan & Definition of Done
-
-| Phase                | Deliverable                                                                       | Definition of Done                                                                                                                              |
-| -------------------- | --------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| 0. Data availability | [`reports/elms/data_availability_phase0.md`](reports/elms/data_availability_phase0.md) | Source verified by direct query; both LMP2 classes scoped separately, with the pre-2023 label change documented and regression-tested        |
-| 1. Data quality      | [`reports/elms/data_quality_phase1.md`](reports/elms/data_quality_phase1.md)           | Lap-level accounting for all 42 race-seasons, stage by stage, mirroring the WEC and IMSA quality reports                                     |
-| 2. Degradation       | [`reports/elms/degradation_phase2.md`](reports/elms/degradation_phase2.md)             | Net slope per circuit-season with cluster-robust CIs; the near-spec control result reported whichever way it came out                        |
-| 3. Neutralisations   | [`reports/elms/safety_car_phase3.md`](reports/elms/safety_car_phase3.md)               | Series-wide Beta-Binomial/Gamma-Poisson posteriors on 29 races; SC and FCY told apart empirically, and ELMS's own regime not pooled with either |
-| 4. Simulator         | [`reports/elms/simulator_phase4.md`](reports/elms/simulator_phase4.md)                 | Fuel-range constraint enforced, both classes modelled separately, reproducible                                                              |
-| 5. Decision audit    | [`reports/elms/audit_cases.md`](reports/elms/audit_cases.md)                           | Mugello 2024's double Safety Car stop replayed in both classes through the single-stop engine                                                |
-| 6. Methodology       | [`reports/elms/methodology.md`](reports/elms/methodology.md) + [`results.md`](reports/elms/results.md) + [`crew_rating_findings.md`](reports/elms/crew_rating_findings.md) | Full write-up — the falsifiable prediction stated before the fit, the result that closed it, threats to validity including one unfixed defect and one published figure that was wrong; ELMS-only, never pooled |
-| 7. Packaging         | [`reports/elms/packaging_phase7.md`](reports/elms/packaging_phase7.md)                 | Runs from a fresh clone, offline; ELMS's own reproduction commands                                                                           |
-
-### ELMS known limitations
-
-- **The negative slopes are a model defect, not a measurement.** 7 of 25 LMP2
-  and 5 of 17 Pro/Am races fit a negative net slope, and Portimao 2023 fits
-  −0.213 s/lap for a tyre that is wearing, because the track dries by 17.8 s a
-  lap over the race and the model carries no race-time term. Two corrections
-  were built for this, both validated on synthetic data and both **withdrawn
-  because the real-data refit was worse**. Read every ELMS slope as a lower
-  bound. Full diagnosis, including what is honestly not known:
-  [`reports/track_evolution_omitted_variable.md`](reports/track_evolution_omitted_variable.md).
-- No tyre compound survives in the source, so degradation is a single net
-  slope rather than a per-compound curve.
-- Nine circuits, all European, and no round longer than four hours — so ELMS
-  says nothing about the 12- and 24-hour formats where WEC and IMSA differ
-  most.
-- The pit-stop comparison between the two classes shows a 10.3 s difference in
-  tyre-change premium, but their *fuel-only* stops also differ by 9.2 s, which
-  no driver rating should change. That is reported as unexplained rather than
-  as a crew finding.
-- No rivals and no track position in the simulator, as with WEC and IMSA.
 
 ---
 
@@ -921,15 +937,16 @@ series it actually covers, because they differ:
   every one is fuel-limited on stop count"**, and *that claim is now known to
   be false*. It was true of the prototype classes it was measured on and was
   stated as a fact about endurance racing. Widening to GT3 and to ELMS found
-  **9 of 66 entries tyre-limited**, concentrated entirely in the cheap-stop
-  classes: 5 of 15 IMSA GTD, 2 of 13 GTD PRO, 1 of 10 GTP, 1 of 9 ELMS LMP2,
-  and **none at all** in WEC Hypercar. The *break-even slope* says how much
-  steeper degradation would have to be to flip a race, and it now spans
-  **×1.0 at IMSA's Laguna Seca to ×555 at IMSA's Mosport** — five orders of
-  magnitude between circuits in the same championship. The measured traffic
+  **25 of 205 race-seasons tyre-limited**, concentrated in the cheap-stop
+  classes: 15 of 58 IMSA GTD, 7 of 46 GTD PRO, 2 of 32 GTP, 1 of 25 ELMS LMP2,
+  and **none at all** in either WEC Hypercar or ELMS LMP2 Pro/Am. The
+  *break-even slope* says how much steeper degradation would have to be to flip
+  a race, and it spans **×1.0 at ELMS Mugello to ×807 at ELMS Portimao** —
+  nearly three orders of magnitude between two circuits in the same
+  championship. The measured traffic
   spread folds in as calibrated, zero-mean race-time variance: it widens the
   uncertainty band without biasing which plan wins. See
-  [`reports/when_tyres_beat_fuel.md`](reports/when_tyres_beat_fuel.md) and the
+  [`reports/when_tyres_beat_fuel.md`](reports/cross_series/when_tyres_beat_fuel.md) and the
   endurance simulator reports.
 - **Out-of-sample calibration**, for **F1, WEC and IMSA** (`src.prediction`;
   ELMS is not a separate calibration target) —
@@ -951,13 +968,14 @@ series it actually covers, because they differ:
 
 The strongest results in this project are **comparisons**, and none of them
 could have been produced inside a single championship. Full write-up:
-[`reports/cross_series_synthesis.md`](reports/cross_series_synthesis.md).
+[`reports/cross_series_synthesis.md`](reports/cross_series/synthesis.md).
 
 > **The pit stop decides the strategy regime, not the car.** Across six
 > populations the correlation between a class's median pit loss and the share
-> of its circuits where an extra stop beats the fuel minimum is **−0.913**.
-> WEC Hypercar, at a 76-second stop, is fuel-limited everywhere; IMSA GTD, at
-> 20 seconds, is tyre-limited at a third of its circuits. This overturned the
+> of its races where an extra stop beats the fuel minimum is **−0.982**,
+> across all 205 planned race-seasons, and the ordering has **no inversions**.
+> WEC Hypercar, at a 74-second stop, is fuel-limited in all 27 of its races;
+> IMSA GTD, at 24 seconds, is tyre-limited in 15 of 58. This overturned the
 > project's own published conclusion twice — "every measured race is
 > fuel-limited" was a fact about *expensive stops* stated as a fact about
 > endurance racing.
@@ -1022,7 +1040,7 @@ matters) later corrected rather than quietly kept:
 > 2024's first fit was nonsense: a field-wide standing-start effect on laps
 > 2-3 was masquerading as tyre wear. Root-caused, fixed with a field-wide
 > filter ahead of the per-car one, regression-tested against the real race.
-> ([`reports/imsa/degradation_phase2.md`](reports/imsa/degradation_phase2.md))
+> ([`reports/imsa/degradation_phase2.md`](reports/imsa/gtp/degradation_phase2.md))
 
 > **What actually transfers across seasons — almost nothing, and it is the
 > short circuits —** **R² +0.573** at IMSA's Lime Rock (GTD), +0.497 (GTD PRO),
@@ -1044,7 +1062,7 @@ matters) later corrected rather than quietly kept:
 > real race-format change — 120 laps in 2025 versus 183 in 2024 — and is
 > also the single worst-transferring circuit for degradation (R² −6.33):
 > two independent estimators flagging the same circuit-season pair.
-> ([`reports/generalization_audit.md`](reports/generalization_audit.md))
+> ([`reports/generalization_audit.md`](reports/cross_series/generalization_audit.md))
 
 > **Three endurance series, three different hazards entirely —**
 > IMSA sees a Full Course Yellow in **61 of 63** races and has **never** shown
@@ -1053,7 +1071,7 @@ matters) later corrected rather than quietly kept:
 > posterior rate of 0.0159/lap against WEC's 0.0060 and IMSA's prior floor of
 > 0.00004. "Endurance racing" isn't one hazard model, and a pooled one would
 > describe none of the three.
-> ([`reports/imsa/safety_car_phase3.md`](reports/imsa/safety_car_phase3.md))
+> ([`reports/imsa/safety_car_phase3.md`](reports/imsa/gtp/safety_car_phase3.md))
 
 > **Ignoring how a rival reacts flatters your own plan by a measurable amount —**
 > On a worked Barcelona duel, a frozen-rival simulator overstates a naive
@@ -1065,14 +1083,14 @@ matters) later corrected rather than quietly kept:
 > **The retrospective audit corroborates the simulator, and both were
 > over-generalised —** **160 of 209** audited race winners across WEC, IMSA and
 > ELMS ran a fuel-limited longest stint (at the 3-lap tolerance the audit uses;
-> see the [sensitivity sweep](reports/fuel_limited_sensitivity.md)). The
+> see the [sensitivity sweep](reports/cross_series/fuel_limited_sensitivity.md)). The
 > multi-stop model agrees on the same races. What both were once read as
 > saying — "strategy is fuel-limited, not tyre-limited, in endurance racing" —
 > is **not** what they say: 49 of the 209 winners were not fuel-limited, and
-> the multi-stop model finds 9 of 66 circuit-seasons tyre-limited, concentrated
-> entirely in the cheap-stop GT3 classes. The corroboration is real; the
-> generalisation drawn from it was the error.
-> ([`reports/endurance_audit.md`](reports/endurance_audit.md))
+> the multi-stop model finds 25 of 205 race-seasons tyre-limited, concentrated
+> in the cheap-stop classes. The corroboration is real; the generalisation drawn
+> from it was the error.
+> ([`reports/endurance_audit.md`](reports/cross_series/endurance_audit.md))
 
 ---
 
@@ -1105,31 +1123,41 @@ Motorsport-Strategy-Lab/
   data/
     cache/              # FastF1 cache (gitignored)
     derived/
-      f1/               # F1 derived laps, track status, sessions, model coefficients
-      imsa/             # IMSA derived laps: 10 circuits, 33 race-seasons
+      f1/               # F1 derived laps + track status, one file per round,
+                        #   26 circuits x 2022-2026; model coefficients
+      imsa/             # IMSA derived laps: 3 classes, 140 race-seasons
       wec/              # WEC derived laps: 11 circuits, 28 race-seasons
-      endurance/         # cross-series neutralisation flags (96 races, both series)
+      elms/             # ELMS derived laps: 2 classes, 42 race-seasons
+      endurance/        # cross-series artifacts: flags, fits, plans, traffic
   src/
-    ingestion/          # FastF1 loading, cleaning, validation (F1 only)
-    data/               # multi-series loader interface + IMSA/WEC loader (shared)
+    ingestion/          # FastF1 loading, cleaning, validation (F1 only);
+                        #   config.py holds the frozen calendar, keyed per season
+    data/               # multi-series loader + endurance_scope.py (the endurance
+                        #   scope) + coverage.py (which layer covers which race)
     degradation/        # model.py (F1, OLS + LORO CV), gp_model.py, kalman.py;
-                        #   endurance.py + endurance_validation.py (WEC/IMSA, shared)
-    safety_car/         # model.py (F1 SC/VSC); endurance.py (WEC FCY+SC, IMSA FCY)
+                        #   endurance.py + endurance_validation.py (shared);
+                        #   crew_rating.py (the two Pro/Am natural experiments)
+    safety_car/         # model.py (F1 SC/VSC); endurance.py (WEC+ELMS FCY/SC,
+                        #   IMSA FCY only)
     simulator/          # engine.py (F1, vectorised + optional Sobol QMC),
-                        #   recommend.py (Pareto front); endurance.py (WEC/IMSA)
-    audit/              # F1 decision audit; endurance_cases.py (WEC/IMSA per-decision),
-                        #   endurance_state.py (WEC/IMSA winner-vs-fuel-range audit)
+                        #   recommend.py (Pareto front); endurance.py, multistop.py
+    audit/              # F1 decision audit; endurance_cases.py (per-decision),
+                        #   endurance_state.py (winner-vs-fuel-range audit)
+    reporting/          # class_reports.py -- generates the per-class tables
   notebooks/            # kaggle_demo.ipynb -- validated end-to-end demo,
                         #   published to Kaggle; never the source of truth
                         #   for a reported number, which always lives in
                         #   reports/ + the pytest artifact drift guards
   demo/                 # app.py -- Streamlit UI over the real simulators;
-                        #   one separate panel per series (F1 / WEC / IMSA),
-                        #   driven headlessly by tests/test_demo_app.py
-  scripts/              # run_ingestion.py, run_degradation.py, run_safety_car.py,
+                        #   one panel per modelled class (7 of them), driven
+                        #   headlessly by tests/test_demo_app.py
+  scripts/              # run_ingestion.py + run_ingestion_waves.py (the whole
+                        #   F1 calendar, across FastF1's hourly rate limit),
+                        #   run_degradation.py, run_safety_car.py,
                         #   run_simulator_demo.py (F1); run_endurance_flags.py +
-                        #   run_endurance_models.py (WEC/IMSA data + model
-                        #   artifacts); run_generalization_audit.py,
+                        #   run_endurance_models.py + run_multistop.py
+                        #   (endurance); run_class_reports.py (per-class tables);
+                        #   run_generalization_audit.py,
                         #   run_fuel_limited_sensitivity.py,
                         #   run_sc_contamination_check.py (adversarial audit
                         #   pass); demo_extensions.py; generate_banner.py
@@ -1137,21 +1165,22 @@ Motorsport-Strategy-Lab/
                         #   tests -- incl. the demo, driven headlessly by
                         #   test_demo_app.py, and the report-staleness guards
                         #   that check prose still matches the artifacts
-  reports/
-    f1/                 # phase 0-5 reports + extensions (breadth layer,
-                        #   adversarial rival, track position), audit cases, figures
-    elms/               # phase 0-4 + 7 reports, audit cases, results.md,
-                        #   crew_rating_findings.md + methodology.md (LMP2
-                        #   and LMP2 Pro/Am, never merged)
-    imsa/               # phase 0-7 reports, audit cases, methodology.md,
-                        #   packaging_phase7.md (IMSA-only, never merged with WEC),
-                        #   gtd_findings.md (the GT3 class, never merged with GTP)
-    wec/                # phase 0-7 reports, audit cases, reliability.md,
-                        #   methodology.md, packaging_phase7.md (WEC-only)
-    prediction/         # cross-series calibration backtest
-    methodology.md      # F1 mini-paper (F1's own phase 6)
-    generalization_audit.md, endurance_audit.md, fuel_limited_sensitivity.md,
-    sc_contamination_check.md  # cross-series adversarial audit pass
+  reports/              # one branch per modelled class -- see reports/README.md
+    f1/                 # phase 0-5 + extensions (breadth layer, adversarial
+                        #   rival, track position), audit cases, methodology.md
+    imsa/               # README.md + series-level phase 0, methodology, packaging
+      gtp/              #   the prototype class: phase reports + complete tables
+      gtd/              #   GT3 Pro/Am: findings.md, audit cases, complete tables
+      gtdpro/           #   GT3 all-pro: complete tables
+    elms/               # README.md + phase reports covering both classes together
+      lmp2/             #   complete tables
+      lmp2_proam/       #   complete tables
+    wec/                # README.md + phase 0-7, audit cases, reliability,
+      hypercar/         #   methodology; one class, so one branch
+    cross_series/       # results that need more than one championship: the
+                        #   synthesis, when_tyres_beat_fuel, the endurance audit,
+                        #   the track-evolution defect, the adversarial pass
+    prediction/         # out-of-sample calibration backtest
   assets/               # banner.png/svg, social-preview.png, fonts/ (OFL-licensed)
   .github/
     workflows/          # tests.yml, post-race-refresh.yml

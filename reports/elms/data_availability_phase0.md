@@ -107,7 +107,7 @@ tyre-change premium is 17.6 s for the Pro/Am class against 16.9 s for the
 all-professional one, while the prototype is 8.7 s. Pooling the GT3 classes
 would have reported one number and hidden that the difference is the car
 rather than the crew
-([`reports/imsa/gtd_findings.md`](../imsa/gtd_findings.md) §6).
+([`reports/imsa/gtd_findings.md`](../imsa/gtd/findings.md) §6).
 
 The same reasoning applies here, and ELMS adds something IMSA cannot supply on
 its own. The IMSA crew comparison on *degradation* finds Pro/Am steeper by

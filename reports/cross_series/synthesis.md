@@ -6,26 +6,38 @@ is estimated per series and per class and is never pooled.
 
 ## The six populations
 
-| series | class | races | median slope (s/lap) | median pit loss | circuits | tyre-limited | tyre premium | winners running the tank |
-|---|---|---|---|---|---|---|---|---|
-| WEC | HYPERCAR | 28 | +0.0139 | 76.3 s | 11 | 0 | 21.6 s | 89% |
-| ELMS | LMP2 | 25 | +0.0161 | 64.8 s | 9 | 1 | 25.1 s | 100% |
-| ELMS | LMP2 Pro/Am | 17 | +0.0205 | 62.2 s | 8 | 0 | 35.4 s | 94% |
-| IMSA | GTP | 33 | +0.0166 | 47.6 s | 10 | 1 | 8.7 s | 64% |
-| IMSA | GTD PRO | 47 | +0.0190 | 38.6 s | 13 | 2 | 16.9 s | 77% |
-| IMSA | GTD | 60 | +0.0200 | 19.7 s | 15 | 5 | 17.6 s | 63% |
+Every strategy figure below is computed on **all 205 planned race-seasons**,
+not one representative season per circuit. That distinction is not
+housekeeping: the plan depends on each race's fitted degradation slope, and
+slopes do not transfer between seasons (§4), so a per-circuit sample was
+refuted by this document's own fourth finding.
 
-Sorted by pit loss, and the last three columns sort with it. That is the
-synthesis.
+| series | class | races | planned | median slope (s/lap) | median pit loss | tyre-limited | share | tyre premium |
+|---|---|---|---|---|---|---|---|---|
+| WEC | HYPERCAR | 28 | 27 | +0.0139 | 74.0 s | 0 | 0.0% | 21.6 s |
+| ELMS | LMP2 Pro/Am | 17 | 17 | +0.0205 | 63.8 s | 0 | 0.0% | 35.4 s |
+| ELMS | LMP2 | 25 | 25 | +0.0161 | 61.7 s | 1 | 4.0% | 25.1 s |
+| IMSA | GTP | 33 | 32 | +0.0166 | 57.0 s | 2 | 6.2% | 8.7 s |
+| IMSA | GTD PRO | 47 | 46 | +0.0190 | 39.6 s | 7 | 15.2% | 16.9 s |
+| IMSA | GTD | 60 | 58 | +0.0200 | 24.4 s | 15 | 25.9% | 17.6 s |
+
+*"Races" is what the degradation model fits; "planned" is what the multi-stop
+program could plan. They differ by five race-seasons across the whole project —
+a race with neither a Full Course Yellow nor a Safety Car has no neutralised
+laps to measure a pace ratio from, so no race model exists for it. Every one is
+listed with its reason in `data/derived/endurance/multistop_skipped.csv`.*
+
+Sorted by pit loss, and the tyre-limited share sorts with it **without a single
+inversion**. That is the synthesis.
 
 ## 1. The pit stop decides the strategy regime, not the car
 
-The correlation between a class's median pit loss and the share of its
-circuits where the optimum beats the fuel minimum is **−0.913**.
+The correlation between a class's median pit loss and the share of its races
+where the optimum beats the fuel minimum is **−0.982**.
 
-Read down the table: WEC Hypercar, at a 76-second stop, is fuel-limited
-everywhere; IMSA GTD, at 20 seconds, is tyre-limited at a third of its
-circuits. Every class in between falls where its stop cost puts it.
+Read down the table: WEC Hypercar, at a 74-second stop, is fuel-limited in all
+27 of its races; IMSA GTD, at 24 seconds, is tyre-limited in 15 of 58. Every
+class in between falls exactly where its stop cost puts it.
 
 This overturned the project's own published conclusion twice. "Every measured
 race is fuel-limited on stop count" was true when only prototypes were
@@ -36,11 +48,15 @@ break was not about GT3 either.
 The mechanism is in
 [`when_tyres_beat_fuel.md`](when_tyres_beat_fuel.md): a cheap stop is
 **necessary but not sufficient**. No race above a 22.5 s pit loss is
-tyre-limited anywhere in 66 circuit-classes (Mann-Whitney p = 0.00001), and
-below that threshold real degradation decides (p = 0.0013). The cleanest single
-illustration is Mugello 2024, where LMP2 is tyre-limited on a 9.2 s stop and
-Pro/Am at the same circuit in the same year is not, on a comparable 10.8 s stop
-but a shallower slope.
+tyre-limited anywhere in 205 race-seasons (Mann-Whitney **p = 1.1 × 10⁻¹⁴**),
+and below that threshold real degradation decides (**p = 1.5 × 10⁻⁸**). The
+22.5 s edge sat in exactly the same place when this was computed on 66 entries,
+which is the most encouraging thing about it: tripling the sample moved the
+p-values by nine orders of magnitude and moved the threshold not at all.
+
+The cleanest single illustration is Mugello 2024, where LMP2 is tyre-limited on
+a 9.2 s stop and Pro/Am at the same circuit in the same year is not, on a
+comparable 10.8 s stop but a shallower slope.
 
 ## 2. The tyre-change premium is the car, not the crew
 
@@ -94,7 +110,7 @@ the slopes beneath them were corrected twice, and no code recomputed them.
 Both tests now come from `src/degradation/crew_rating.py` and are pinned by
 `tests/test_crew_rating.py`, which fails if any document here — the README
 included — quotes a crew p-value the code does not produce. The post-mortem is
-[`reports/elms/crew_rating_findings.md`](elms/crew_rating_findings.md) §6.
+[`reports/elms/crew_rating_findings.md`](../elms/crew_rating_findings.md) §6.
 
 ## 4. Slope instability is not the machinery
 

@@ -44,7 +44,13 @@ from src.ingestion.config import (  # noqa: E402
     REGULATION_ERA_START,
 )
 
-CIRCUITS = ("monaco", "singapore", "barcelona", "suzuka")
+#: Every circuit in the scope, read from the config rather than listed here.
+#:
+#: This line used to be a four-item tuple, and it was the reason widening the
+#: ingestion scope would have changed nothing: the pipeline would have fetched
+#: 26 circuits and fitted 4. A scope defined in two places is one place too
+#: many, and the copy that loses is always the one nobody remembers.
+from src.ingestion.config import CIRCUITS  # noqa: E402
 DEGREES = (1, 2)
 KALMAN_DEMO_CIRCUIT = "suzuka"
 KALMAN_DEMO_SEASON = 2023

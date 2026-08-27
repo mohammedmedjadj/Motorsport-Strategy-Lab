@@ -55,7 +55,7 @@ same. GTD is a **Pro/Am category**: every entry must field a bronze- or
 silver-rated driver, so within-race pace varies by crew in a way GTP and
 Hypercar do not. That makes the amateur-driver effect measurable, which is the
 same question ELMS's LMP2 Pro/Am split raises
-([`reports/elms/data_availability_phase0.md`](elms/data_availability_phase0.md)).
+([`reports/elms/data_availability_phase0.md`](../elms/data_availability_phase0.md)).
 
 ### The "no new ingestion path" claim, tested rather than asserted
 

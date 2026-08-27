@@ -40,7 +40,7 @@ Both conditions of the cross-series rule are met.
 Mugello Pro/Am, at the same circuit in the same year, is **not** tyre-limited:
 its 10.8 s stop is comparably cheap but its slope is shallower. That pair is
 one of the cleanest illustrations available that the rule needs both terms —
-see [`reports/when_tyres_beat_fuel.md`](../when_tyres_beat_fuel.md).
+see [`reports/when_tyres_beat_fuel.md`](../cross_series/when_tyres_beat_fuel.md).
 
 ## Track position
 

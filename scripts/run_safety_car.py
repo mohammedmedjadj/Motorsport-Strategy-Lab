@@ -35,28 +35,57 @@ from src.safety_car.model import (  # noqa: E402
 #: Extended SC-history window (Phase 3 scoping decision).
 SC_SEASONS: tuple[int, ...] = tuple(range(2018, 2026))
 
-CIRCUIT_GPS: tuple[tuple[str, str], ...] = (
-    ("Monaco", "monaco"),
-    ("Singapore", "singapore"),
-    ("Spanish", "barcelona"),
-    ("Japanese", "suzuka"),
-)
+#: Every (season, event name, circuit) the safety-car window covers.
+#:
+#: Safety-car causes are dominated by circuit geometry, so this layer reaches
+#: back further than the degradation window — geometry does not reset with a
+#: regulation change. Four circuits gave 6-8 editions each, and the calibration
+#: backtest showed that is too few to beat the series base rate. More circuits
+#: does not fix the per-circuit sample size; it means every circuit gets the
+#: estimate rather than four of them.
+#:
+#: **Season-aware, never circuit-keyed on a single name.** Taking each circuit's
+#: newest event name and reusing it for every season reintroduces exactly the
+#: defect the widened scope was written to kill. Barcelona's newest name is
+#: "Barcelona Grand Prix", which exists only in 2026, so every earlier edition
+#: would silently find nothing; and Madrid's is "Spanish Grand Prix", which in
+#: 2018-2025 resolves to *Barcelona's* race and would file it under `madrid`.
+#:
+#: Seasons before the frozen calendar starts inherit the earliest naming it
+#: carries, which is correct for this window: the renames in scope all happen
+#: at its far end, not its near one.
+def _circuit_gps() -> tuple[tuple[int, str, str], ...]:
+    from src.ingestion.config import _SEASON_EVENTS
+
+    known = sorted(_SEASON_EVENTS)
+    earliest = {circuit: name for name, circuit in _SEASON_EVENTS[known[0]]}
+
+    out: list[tuple[int, str, str]] = []
+    for season in SC_SEASONS:
+        if season in _SEASON_EVENTS:
+            pairs = _SEASON_EVENTS[season]
+        else:
+            pairs = tuple((name, circuit) for circuit, name in earliest.items())
+        out.extend((season, name, circuit) for name, circuit in pairs)
+    return tuple(out)
+
+
+CIRCUIT_GPS: tuple[tuple[int, str, str], ...] = _circuit_gps()
 
 
 def collect_events() -> tuple[list[RaceEvents], list[str]]:
     """Load every candidate edition; return extracted events + skip notes."""
     collected: list[RaceEvents] = []
     skipped: list[str] = []
-    for gp_name, circuit in CIRCUIT_GPS:
-        for season in SC_SEASONS:
-            race = RaceId(season=season, gp_name=gp_name, circuit=circuit)
-            print(f"Loading {race.slug} ...", flush=True)
-            try:
-                raw = load_race(race)
-            except Exception as exc:  # noqa: BLE001 - record and move on
-                skipped.append(f"{race.slug}: {type(exc).__name__}: {exc}")
-                continue
-            collected.append(extract_race_events(raw))
+    for season, gp_name, circuit in CIRCUIT_GPS:
+        race = RaceId(season=season, gp_name=gp_name, circuit=circuit)
+        print(f"Loading {race.slug} ...", flush=True)
+        try:
+            raw = load_race(race)
+        except Exception as exc:  # noqa: BLE001 - record and move on
+            skipped.append(f"{race.slug}: {type(exc).__name__}: {exc}")
+            continue
+        collected.append(extract_race_events(raw))
     return collected, skipped
 
 

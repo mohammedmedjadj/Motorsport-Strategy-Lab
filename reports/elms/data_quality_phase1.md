@@ -60,7 +60,7 @@ LMP2, 5 of 17 Pro/Am). The cause is diagnosed and is **not** a filtering
 problem: the model carries no race-time term, so track evolution lands on the
 tyre-age coefficient with its sign inverted. Portimao 2023 gets 17.8 s a lap
 faster over the race. See
-[`reports/track_evolution_omitted_variable.md`](../track_evolution_omitted_variable.md),
+[`reports/track_evolution_omitted_variable.md`](../cross_series/track_evolution_omitted_variable.md),
 including an attempted fix that was withdrawn because it made the real-data
 refit worse.
 

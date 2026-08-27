@@ -51,7 +51,7 @@ from src.simulator.endurance_pit_loss_validation import (  # noqa: E402
 )
 from src.simulator.pit_loss_validation import leave_one_race_out_pit_loss  # noqa: E402
 
-F1_CIRCUITS = ("monaco", "singapore", "barcelona", "suzuka")
+from src.ingestion.config import CIRCUITS as F1_CIRCUITS  # noqa: E402
 F1_SEASONS = (2023, 2024, 2025)
 
 

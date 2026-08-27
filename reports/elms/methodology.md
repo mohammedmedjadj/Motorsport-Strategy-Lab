@@ -281,7 +281,7 @@ ELMS curiosity. It is one of nine entries across the project behind the
 cross-series rule that the *pit stop* decides the strategy regime — the
 correlation between a class's median pit loss and its share of tyre-limited
 circuits is −0.913 across six populations
-([`when_tyres_beat_fuel.md`](../when_tyres_beat_fuel.md)).
+([`when_tyres_beat_fuel.md`](../cross_series/when_tyres_beat_fuel.md)).
 
 The 10.3 s gap in tyre-change premium between the two classes is **not**
 reported as a crew effect. Their *fuel-only* stops also differ by 9.2 s, which
@@ -367,7 +367,7 @@ and is far too small.
 
 **The cause of the failure is not established**, and this report does not claim
 otherwise. Full account:
-[`track_evolution_omitted_variable.md`](../track_evolution_omitted_variable.md).
+[`track_evolution_omitted_variable.md`](../cross_series/track_evolution_omitted_variable.md).
 Read every slope in §4.1 as a lower bound on degradation.
 
 What this does *not* invalidate is §4.2: an omitted trend that differs by race

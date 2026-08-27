@@ -119,7 +119,7 @@ def _digits_for_words(text: str) -> str:
     ("report", "series", "car_class", "pattern"),
     [
         # "Race-seasons | **60**, all of which cleared the eligibility floor"
-        ("reports/imsa/gtd_findings.md", "imsa", "GTD",
+        ("reports/imsa/gtd/findings.md", "imsa", "GTD",
          r"Race-seasons \| \*\*(\d+)\*\*"),
     ],
 )
@@ -140,7 +140,7 @@ def test_stated_race_season_count_matches_the_scope(
 @pytest.mark.parametrize(
     ("report", "series", "car_class", "pattern"),
     [
-        ("reports/imsa/gtd_findings.md", "imsa", "GTD", r"Circuits \| \*\*(\d+)\*\*"),
+        ("reports/imsa/gtd/findings.md", "imsa", "GTD", r"Circuits \| \*\*(\d+)\*\*"),
     ],
 )
 def test_stated_circuit_count_matches_the_canonical_scope(
@@ -171,7 +171,7 @@ def test_quoted_tyre_change_premiums_match_the_artifact() -> None:
     proc = pd.read_csv(ENDURANCE_DERIVED_DIR / "endurance_pit_procedure.csv")
     prem = proc.set_index(["series", "car_class"])["tyre_change_premium_s"]
 
-    text = _text("reports/imsa/gtd_findings.md")
+    text = _text("reports/imsa/gtd/findings.md")
     for (series, car_class), label in (
         (("imsa", "GTP"), "IMSA GTP"),
         (("imsa", "GTD"), "IMSA GTD"),
@@ -180,7 +180,7 @@ def test_quoted_tyre_change_premiums_match_the_artifact() -> None:
         value = float(prem[(series, car_class)])
         # The report writes premiums as e.g. "**8.7 s**" in its tables.
         assert f"{value:.1f} s" in text, (
-            f"reports/imsa/gtd_findings.md no longer quotes the measured "
+            f"reports/imsa/gtd/findings.md no longer quotes the measured "
             f"{label} premium of {value:.1f} s"
         )
 
@@ -235,7 +235,7 @@ def test_quoted_median_slopes_match_the_artifact() -> None:
     before commit, which is exactly the review mechanism that does not scale.
     """
     fits = pd.read_csv(ENDURANCE_DERIVED_DIR / "endurance_degradation_fits.csv")
-    text = _text("reports/cross_series_synthesis.md")
+    text = _text("reports/cross_series/synthesis.md")
     for (series, car_class), group in fits.groupby(["series", "car_class"]):
         median = group["net_slope"].median()
         assert f"+{median:.4f}" in text or f"{median:.4f}" in text, (
@@ -247,7 +247,7 @@ def test_quoted_median_slopes_match_the_artifact() -> None:
 def test_quoted_race_counts_match_the_artifact() -> None:
     """Same for the race counts in the synthesis table."""
     fits = pd.read_csv(ENDURANCE_DERIVED_DIR / "endurance_degradation_fits.csv")
-    text = _text("reports/cross_series_synthesis.md")
+    text = _text("reports/cross_series/synthesis.md")
     for (series, car_class), group in fits.groupby(["series", "car_class"]):
         assert f"| {len(group)} |" in text, (
             f"{series}/{car_class} has {len(group)} race-seasons; the synthesis "
@@ -291,7 +291,7 @@ PER_SERIES_SLOPE_REPORTS = (
     ("reports/elms/methodology.md", "elms"),
     ("reports/elms/results.md", "elms"),
     ("reports/elms/degradation_phase2.md", "elms"),
-    ("reports/imsa/gtd_findings.md", "imsa"),
+    ("reports/imsa/gtd/findings.md", "imsa"),
 )
 
 
@@ -427,7 +427,7 @@ def test_no_report_claims_bahrain_is_the_projects_best_transfer() -> None:
     )
     for report in (
         "README.md",
-        "reports/cross_series_synthesis.md",
+        "reports/cross_series/synthesis.md",
         "reports/elms/results.md",
         "reports/elms/degradation_phase2.md",
         "reports/wec/methodology.md",

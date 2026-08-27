@@ -124,7 +124,7 @@ def test_the_primary_crew_documents_quote_both_results(fits: pd.DataFrame) -> No
     """
     documents = [
         "reports/elms/crew_rating_findings.md",
-        "reports/cross_series_synthesis.md",
+        "reports/cross_series/synthesis.md",
         "README.md",
     ]
     for result in compare_crew_ratings(fits):

@@ -11,7 +11,7 @@ accounted for rather than only the final total.
 |---|---|
 | Non-green or pit-visit | Neutralised laps (FCY/SC/FF/RF) and any lap with a pit stop |
 | Missing tyre age | Green, non-pit, but the source has no `est_tire_age` for that lap |
-| Field-wide trim | Lap **numbers** where the whole field's median time exceeds 1.3x the race's green median — a standing start or an early caution mislabelled green (found and fixed on the IMSA side, see [the IMSA report](../imsa/data_quality_phase1.md)) |
+| Field-wide trim | Lap **numbers** where the whole field's median time exceeds 1.3x the race's green median — a standing start or an early caution mislabelled green (found and fixed on the IMSA side, see [the IMSA report](../imsa/gtp/data_quality_phase1.md)) |
 | Per-car trim | Remaining laps above a car's own 90th-percentile pace — ordinary traffic |
 | Insufficient car laps | Cars with fewer than 20 surviving laps, too few to carry their own fixed effect |
 

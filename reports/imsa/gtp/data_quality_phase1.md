@@ -37,7 +37,7 @@ accounted for rather than only the final total.
 - **`Missing age` is zero everywhere**: once a lap clears the green/non-pit
   filter, `est_tire_age` is populated for all 10 scoped race-seasons — the
   upstream estimator has no gaps here, unlike the weather fields (see
-  [Phase 0](data_availability_phase0.md)).
+  [Phase 0](../data_availability_phase0.md)).
 - **Road America 2024 stands out on every trim column** (47 field-wide, 38
   per-car, 17 insufficient — the only race-season with any cars dropped
   outright): the direct fingerprint of the standing-start anomaly diagnosed in

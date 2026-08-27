@@ -69,7 +69,7 @@ guards rather than by wrong numbers — see phase 3.
   its sign inverted; 12 of 42 ELMS races fit a negative slope. A correction was
   built, validated on synthetic data and **withdrawn** because it made the
   real-data refit worse
-  ([`reports/track_evolution_omitted_variable.md`](../track_evolution_omitted_variable.md)).
+  ([`reports/track_evolution_omitted_variable.md`](../cross_series/track_evolution_omitted_variable.md)).
   Read every ELMS slope as a lower bound.
 - **No reliability layer.** WEC has one from a results-level export; no
   equivalent long-baseline source was found for ELMS, so it is absent rather

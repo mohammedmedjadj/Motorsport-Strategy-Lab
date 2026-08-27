@@ -188,7 +188,7 @@ run the tank flat out with a short last stint, shaving degradation without an
 extra stop. This re-spacing rate itself is a real, circuit-dependent fact, not
 noise — it happens exactly where the slope is positive enough to reward it.
 A **retrospective audit against real race winners**
-([`reports/endurance_audit.md`](../endurance_audit.md)) corroborates the
+([`reports/endurance_audit.md`](../cross_series/endurance_audit.md)) corroborates the
 stop-count claim independently: **25 of 28 real WEC race winners** ran at least
 one stint within 3 laps of the measured fuel range.
 

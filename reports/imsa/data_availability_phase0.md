@@ -22,7 +22,7 @@ sprint- and endurance-length formats and a spread of circuit types:
 
 63 GTP-class races are available across IMSA 2021-2026 in total (used in full
 for the Phase 2 neutralisation model, which needs the largest sample it can
-get — see [`safety_car_phase3.md`](safety_car_phase3.md), "63 races pooled");
+get — see [`safety_car_phase3.md`](gtp/safety_car_phase3.md), "63 races pooled");
 these 4 were selected for degradation/simulator work to span a 2h40 sprint
 (Road America), two ~2h40-3h format races (Mosport, Watkins Glen) and a
 12-hour enduro (Sebring).
@@ -70,5 +70,5 @@ Delivered: a verified source, a normalised schema shared with WEC
 spanning sprint to 12-hour formats.
 
 Not built by this phase: degradation, neutralisation and simulator models —
-see [data quality](data_quality_phase1.md), [degradation](degradation_phase2.md),
-[neutralisations](safety_car_phase3.md) and [simulator](simulator_phase4.md).
+see [data quality](gtp/data_quality_phase1.md), [degradation](gtp/degradation_phase2.md),
+[neutralisations](gtp/safety_car_phase3.md) and [simulator](gtp/simulator_phase4.md).

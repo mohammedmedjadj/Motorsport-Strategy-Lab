@@ -38,36 +38,42 @@ from src.simulator.multistop import (  # noqa: E402
     optimal_stop_plan,
 )
 
-# Every scoped circuit's materialised seasons, newest first (fuel range and
-# stop structure are circuit properties, so one representative season per
-# circuit is enough for the plan table the audit consumes — but not every
-# season has a usable model: a genuinely caution-free race has no FCY *or* SC
-# laps to measure a pace ratio from, e.g. IMSA Laguna Seca 2025 and WEC Fuji
-# 2022. ``main()`` tries each candidate in order and moves to the next season
-# on failure, so one clean race does not drop the whole circuit.
-def _circuit_candidates() -> dict[tuple[str, str, str], list[tuple[str, int, str, str, str]]]:
-    """Keyed by (series, event, **car_class**).
-
-    The class belongs in the key: a series can run more than one class at the
-    same event (IMSA fields GTP and GTD at every round), and keying on
-    (series, event) alone silently kept whichever came last.
-    """
+#: **Every** scoped race-season whose laps are committed — not one per circuit.
+#:
+#: This layer used to run on a single representative season per circuit-class,
+#: justified on the grounds that "fuel range and stop structure are circuit
+#: properties". Fuel range is. **The degradation slope is not**, and the plan
+#: depends on it: `optimal_stop_plan` trades tyre loss against pit loss, so
+#: whether a race comes out tyre-limited is a function of that season's fitted
+#: slope.
+#:
+#: This project's own most-cited result is that degradation slopes **fail to
+#: transfer between seasons** — leave-one-race-out within-stint R² is at or
+#: below zero almost everywhere. A layer that picks one arbitrary season and
+#: calls the answer a property of the circuit is contradicted by the finding
+#: printed two reports over. It covered 65 of 209 modelled race-seasons, 31%,
+#: and the headline "9 of 66 circuit-seasons are tyre-limited" plus the −0.913
+#: pit-loss correlation were both computed on that sample.
+#:
+#: Races with no usable model are still skipped — a genuinely caution-free race
+#: has no FCY *or* SC laps to measure a pace ratio from — but they are now
+#: skipped **individually and counted**, rather than silently standing in for
+#: a circuit's other seasons.
+def _scoped_races() -> list[tuple[str, int, str, str, str]]:
+    """Flat list of (series, year, event, car_class, circuit_slug)."""
     from src.data.endurance_loader import derived_path, slugify
     from src.data.endurance_scope import ENDURANCE_SCOPE
-    out: dict[tuple[str, str, str], list[tuple[str, int, str, str, str]]] = {}
-    for series, circuits in ENDURANCE_SCOPE.items():
-        for cs in circuits:
-            candidates = [
-                (series, year, cs.event, cs.car_class, slugify(cs.event))
-                for year in sorted(cs.seasons, reverse=True)
-                if derived_path(series, year, cs.event, cs.car_class).exists()
-            ]
-            if candidates:
-                out[(series, cs.event, cs.car_class)] = candidates
-    return out
+    races = [
+        (series, year, cs.event, cs.car_class, slugify(cs.event))
+        for series, circuits in ENDURANCE_SCOPE.items()
+        for cs in circuits
+        for year in sorted(cs.seasons)
+        if derived_path(series, year, cs.event, cs.car_class).exists()
+    ]
+    return sorted(races)
 
 
-CIRCUIT_CANDIDATES = _circuit_candidates()
+SCOPED_RACES = _scoped_races()
 
 
 def _build_model(series: str, year: int, event: str, car_class: str):
@@ -97,20 +103,15 @@ def _breakeven_slope(race_laps: int, model, base_stops: int,
 def main() -> None:
     stability = pd.read_csv(ENDURANCE_DERIVED_DIR / "endurance_traffic_stability.csv")
     rows = []
-    skipped: list[str] = []
-    for (series, event, scoped_class), candidates in CIRCUIT_CANDIDATES.items():
-        model = race_laps = year = car_class = circuit = None
-        for series, year, event, car_class, circuit in candidates:
-            try:
-                model, race_laps = _build_model(series, year, event, car_class)
-                break
-            except ValueError as exc:
-                print(f"  skip {series} {year} {event} (no usable model: {exc}), "
-                      f"trying an earlier season")
-        if model is None:
-            skipped.append(f"{series} {event} ({scoped_class})")
-            print(f"  GIVING UP on {series} {event} ({scoped_class}): "
-                  "no season has a usable model")
+    skipped: list[tuple] = []
+    for index, (series, year, event, car_class, circuit) in enumerate(SCOPED_RACES, 1):
+        print(f"[{index}/{len(SCOPED_RACES)}] {series} {year} {event} ({car_class})",
+              flush=True)
+        try:
+            model, race_laps = _build_model(series, year, event, car_class)
+        except ValueError as exc:
+            skipped.append((series, year, event, car_class, str(exc)))
+            print(f"  skip (no usable model: {exc})", flush=True)
             continue
         opt = optimal_stop_plan(race_laps, model.green_pace_s, model.net_slope_s,
                                 model.pit_loss_s, model.fuel_range_laps)
@@ -165,10 +166,25 @@ def main() -> None:
     ENDURANCE_DERIVED_DIR.mkdir(parents=True, exist_ok=True)
     out = ENDURANCE_DERIVED_DIR / "multistop_plans.csv"
     table.to_csv(out, index=False)
-    print(table.to_string(index=False))
+    summary = table.groupby(["series", "car_class"]).agg(
+        races=("year", "size"),
+        circuits=("circuit_canonical", "nunique"),
+        tyre_limited=("fuel_limited", lambda s: int((~s).sum())),
+        median_pit_loss=("pit_loss_s", "median"),
+    )
+    print(summary.to_string())
+    # Skips are an artifact, not a print. A race missing from the plan table is
+    # either explained here or it is a silent coverage hole, and
+    # tests/test_coverage.py asserts exactly that: every scoped race is either
+    # planned, or recorded below with the reason it could not be.
+    pd.DataFrame(
+        skipped, columns=["series", "year", "event", "car_class", "reason"]
+    ).to_csv(ENDURANCE_DERIVED_DIR / "multistop_skipped.csv", index=False)
     if skipped:
-        print(f"\n{len(skipped)} circuit(s) skipped (no season with a usable "
-              f"FCY/SC model): {', '.join(skipped)}")
+        print(f"\n{len(skipped)} of {len(SCOPED_RACES)} race-seasons skipped "
+              "(no usable FCY/SC model):")
+        for series, year, event, car_class, reason in skipped:
+            print(f"  - {series} {year} {event} ({car_class}): {reason}")
     print(f"\nwrote {out}")
 
 

@@ -79,7 +79,7 @@ primitive the adversarial rival model consumes.
 
 ## Adversarial rival (the rival covers)
 
-The same two-player pit-stop game as F1 ([adversarial_rival.md](../f1/adversarial_rival.md)),
+The same two-player pit-stop game as F1 ([adversarial_rival.md](../../f1/adversarial_rival.md)),
 on the endurance engine: `src/simulator/adversarial_endurance.py`. The rival
 covers the undercut rather than following a fixed plan.
 
@@ -88,7 +88,7 @@ At Watkins Glen, whose net slope covers zero, the undercut is weak: assuming the
 rival keeps its plan overstates the win probability by only **~0.08**, and the
 cover-aware optimum barely differs. Contrast WEC Bahrain, where a steep slope
 makes an uncovered undercut worth ~0.44 of win probability (see
-[the WEC report](../wec/simulator_phase4.md)). So on a low-degradation IMSA
+[the WEC report](../../wec/simulator_phase4.md)). So on a low-degradation IMSA
 circuit the pit-timing game is nearly moot — and the model says so, instead of
 manufacturing a decisive call.
 
@@ -119,7 +119,7 @@ single-season read**: Sebring looked like "no signal" from 2023 alone
 absent. Watkins Glen is the most *stable* meaningful cost (+0.43 ± 0.12); Road
 America is real on average but swings hardest season to season (±0.20). The
 per-car slope is positive and tight everywhere. Reported as measured, spread and
-all, not smoothed. See the [WEC report](../wec/simulator_phase4.md) for the
+all, not smoothed. See the [WEC report](../../wec/simulator_phase4.md) for the
 cross-series picture (Spa is the most traffic-costly circuit measured,
 ~+0.58 s/lap averaged over three seasons).
 
@@ -141,7 +141,7 @@ widened to every scoped race (331 IMSA fuel-only stops, 2 569 tyre changes), but
 the procedural gap is still large and clear, and points the same direction.
 Strategically it means IMSA teams can take tyres almost whenever they stop for
 fuel, a flexibility WEC teams do not have. See
-[the WEC report](../wec/simulator_phase4.md) for the contrast.
+[the WEC report](../../wec/simulator_phase4.md) for the contrast.
 
 ## Multi-stop strategy: the whole race, not just the next stop
 
@@ -183,7 +183,7 @@ At equal stop count, 7 of 10 circuits (marked "yes" above) get their stints
 **re-spaced** rather than run the tank flat out with a short last stint — more
 common in IMSA than WEC (7/10 vs 6/11), consistent with IMSA's flatter but more
 often positive slopes rewarding the adjustment. A **retrospective audit against
-real race winners** ([`reports/endurance_audit.md`](../endurance_audit.md))
+real race winners** ([`reports/endurance_audit.md`](../../cross_series/endurance_audit.md))
 corroborates the stop-count claim independently: **24 of 33 real IMSA race
 winners** ran at least one stint within 3 laps of the measured fuel range — a
 somewhat lower corroboration rate than WEC's, plausibly because IMSA's more
@@ -196,7 +196,7 @@ field's contribution is its *spread* (the cross-season SD above), injected as a
 zero-mean per-race effect. It widens the race-time band without shifting the
 median or biasing which plan wins — neutralisation timing dominates the
 uncertainty, and traffic is honestly a second-order term behind it. See
-[the WEC report](../wec/simulator_phase4.md) for the same treatment there.
+[the WEC report](../../wec/simulator_phase4.md) for the same treatment there.
 
 ## Limitations
 

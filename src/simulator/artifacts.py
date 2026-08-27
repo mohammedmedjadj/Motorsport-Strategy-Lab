@@ -16,6 +16,7 @@ engine can resample coefficients per draw.
 
 from __future__ import annotations
 
+import warnings
 from dataclasses import dataclass
 
 import pandas as pd
@@ -139,8 +140,20 @@ def load_circuit_models() -> dict[str, CircuitModel]:
     ratios = estimate_pace_ratios(laps_by_circuit)
 
     models: dict[str, CircuitModel] = {}
+    unfitted: list[str] = []
     for circuit, laps in laps_by_circuit.items():
         rows = deg[deg["circuit"] == circuit]
+        # A circuit whose laps are ingested but whose coefficients have not been
+        # refitted yet is a **normal transient state**, not a corrupt artifact:
+        # the scope is rolling, so a new round lands on disk before the models
+        # are re-run, and widening the scope from four circuits to the whole
+        # calendar puts every new circuit in exactly this position for one
+        # commit. This used to be an ``IndexError`` from ``rows.iloc[0]`` at
+        # import time, which failed test *collection* — the least informative
+        # possible symptom for "run scripts/run_degradation.py".
+        if rows.empty:
+            unfitted.append(circuit)
+            continue
         degradation: dict[str, tuple[CoefPosterior, ...]] = {}
         for _, row in rows.iterrows():
             n_clusters = row["n_clusters"]
@@ -172,5 +185,15 @@ def load_circuit_models() -> dict[str, CircuitModel]:
             vsc_durations=_duration_pool(events, circuit, "VSC"),
             pit_loss=estimate_pit_loss(laps, circuit),
             pace_ratios=ratios[circuit],
+        )
+
+    if unfitted:
+        # Reported, never silent. A caller that gets fewer models than it
+        # expected should be told why, and told the one command that fixes it.
+        warnings.warn(
+            f"{len(unfitted)} circuit(s) have ingested laps but no fitted "
+            f"degradation coefficients, so they carry no model: "
+            f"{', '.join(sorted(unfitted))}. Run scripts/run_degradation.py.",
+            stacklevel=2,
         )
     return models

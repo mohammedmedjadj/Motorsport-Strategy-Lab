@@ -40,7 +40,7 @@ from src.degradation.dataset import build_modelling_frame, load_circuit_laps  # 
 from src.degradation.model import fit_circuit, predict_shape  # noqa: E402
 from src.ingestion.config import REPORTS_DIR  # noqa: E402
 
-CIRCUITS = ("monaco", "singapore", "barcelona", "suzuka")
+from src.ingestion.config import CIRCUITS  # noqa: E402
 SEASONS = (2023, 2024, 2025)
 
 

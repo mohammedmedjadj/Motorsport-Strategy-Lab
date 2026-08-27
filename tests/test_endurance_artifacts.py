@@ -180,8 +180,16 @@ def test_every_artifact_row_is_uniquely_keyed_with_the_class() -> None:
     assert not fits.duplicated(key).any(), fits[fits.duplicated(key, keep=False)][key]
 
     plans = pd.read_csv(ENDURANCE_DERIVED_DIR / "multistop_plans.csv")
-    plan_key = ["series", "circuit", "car_class"]
-    assert not plans.duplicated(plan_key).any()
+    # The **year** belongs in the plan key. It did not need to when this layer
+    # ran on one representative season per circuit-class, and that is exactly
+    # the assumption that turned out to be wrong: the plan depends on each
+    # race's fitted degradation slope, and slopes do not transfer between
+    # seasons. Now that it plans every race-season, a key without the year
+    # would report duplicates that are simply different years.
+    plan_key = ["series", "circuit", "car_class", "year"]
+    assert not plans.duplicated(plan_key).any(), (
+        plans[plans.duplicated(plan_key, keep=False)][plan_key]
+    )
 
 
 def test_scope_has_no_literally_duplicated_entry() -> None:

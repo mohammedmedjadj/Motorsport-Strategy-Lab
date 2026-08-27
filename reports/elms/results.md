@@ -77,7 +77,7 @@ expensive stop on a short tank, which is why ELMS is almost entirely
 fuel-limited on stop count. The one exception is LMP2 at Mugello, whose 9.2 s
 pit loss is the cheapest in the series; it is one of the nine entries behind
 the cross-series rule in
-[`reports/when_tyres_beat_fuel.md`](../when_tyres_beat_fuel.md).
+[`reports/when_tyres_beat_fuel.md`](../cross_series/when_tyres_beat_fuel.md).
 
 Median adjacent-swap rate **0.0463** over 17 circuit-class entries, position
 reconstructed from cumulative time within the class.

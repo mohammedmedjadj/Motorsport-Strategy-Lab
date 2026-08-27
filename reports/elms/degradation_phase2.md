@@ -36,7 +36,7 @@ by 17.8 s a lap over the race and the model has no term carrying race time.
 Full diagnosis, including an attempted correction that was built, validated on
 synthetic data, and then **withdrawn because it made the real-data refit
 worse**, is in
-[`reports/track_evolution_omitted_variable.md`](../track_evolution_omitted_variable.md).
+[`reports/track_evolution_omitted_variable.md`](../cross_series/track_evolution_omitted_variable.md).
 
 Read every slope here as a lower bound.
 

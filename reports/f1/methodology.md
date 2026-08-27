@@ -94,7 +94,7 @@ confronts its output against real human strategic decisions the way §4.3's
 audit does. Both gaps are addressed here, and a third, broader test —
 whether *any* fitted quantity in this project generalises, not just
 degradation — is reported separately in
-[`reports/generalization_audit.md`](generalization_audit.md), which extends
+[`reports/generalization_audit.md`](../cross_series/generalization_audit.md), which extends
 this same leave-one-race-out protocol to pit loss and neutralisation
 occurrence across F1, WEC and IMSA.
 
@@ -274,7 +274,7 @@ races they were fitted on?
   a race routinely fails to predict a third. Any in-race application would
   need online re-estimation from live laps, not a frozen historical
   coefficient. A companion audit
-  ([`reports/generalization_audit.md`](generalization_audit.md)) extends
+  ([`reports/generalization_audit.md`](../cross_series/generalization_audit.md)) extends
   this exact test to pit loss and neutralisation occurrence across all
   three series in this project and finds the answer depends on the
   quantity: pit loss, closer to a fixed procedural constant, transfers

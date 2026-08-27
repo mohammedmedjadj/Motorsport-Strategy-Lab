@@ -20,10 +20,10 @@ their reports apart rather than merging them for convenience.
 > circuits and has been updated in place as the scope widened to ten GTP
 > circuits and two GT3 classes. Where a section still reads as GTP-only, it is
 > GTP-only; GTD and GTD PRO have their own document,
-> [`gtd_findings.md`](gtd_findings.md), and are never pooled with GTP here.
+> [`gtd_findings.md`](gtd/findings.md), and are never pooled with GTP here.
 > Figures are checked against the committed artifacts by
 > `tests/test_reports_are_not_stale.py`. See
-[`reports/methodology.md`](../methodology.md) for the sibling F1 report this
+[`reports/methodology.md`](../f1/methodology.md) for the sibling F1 report this
 one mirrors in structure.
 
 ## Abstract
@@ -70,7 +70,7 @@ fitted in one endurance series look anything like the same quantity fitted
 in a structurally different one? §4.2 and §4.3 below answer this directly —
 IMSA and WEC diverge on which neutralisation procedure exists at all and on
 the procedural cost of a tyre change — and
-[`reports/generalization_audit.md`](../generalization_audit.md) extends the
+[`reports/generalization_audit.md`](../cross_series/generalization_audit.md) extends the
 same leave-one-out transfer test used here to pit loss and neutralisation
 occurrence across all three series in this project, including a
 cross-series comparison neither paper attempts.
