@@ -9,6 +9,7 @@ directly. Run:
 """
 from __future__ import annotations
 
+import sys
 from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFont
@@ -98,13 +99,56 @@ def _stat_layout(draw, stats: list[tuple[str, str]], right_edge: float, gap: flo
     return xs, widths
 
 
+#: Series in modelling order, so the banner and the README agree on what exists.
+SERIES_LINE = "F1 · IMSA · ELMS · WEC"
+
+
+def project_stats() -> list[tuple[str, str]]:
+    """The three headline counts, read from the repository rather than typed.
+
+    The banner carried "3 SERIES / 140+ TESTS / 289 RACES" for a month after a
+    fourth series was modelled, because a number drawn into an image is the
+    least visible copy of a fact there is. These are counted at generation time
+    from the committed artifacts and the test suite, so regenerating the banner
+    is the only step needed to make it true again.
+    """
+    import subprocess
+
+    import pandas as pd
+
+    root = Path(__file__).resolve().parents[1]
+
+    f1_races = len(list((root / "data" / "derived" / "f1").glob("laps_*.csv")))
+    fits = pd.read_csv(
+        root / "data" / "derived" / "endurance" / "endurance_degradation_fits.csv"
+    )
+    endurance_races = len(fits)
+    series = 1 + fits["series"].nunique()
+
+    collected = subprocess.run(
+        [sys.executable, "-m", "pytest", "--collect-only", "-q", "-o", "addopts="],
+        cwd=root, capture_output=True, text=True,
+    ).stdout
+    tests = next(
+        (int(word) for line in collected.splitlines() if "tests collected" in line
+         for word in line.split() if word.isdigit()),
+        0,
+    )
+
+    return [
+        (str(series), "SERIES"),
+        (str(tests), "TESTS"),
+        (f"{f1_races + endurance_races}", "RACES ANALYZED"),
+    ]
+
+
 def make_banner(w: int, h: int, centered: bool, focus_y: float, tag: str | None = None) -> Image.Image:
     img = _cropped_photo(w, h, focus_y)
     img = _scrim_left(img, extent=0.72 if not centered else 0.58, max_alpha=225)
     draw = ImageDraw.Draw(img)
 
     title = "MOTORSPORT STRATEGY LAB"
-    subtitle = "Race Strategy Simulator & Decision Audit — F1 · WEC · IMSA"
+    subtitle = f"Race Strategy Simulator & Decision Audit — {SERIES_LINE}"
 
     title_size = 46 if not centered else 52
     title_font = _font(SPACE_GROTESK, title_size, weight=700)
@@ -117,7 +161,7 @@ def make_banner(w: int, h: int, centered: bool, focus_y: float, tag: str | None 
         draw.text((margin, top + title_size + 14), subtitle, font=subtitle_font, fill=GREY_TEXT,
                    stroke_width=3, stroke_fill=(0, 0, 0))
 
-        stats = [("3", "SERIES"), ("140+", "TESTS"), ("289", "RACES ANALYZED")]
+        stats = project_stats()
         start_y = top + title_size + 14 + 46
         stat_xs, stat_ws = _stat_layout(draw, stats, w - margin)
         pad = 12
