@@ -1147,15 +1147,20 @@ to, not illustrated with one.
 > because F1 has **no fuel cap** — nothing bounds how long "stay out" can run.
 > Give the same engine a fuel clock and it lands on the real answer.
 >
-> The obvious explanation for the rest — no track position, so the engine can
-> never pay for an undercut — was **tested and rejected**. Re-running all 357
-> decisions through the cover-aware adversarial engine, which does model the
-> undercut, moves the recommendation *away* from the real stop: +11 laps against
-> +9, closer in 65 decisions and further in 188. What survives is the second
-> candidate, that the fitted slopes are biased toward durability by the same
-> unmodelled track-evolution term diagnosed on the endurance side — now the only
-> explanation left, and specific enough to test.
-> ([`undercut_hypothesis.md`](reports/f1/undercut_hypothesis.md))
+> **Both explanations for the rest were tested, and both failed.** That the
+> engine cannot pay for an undercut: re-running all 357 decisions through the
+> cover-aware adversarial engine moves the recommendation *away* from the real
+> stop, +11 laps against +9, closer in 65 and further in 188. That the fitted
+> slopes make tyres look too durable: measured against an independent source
+> separating tyre wear from fuel burn by a different method, the two agree at
+> **r = +0.74** with a median paired difference of **+0.0002 s/lap** — an error
+> that would move a stop by several race distances, not twelve laps.
+>
+> So the finding stands as measured and **unexplained**. That is a worse
+> position than having a plausible story, and a better one than publishing a
+> story two measurements contradict.
+> ([undercut](reports/f1/undercut_hypothesis.md) ·
+> [slope bias](reports/f1/slope_bias_check.md))
 > ([F1](reports/f1/systematic_audit.md) ·
 > [IMSA](reports/imsa/systematic_audit.md) ·
 > [ELMS](reports/elms/systematic_audit.md) ·

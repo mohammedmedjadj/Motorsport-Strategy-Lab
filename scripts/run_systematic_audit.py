@@ -127,19 +127,28 @@ def report(frame: pd.DataFrame) -> str:
         "+11 laps against the single-car engine's +9, closer in 65 decisions and "
         "further in 188. See "
         "[`undercut_hypothesis.md`](undercut_hypothesis.md).",
-        "2. **Slopes biased toward durability.** The endurance side of this "
-        "project has a diagnosed, unfixed omitted variable that pushes fitted "
-        "degradation slopes *down* "
-        "([track evolution](../cross_series/track_evolution_omitted_variable.md)). "
-        "A tyre that looks flatter than it is makes staying out look cheaper "
-        "than it is. Whether the F1 fits carry the same bias is not established.",
+        "2. ~~**Slopes biased toward durability.**~~ **Tested and not "
+        "detected.** The endurance side carries a diagnosed, unfixed omitted "
+        "variable that pushes slopes down, and a tyre that looks flatter than "
+        "it is makes staying out look cheaper. Measured against the Kaggle "
+        "breadth layer — an independent source separating tyre wear from fuel "
+        "burn by a different method — the two agree at r = +0.74 with a median "
+        "paired difference of +0.0002 s/lap. An error that size moves the stop "
+        "by several race distances' worth of laps, not twelve. See "
+        "[`slope_bias_check.md`](slope_bias_check.md).",
         "",
-        "With track position eliminated, the slope-bias candidate is the one "
-        "left standing, and it is now specific enough to test: fit the F1 "
-        "degradation model with a race-time term and see whether the "
-        "recommendation moves earlier. That is the same correction withdrawn "
-        "twice on endurance data, so it is not a small job — but it is now the "
-        "only explanation this audit has not ruled out.",
+        "**Both explanations are measured and neither accounts for the "
+        "finding.** The result stands as measured and unexplained, which is a "
+        "worse position than having a plausible story and a better one than "
+        "publishing a story two measurements contradict.",
+        "",
+        "What is left to try is the question itself. The model is asked five "
+        "laps before the real stop and offers every remaining lap as a "
+        "candidate; a real team is choosing between a handful of laps inside a "
+        "strategy already committed to, with a tyre allocation and a two-"
+        "compound rule the engine does not see. The two may not be answering "
+        "the same question, and testing that means changing the audit rather "
+        "than the model.",
         "",
     ]
 

@@ -72,6 +72,8 @@ jobs:
         run: python scripts/run_systematic_audit.py
       - name: Undercut hypothesis test
         run: python scripts/run_undercut_hypothesis.py
+      - name: Slope-bias check
+        run: python scripts/run_slope_bias_check.py
 
       - name: Report drift
         run: .github/scripts/report_drift.sh "F1"
