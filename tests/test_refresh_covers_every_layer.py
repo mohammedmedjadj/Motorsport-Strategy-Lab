@@ -142,6 +142,7 @@ def test_every_series_is_regenerated_not_just_f1() -> None:
         "run_class_reports.py": "the per-class tables for all six classes",
         "run_systematic_audit.py": "the calendar-wide F1 decision audit",
         "run_systematic_endurance_audit.py": "its endurance counterpart, all six classes",
+        "run_undercut_hypothesis.py": "the test that rejected the audit's first explanation",
         "run_track_position.py": "overtaking difficulty per circuit",
     }
     missing = {name: why for name, why in required.items() if name not in scheduled}

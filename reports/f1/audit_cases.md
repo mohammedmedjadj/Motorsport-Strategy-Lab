@@ -21,18 +21,19 @@ disagreement is the finding.
 
 **Model output** (pit_lap 0 = no further stop):
 
-- Best median pit lap: **32** — recommended window (medians within 0.5s): **[30, 31, 32, 33]**.
-- Outcome spread at the best lap (p10-p90): 249.6s — this is the honest uncertainty of any single-race outcome.
+- Best median pit lap: **32** — recommended window (medians within 0.5s): **[30, 31, 32, 33, 34]**.
+- Outcome spread at the best lap (p10-p90): 250.6s — this is the honest uncertainty of any single-race outcome.
 - vs NOR: P(ahead) = 0.88 at lap 32; maximised at lap 30 (0.89).
-- **Verdict:** Real choice (lap 17): median cost +19.55s vs the model optimum (lap 32); OUTSIDE the recommended window.
+- **Verdict:** Real choice (lap 17): median cost +19.27s vs the model optimum (lap 32); OUTSIDE the recommended window.
 
 | pit_lap | median_s | mean_s | p10_s | p90_s | p_best | p_ahead_NOR |
 |---|---|---|---|---|---|---|
-| 17 <- real | 4078.68 | 4147.63 | 4061.24 | 4311.39 | 0.00 | 0.13 |
-| 30 | 4059.36 | 4131.28 | 4046.01 | 4296.05 | 0.13 | 0.89 |
-| 31 | 4059.17 | 4131.12 | 4045.91 | 4295.57 | 0.15 | 0.88 |
-| 32 | 4059.13 | 4131.12 | 4045.94 | 4295.50 | 0.15 | 0.88 |
-| 33 | 4059.34 | 4131.25 | 4046.02 | 4295.84 | 0.11 | 0.87 |
+| 17 <- real | 4078.62 | 4147.99 | 4061.25 | 4311.85 | 0.00 | 0.12 |
+| 30 | 4059.53 | 4131.52 | 4045.90 | 4297.03 | 0.12 | 0.89 |
+| 31 | 4059.36 | 4131.36 | 4045.69 | 4296.84 | 0.15 | 0.89 |
+| 32 | 4059.35 | 4131.36 | 4045.73 | 4296.38 | 0.15 | 0.88 |
+| 33 | 4059.51 | 4131.50 | 4045.94 | 4297.12 | 0.12 | 0.87 |
+| 34 | 4059.83 | 4131.83 | 4046.20 | 4296.86 | 0.07 | 0.85 |
 
 ## Case B: Barcelona 2024 — Norris's extended stint (failed overcut)
 
@@ -45,18 +46,18 @@ disagreement is the finding.
 **Model output** (pit_lap 0 = no further stop):
 
 - Best median pit lap: **33** — recommended window (medians within 0.5s): **[31, 32, 33, 34, 35]**.
-- Outcome spread at the best lap (p10-p90): 250.0s — this is the honest uncertainty of any single-race outcome.
-- vs VER: P(ahead) = 0.96 at lap 33; maximised at lap 31 (0.96).
-- **Verdict:** Real choice (lap 23): median cost +9.19s vs the model optimum (lap 33); OUTSIDE the recommended window.
+- Outcome spread at the best lap (p10-p90): 251.2s — this is the honest uncertainty of any single-race outcome.
+- vs VER: P(ahead) = 0.96 at lap 33; maximised at lap 31 (0.97).
+- **Verdict:** Real choice (lap 23): median cost +9.10s vs the model optimum (lap 33); OUTSIDE the recommended window.
 
 | pit_lap | median_s | mean_s | p10_s | p90_s | p_best | p_ahead_VER |
 |---|---|---|---|---|---|---|
-| 23 <- real | 4064.20 | 4135.09 | 4049.25 | 4300.23 | 0.00 | 0.87 |
-| 31 | 4055.34 | 4127.60 | 4042.24 | 4292.58 | 0.12 | 0.96 |
-| 32 | 4055.06 | 4127.36 | 4042.05 | 4291.87 | 0.15 | 0.96 |
-| 33 | 4055.01 | 4127.26 | 4042.03 | 4292.03 | 0.16 | 0.96 |
-| 34 | 4055.10 | 4127.32 | 4042.09 | 4291.92 | 0.14 | 0.96 |
-| 35 | 4055.42 | 4127.56 | 4042.34 | 4291.58 | 0.09 | 0.95 |
+| 23 <- real | 4064.28 | 4135.39 | 4049.32 | 4300.09 | 0.00 | 0.88 |
+| 31 | 4055.54 | 4127.85 | 4042.16 | 4293.53 | 0.11 | 0.97 |
+| 32 | 4055.29 | 4127.61 | 4041.88 | 4293.08 | 0.15 | 0.97 |
+| 33 | 4055.18 | 4127.52 | 4041.81 | 4293.02 | 0.16 | 0.96 |
+| 34 | 4055.29 | 4127.62 | 4041.94 | 4292.97 | 0.14 | 0.96 |
+| 35 | 4055.52 | 4127.85 | 4042.19 | 4292.96 | 0.09 | 0.95 |
 
 ## Case C: Singapore 2023 — Sainz boxes under the lap-20 safety car
 
@@ -135,10 +136,10 @@ disagreement is the finding.
 
 **1. Three metrics, three different answers — which is the whole argument
 for reporting a distribution (Case A).** Verstappen's real lap-17 cover
-costs +19.55s in median race time against the lap-32 optimum. On P(best) it
-is beaten by lap 31 (0.152): 0.000 against 0.148 for the median-optimal
-lap. On P(ahead of Norris) it is neither: lap 17 gives 0.130 where lap 30
-would have given 0.886.
+costs +19.27s in median race time against the lap-32 optimum. On P(best) it
+is beaten by lap 32 (0.150): 0.000 against 0.150 for the median-optimal
+lap. On P(ahead of Norris) it is neither: lap 17 gives 0.124 where lap 30
+would have given 0.892.
 
 So the three summaries rank the same decision first, middling and not-
 quite-best. Pitting early loses a little expected time, wins outright in
@@ -150,9 +151,9 @@ head. Any single-number verdict on this call — including the flattering one
 **2. Folklore correction: Norris's extended stint did not lose him
 Barcelona 2024 (Case B).** P(ahead of Verstappen) now reaches 0.5 at some
 candidate stop lap, which it did not when this finding was first written:
-it runs 0.000 to 0.963, his real lap-23 choice sitting at 0.872 against a
-best-available 0.963 at lap 31. No pit lap available to him makes him the
-favourite, and his +9.19s against the optimum is small beside that. The
+it runs 0.000 to 0.971, his real lap-23 choice sitting at 0.879 against a
+best-available 0.971 at lap 31. No pit lap available to him makes him the
+favourite, and his +9.10s against the optimum is small beside that. The
 race was decided by pace and track position, not by the stop timing the
 post-race narrative focused on.
 

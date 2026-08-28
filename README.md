@@ -8,7 +8,7 @@
   <a href="https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab/actions/workflows/tests.yml"><img src="https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab/actions/workflows/tests.yml/badge.svg" alt="Test suite status"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-CC%20BY--NC--SA%204.0-E10600" alt="License: CC BY-NC-SA 4.0"></a>
   <img src="https://img.shields.io/badge/python-3.11%2B-00D9FF" alt="Python 3.11+">
-  <img src="https://img.shields.io/badge/tests-339%20passing-2ea44f" alt="339 tests passing">
+  <img src="https://img.shields.io/badge/tests-345%20passing-2ea44f" alt="345 tests passing">
   <img src="https://img.shields.io/badge/series-F1%20%C2%B7%20WEC%20%C2%B7%20IMSA%20%C2%B7%20ELMS-FFB800" alt="Series: F1, WEC, IMSA, ELMS">
 </p>
 
@@ -257,7 +257,7 @@ as a distribution and never quoted as a point value.
 
 **Safety-car probability is a genuine circuit property, and it spans 0.17 to
 0.92.** Hungaroring and Austin at one end, Jeddah and Interlagos at the other,
-over 147 race editions. Monaco's "guaranteed" safety car is not: 3 of 7 editions
+over 152 race editions. Monaco's "guaranteed" safety car is not: 3 of 7 editions
 since 2018, P = 0.44 [0.14, 0.77] — notably less certain than the reputation.
 
 **Track position varies 14-fold and is stable where degradation is not.**
@@ -341,7 +341,7 @@ them.
 | layer | coverage |
 |---|---|
 | per-compound degradation, cluster-robust intervals | 73 coefficients, 25 circuits |
-| Safety Car / VSC posteriors | 25 circuits, 147 race editions, 219 events |
+| Safety Car / VSC posteriors | 25 circuits, 152 race editions, 229 events |
 | track-position value | 25 circuits |
 | decision audit | 357 replayed stops, 74 races |
 
@@ -1038,7 +1038,7 @@ series it actually covers, because they differ:
   race edition is left out, its probability formed from the other editions only,
   and graded with proper scoring rules (Brier, log-loss, Brier skill vs
   climatology). The honest answer: **per circuit they do not beat the base
-  rate** — 2-8 F1 editions per circuit (median 6, 147 in total) and 1-6
+  rate** — 2-8 F1 editions per circuit (median 6, 152 in total) and 1-6
   endurance ones are too few, so the point estimates are little more than the
   series rate. Widening F1 from 27 race editions to 147 did not change that
   answer, which is the useful part: it is a sample-size limit per circuit, not
@@ -1117,7 +1117,7 @@ to, not illustrated with one.
 > ([WEC](reports/wec/methodology.md) · [IMSA](reports/imsa/methodology.md))
 
 > **Safety-car probability is a real circuit property, and reputation is a poor
-> guide to it.** Across 25 circuits and 147 race editions it spans **0.17 to
+> guide to it.** Across 25 circuits and 152 race editions it spans **0.17 to
 > 0.92** — Hungaroring and Austin at one end, Jeddah and Interlagos at the
 > other. Monaco, whose safety car is treated as a certainty, measures
 > **P = 0.44** [0.14, 0.77]: 3 of 7 editions since 2018. The interval width is
@@ -1143,10 +1143,19 @@ to, not illustrated with one.
 > three laps before the caution exists.
 >
 > **F1 is the contrast that isolates the cause.** There the caution split is
-> small (+9 laps under green against +12 under caution) and the disagreement is
-> large anyway, because F1 has **no fuel cap** — nothing bounds how long "stay
-> out" can run, and the engine has no track position to make an undercut worth
-> paying for. Give the same engine a fuel clock and it lands on the real answer.
+> small (+9 laps under green against +12) and the disagreement is large anyway,
+> because F1 has **no fuel cap** — nothing bounds how long "stay out" can run.
+> Give the same engine a fuel clock and it lands on the real answer.
+>
+> The obvious explanation for the rest — no track position, so the engine can
+> never pay for an undercut — was **tested and rejected**. Re-running all 357
+> decisions through the cover-aware adversarial engine, which does model the
+> undercut, moves the recommendation *away* from the real stop: +11 laps against
+> +9, closer in 65 decisions and further in 188. What survives is the second
+> candidate, that the fitted slopes are biased toward durability by the same
+> unmodelled track-evolution term diagnosed on the endurance side — now the only
+> explanation left, and specific enough to test.
+> ([`undercut_hypothesis.md`](reports/f1/undercut_hypothesis.md))
 > ([F1](reports/f1/systematic_audit.md) ·
 > [IMSA](reports/imsa/systematic_audit.md) ·
 > [ELMS](reports/elms/systematic_audit.md) ·
@@ -1274,7 +1283,7 @@ Motorsport-Strategy-Lab/
                         #   run_fuel_limited_sensitivity.py,
                         #   run_sc_contamination_check.py (adversarial audit
                         #   pass); demo_extensions.py; generate_banner.py
-  tests/                # pytest, across four series and six classes, 339
+  tests/                # pytest, across four series and six classes, 345
                         #   tests -- incl. the demo, driven headlessly by
                         #   test_demo_app.py, and the report-staleness guards
                         #   that check prose still matches the artifacts

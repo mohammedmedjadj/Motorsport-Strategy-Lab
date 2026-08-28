@@ -13,14 +13,11 @@ values alone would be false precision.
 - 2018_miami: LookupError: 2018_miami: requested 'Miami Grand Prix' but FastF1 fuzzy-matched 'Italian Grand Prix' — edition most likely not held that season
 - 2018_zandvoort: LookupError: 2018_zandvoort: requested 'Dutch Grand Prix' but FastF1 fuzzy-matched 'Chinese Grand Prix' — edition most likely not held that season
 - 2018_monza: DataNotLoadedError: The data you are trying to access has not been loaded yet. See `Session.load`
-- 2018_mexico_city: LookupError: 2018_mexico_city: requested 'Mexico City Grand Prix' but FastF1 fuzzy-matched 'Mexican Grand Prix' — edition most likely not held that season
-- 2018_interlagos: LookupError: 2018_interlagos: requested 'São Paulo Grand Prix' but FastF1 fuzzy-matched 'Brazilian Grand Prix' — edition most likely not held that season
 - 2019_jeddah: LookupError: 2019_jeddah: requested 'Saudi Arabian Grand Prix' but FastF1 fuzzy-matched 'Australian Grand Prix' — edition most likely not held that season
 - 2019_imola: LookupError: 2019_imola: requested 'Emilia Romagna Grand Prix' but FastF1 fuzzy-matched 'German Grand Prix' — edition most likely not held that season
 - 2019_miami: LookupError: 2019_miami: requested 'Miami Grand Prix' but FastF1 fuzzy-matched 'Italian Grand Prix' — edition most likely not held that season
 - 2019_zandvoort: LookupError: 2019_zandvoort: requested 'Dutch Grand Prix' but FastF1 fuzzy-matched 'Chinese Grand Prix' — edition most likely not held that season
-- 2019_mexico_city: LookupError: 2019_mexico_city: requested 'Mexico City Grand Prix' but FastF1 fuzzy-matched 'Mexican Grand Prix' — edition most likely not held that season
-- 2019_interlagos: LookupError: 2019_interlagos: requested 'São Paulo Grand Prix' but FastF1 fuzzy-matched 'Brazilian Grand Prix' — edition most likely not held that season
+- 2019_mexico_city: DataNotLoadedError: The data you are trying to access has not been loaded yet. See `Session.load`
 - 2020_jeddah: LookupError: 2020_jeddah: requested 'Saudi Arabian Grand Prix' but FastF1 fuzzy-matched 'Austrian Grand Prix' — edition most likely not held that season
 - 2020_melbourne: LookupError: 2020_melbourne: requested 'Australian Grand Prix' but FastF1 fuzzy-matched 'Austrian Grand Prix' — edition most likely not held that season
 - 2020_miami: LookupError: 2020_miami: requested 'Miami Grand Prix' but FastF1 fuzzy-matched 'Italian Grand Prix' — edition most likely not held that season
@@ -32,15 +29,13 @@ values alone would be false precision.
 - 2020_singapore: LookupError: 2020_singapore: requested 'Singapore Grand Prix' but FastF1 fuzzy-matched 'Hungarian Grand Prix' — edition most likely not held that season
 - 2020_suzuka: LookupError: 2020_suzuka: requested 'Japanese Grand Prix' but FastF1 fuzzy-matched 'Spanish Grand Prix' — edition most likely not held that season
 - 2020_austin: LookupError: 2020_austin: requested 'United States Grand Prix' but FastF1 fuzzy-matched 'Hungarian Grand Prix' — edition most likely not held that season
-- 2020_mexico_city: LookupError: 2020_mexico_city: requested 'Mexico City Grand Prix' but FastF1 fuzzy-matched 'Russian Grand Prix' — edition most likely not held that season
-- 2020_interlagos: LookupError: 2020_interlagos: requested 'São Paulo Grand Prix' but FastF1 fuzzy-matched 'Turkish Grand Prix' — edition most likely not held that season
+- 2020_mexico_city: LookupError: 2020_mexico_city: requested 'Mexican Grand Prix' but FastF1 fuzzy-matched 'Belgian Grand Prix' — edition most likely not held that season
+- 2020_interlagos: LookupError: 2020_interlagos: requested 'Brazilian Grand Prix' but FastF1 fuzzy-matched 'Belgian Grand Prix' — edition most likely not held that season
 - 2021_melbourne: LookupError: 2021_melbourne: requested 'Australian Grand Prix' but FastF1 fuzzy-matched 'Austrian Grand Prix' — edition most likely not held that season
 - 2021_miami: LookupError: 2021_miami: requested 'Miami Grand Prix' but FastF1 fuzzy-matched 'Italian Grand Prix' — edition most likely not held that season
 - 2021_montreal: LookupError: 2021_montreal: requested 'Canadian Grand Prix' but FastF1 fuzzy-matched 'Hungarian Grand Prix' — edition most likely not held that season
 - 2021_singapore: LookupError: 2021_singapore: requested 'Singapore Grand Prix' but FastF1 fuzzy-matched 'Hungarian Grand Prix' — edition most likely not held that season
 - 2021_suzuka: LookupError: 2021_suzuka: requested 'Japanese Grand Prix' but FastF1 fuzzy-matched 'Spanish Grand Prix' — edition most likely not held that season
-- 2021_interlagos: RateLimitExceededError: any API: 500 calls/h
-- 2021_yas_marina: RateLimitExceededError: any API: 500 calls/h
 
 (2020-2021 gaps are COVID cancellations — those races never took place.)
 
@@ -177,24 +172,27 @@ values alone would be false precision.
 - Per-lap deployment rate = 0.00794 [0.00132, 0.02037]
 - Durations (laps): n=2, mean=2.5, min=2, max=3
 
-## interlagos (4 editions, 282 race laps observed)
+## interlagos (7 editions, 495 race laps observed)
 
 | Season | Laps | SC | VSC | Red | SC deploy laps | VSC deploy laps |
 |---|---|---|---|---|---|---|
+| 2018 | 71 | 0 | 0 | 0 | - | - |
+| 2019 | 71 | 2 | 0 | 0 | [54, 66] | - |
+| 2021 | 71 | 1 | 2 | 0 | [6] | [12, 30] |
 | 2022 | 71 | 2 | 1 | 0 | [1, 54] | [53] |
 | 2023 | 71 | 1 | 0 | 1 | [1] | - |
 | 2024 | 69 | 2 | 1 | 1 | [30, 39] | [28] |
 | 2025 | 71 | 1 | 1 | 0 | [2] | [7] |
 
-**SC** — races with >= 1: 4/4; deployments: 6.
-- P(>= 1 per race) = 0.900 [0.555, 1.000]
-- Per-lap deployment rate = 0.02305 [0.00888, 0.04386]
-- Durations (laps): n=6, mean=4.2, min=2, max=6
+**SC** — races with >= 1: 6/7; deployments: 9.
+- P(>= 1 per race) = 0.812 [0.499, 0.984]
+- Per-lap deployment rate = 0.01919 [0.00900, 0.03318]
+- Durations (laps): n=9, mean=4.3, min=2, max=6
 
-**VSC** — races with >= 1: 3/4; deployments: 3.
-- P(>= 1 per race) = 0.700 [0.284, 0.972]
-- Per-lap deployment rate = 0.01241 [0.00300, 0.02839]
-- Durations (laps): n=3, mean=2.0, min=2, max=2
+**VSC** — races with >= 1: 4/7; deployments: 5.
+- P(>= 1 per race) = 0.562 [0.235, 0.861]
+- Per-lap deployment rate = 0.01111 [0.00385, 0.02214]
+- Durations (laps): n=5, mean=2.2, min=2, max=3
 
 ## jeddah (5 editions, 250 race laps observed)
 
@@ -273,25 +271,26 @@ values alone would be false precision.
 - Per-lap deployment rate = 0.01873 [0.00722, 0.03564]
 - Durations (laps): n=6, mean=1.8, min=1, max=3
 
-## mexico_city (5 editions, 355 race laps observed)
+## mexico_city (6 editions, 426 race laps observed)
 
 | Season | Laps | SC | VSC | Red | SC deploy laps | VSC deploy laps |
 |---|---|---|---|---|---|---|
+| 2018 | 71 | 0 | 3 | 0 | - | [5, 31, 62] |
 | 2021 | 71 | 1 | 0 | 0 | [1] | - |
 | 2022 | 71 | 0 | 1 | 0 | - | [65] |
 | 2023 | 71 | 2 | 1 | 1 | [33, 35] | [5] |
 | 2024 | 71 | 1 | 0 | 0 | [1] | - |
 | 2025 | 71 | 0 | 1 | 0 | - | [70] |
 
-**SC** — races with >= 1: 3/5; deployments: 4.
-- P(>= 1 per race) = 0.583 [0.209, 0.906]
-- Per-lap deployment rate = 0.01268 [0.00380, 0.02679]
+**SC** — races with >= 1: 3/6; deployments: 4.
+- P(>= 1 per race) = 0.500 [0.167, 0.833]
+- Per-lap deployment rate = 0.01056 [0.00317, 0.02233]
 - Durations (laps): n=4, mean=3.2, min=1, max=6
 
-**VSC** — races with >= 1: 3/5; deployments: 3.
-- P(>= 1 per race) = 0.583 [0.209, 0.906]
-- Per-lap deployment rate = 0.00986 [0.00238, 0.02255]
-- Durations (laps): n=3, mean=1.7, min=1, max=2
+**VSC** — races with >= 1: 4/6; deployments: 6.
+- P(>= 1 per race) = 0.643 [0.286, 0.923]
+- Per-lap deployment rate = 0.01526 [0.00588, 0.02903]
+- Durations (laps): n=6, mean=2.0, min=1, max=3
 
 ## miami (4 editions, 228 race laps observed)
 
@@ -524,27 +523,28 @@ values alone would be false precision.
 - Per-lap deployment rate = 0.00850 [0.00141, 0.02182]
 - Durations (laps): n=2, mean=1.5, min=1, max=2
 
-## yas_marina (7 editions, 397 race laps observed)
+## yas_marina (8 editions, 455 race laps observed)
 
 | Season | Laps | SC | VSC | Red | SC deploy laps | VSC deploy laps |
 |---|---|---|---|---|---|---|
 | 2018 | 55 | 1 | 1 | 0 | [1] | [7] |
 | 2019 | 55 | 0 | 0 | 0 | - | - |
 | 2020 | 55 | 1 | 1 | 0 | [11] | [10] |
+| 2021 | 58 | 1 | 1 | 0 | [53] | [36] |
 | 2022 | 58 | 0 | 0 | 0 | - | - |
 | 2023 | 58 | 0 | 0 | 0 | - | - |
 | 2024 | 58 | 0 | 1 | 0 | - | [2] |
 | 2025 | 58 | 0 | 0 | 0 | - | - |
 
-**SC** — races with >= 1: 2/7; deployments: 2.
-- P(>= 1 per race) = 0.312 [0.065, 0.648]
-- Per-lap deployment rate = 0.00630 [0.00105, 0.01616]
-- Durations (laps): n=2, mean=3.5, min=3, max=4
+**SC** — races with >= 1: 3/8; deployments: 3.
+- P(>= 1 per race) = 0.389 [0.119, 0.705]
+- Per-lap deployment rate = 0.00769 [0.00186, 0.01760]
+- Durations (laps): n=3, mean=4.0, min=3, max=5
 
-**VSC** — races with >= 1: 3/7; deployments: 3.
-- P(>= 1 per race) = 0.438 [0.139, 0.765]
-- Per-lap deployment rate = 0.00882 [0.00213, 0.02017]
-- Durations (laps): n=3, mean=2.0, min=2, max=2
+**VSC** — races with >= 1: 4/8; deployments: 4.
+- P(>= 1 per race) = 0.500 [0.199, 0.801]
+- Per-lap deployment rate = 0.00989 [0.00297, 0.02090]
+- Durations (laps): n=4, mean=2.2, min=2, max=3
 
 ## zandvoort (5 editions, 360 race laps observed)
 

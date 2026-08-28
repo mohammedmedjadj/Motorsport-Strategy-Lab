@@ -70,6 +70,8 @@ jobs:
         run: python scripts/run_audit.py
       - name: Calendar-wide decision audit
         run: python scripts/run_systematic_audit.py
+      - name: Undercut hypothesis test
+        run: python scripts/run_undercut_hypothesis.py
 
       - name: Report drift
         run: .github/scripts/report_drift.sh "F1"

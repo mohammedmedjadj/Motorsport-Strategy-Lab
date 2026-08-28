@@ -115,15 +115,18 @@ def report(frame: pd.DataFrame) -> str:
         "ones, so missing foresight does not account for it.",
         "",
         "**What the audit establishes is that the bias exists and is large.** "
-        "Two candidate causes are consistent with it and neither is tested "
-        "here:",
+        "Two causes were consistent with it. One has since been tested and "
+        "**rejected**; the other is still open:",
         "",
-        "1. **No track position.** The engine optimises one car's expected race "
-        "time. It cannot lose a place by staying out or gain one by stopping "
-        "early, so it has no reason to pay for an undercut — and an undercut is "
-        "exactly why a real team stops before it has to. The track-position "
-        "layer measures how sticky each circuit is, and the single-car engine "
-        "does not consume it.",
+        "1. ~~**No track position.**~~ **Tested and rejected.** The engine "
+        "optimises one car's expected race time and cannot pay for an undercut, "
+        "which sounded like the answer. Re-running all 357 decisions through "
+        "the cover-aware adversarial engine — which does model the undercut and "
+        "does consume each circuit's measured stickiness — moves the "
+        "recommendation *away* from the real stop, not toward it: median error "
+        "+11 laps against the single-car engine's +9, closer in 65 decisions and "
+        "further in 188. See "
+        "[`undercut_hypothesis.md`](undercut_hypothesis.md).",
         "2. **Slopes biased toward durability.** The endurance side of this "
         "project has a diagnosed, unfixed omitted variable that pushes fitted "
         "degradation slopes *down* "
@@ -131,10 +134,12 @@ def report(frame: pd.DataFrame) -> str:
         "A tyre that looks flatter than it is makes staying out look cheaper "
         "than it is. Whether the F1 fits carry the same bias is not established.",
         "",
-        "Distinguishing the two is the obvious next piece of work: the "
-        "adversarial-rival module already models the undercut, so re-running "
-        "these decisions through it would say how much of the gap track "
-        "position closes.",
+        "With track position eliminated, the slope-bias candidate is the one "
+        "left standing, and it is now specific enough to test: fit the F1 "
+        "degradation model with a race-time term and see whether the "
+        "recommendation moves earlier. That is the same correction withdrawn "
+        "twice on endurance data, so it is not a small job — but it is now the "
+        "only explanation this audit has not ruled out.",
         "",
     ]
 
