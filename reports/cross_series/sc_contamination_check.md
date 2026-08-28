@@ -14,7 +14,6 @@ The degradation frame already excludes neutralised laps themselves. This checks 
 | jeddah | 36 | 101 | 0.501 | 0.804 | 1.61x |
 | las_vegas | 69 | 62 | 0.644 | 0.889 | 1.38x |
 | losail | 46 | 108 | 0.552 | 0.563 | 1.02x |
-| madrid | -- | -- | -- | -- | no laps in (2022, 2023, 2024, 2025) |
 | melbourne | 14 | 94 | 0.385 | 1.090 | 2.83x |
 | mexico_city | 50 | 119 | 0.470 | 0.592 | 1.26x |
 | miami | 54 | 100 | 0.469 | 0.509 | 1.09x |

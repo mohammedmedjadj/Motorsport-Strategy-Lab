@@ -15,7 +15,7 @@ reports whether the headline ("a strong majority of winners ran
 fuel-limited, per series") holds across that whole range, or only at the
 one value chosen.
 
-Writes ``reports/fuel_limited_sensitivity.md``.
+Writes ``reports/cross_series/fuel_limited_sensitivity.md``.
 
 Usage (from the repo root; offline)::
 
@@ -39,10 +39,18 @@ from src.ingestion.config import ENDURANCE_DERIVED_DIR, REPORTS_DIR  # noqa: E40
 TOLERANCES = (0, 1, 2, 3, 5, 7, 10)
 
 
-def _fuel_ranges() -> dict[tuple[str, str], int]:
+def _fuel_ranges() -> dict[tuple[str, str, str], int]:
+    """(series, circuit slug, car class) -> fuel range in laps.
+
+    Keyed on the class. Without it this dict kept whichever row pandas
+    iterated last, so an IMSA GTD race could be audited against GTP's tank.
+    The median across a class's seasons is used because a fuel range is a
+    property of the car and circuit, measured per race and therefore noisy in
+    any single one.
+    """
     plans = pd.read_csv(ENDURANCE_DERIVED_DIR / "multistop_plans.csv")
-    return {(r["series"], r["circuit"]): int(r["fuel_range_laps"])
-            for _, r in plans.iterrows()}
+    grouped = plans.groupby(["series", "circuit", "car_class"])["fuel_range_laps"]
+    return {key: int(round(value)) for key, value in grouped.median().items()}
 
 
 def main() -> int:
@@ -53,13 +61,19 @@ def main() -> int:
     for tolerance in TOLERANCES:
         for series, event, car_class, season in races:
             circuit = slugify(event)
-            fuel_range = ranges.get((series, circuit))
+            fuel_range = ranges.get((series, circuit, car_class))
             if fuel_range is None:
                 continue
-            slug = f"{season}_{circuit}_{car_class.lower()}"
+            # `slugify`, not `.lower()`: a class called "LMP2 Pro/Am" becomes
+            # `lmp2_pro_am` on disk and `lmp2 pro/am` under `.lower()`, and the
+            # resulting FileNotFoundError was swallowed by the `continue` below
+            # — which is how 17 ELMS races once vanished from an audit without
+            # anyone noticing.
+            slug = f"{season}_{circuit}_{slugify(car_class)}"
             try:
                 audit = audit_fuel_limited(
-                    series, circuit, season, slug, fuel_range, tolerance_laps=tolerance
+                    series, circuit, car_class, season, slug, fuel_range,
+                    tolerance_laps=tolerance,
                 )
             except FileNotFoundError:
                 continue
@@ -137,13 +151,16 @@ def main() -> int:
             f"({swing:.1%} swing) -- but the qualitative claim is not.** Even "
             f"at the strictest possible reading (0 laps, exact reach only), "
             f"{strictest_share:.1%} of winners still ran fuel-limited -- a clear "
-            "majority at every tolerance tested, IMSA included (54.5% at the "
-            "strictest reading, above in the per-series table). What should "
-            "change is how the 3-lap number is reported: as \"49/61 (80.3%) at "
-            "a 3-lap tolerance, 39/61 (63.9%) at the strictest reading -- a "
-            "majority either way\" rather than a single unqualified point "
-            "estimate. The IMSA figure in particular moves more than WEC's and "
-            "deserves the same caveat inline, not just here."
+            "majority at every tolerance tested. What should change is how the "
+            "3-lap number is reported: as "
+            f"\"{int(at3['sum'])}/{int(at3['count'])} "
+            f"({at3['sum'] / at3['count']:.1%}) at a 3-lap tolerance, "
+            f"{int(at0['sum'])}/{int(at0['count'])} ({strictest_share:.1%}) at "
+            "the strictest reading -- a majority either way\" rather than a "
+            "single unqualified point estimate. Every figure in that sentence is "
+            "computed here rather than typed, because the previous version was "
+            "typed and still read \"49/61\" long after the audit had grown past "
+            "200 races."
         )
     else:
         lines.append(
@@ -155,10 +172,11 @@ def main() -> int:
         )
     lines.append("")
 
-    REPORTS_DIR.mkdir(parents=True, exist_ok=True)
-    (REPORTS_DIR / "fuel_limited_sensitivity.md").write_text("\n".join(lines), encoding="utf-8")
+    out = REPORTS_DIR / "cross_series" / "fuel_limited_sensitivity.md"
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text("\n".join(lines), encoding="utf-8")
     print("\n".join(lines))
-    print(f"\nwrote {REPORTS_DIR / 'fuel_limited_sensitivity.md'}")
+    print(f"\nwrote {out}")
     return 0
 
 

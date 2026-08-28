@@ -8,7 +8,7 @@
   <a href="https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab/actions/workflows/tests.yml"><img src="https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab/actions/workflows/tests.yml/badge.svg" alt="Test suite status"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-CC%20BY--NC--SA%204.0-E10600" alt="License: CC BY-NC-SA 4.0"></a>
   <img src="https://img.shields.io/badge/python-3.11%2B-00D9FF" alt="Python 3.11+">
-  <img src="https://img.shields.io/badge/tests-338%20passing-2ea44f" alt="338 tests passing">
+  <img src="https://img.shields.io/badge/tests-339%20passing-2ea44f" alt="339 tests passing">
   <img src="https://img.shields.io/badge/series-F1%20%C2%B7%20WEC%20%C2%B7%20IMSA%20%C2%B7%20ELMS-FFB800" alt="Series: F1, WEC, IMSA, ELMS">
 </p>
 
@@ -1038,8 +1038,11 @@ series it actually covers, because they differ:
   race edition is left out, its probability formed from the other editions only,
   and graded with proper scoring rules (Brier, log-loss, Brier skill vs
   climatology). The honest answer: **per circuit they do not beat the base
-  rate** — 6-8 F1 and 3-11 endurance editions are too few, so the point
-  estimates are little more than the series rate. A built-in positive control
+  rate** — 2-8 F1 editions per circuit (median 6, 147 in total) and 1-6
+  endurance ones are too few, so the point estimates are little more than the
+  series rate. Widening F1 from 27 race editions to 147 did not change that
+  answer, which is the useful part: it is a sample-size limit per circuit, not
+  a shortage of races overall. A built-in positive control
   (endurance FCY grouped by *series*, IMSA ~0.97 vs WEC ~0.27) does show clear
   skill, proving the harness detects real signal and rejects noise rather than
   always returning zero. A limitation the project measures about its own
@@ -1271,7 +1274,7 @@ Motorsport-Strategy-Lab/
                         #   run_fuel_limited_sensitivity.py,
                         #   run_sc_contamination_check.py (adversarial audit
                         #   pass); demo_extensions.py; generate_banner.py
-  tests/                # pytest, across four series and six classes, 338
+  tests/                # pytest, across four series and six classes, 339
                         #   tests -- incl. the demo, driven headlessly by
                         #   test_demo_app.py, and the report-staleness guards
                         #   that check prose still matches the artifacts

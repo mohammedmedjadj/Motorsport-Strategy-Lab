@@ -6,28 +6,28 @@ The retrospective audit (`reports/endurance_audit.md`) calls a winner "fuel-limi
 
 | Tolerance (laps) | Fuel-limited | Total | Share |
 |---|---|---|---|
-| 0 | 39 | 61 | 63.9% |
-| 1 | 43 | 61 | 70.5% |
-| 2 | 45 | 61 | 73.8% |
-| 3 | 49 | 61 | 80.3% |
-| 5 | 53 | 61 | 86.9% |
-| 7 | 57 | 61 | 93.4% |
-| 10 | 59 | 61 | 96.7% |
+| 0 | 148 | 209 | 70.8% |
+| 1 | 168 | 209 | 80.4% |
+| 2 | 177 | 209 | 84.7% |
+| 3 | 178 | 209 | 85.2% |
+| 5 | 189 | 209 | 90.4% |
+| 7 | 196 | 209 | 93.8% |
+| 10 | 201 | 209 | 96.2% |
 
 ## Per-series share at each tolerance
 
-| Tolerance (laps) | IMSA | WEC |
-|---|---|---|
-| 0 | 54.5% | 75.0% |
-| 1 | 60.6% | 82.1% |
-| 2 | 63.6% | 85.7% |
-| 3 | 72.7% | 89.3% |
-| 5 | 81.8% | 92.9% |
-| 7 | 87.9% | 100.0% |
-| 10 | 93.9% | 100.0% |
+| Tolerance (laps) | ELMS | IMSA | WEC |
+|---|---|---|---|
+| 0 | 81.0% | 65.5% | 82.1% |
+| 1 | 95.2% | 74.1% | 89.3% |
+| 2 | 100.0% | 77.7% | 96.4% |
+| 3 | 100.0% | 77.7% | 100.0% |
+| 5 | 100.0% | 85.6% | 100.0% |
+| 7 | 100.0% | 90.6% | 100.0% |
+| 10 | 100.0% | 94.2% | 100.0% |
 
 ## Verdict
 
-At the chosen tolerance (3 laps): **49/61 (80.3%)**. At the strictest tolerance tested (0 laps, exact reach only): **39/61 (63.9%)**. At the most lenient (10 laps): **59/61 (96.7%)**.
+At the chosen tolerance (3 laps): **178/209 (85.2%)**. At the strictest tolerance tested (0 laps, exact reach only): **148/209 (70.8%)**. At the most lenient (10 laps): **201/209 (96.2%)**.
 
-**The exact percentage is sensitive to the tolerance choice (32.8% swing) -- but the qualitative claim is not.** Even at the strictest possible reading (0 laps, exact reach only), 63.9% of winners still ran fuel-limited -- a clear majority at every tolerance tested, IMSA included (54.5% at the strictest reading, above in the per-series table). What should change is how the 3-lap number is reported: as "49/61 (80.3%) at a 3-lap tolerance, 39/61 (63.9%) at the strictest reading -- a majority either way" rather than a single unqualified point estimate. The IMSA figure in particular moves more than WEC's and deserves the same caveat inline, not just here.
+**The exact percentage is sensitive to the tolerance choice (25.4% swing) -- but the qualitative claim is not.** Even at the strictest possible reading (0 laps, exact reach only), 70.8% of winners still ran fuel-limited -- a clear majority at every tolerance tested. What should change is how the 3-lap number is reported: as "178/209 (85.2%) at a 3-lap tolerance, 148/209 (70.8%) at the strictest reading -- a majority either way" rather than a single unqualified point estimate. Every figure in that sentence is computed here rather than typed, because the previous version was typed and still read "49/61" long after the audit had grown past 200 races.

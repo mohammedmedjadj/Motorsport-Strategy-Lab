@@ -116,3 +116,31 @@ def build_modelling_frame(
         n_driver_races=df["driver_race"].nunique(),
     )
     return df, diag
+
+
+def circuits_with_laps(
+    circuits: tuple[str, ...] | None = None, seasons: tuple[int, ...] = SEASONS
+) -> tuple[str, ...]:
+    """The scoped circuits that actually have ingested laps in ``seasons``.
+
+    The scope is rolling and keyed on the calendar, so it legitimately contains
+    circuits with nothing to read yet: Madrid enters with the 2026 season and
+    its first race is not run, and a returning circuit can appear in the new
+    era only. Every consumer that iterates the scope has to handle that, and
+    three of them handled it by raising — which turned a normal state of a
+    rolling scope into a crashed pipeline three separate times.
+
+    Filtering once, here, is the fix. A caller that genuinely needs to know
+    what is missing should compare this against ``CIRCUITS`` rather than catch
+    an exception per circuit.
+    """
+    from src.ingestion.config import CIRCUITS
+
+    available = []
+    for circuit in circuits if circuits is not None else CIRCUITS:
+        if any(
+            (F1_DERIVED_DIR / f"laps_{season}_{circuit}.csv").exists()
+            for season in seasons
+        ):
+            available.append(circuit)
+    return tuple(available)

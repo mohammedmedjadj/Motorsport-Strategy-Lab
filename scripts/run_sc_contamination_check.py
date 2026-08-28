@@ -40,12 +40,16 @@ from src.degradation.dataset import build_modelling_frame, load_circuit_laps  # 
 from src.degradation.model import fit_circuit, predict_shape  # noqa: E402
 from src.ingestion.config import REPORTS_DIR  # noqa: E402
 
-from src.ingestion.config import CIRCUITS  # noqa: E402
+from src.degradation.dataset import circuits_with_laps  # noqa: E402
+
 #: The regulation-stable fitting window, from the config rather than repeated
 #: here. This was ``(2023, 2024, 2025)`` — a third copy of a season list that
 #: had already moved to 2022-2025, so this check silently ran on a narrower
 #: window than the model it is checking.
 from src.ingestion.config import PRE_ERA_SEASONS as SEASONS  # noqa: E402
+
+#: Only the scoped circuits that have laps in this window.
+CIRCUITS = circuits_with_laps(seasons=SEASONS)
 
 
 def _stint_touched_by_neutralisation(raw_laps: pd.DataFrame) -> set[str]:

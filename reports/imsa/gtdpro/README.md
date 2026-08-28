@@ -35,12 +35,20 @@ than the one significant-looking result.
 Full argument: [`../gtd/findings.md`](../gtd/findings.md) and
 [`../../elms/crew_rating_findings.md`](../../elms/crew_rating_findings.md).
 
-## What is not here
+## The audits
 
-GTD PRO has **no per-decision audit** of its own. GTP and GTD each have three
-replayed stop decisions; this class has none, and that gap is real rather than
-an oversight of documentation — it is the last asymmetry between the three IMSA
-classes.
+**215 replayed first-stop decisions** across this class's races, on the same
+uniform criterion used for every series
+([`../systematic_audit.md`](../systematic_audit.md)). The model runs to the
+fuel deadline in 69% of them and sits +13 laps from the real stop — the
+signature of a championship that neutralises constantly, not of this class in
+particular.
+
+Its per-decision case study is **Laguna Seca 2026**, filed with GTD's because
+the two classes share a car and the comparison between them is the point:
+[`../gtd/audit_cases.md`](../gtd/audit_cases.md) case G-B. The question it asks
+is whether the recommended window differs at all between the same car with a
+professional crew and with an amateur one.
 
 ## The complete tables
 

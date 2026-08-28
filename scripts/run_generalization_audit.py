@@ -51,8 +51,19 @@ from src.simulator.endurance_pit_loss_validation import (  # noqa: E402
 )
 from src.simulator.pit_loss_validation import leave_one_race_out_pit_loss  # noqa: E402
 
-from src.ingestion.config import CIRCUITS as F1_CIRCUITS  # noqa: E402
-F1_SEASONS = (2023, 2024, 2025)
+from src.degradation.dataset import circuits_with_laps  # noqa: E402
+from src.ingestion.config import PRE_ERA_SEASONS  # noqa: E402
+
+#: Only the scoped circuits that have laps in this window. The scope is
+#: rolling and can name a circuit whose first race has not been run.
+#: The regulation-stable fitting window, from the config rather than a literal.
+#: This was `(2023, 2024, 2025)`, which silently excluded 2022 after the scope
+#: was widened to it — a second copy of a scope is a second thing to forget.
+F1_SEASONS = PRE_ERA_SEASONS
+
+#: Only the scoped circuits that have laps in that window. The scope is rolling
+#: and can name a circuit whose first race has not been run.
+F1_CIRCUITS = circuits_with_laps(seasons=F1_SEASONS)
 
 
 def _f1_degradation_mean_r2(circuit: str) -> float:
@@ -321,12 +332,13 @@ def main() -> int:
         "",
     ]
 
-    REPORTS_DIR.mkdir(parents=True, exist_ok=True)
-    (REPORTS_DIR / "generalization_audit.md").write_text("\n".join(lines), encoding="utf-8")
+    out = REPORTS_DIR / "cross_series" / "generalization_audit.md"
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text("\n".join(lines), encoding="utf-8")
     print("\n".join(lines))
     print(f"\nwrote {F1_DERIVED_DIR / 'pit_loss_loro.csv'}")
     print(f"wrote {ENDURANCE_DERIVED_DIR / 'pit_loss_loro.csv'}")
-    print(f"wrote {REPORTS_DIR / 'generalization_audit.md'}")
+    print(f"wrote {out}")
     return 0
 
 

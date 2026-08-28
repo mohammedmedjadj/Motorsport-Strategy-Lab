@@ -18,14 +18,15 @@ negative means it is *worse* than knowing nothing.
 | IMSA FCY | circuit | 63 | 0.97 | 0.046 | 0.031 | -0.505 | no better than base rate |
 | WEC FCY | circuit | 33 | 0.27 | 0.305 | 0.198 | -0.538 | no better than base rate |
 | WEC Safety Car | circuit | 33 | 0.58 | 0.278 | 0.244 | -0.139 | no better than base rate |
-| F1 Safety Car | circuit | 27 | 0.52 | 0.320 | 0.250 | -0.281 | no better than base rate |
-| F1 VSC | circuit | 27 | 0.30 | 0.259 | 0.208 | -0.244 | no better than base rate |
-| Endurance FCY (by series) | series | 96 | 0.73 | 0.093 | 0.198 | +0.528 | beats base rate |
+| F1 Safety Car | circuit | 147 | 0.57 | 0.270 | 0.245 | -0.101 | no better than base rate |
+| F1 VSC | circuit | 147 | 0.41 | 0.289 | 0.243 | -0.191 | no better than base rate |
+| Endurance FCY (by series) | series | 125 | 0.68 | 0.134 | 0.218 | +0.386 | beats base rate |
 
 ## What this says (and it is not the flattering answer)
 
-**Per circuit, the neutralisation odds do not beat the base rate.** At 6-8 F1
-editions and 3-11 endurance editions per circuit, the leave-one-out per-circuit
+**Per circuit, the neutralisation odds do not beat the base rate.** At 2-8 F1
+editions per circuit (median 6, 147 across 25 circuits) and 1-6 endurance ones,
+the leave-one-out per-circuit
 frequency is dominated by sampling noise: its skill is around zero or negative
 for every target. Knowing *which* circuit you are at does not, on this evidence,
 let you out-predict the series-wide rate of a Safety Car.

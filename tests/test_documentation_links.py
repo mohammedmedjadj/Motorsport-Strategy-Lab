@@ -177,3 +177,29 @@ def test_phase_reports_are_titled_with_their_own_phase_number() -> None:
             )
 
     assert not wrong, f"phase reports whose title contradicts their filename: {wrong}"
+
+
+def test_no_report_sits_at_the_root_of_reports() -> None:
+    """Every report belongs to a series, a class, or the cross-series set.
+
+    ``reports/`` holds one file — its own README, the map. Anything else at
+    that level is a document with no stated owner, which is how the layout got
+    hard to read in the first place: eight cross-series documents sat beside
+    four series directories with nothing saying which was which.
+
+    It also catches a generator whose output path was not updated when its
+    report moved. Three scripts kept writing to the old root after the
+    reorganisation, silently recreating files next to the ones that had been
+    moved — same name, two locations, and the stale copy is the one a reader
+    finds first.
+    """
+    stray = sorted(
+        path.name
+        for path in (REPO / "reports").glob("*.md")
+        if path.name != "README.md"
+    )
+    assert not stray, (
+        f"reports/ should hold only README.md; found {stray}. Either move the "
+        "document into the series, class or cross_series directory it belongs "
+        "to, or fix the generator that wrote it there."
+    )
