@@ -8,7 +8,7 @@
   <a href="https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab/actions/workflows/tests.yml"><img src="https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab/actions/workflows/tests.yml/badge.svg" alt="Test suite status"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-CC%20BY--NC--SA%204.0-E10600" alt="License: CC BY-NC-SA 4.0"></a>
   <img src="https://img.shields.io/badge/python-3.11%2B-00D9FF" alt="Python 3.11+">
-  <img src="https://img.shields.io/badge/tests-335%20passing-2ea44f" alt="335 tests passing">
+  <img src="https://img.shields.io/badge/tests-338%20passing-2ea44f" alt="338 tests passing">
   <img src="https://img.shields.io/badge/series-F1%20%C2%B7%20WEC%20%C2%B7%20IMSA%20%C2%B7%20ELMS-FFB800" alt="Series: F1, WEC, IMSA, ELMS">
 </p>
 
@@ -93,8 +93,8 @@ documents at every phase
 [methodology](reports/imsa/methodology.md) ·
 [packaging](reports/imsa/packaging_phase7.md) for IMSA), never merged into a
 single "endurance" write-up. Known limitations are listed under each series.
-Jump to: [Formula 1](#formula-1) · [WEC](#wec) · [IMSA](#imsa) ·
-[Cross-series extensions](#modelling-extensions-across-series) ·
+Jump to: [Formula 1](#formula-1) · [IMSA](#imsa) · [ELMS](#elms) ·
+[WEC](#wec) · [Cross-series extensions](#modelling-extensions-across-series) ·
 [Methods](#mathematical-methods).
 
 ## Why this project
@@ -108,11 +108,12 @@ that already exists in dozens of notebooks. Three things set this one apart:
    combined inside a **Monte Carlo simulator**, which is closer to how a
    strategy team actually reasons about a race than fitting one model to
    lap times and calling it done.
-3. The results are checked against reality. Five documented race moments
-   (a successful undercut, a missed one, a safety-car reshuffle) are replayed
-   through the simulator and compared with what the strategists actually
-   did — including the cases where the model disagrees with the outcome, or
-   turns out to be wrong.
+3. The results are checked against reality, **uniformly**. Every real first
+   pit stop on the F1 calendar — 357 decisions across 74 races — is replayed
+   through the simulator and compared with what the team actually did, on a
+   criterion applied to all of them rather than to races that were argued
+   about. The headline that comes back is a limitation of this project's own
+   model: it stops too late on 80% of them.
 
 F1 data comes from [FastF1](https://github.com/theOehrly/Fast-F1); WEC and
 IMSA data come from a community-maintained dataset (details under
@@ -1121,16 +1122,32 @@ to, not illustrated with one.
 > the posterior rather than the mean.
 > ([`reports/f1/safety_car_phase3.md`](reports/f1/safety_car_phase3.md))
 
-> **The simulator stops too late, on 80% of the calendar, and the audit says
-> so.** Replaying every real first stop — 357 decisions across 74 races on a
-> uniform criterion — the model would have stayed out a median of **12 laps**
-> longer than the team did. The obvious explanation, that teams box into safety
-> cars the model cannot foresee, is measured and refuted: the bias is +9 laps
-> on green-flag stops too. What remains is that the engine has no track
-> position, so it can never pay for an undercut. A limitation the project
-> measures about itself, on the whole calendar rather than on a race someone
-> argued about.
-> ([`reports/f1/systematic_audit.md`](reports/f1/systematic_audit.md))
+> **How far the simulator is from real strategy is set by how often the
+> championship neutralises.** Every real first stop in all four series is
+> replayed on one criterion — **1,280 decisions across 275 race-classes** — and the
+> endurance ordering is clean:
+>
+> | series | first stops under caution | median Δ, green | median Δ, all |
+> |---|---|---|---|
+> | WEC | 8% | **+1 lap** | +1 |
+> | ELMS | 20% | +3 | +2 |
+> | IMSA | 53% | +7 | +12 |
+>
+> **WEC and ELMS agree with real strategy to within one or two laps** — the
+> strongest corroboration this simulator has. IMSA is not a different model; it
+> is the same model in a championship that throws a Full Course Yellow in 61 of
+> 63 races, so more than half its stops are opportunistic and the model is asked
+> three laps before the caution exists.
+>
+> **F1 is the contrast that isolates the cause.** There the caution split is
+> small (+9 laps under green against +12 under caution) and the disagreement is
+> large anyway, because F1 has **no fuel cap** — nothing bounds how long "stay
+> out" can run, and the engine has no track position to make an undercut worth
+> paying for. Give the same engine a fuel clock and it lands on the real answer.
+> ([F1](reports/f1/systematic_audit.md) ·
+> [IMSA](reports/imsa/systematic_audit.md) ·
+> [ELMS](reports/elms/systematic_audit.md) ·
+> [WEC](reports/wec/systematic_audit.md))
 
 > **What actually transfers across seasons — almost nothing, and it is the
 > short circuits —** **R² +0.573** at IMSA's Lime Rock (GTD), +0.497 (GTD PRO),
@@ -1254,7 +1271,7 @@ Motorsport-Strategy-Lab/
                         #   run_fuel_limited_sensitivity.py,
                         #   run_sc_contamination_check.py (adversarial audit
                         #   pass); demo_extensions.py; generate_banner.py
-  tests/                # pytest, across four series and six classes, 335
+  tests/                # pytest, across four series and six classes, 338
                         #   tests -- incl. the demo, driven headlessly by
                         #   test_demo_app.py, and the report-staleness guards
                         #   that check prose still matches the artifacts

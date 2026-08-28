@@ -1,0 +1,129 @@
+name: Artifact drift check
+
+# Regenerates every artifact that is derived from **already-committed data** and
+# fails if the result differs from what is committed.
+#
+# This is the check the project was missing, and its absence is why staleness
+# kept being found by a human reading a number and doubting it: the multi-stop
+# layer covering 31% of its own scope, per-class tables quoting a superseded
+# refit, crew-rating p-values drifting after the slopes beneath them moved.
+# Every one of those would have shown up here as a non-empty `git diff` the week
+# it happened.
+#
+# The distinction that makes this safe to automate, and that the previous
+# refresh workflow blurred:
+#
+#   INGESTION reaches the network and can change WHICH RACES EXIST. Re-running
+#   it is a scope change, and a scope change belongs in a reviewed commit. That
+#   stays in post-race-refresh.yml.
+#
+#   REGENERATION reads committed laps and recomputes fits, plans, reports and
+#   audits. It is deterministic: same data in, byte-identical artifacts out. A
+#   diff here means the code and the committed artifacts have parted company,
+#   which is always worth knowing and never a surprise the data caused.
+#
+# It reports drift rather than committing a fix, because a diff can mean either
+# "the artifacts are stale" or "someone changed an estimator" — and only a human
+# knows which of those was intended.
+
+on:
+  schedule:
+    - cron: "0 4 * * 1" # Mondays 04:00 UTC, ahead of the ingestion refresh
+  workflow_dispatch: {}
+  pull_request:
+    paths:
+      # Only when something that *produces* an artifact changes. A README edit
+      # cannot cause drift, and a two-hour job on every PR would be ignored.
+      - "src/degradation/**"
+      - "src/simulator/**"
+      - "src/safety_car/**"
+      - "src/audit/**"
+      - "src/reporting/**"
+      - "src/data/**"
+      - "scripts/run_*.py"
+
+concurrency:
+  group: artifact-drift-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  f1:
+    name: F1 layers
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Track position
+        run: python scripts/run_track_position.py
+      - name: Degradation model
+        run: python scripts/run_degradation.py
+      - name: Simulator demo
+        run: python scripts/run_simulator_demo.py
+      - name: Per-decision audit
+        run: python scripts/run_audit.py
+      - name: Calendar-wide decision audit
+        run: python scripts/run_systematic_audit.py
+
+      - name: Report drift
+        run: .github/scripts/report_drift.sh "F1"
+
+  endurance:
+    name: Endurance layers
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Fits, quality, transfer, traffic
+        run: python scripts/run_endurance_models.py
+      - name: Full-race stop plans
+        run: python scripts/run_multistop.py
+      - name: Per-class tables, all six classes
+        run: python scripts/run_class_reports.py
+      - name: Winner-versus-fuel-range audit
+        run: python scripts/run_endurance_audit.py
+      - name: Per-decision audit cases
+        run: python scripts/run_endurance_audit_cases.py
+      - name: Calendar-wide decision audit, every class
+        run: python scripts/run_systematic_endurance_audit.py
+
+      - name: Report drift
+        run: .github/scripts/report_drift.sh "endurance"
+
+  cross_series:
+    name: Cross-series layers
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Neutralisation calibration backtest
+        run: python scripts/run_prediction_backtest.py
+      - name: Generalisation audit
+        run: python scripts/run_generalization_audit.py
+      - name: Safety-car contamination check
+        run: python scripts/run_sc_contamination_check.py
+      - name: Fuel-limited sensitivity sweep
+        run: python scripts/run_fuel_limited_sensitivity.py
+
+      - name: Report drift
+        run: .github/scripts/report_drift.sh "cross-series"
