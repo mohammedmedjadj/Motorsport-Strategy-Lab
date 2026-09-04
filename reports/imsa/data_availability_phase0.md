@@ -57,6 +57,19 @@ weather at all** on the race session (`air_temp_f`, `track_temp_f`,
 **fully populated**. The loader surfaces the gap as `NaN`, never imputed;
 which races have it is now a measured fact rather than an assumption.
 
+**And where it *is* populated, `raining` is always False.** Measured across
+every committed IMSA lap file: **192,682 laps reading False, 0 reading True**,
+over 63 races and five seasons — five Daytona 24 Hours, five Sebring 12 Hours,
+Watkins Glen and Road America in high summer. ELMS is the same, 19,522 False and
+none True over 29 races. Only WEC ever reports rain (570 laps).
+
+This is a worse gap than the missing columns above, because it does not look
+like one. A `NaN` announces itself and gets handled; a column of `False` reads
+as a measurement. Nothing in this project fits on the flag — the wet exclusion
+uses the Open-Meteo layer instead — and `tests/test_endurance_rain_flag.py`
+keeps it that way, failing if any code starts filtering laps on a field that
+would remove nothing here while appearing to handle wet running.
+
 `pit_time` semantics are pit-*visit* duration on that lap (refuelling +
 driver change + tyre change combined where applicable), not yet a clean
 strategic pit-loss measurement — that is derived separately in Phase 3
