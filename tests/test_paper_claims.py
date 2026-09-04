@@ -142,6 +142,45 @@ def cross_source_difference() -> str:
     return f"{_cross_source()['difference'].median():+.4f} s/lap"
 
 
+
+def _baseline_summary() -> pd.DataFrame:
+    """Median absolute error per method and series, from the scored table."""
+    frames = [
+        pd.read_csv(DERIVED / series / "baseline_comparison.csv")
+        for series in ("f1", "endurance")
+        if (DERIVED / series / "baseline_comparison.csv").exists()
+    ]
+    if not frames:
+        raise FileNotFoundError("baseline comparison not generated")
+    return pd.concat(frames, ignore_index=True)
+
+
+def f1_threshold_baseline_error() -> str:
+    """B2's median lap error in F1 — the number that says a rule wins."""
+    frame = _baseline_summary()
+    f1 = frame[frame["series"] == "f1"]
+    errors = (f1["b2_lap"] - f1["real_pit_lap"]).abs().dropna()
+    return f"{errors.median():.0f} laps"
+
+
+
+def baseline_decisions_scored() -> list[str]:
+    """How many decisions the baselines could actually be scored on.
+
+    Written into the README as 1,177 on first draft. The real figure is 897 --
+    the audit replays 1,280, and the rest lose their inputs somewhere between
+    the audit table and the committed artifacts. Typing a number instead of
+    deriving it is the failure this whole file exists for, and it happened
+    again while adding this result.
+    """
+    total = sum(
+        len(pd.read_csv(DERIVED / series / "baseline_comparison.csv"))
+        for series in ("f1", "endurance")
+        if (DERIVED / series / "baseline_comparison.csv").exists()
+    )
+    return [f"{total:,}", str(total)]
+
+
 # --------------------------------------------------------------------------
 # The claims. Each one names the document a reader would find it in.
 # --------------------------------------------------------------------------
@@ -200,6 +239,19 @@ CLAIMS = (
         best_transfer,
         ("README.md",),
         "'Bahrain is the strongest transfer' was published and was false",
+    ),
+    Claim(
+        "decisions the baselines were scored on",
+        baseline_decisions_scored,
+        ("README.md", "reports/cross_series/baselines.md"),
+        "typed as 1,177 on first draft against a real 897",
+    ),
+    Claim(
+        "F1 threshold-baseline median error",
+        f1_threshold_baseline_error,
+        ("reports/f1/systematic_audit.md", "reports/cross_series/baselines.md"),
+        "the claim that a rule of thumb sits closer to practice than the exact "
+        "optimiser — the first thing a reviewer will check",
     ),
     Claim(
         "cross-source agreement on tyre slopes",

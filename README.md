@@ -8,7 +8,7 @@
   <a href="https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab/actions/workflows/tests.yml"><img src="https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab/actions/workflows/tests.yml/badge.svg" alt="Test suite status"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-CC%20BY--NC--SA%204.0-E10600" alt="License: CC BY-NC-SA 4.0"></a>
   <img src="https://img.shields.io/badge/python-3.11%2B-00D9FF" alt="Python 3.11+">
-  <img src="https://img.shields.io/badge/tests-345%20passing-2ea44f" alt="345 tests passing">
+  <img src="https://img.shields.io/badge/tests-408%20passing-2ea44f" alt="408 tests passing">
   <img src="https://img.shields.io/badge/series-F1%20%C2%B7%20WEC%20%C2%B7%20IMSA%20%C2%B7%20ELMS-FFB800" alt="Series: F1, WEC, IMSA, ELMS">
 </p>
 
@@ -1166,6 +1166,30 @@ to, not illustrated with one.
 > [ELMS](reports/elms/systematic_audit.md) ·
 > [WEC](reports/wec/systematic_audit.md))
 
+> **A rule of thumb sits closer to real practice than the exact optimiser —
+> in three series out of four.** Three baselines were scored on 1,263 of the
+> audit's 1,280 decisions (99%), from the same artifacts, on the same metric.
+>
+> | series | exact optimiser | best baseline |
+> |---|---|---|
+> | **F1** | 10 laps | **B2 threshold, 7 laps** |
+> | **IMSA** | 12 laps | **B1 fixed interval, 8 laps** |
+> | **WEC** | 2 laps | **B3 fuel deadline, 1 lap** |
+> | ELMS | 2 laps | none — the optimiser leads on both statistics |
+>
+> B2 uses the fitted slope and the measured pit loss and nothing else. B1 —
+> which wins in IMSA — uses **no fitted quantity at all**, only the race length
+> and the number of stops the tank forces. Where the optimiser holds an
+> advantage it is on *precision* rather than typical error: in WEC it lands
+> within two laps 85% of the time against B3's 72%.
+>
+> Two things this does not say. *Closer to what teams did* is not *better*: the
+> whole audit scores agreement with practice, never which plan was faster. And
+> it does not rescue the 12-lap finding — it removes one more explanation for
+> it, since the gap cannot come from the simpler methods lacking information the
+> optimiser has. They have less, and land nearer.
+> ([baselines](reports/cross_series/baselines.md))
+
 > **What actually transfers across seasons — almost nothing, and it is the
 > short circuits —** **R² +0.573** at IMSA's Lime Rock (GTD), +0.497 (GTD PRO),
 > +0.273 and +0.256 at Laguna Seca, then **+0.217** at WEC's Bahrain. Everywhere
@@ -1288,7 +1312,7 @@ Motorsport-Strategy-Lab/
                         #   run_fuel_limited_sensitivity.py,
                         #   run_sc_contamination_check.py (adversarial audit
                         #   pass); demo_extensions.py; generate_banner.py
-  tests/                # pytest, across four series and six classes, 345
+  tests/                # pytest, across four series and six classes, 408
                         #   tests -- incl. the demo, driven headlessly by
                         #   test_demo_app.py, and the report-staleness guards
                         #   that check prose still matches the artifacts

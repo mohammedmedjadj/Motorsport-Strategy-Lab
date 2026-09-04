@@ -143,6 +143,24 @@ def report(frame: pd.DataFrame) -> str:
         "worth of laps, not twelve. See "
         "[`slope_bias_check.md`](slope_bias_check.md).",
         "",
+        # The 7-and-10 below are the only literals in this report, and they
+        # stay literal on purpose: baseline_comparison.csv is produced by a
+        # script that *reads this audit's output*, so deriving them here would
+        # close a cycle -- and on a clean checkout the file does not exist yet.
+        # tests/test_paper_claims.py recomputes both from the artifact and
+        # fails if this sentence drifts, which is the same protection without
+        # the circular dependency.
+        "**And a rule of thumb is closer to real practice than this model is.** "
+        "Scored on these same decisions and this same metric, a threshold rule "
+        "using only the fitted slope and the measured pit loss lands a median "
+        "of 7 laps from the real stop against the optimiser's 10, and is within "
+        "two laps more often. See "
+        "[`../cross_series/baselines.md`](../cross_series/baselines.md). That "
+        "does not make the rule *better strategy* — every number here scores "
+        "agreement with what teams did, not what was fastest — but it removes "
+        "the explanation that the gap comes from information the simpler "
+        "methods lack.",
+        "",
         "**Both explanations are measured and neither accounts for the "
         "finding.** The result stands as measured and unexplained, which is a "
         "worse position than having a plausible story and a better one than "
