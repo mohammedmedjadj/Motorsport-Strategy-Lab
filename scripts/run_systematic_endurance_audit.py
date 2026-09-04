@@ -27,7 +27,11 @@ from src.audit.systematic_endurance import (  # noqa: E402
 )
 from src.data.endurance_scope import scoped_race_seasons  # noqa: E402
 from src.data.endurance_loader import derived_path  # noqa: E402
-from src.ingestion.config import ENDURANCE_DERIVED_DIR, REPORTS_DIR  # noqa: E402
+from src.ingestion.config import (  # noqa: E402
+    ENDURANCE_DERIVED_DIR,
+    F1_DERIVED_DIR,
+    REPORTS_DIR,
+)
 from src.reporting.class_reports import CLASS_LABELS  # noqa: E402
 from src.simulator.endurance_models import load_race_model  # noqa: E402
 
@@ -92,9 +96,7 @@ def report(series: str, frame: pd.DataFrame) -> str:
         "",
         "| series | first stops under caution | median Δ, green | median Δ, all |",
         "|---|---|---|---|",
-        "| WEC | 8% | +1 | +1 |",
-        "| ELMS | 20% | +3 | +2 |",
-        "| IMSA | 53% | +7 | +12 |",
+        *_caution_rows(),
         "",
         "**WEC and ELMS agree with real strategy to within one or two laps.** "
         "That is the strongest corroboration this simulator has: on two "
@@ -104,7 +106,7 @@ def report(series: str, frame: pd.DataFrame) -> str:
         "63 races, so more than half its stops are opportunistic.",
         "",
         "The F1 audit is the useful contrast. There the neutralisation split is "
-        "small (+9 laps under green against +12 under caution) and the "
+        f"small ({_f1_split()}) and the "
         "disagreement is large anyway, because F1 has **no fuel cap** — nothing "
         "bounds how long \"stay out\" can run. Here the tank bounds it, so what "
         "is left to explain is the cautions.",
@@ -138,6 +140,40 @@ def report(series: str, frame: pd.DataFrame) -> str:
         )
     lines.append("")
     return "\n".join(lines)
+
+
+def _caution_rows() -> list[str]:
+    """The caution-rate table, from the audit rather than from memory.
+
+    Typed once and stale by three numbers: ELMS read +3/+2 against a real
+    +2/+1, and IMSA's caution median read +12 against a real +15. The ordering
+    the paragraph draws on survived, which is exactly why nobody noticed.
+    """
+    # Reads the whole audit rather than taking the caller's per-series frame:
+    # this is a cross-series table that appears inside each series' report, and
+    # that mismatch is why it was typed by hand in the first place.
+    table = pd.read_csv(ENDURANCE_DERIVED_DIR / "systematic_audit.csv")
+    rows = []
+    for series in ("wec", "elms", "imsa"):
+        group = table[table["series"] == series]
+        if group.empty:
+            continue
+        green = group[~group["real_stop_neutralised"]]["delta_laps"].median()
+        rows.append(
+            f"| {series.upper()} | "
+            f"{group['real_stop_neutralised'].mean() * 100:.0f}% | "
+            f"{green:+.0f} | {group['delta_laps'].median():+.0f} |"
+        )
+    return rows
+
+
+def _f1_split() -> str:
+    """F1's own green-versus-caution split, read from the F1 audit table."""
+    f1 = pd.read_csv(F1_DERIVED_DIR / "systematic_audit.csv")
+    green = f1[~f1["real_stop_neutralised"]]["delta_laps"].median()
+    caution = f1[f1["real_stop_neutralised"]]["delta_laps"].median()
+    return (f"{green:+.0f} laps under green against {caution:+.0f} under "
+            "caution")
 
 
 def main() -> int:

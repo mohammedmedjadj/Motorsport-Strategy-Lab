@@ -1,4 +1,6 @@
-# Motorsport Strategy Lab — Race Strategy Simulator & Decision Audit (by Mohammed Reda Medjadj) (not the final version at all)
+# Motorsport Strategy Lab
+
+**Race strategy simulator and decision audit across four championships** — by Mohammed Reda Medjadj
 
 <p align="center">
   <img src="assets/banner.png" alt="Motorsport Strategy Lab -- Race strategy simulator and decision audit across F1, WEC, IMSA and ELMS" width="100%">
@@ -8,7 +10,7 @@
   <a href="https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab/actions/workflows/tests.yml"><img src="https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab/actions/workflows/tests.yml/badge.svg" alt="Test suite status"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-CC%20BY--NC--SA%204.0-E10600" alt="License: CC BY-NC-SA 4.0"></a>
   <img src="https://img.shields.io/badge/python-3.11%2B-00D9FF" alt="Python 3.11+">
-  <img src="https://img.shields.io/badge/tests-433%20passing-2ea44f" alt="433 tests passing">
+  <img src="https://img.shields.io/badge/tests-434%20passing-2ea44f" alt="434 tests passing">
   <img src="https://img.shields.io/badge/series-F1%20%C2%B7%20WEC%20%C2%B7%20IMSA%20%C2%B7%20ELMS-FFB800" alt="Series: F1, WEC, IMSA, ELMS">
 </p>
 
@@ -1453,7 +1455,7 @@ Motorsport-Strategy-Lab/
                         #   run_fuel_limited_sensitivity.py,
                         #   run_sc_contamination_check.py (adversarial audit
                         #   pass); demo_extensions.py; generate_banner.py
-  tests/                # pytest, across four series and seven classes, 433
+  tests/                # pytest, across four series and seven classes, 434
                         #   tests -- incl. the demo, driven headlessly by
                         #   test_demo_app.py, and the report-staleness guards
                         #   that check prose still matches the artifacts

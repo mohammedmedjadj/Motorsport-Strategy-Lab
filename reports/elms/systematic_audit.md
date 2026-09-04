@@ -21,7 +21,7 @@ Across the three endurance championships that ordering is clean, and it is a pro
 | series | first stops under caution | median Δ, green | median Δ, all |
 |---|---|---|---|
 | WEC | 8% | +1 | +1 |
-| ELMS | 20% | +3 | +2 |
+| ELMS | 20% | +2 | +2 |
 | IMSA | 53% | +7 | +12 |
 
 **WEC and ELMS agree with real strategy to within one or two laps.** That is the strongest corroboration this simulator has: on two championships where cautions are rare, its stop timing is what teams actually did. IMSA's disagreement is not a different model — it is the same model in a championship that throws a Full Course Yellow in 61 of 63 races, so more than half its stops are opportunistic.

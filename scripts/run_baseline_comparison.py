@@ -1,6 +1,6 @@
 """Score three simple rules against the same 1,280 decisions the audit replayed.
 
-The audit's finding — an exact optimiser stops later than teams do, on 80-86% of
+The audit's finding — an exact optimiser stops later than teams do, on 80-83% of
 first stops — is only worth reporting if the optimiser is doing something a rule
 of thumb could not. That has never been established here, and it is the first
 thing a reviewer asks.
@@ -374,7 +374,7 @@ def main() -> int:
         "",
         "The [decision audit](../f1/systematic_audit.md) replays every real "
         "first stop through an exact dynamic program and a Monte Carlo engine, "
-        "and finds it stops later than teams do on 80–86% of them. That is "
+        "and finds it stops later than teams do on 80–83% of them. That is "
         "only worth reporting if the machinery is doing something a simple rule "
         "could not, and until now nothing here established that.",
         "",

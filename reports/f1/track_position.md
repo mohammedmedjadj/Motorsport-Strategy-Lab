@@ -52,19 +52,15 @@ almost entirely about staying ahead rather than being fast.
 
 ## The finding: overtaking difficulty is a *mostly* stable circuit constant
 
-The season-to-season spread (SD column) is small at three of the four
-circuits — across the regulation-stable seasons the highest-to-lowest
-ratio is 1.2x at Barcelona and Singapore and 1.7x at Monaco. That is the
+The season-to-season spread (SD column) is small at most of the 25 circuits — across the regulation-stable seasons the highest-to-lowest ratio is 1.3x at singapore, 1.3x at silverstone, 1.6x at barcelona. That is the
 mirror image of this project's degradation result: tyre-degradation slopes
 do **not** transfer between races (see the degradation reports), but
 overtaking difficulty largely **does**, because it is set by track
 geometry, which does not change.
 
-**Suzuka is the honest exception and is not smoothed over here:** it runs
-0.0348 / 0.0502 / 0.0136 across the same three seasons, a 3.7x spread.
-Whatever drives that (weather, a red flag, a race that ran away from the
-field) is not track geometry, so Suzuka's constant deserves materially
-less trust than the other three — and the per-season table below is
+**Losail is the honest exception and is not smoothed over here:** it runs 0.0536 / 0.0268 / 0.0058 across its own seasons, a 9.2x spread. Whatever drives that (weather, a red flag, a race that ran away from the
+field) is not track geometry, so that circuit's constant deserves
+materially less trust than the others — and the per-season table below is
 printed precisely so a reader can see that rather than take the pooled
 number on faith.
 
@@ -184,15 +180,12 @@ separately:
 | zandvoort | 2025 | old | 0.0228 |
 | zandvoort | 2026 | new | 0.0357 |
 
-**No regulation effect is detectable in this data, and at Suzuka it could
-not be even in principle.** Both new-era races fall inside their own
-circuit's pre-era range (Monaco 0.0032 against a 0.0029-0.0049 range;
-Suzuka 0.0469 against 0.0136-0.0502). At Suzuka the ordinary
-season-to-season swing is already 3.7x, which is far larger than any
-plausible regulation effect, so a single new-era race there carries no
-information about the rule change either way. Two races is also simply
-too few. This is reported as a question the data cannot yet answer, not
-as evidence the rules changed nothing.
+**No regulation effect is detectable in this data, and at the most
+volatile circuit it could not be even in principle.**
+
+**10 of 12** new-era races fall inside their own circuit's pre-era range. 2 do not: barcelona 0.0255 against 0.0329-0.0401 (below); shanghai 0.0517 against 0.0270-0.0436 (above). That is roughly what 12 draws from unchanged distributions would produce — a pre-era range built from a handful of seasons is not a tolerance interval, and a race landing outside one is not evidence of a regulation effect. It is, however, not the clean result this paragraph claimed when the scope was two races and both happened to land inside.
+
+At losail the ordinary season-to-season swing is already 9.2x, which is far larger than any plausible regulation effect, so a single new-era race there carries no information about the rule change either way. One season of a new formula is too few regardless. This is reported as a question the data cannot yet answer, not as evidence the rules changed nothing.
 
 ## Limitations (stated, not hidden)
 

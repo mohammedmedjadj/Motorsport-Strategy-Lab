@@ -41,6 +41,79 @@ def _laps_by_circuit(seasons: tuple[int, ...] | None = None) -> dict[str, dict[s
     return grouped
 
 
+def _per_season_rates() -> dict[str, dict[int, float]]:
+    """Swap rate per circuit per season — the basis of every claim below."""
+    out: dict[str, dict[int, float]] = {}
+    for circuit, races in sorted(_laps_by_circuit().items()):
+        out[circuit] = {
+            int(season): measure_circuit({season: laps}, circuit).swap_rate
+            for season, laps in sorted(races.items())
+        }
+    return out
+
+
+def _most_variable_circuit(rates: dict[str, dict[int, float]]) -> tuple[str, list[float], float]:
+    """The circuit whose own seasons disagree most, and by how much.
+
+    Named rather than assumed. This paragraph asserted Suzuka at
+    "0.0348 / 0.0502 / 0.0136, a 3.7x spread"; the pooled Suzuka rate has since
+    moved to 0.0321 and none of those three figures survives unchanged. A
+    sentence about *which circuit is least trustworthy* has to recompute, or it
+    ends up vouching for the wrong one.
+    """
+    best, best_spread, best_values = "", 0.0, []
+    for circuit, seasons in rates.items():
+        values = [v for v in seasons.values() if v > 0]
+        if len(values) < 3:
+            continue
+        spread = max(values) / min(values)
+        if spread > best_spread:
+            best, best_spread, best_values = circuit, spread, values
+    return best, best_values, best_spread
+
+
+def _era_verdict(rates: dict[str, dict[int, float]]) -> str:
+    """New-era races against their own circuit's pre-era range, counted.
+
+    This paragraph asserted that *every* new-era race fell inside its circuit's
+    pre-era range, on a scope of two races. At twelve, two of them do not — one
+    below and one above — and the claim as written is simply false. Deriving a
+    sentence does not only keep its numbers fresh; it can show that the claim
+    the sentence makes was never true of the data it now reads.
+    """
+    inside, outside = [], []
+    for circuit, seasons in sorted(rates.items()):
+        new = {s: v for s, v in seasons.items() if s >= REGULATION_ERA_START}
+        old = [v for s, v in seasons.items() if s < REGULATION_ERA_START]
+        if not new or len(old) < 2:
+            continue
+        value = list(new.values())[0]
+        low, high = min(old), max(old)
+        where = "below" if value < low else "above" if value > high else None
+        entry = f"{circuit} {value:.4f} against {low:.4f}-{high:.4f}"
+        (outside if where else inside).append(
+            f"{entry} ({where})" if where else entry
+        )
+
+    total = len(inside) + len(outside)
+    if not total:
+        return "No circuit has both eras measured yet."
+    if not outside:
+        return (f"All {total} new-era races fall inside their own circuit's "
+                f"pre-era range ({'; '.join(inside)}).")
+    return (
+        f"**{len(inside)} of {total}** new-era races fall inside their own "
+        f"circuit's pre-era range. {len(outside)} do not: "
+        f"{'; '.join(outside)}. That is roughly what "
+        f"{total} draws from unchanged distributions would produce — a "
+        "pre-era range built from a handful of seasons is not a tolerance "
+        "interval, and a race landing outside one is not evidence of a "
+        "regulation effect. It is, however, not the clean result this "
+        "paragraph claimed when the scope was two races and both happened to "
+        "land inside."
+    )
+
+
 def _era_comparison_rows() -> list[str]:
     """Per-season swap rates, so the reported constant can be checked against
     its own season-to-season spread -- and against the new regulation era.
@@ -80,6 +153,18 @@ def main() -> int:
     pd.DataFrame(rows).to_csv(artifact, index=False)
     print(f"wrote {artifact}")
 
+    # Computed once, quoted throughout. Every sentence below that names a
+    # circuit or a spread reads from these rather than from a figure typed when
+    # the scope was four circuits.
+    _rates = _per_season_rates()
+    _volatile = _most_variable_circuit(_rates)
+    _stable = sorted(
+        ((c, max(v.values()) / min(v.values()))
+         for c, v in _rates.items()
+         if len(v) >= 2 and min(v.values()) > 0),
+        key=lambda pair: pair[1],
+    )
+
     lines = [
         "# Track-position value (overtaking difficulty)",
         "",
@@ -118,19 +203,23 @@ def main() -> int:
         "",
         "## The finding: overtaking difficulty is a *mostly* stable circuit constant",
         "",
-        "The season-to-season spread (SD column) is small at three of the four",
-        "circuits — across the regulation-stable seasons the highest-to-lowest",
-        "ratio is 1.2x at Barcelona and Singapore and 1.7x at Monaco. That is the",
+        f"The season-to-season spread (SD column) is small at most of the "
+        f"{len(_rates)} circuits — across the regulation-stable seasons the "
+        "highest-to-lowest ratio is "
+        + ", ".join(f"{ratio:.1f}x at {circuit}" for circuit, ratio in _stable[:3])
+        + ". That is the",
         "mirror image of this project's degradation result: tyre-degradation slopes",
         "do **not** transfer between races (see the degradation reports), but",
         "overtaking difficulty largely **does**, because it is set by track",
         "geometry, which does not change.",
         "",
-        "**Suzuka is the honest exception and is not smoothed over here:** it runs",
-        "0.0348 / 0.0502 / 0.0136 across the same three seasons, a 3.7x spread.",
+        f"**{_volatile[0].title()} is the honest exception and is not smoothed "
+        "over here:** it runs "
+        + " / ".join(f"{v:.4f}" for v in _volatile[1])
+        + f" across its own seasons, a {_volatile[2]:.1f}x spread. "
         "Whatever drives that (weather, a red flag, a race that ran away from the",
-        "field) is not track geometry, so Suzuka's constant deserves materially",
-        "less trust than the other three — and the per-season table below is",
+        "field) is not track geometry, so that circuit's constant deserves",
+        "materially less trust than the others — and the per-season table below is",
         "printed precisely so a reader can see that rather than take the pooled",
         "number on faith.",
         "",
@@ -147,15 +236,17 @@ def main() -> int:
         "|---|---|---|---|",
         *_era_comparison_rows(),
         "",
-        "**No regulation effect is detectable in this data, and at Suzuka it could",
-        "not be even in principle.** Both new-era races fall inside their own",
-        "circuit's pre-era range (Monaco 0.0032 against a 0.0029-0.0049 range;",
-        "Suzuka 0.0469 against 0.0136-0.0502). At Suzuka the ordinary",
-        "season-to-season swing is already 3.7x, which is far larger than any",
-        "plausible regulation effect, so a single new-era race there carries no",
-        "information about the rule change either way. Two races is also simply",
-        "too few. This is reported as a question the data cannot yet answer, not",
-        "as evidence the rules changed nothing.",
+        "**No regulation effect is detectable in this data, and at the most",
+        "volatile circuit it could not be even in principle.**",
+        "",
+        _era_verdict(_rates),
+        "",
+        f"At {_volatile[0]} the ordinary season-to-season swing is already "
+        f"{_volatile[2]:.1f}x, which is far larger than any plausible "
+        "regulation effect, so a single new-era race there carries no "
+        f"information about the rule change either way. One season of a new "
+        "formula is too few regardless. This is reported as a question the "
+        "data cannot yet answer, not as evidence the rules changed nothing.",
         "",
         "## Limitations (stated, not hidden)",
         "",

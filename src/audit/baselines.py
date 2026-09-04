@@ -2,7 +2,7 @@
 
 The decision audit replays 1,280 real first stops through an exact dynamic
 program and a Monte Carlo engine, and reports that the model stops later than
-the team did on 80-86% of them. The obvious response is: *does your optimiser
+the team did on 80-83% of them. The obvious response is: *does your optimiser
 beat a rule of thumb?* Without an answer, the audit measures a sophisticated
 model against reality and never establishes that the sophistication earns its
 place.

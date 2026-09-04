@@ -55,7 +55,11 @@ def main() -> None:
         "From the Kaggle results history (one row per car per race, every class "
         "and round). Not lap-level, so this is the one primitive results data "
         "supports better than telemetry: **the probability a car reaches the "
-        "classified finish**, over a 13-season baseline.",
+        f"classified finish**, over {len(seasons)} seasons"
+        + (" — one of which is the 2018-2019 superseason, so the labels span "
+           "thirteen calendar years rather than twelve"
+           if any("-" in str(s) for s in seasons) else "")
+        + ".",
         "",
         f"Coverage: **{len(df)} car-entries**, seasons "
         f"{seasons[0]}-{seasons[-1]}. Finish = official *Classified* status; "

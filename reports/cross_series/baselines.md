@@ -2,7 +2,7 @@
 
 # Does the optimiser beat a rule of thumb?
 
-The [decision audit](../f1/systematic_audit.md) replays every real first stop through an exact dynamic program and a Monte Carlo engine, and finds it stops later than teams do on 80–86% of them. That is only worth reporting if the machinery is doing something a simple rule could not, and until now nothing here established that.
+The [decision audit](../f1/systematic_audit.md) replays every real first stop through an exact dynamic program and a Monte Carlo engine, and finds it stops later than teams do on 80–83% of them. That is only worth reporting if the machinery is doing something a simple rule could not, and until now nothing here established that.
 
 Three rules, scored on **the same decisions, from the same artifacts, on the same metric** — absolute lap error against what the team actually did. Nothing is re-fitted and no decision is re-selected, so any difference is the rule and not the sample.
 

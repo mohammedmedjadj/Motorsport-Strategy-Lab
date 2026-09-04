@@ -21,7 +21,7 @@ Across the three endurance championships that ordering is clean, and it is a pro
 | series | first stops under caution | median Δ, green | median Δ, all |
 |---|---|---|---|
 | WEC | 8% | +1 | +1 |
-| ELMS | 20% | +3 | +2 |
+| ELMS | 20% | +2 | +2 |
 | IMSA | 53% | +7 | +12 |
 
 **WEC and ELMS agree with real strategy to within one or two laps.** That is the strongest corroboration this simulator has: on two championships where cautions are rare, its stop timing is what teams actually did. IMSA's disagreement is not a different model — it is the same model in a championship that throws a Full Course Yellow in 61 of 63 races, so more than half its stops are opportunistic.
@@ -40,7 +40,7 @@ The F1 audit is the useful contrast. There the neutralisation split is small (+9
 |---|---|---|---|---|---|---|---|---|
 | 2024 | Spa | HYPERCAR | 8 | 9 | 29 | +20 | +119.80 s | yes |
 | 2024 | Interlagos | HYPERCAR | 6 | 28 | 44 | +16 | +71.59 s | no |
-| 2025 | Fuji | HYPERCAR | 9 | 24 | 47 | +23 | +64.20 s | no |
+| 2025 | Fuji | HYPERCAR | 009 | 24 | 47 | +23 | +64.20 s | no |
 | 2022 | Le Mans | HYPERCAR | 36 | 12 | 13 | +1 | +63.93 s | no |
 | 2022 | Le Mans | HYPERCAR | 7 | 12 | 13 | +1 | +63.07 s | no |
 | 2022 | Le Mans | HYPERCAR | 709 | 12 | 13 | +1 | +62.76 s | no |

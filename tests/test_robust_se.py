@@ -82,11 +82,14 @@ def test_independent_errors_cost_nothing() -> None:
 def test_varying_slopes_break_the_classical_interval() -> None:
     """The failure this change exists to fix.
 
-    ``slope_sd=0.04`` is not a stress test: the degradation slopes this
-    project actually fits run from +0.015 s/lap (Monaco HARD) to +0.081
-    (Suzuka SOFT), so a between-unit spread of that order is the realistic
-    case, not the adversarial one. At it, the classical 95% interval covers
-    75% of the time while the cluster-robust one holds 95%.
+    ``slope_sd=0.04`` is not a stress test, and `test_the_chosen_spread_is_
+    conservative` below checks that against the fitted coefficients rather than
+    asserting it. This docstring used to name the range as "+0.015 (Monaco
+    HARD) to +0.081 (Suzuka SOFT)" from a four-circuit scope; at twenty-five it
+    is far wider, which makes 0.04 conservative rather than merely realistic.
+
+    At it, the classical 95% interval covers 75% of the time while the
+    cluster-robust one holds 95%.
     """
     classical, robust = _coverage(slope_sd=0.04)
     assert classical < 0.85, f"classical interval unexpectedly held ({classical:.2f})"
@@ -135,3 +138,28 @@ def test_critical_value_penalises_few_clusters_and_converges() -> None:
     assert critical_value(5) > 2.7
     assert critical_value(55) == pytest.approx(2.0, abs=0.02)
     assert critical_value(5) > critical_value(20) > critical_value(100) > 1.96
+
+
+def test_the_chosen_spread_is_conservative_against_the_fitted_slopes() -> None:
+    """0.04 must stay a modest between-unit spread, not an invented one.
+
+    The number above is the whole basis for calling the classical interval's
+    75% coverage *the realistic case*. If the fitted slopes ever narrowed to
+    the point where 0.04 were adversarial, that argument would quietly stop
+    holding — and the docstring asserting it would still read fine.
+    """
+    import pandas as pd
+
+    from src.ingestion.config import F1_DERIVED_DIR
+
+    path = F1_DERIVED_DIR / "degradation_coefficients.csv"
+    if not path.exists():
+        pytest.skip("degradation coefficients not generated")
+    slopes = pd.read_csv(path)["deg_p1"].dropna()
+    spread = float(slopes.max() - slopes.min())
+    assert spread > 4 * 0.04, (
+        f"fitted tyre-age slopes span only {spread:.3f} s/lap "
+        f"({slopes.min():+.3f} to {slopes.max():+.3f}), so a between-unit SD "
+        "of 0.04 is no longer the modest case the coverage argument above "
+        "rests on. Re-read that argument before trusting it."
+    )

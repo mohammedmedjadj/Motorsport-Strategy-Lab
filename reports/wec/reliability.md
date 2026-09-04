@@ -1,6 +1,6 @@
 # WEC reliability / attrition (results-level, 2011-2023)
 
-From the Kaggle results history (one row per car per race, every class and round). Not lap-level, so this is the one primitive results data supports better than telemetry: **the probability a car reaches the classified finish**, over a 13-season baseline.
+From the Kaggle results history (one row per car per race, every class and round). Not lap-level, so this is the one primitive results data supports better than telemetry: **the probability a car reaches the classified finish**, over 12 seasons.
 
 Coverage: **3035 car-entries**, seasons 2011-2023. Finish = official *Classified* status; *Not classified / Retired / Excluded / Not started* all count as non-finishes. Rates use the same Jeffreys `Beta(0.5,0.5)` smoother as the calibration backtest — small classes get a wide interval, never a false 0/100%.
 
