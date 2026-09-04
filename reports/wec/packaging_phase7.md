@@ -36,6 +36,15 @@ access. Evidence, not assertion:
   subset — see §5 for the exact command. All WEC derived data is committed
   under `data/derived/wec/` and `data/derived/endurance/`, so nothing in
   this scope touches the network.
+- **One exception, stated rather than discovered.** `run_wec_reliability.py`
+  reads `data/external/wec/wec_data.csv`, a third-party export this repository
+  does not redistribute, so the WEC **reliability** layer alone cannot be
+  *regenerated* from a clone. Its output is committed, so every test and every
+  downstream consumer runs offline exactly as described above — what is blocked
+  is rebuilding it from source. See
+  [`data/external/README.md`](../../data/external/README.md) for what to obtain
+  and the three ways out. Every other WEC layer regenerates with no external
+  file.
 - Every reported number has a drift guard: the committed artifact must equal
   a fresh recomputation, so a stale CSV fails the suite instead of quietly
   going out of date.

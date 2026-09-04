@@ -382,7 +382,7 @@ Each phase stopped for explicit validation before the next one started.
 | 4. Monte Carlo simulator    | `src/simulator/` + tests                       | Given a race state, produces a pit-window recommendation as an outcome distribution, seeded and reproducible                                                            |
 | 5. Retrospective audit      | `reports/f1/audit_cases.md`                    | Real race moments replayed through the simulator, model vs. actual decision compared quantitatively, disagreements analysed honestly                                    |
 | 6. Methodology report       | `reports/methodology.md`                       | Full write-up — motivation, method, results, limitations, future work — every number traceable to project output                                                      |
-| 7. Packaging                | Final README, clean-clone check                  | Runs from a fresh clone; contribution ideas for the FastF1 community written up                                                                                         |
+| 7. Packaging                | Final README, clean-clone check                  | Runs from a fresh clone **except the two Kaggle-fed layers** (breadth degradation, reliability) — see [`data/external/README.md`](data/external/README.md); contribution ideas for the FastF1 community written up                                                                                         |
 
 ### F1 breadth layer — the whole calendar (Kaggle history)
 
@@ -931,7 +931,7 @@ numbers too, most visibly at Imola.
 | 4. Simulator         | [`reports/wec/simulator_phase4.md`](reports/wec/simulator_phase4.md) + tests                                                   | Both neutralisation kinds modelled, fuel-range constraint enforced, one demo scenario per circuit, reproducible                                                                    |
 | 5. Decision audit    | [`reports/wec/audit_cases.md`](reports/wec/audit_cases.md) + `src/audit/endurance_cases.py` + tests                          | Three real stop decisions, states rebuilt from committed laps, replayed through the single-stop engine and compared quantitatively                                                 |
 | 6. Methodology       | [`reports/wec/methodology.md`](reports/wec/methodology.md)                                                                     | Full write-up — motivation, method, results, threats to validity, future work — every number traceable to project output, WEC-only, never pooled with IMSA                       |
-| 7. Packaging         | [`reports/wec/packaging_phase7.md`](reports/wec/packaging_phase7.md)                                                           | Runs from a fresh clone (104 endurance-scoped tests, offline); WEC's own reproduction commands; upstream contribution ideas written up for the endurance data community           |
+| 7. Packaging         | [`reports/wec/packaging_phase7.md`](reports/wec/packaging_phase7.md)                                                           | Runs from a fresh clone (104 endurance-scoped tests, offline) **except the Kaggle-fed reliability layer** — see [`data/external/README.md`](data/external/README.md); WEC's own reproduction commands; upstream contribution ideas written up for the endurance data community           |
 
 ### WEC known limitations
 
