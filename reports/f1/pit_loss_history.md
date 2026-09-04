@@ -10,10 +10,10 @@ On the four circuits FastF1 also covers, how the Kaggle estimate compares:
 
 | Circuit | Kaggle (s) | FastF1 (s) | Delta (s) |
 |---|---|---|---|
-| suzuka | 23.3 | 23.5 | -0.2 |
-| catalunya | 23.3 | 23.5 | -0.3 |
-| marina_bay | 31.2 | 27.3 | +3.9 |
-| monaco | 39.3 | 19.1 | +20.2 |
+| catalunya | 23.3 | 23.6 | -0.4 |
+| suzuka | 23.3 | 23.7 | -0.4 |
+| marina_bay | 31.2 | 27.3 | +3.8 |
+| monaco | 39.3 | 20.0 | +19.2 |
 
 The agreement is **within a few tenths on permanent circuits** (Barcelona, Suzuka) and degrades on **high-Safety-Car street circuits** (Singapore moderately, **Monaco by ~20 s**): without an SC flag, stops made under neutralisation inflate the measured loss, and street circuits see the most of them. **Where FastF1 covers a circuit, prefer it**; this breadth layer is trustworthy for the permanent circuits it uniquely adds.
 

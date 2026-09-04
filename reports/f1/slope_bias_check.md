@@ -32,18 +32,19 @@ That is not proof of an unbiased slope, and it is important to say why: the lap 
 
 The Kaggle breadth layer separates tyre wear from fuel burn on a different source, over a different span, with a different method. Two independent estimates of the same quantity is the only way to see a bias the residuals hide.
 
-**24 circuits measured by both**, ground-effect era. Correlation **+0.738** — they agree on which circuits eat tyres.
+**23 circuits measured by both**, ground-effect era. Correlation **+0.855** — they agree on which circuits eat tyres.
 
-Median per-circuit difference (breadth minus core): **+0.0002 s/lap** — indistinguishable from zero.
+Median per-circuit difference (breadth minus core): **+0.0006 s/lap** — indistinguishable from zero.
 
-Comparing the two *medians* instead gives +0.0057, which looks like a small bias and is an artefact of comparing summaries rather than pairs: the circuits where each source is steeper are different ones, and they cancel. The paired difference is the right statistic and it shows **no systematic durability bias**.
+Comparing the two *medians* instead gives -0.0002 s/lap — a different number, and here even a different **sign**. That is the whole reason the paired statistic is the right one: a difference of summaries asks whether the two sources are steep in aggregate, while the summary of differences asks whether they disagree *about the same circuit*, which is the actual question. The circuits where each source is steeper are different ones, and in aggregate they cancel.
+
+This distinction is not academic here. An earlier version of this check reported the difference of medians as a small durability bias and nearly published it; the paired difference is what showed there was none.
 
 | circuit | core (FastF1) | breadth (Kaggle) | difference |
 |---|---|---|---|
 | monza | +0.0306 | -0.0154 | -0.0460 |
 | losail | +0.0394 | -0.0039 | -0.0433 |
 | silverstone | +0.0523 | +0.0179 | -0.0344 |
-| shanghai | +0.1089 | +0.0860 | -0.0229 |
 | bahrain | +0.1326 | +0.1118 | -0.0208 |
 | yas_marina | +0.0770 | +0.0601 | -0.0169 |
 | mexico_city | +0.0455 | +0.0318 | -0.0137 |
@@ -51,8 +52,8 @@ Comparing the two *medians* instead gives +0.0057, which looks like a small bias
 | interlagos | +0.0587 | +0.0539 | -0.0048 |
 | suzuka | +0.1186 | +0.1164 | -0.0022 |
 | ricard | +0.0585 | +0.0574 | -0.0011 |
-| red_bull_ring | +0.0584 | +0.0579 | -0.0005 |
-| miami | +0.0208 | +0.0217 | +0.0009 |
+| red_bull_ring | +0.0584 | +0.0584 | +0.0000 |
+| miami | +0.0208 | +0.0214 | +0.0006 |
 | zandvoort | +0.0345 | +0.0381 | +0.0036 |
 | hungaroring | +0.0605 | +0.0646 | +0.0041 |
 | jeddah | +0.0090 | +0.0147 | +0.0057 |
@@ -63,11 +64,11 @@ Comparing the two *medians* instead gives +0.0057, which looks like a small bias
 | spa | +0.1532 | +0.1777 | +0.0245 |
 | singapore | +0.0278 | +0.0547 | +0.0269 |
 | melbourne | -0.0038 | +0.0235 | +0.0273 |
-| imola | +0.0140 | +0.1216 | +0.1076 |
+| imola | +0.0140 | +0.0453 | +0.0313 |
 
 ## Verdict: not detected
 
-A slope understated by +0.0002 s/lap would move the lap at which a stop still looks worth its pit loss out to roughly **lap 469** — several times the length of any Grand Prix. The audit's gap is **12 laps**. Even taking the misleading difference of medians (+0.0057) the reach is beyond a race distance.
+A slope understated by +0.0006 s/lap would move the lap at which a stop still looks worth its pit loss out to roughly **lap 271** — several times the length of any Grand Prix. The audit's gap is **12 laps**. Comparing the two *medians* instead — the statistic a reader reaches for first — gives -0.0002 s/lap: the independent source is if anything the *shallower* of the two, so it supports no durability bias at all, in either direction.
 
 **Both explanations are now measured, and neither accounts for the finding.** Track position was tested and moved the recommendation the wrong way. Slope bias is not detectable against an independent source, and the largest reading it could support is an order of magnitude too small.
 

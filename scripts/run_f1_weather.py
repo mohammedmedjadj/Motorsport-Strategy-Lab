@@ -31,6 +31,11 @@ from src.weather.archive import race_weather  # noqa: E402
 
 OUT_CSV = F1_DERIVED_DIR / "weather.csv"
 
+#: Which 24 hours each row describes. Written into every row so the resume path
+#: can tell rows built by today's fetcher from rows built by an older one --
+#: see the comment in main(). Change this string whenever the window changes.
+FETCH_WINDOW = "local-day"
+
 
 def main() -> None:  # pragma: no cover - network
     ap = argparse.ArgumentParser()
@@ -44,13 +49,27 @@ def main() -> None:  # pragma: no cover - network
           .merge(circuits[["circuitId", "circuitRef", "lat", "lng"]], on="circuitId")
           .dropna(subset=["date", "lat", "lng"]))
 
-    done = set()
+    done: set[int] = set()
+    rows: list[dict] = []
     if OUT_CSV.exists():
         prev = pd.read_csv(OUT_CSV)
-        done = set(prev["raceId"])
-        rows = prev.to_dict("records")
-    else:
-        rows = []
+        # Resuming is only safe while the rows already on disk were fetched the
+        # way this code fetches now. They were not, once: the fetcher asked
+        # Open-Meteo for a 24-hour *UTC* slice instead of the circuit's local
+        # race day, and because resuming skips anything already present, fixing
+        # that reached exactly nothing. A re-run reported success and changed no
+        # value, which looks identical to "the fix had no effect".
+        #
+        # So the file now records which window produced it, and a row fetched
+        # under a different one is re-fetched rather than trusted.
+        stored = (set(prev["fetch_window"].astype(str))
+                  if "fetch_window" in prev.columns else {"utc-day (pre-fix)"})
+        if stored != {FETCH_WINDOW}:
+            print(f"  re-fetching everything: rows on disk were built with "
+                  f"{sorted(stored)}, this run uses {FETCH_WINDOW!r}")
+        else:
+            done = set(prev["raceId"])
+            rows = prev.to_dict("records")
 
     todo = df[~df["raceId"].isin(done)]
     if args.limit:
@@ -63,7 +82,8 @@ def main() -> None:  # pragma: no cover - network
             print(f"  skip {int(r['raceId'])} {r['circuitRef']} {r['date']}: {exc}")
             continue
         rows.append({"raceId": int(r["raceId"]), "year": int(r["year"]),
-                     "circuitRef": r["circuitRef"], **w.row()})
+                     "circuitRef": r["circuitRef"], **w.row(),
+                     "fetch_window": FETCH_WINDOW})
         tag = "WET " if w.wet else "dry "
         print(f"  [{tag}] {int(r['year'])} {r['circuitRef']:14s} "
               f"precip={w.precip_mm:5.1f}mm temp={w.temp_mean_c:4.1f}C")

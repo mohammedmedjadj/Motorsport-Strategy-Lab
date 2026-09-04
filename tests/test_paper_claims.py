@@ -109,6 +109,39 @@ def neutralisation_races() -> str:
     return str(counts.pop())
 
 
+
+def _cross_source() -> pd.DataFrame:
+    """Core FastF1 slopes beside the independent Kaggle breadth slopes."""
+    from src.ingestion.config import breadth_key
+
+    core = pd.read_csv(DERIVED / "f1" / "degradation_coefficients.csv")
+    breadth = pd.read_csv(DERIVED / "f1" / "history_degradation.csv")
+    core_slope = core.groupby("circuit")["deg_p1"].median()
+    breadth_slope = (
+        breadth[breadth["era"] == "ground-effect"]
+        .groupby("circuit")["tyre_slope_s"].median()
+    )
+    rows = [
+        {"core": float(slope), "breadth": float(breadth_slope[breadth_key(circuit)])}
+        for circuit, slope in core_slope.items()
+        if breadth_key(circuit) in breadth_slope.index
+    ]
+    frame = pd.DataFrame(rows).dropna()
+    frame["difference"] = frame["breadth"] - frame["core"]
+    return frame
+
+
+def cross_source_agreement() -> str:
+    """How well the two independent tyre-slope estimates agree."""
+    frame = _cross_source()
+    return f"r = {frame['core'].corr(frame['breadth']):+.2f}"
+
+
+def cross_source_difference() -> str:
+    """The paired difference — the statistic that showed there was no bias."""
+    return f"{_cross_source()['difference'].median():+.4f} s/lap"
+
+
 # --------------------------------------------------------------------------
 # The claims. Each one names the document a reader would find it in.
 # --------------------------------------------------------------------------
@@ -167,6 +200,20 @@ CLAIMS = (
         best_transfer,
         ("README.md",),
         "'Bahrain is the strongest transfer' was published and was false",
+    ),
+    Claim(
+        "cross-source agreement on tyre slopes",
+        cross_source_agreement,
+        ("README.md", "reports/f1/systematic_audit.md"),
+        "this citation read +0.74 for a day after the weather timezone fix "
+        "moved the breadth layer and the report it cites said +0.855",
+    ),
+    Claim(
+        "cross-source paired difference",
+        cross_source_difference,
+        ("README.md", "reports/f1/systematic_audit.md"),
+        "the paired statistic, not the difference of medians — comparing the "
+        "two medians nearly published a durability bias that does not exist",
     ),
     Claim(
         "safety-car editions and events",

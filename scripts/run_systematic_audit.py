@@ -28,7 +28,12 @@ from src.audit.systematic import (  # noqa: E402
     replay_race,
     to_frame,
 )
-from src.ingestion.config import F1_DERIVED_DIR, F1_REPORTS_DIR, PRE_ERA_SEASONS  # noqa: E402
+from src.ingestion.config import (  # noqa: E402
+    F1_DERIVED_DIR,
+    F1_REPORTS_DIR,
+    PRE_ERA_SEASONS,
+    breadth_key,
+)
 from src.simulator.artifacts import load_circuit_models  # noqa: E402
 
 N_DRAWS = 1500
@@ -132,9 +137,10 @@ def report(frame: pd.DataFrame) -> str:
         "variable that pushes slopes down, and a tyre that looks flatter than "
         "it is makes staying out look cheaper. Measured against the Kaggle "
         "breadth layer — an independent source separating tyre wear from fuel "
-        "burn by a different method — the two agree at r = +0.74 with a median "
-        "paired difference of +0.0002 s/lap. An error that size moves the stop "
-        "by several race distances' worth of laps, not twelve. See "
+        f"burn by a different method — the two agree at r = {_cross_source_r():+.2f} "
+        f"with a median paired difference of {_cross_source_difference():+.4f} "
+        "s/lap. An error that size moves the stop by several race distances' "
+        "worth of laps, not twelve. See "
         "[`slope_bias_check.md`](slope_bias_check.md).",
         "",
         "**Both explanations are measured and neither accounts for the "
@@ -171,6 +177,42 @@ def report(frame: pd.DataFrame) -> str:
         )
     lines.append("")
     return "\n".join(lines)
+
+
+def _cross_source() -> "pd.DataFrame":
+    """The slope-bias check's own comparison table, read rather than restated.
+
+    These two numbers were typed into this report as +0.74 and +0.0002. They
+    were correct when written and wrong the moment the weather layer's
+    timezone bug was fixed and the breadth layer recomputed — the report they
+    cite said +0.855 and +0.0006 while this one still said the old pair. A
+    citation is worth nothing if it does not move with what it cites.
+    """
+    core = pd.read_csv(F1_DERIVED_DIR / "degradation_coefficients.csv")
+    breadth = pd.read_csv(F1_DERIVED_DIR / "history_degradation.csv")
+    core_slope = core.groupby("circuit")["deg_p1"].median()
+    breadth_slope = (
+        breadth[breadth["era"] == "ground-effect"]
+        .groupby("circuit")["tyre_slope_s"].median()
+    )
+    rows = []
+    for circuit, slope in core_slope.items():
+        key = breadth_key(circuit)
+        if key in breadth_slope.index:
+            rows.append({"core": float(slope),
+                         "breadth": float(breadth_slope[key])})
+    frame = pd.DataFrame(rows).dropna()
+    frame["difference"] = frame["breadth"] - frame["core"]
+    return frame
+
+
+def _cross_source_r() -> float:
+    frame = _cross_source()
+    return float(frame["core"].corr(frame["breadth"]))
+
+
+def _cross_source_difference() -> float:
+    return float(_cross_source()["difference"].median())
 
 
 def main() -> int:

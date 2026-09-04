@@ -365,6 +365,7 @@ def era_transfer_section(circuits: tuple[str, ...]) -> list[str]:
     leave-one-race-out folds above.
     """
     rows: list[str] = []
+    tested: list[dict[str, object]] = []
     for circuit in circuits:
         try:
             train_laps = load_circuit_laps(circuit, seasons=PRE_ERA_SEASONS)
@@ -406,6 +407,12 @@ def era_transfer_section(circuits: tuple[str, ...]) -> list[str]:
                 f"| {circuit} | {season} | {rmse:.3f} | {r2:+.3f} | "
                 f"{min(in_era_r2):+.3f} to {max(in_era_r2):+.3f} | {verdict} |"
             )
+            # Kept structured as well as formatted: the paragraph under this
+            # table used to say "two races at two circuits" while the table
+            # listed twelve, because the table regenerated when the scope
+            # widened and the sentence was prose.
+            tested.append({"circuit": circuit, "season": season,
+                           "verdict": verdict})
 
     if not rows:
         return []
@@ -437,13 +444,41 @@ def era_transfer_section(circuits: tuple[str, ...]) -> list[str]:
         "season. That is consistent with this project's central finding that slopes",
         "are unstable season to season regardless of regulation change.",
         "",
-        "Stated as a limitation rather than a conclusion: this is two races at two",
-        "circuits, one season into a new formula. It is enough to justify not pooling",
-        "coefficients across the boundary; it is not enough to claim the new era is",
-        "either harder or easier to predict, and this table will answer that properly",
-        "only once several new-era seasons exist.",
+        _era_holdout_caveat(tested),
         "",
     ]
+
+
+def _era_holdout_caveat(tested: list[dict[str, object]]) -> str:
+    """The limitation paragraph, sized to what was actually tested.
+
+    Wrote itself wrong once already: it read "two races at two circuits" under
+    a table of twelve, because the scope widened and prose does not recompute.
+    The counts and the season span are now derived, so widening it again either
+    keeps the sentence true or rewrites it.
+    """
+    circuits = sorted({str(row["circuit"]) for row in tested})
+    seasons = sorted({int(row["season"]) for row in tested})
+    verdicts = [str(row["verdict"]) for row in tested]
+    better = sum(1 for v in verdicts if v.startswith("better"))
+    worse = sum(1 for v in verdicts if v.startswith("worse"))
+    inside = len(verdicts) - better - worse
+
+    span = (
+        f"{len(seasons)} new-era seasons" if len(seasons) > 1
+        else "one season into a new formula"
+    )
+    return (
+        f"Stated as a limitation rather than a conclusion: this is "
+        f"{len(tested)} race{'s' if len(tested) != 1 else ''} at "
+        f"{len(circuits)} circuit{'s' if len(circuits) != 1 else ''}, {span} — "
+        f"{better} predicted better than every pre-era fold, {inside} inside "
+        f"the pre-era range, {worse} worse than all of them. It is enough to "
+        "justify not pooling coefficients across the boundary; it is not enough "
+        "to claim the new era is either harder or easier to predict, and this "
+        "table will answer that properly only once several new-era seasons "
+        "exist."
+    )
 
 
 def kalman_section(circuit: str = KALMAN_DEMO_CIRCUIT, season: int = KALMAN_DEMO_SEASON) -> list[str]:

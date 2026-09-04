@@ -1153,7 +1153,7 @@ to, not illustrated with one.
 > stop, +11 laps against +9, closer in 65 and further in 188. That the fitted
 > slopes make tyres look too durable: measured against an independent source
 > separating tyre wear from fuel burn by a different method, the two agree at
-> **r = +0.74** with a median paired difference of **+0.0002 s/lap** — an error
+> **r = +0.85** with a median paired difference of **+0.0006 s/lap** — an error
 > that would move a stop by several race distances, not twelve laps.
 >
 > So the finding stands as measured and **unexplained**. That is a worse

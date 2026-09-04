@@ -145,6 +145,35 @@ def laps_of_error(slope_error: float, pit_loss_s: float = PIT_LOSS_S) -> float:
     return float(np.sqrt(2 * pit_loss_s / slope_error))
 
 
+def _medians_aside(difference_of_medians: float) -> str:
+    """The difference-of-medians reading, phrased for the sign it actually has.
+
+    This sentence was written when that statistic read +0.0057 and said "even
+    taking the misleading difference of medians the reach is beyond a race
+    distance". Deriving the number was not enough: recomputing the breadth
+    layer moved it to -0.0002, and a negative value means the independent
+    source is *shallower*, so there is no understatement for a reach to be
+    computed from. The old wording then rendered "roughly lap 0, still beyond a
+    race distance", which is nonsense printed with confidence.
+
+    A derived number needs prose that stays true across the range the number
+    can take, not prose fitted to the value it happened to have.
+    """
+    if difference_of_medians <= 0:
+        return (
+            "Comparing the two *medians* instead — the statistic a reader "
+            f"reaches for first — gives {difference_of_medians:+.4f} s/lap: "
+            "the independent source is if anything the *shallower* of the two, "
+            "so it supports no durability bias at all, in either direction."
+        )
+    return (
+        "Even taking the misleading difference of medians "
+        f"({difference_of_medians:+.4f}) the reach is roughly **lap "
+        f"{laps_of_error(difference_of_medians):.0f}**, still beyond a race "
+        "distance."
+    )
+
+
 def main() -> int:
     warnings.filterwarnings("ignore")
     races = per_race()
@@ -156,6 +185,13 @@ def main() -> int:
     negative_drift = int((races["residual_drift_s_per_lap"] < 0).sum())
     correlation = sources["core_tyre_slope"].corr(sources["breadth_tyre_slope"])
     median_difference = sources["difference"].median()
+    # The wrong statistic, kept and named rather than dropped: it is the one a
+    # reader reaches for first, and showing that it does not change the verdict
+    # is stronger than not mentioning it. Derived, because it was typed once
+    # (+0.0057) and went stale the moment the breadth layer was recomputed.
+    difference_of_medians = float(
+        sources["breadth_tyre_slope"].median() - sources["core_tyre_slope"].median()
+    )
     reach = laps_of_error(median_difference)
 
     lines = [
@@ -227,11 +263,19 @@ def main() -> int:
         f"Median per-circuit difference (breadth minus core): "
         f"**{median_difference:+.4f} s/lap** — indistinguishable from zero.",
         "",
-        "Comparing the two *medians* instead gives +0.0057, which looks like a "
-        "small bias and is an artefact of comparing summaries rather than "
-        "pairs: the circuits where each source is steeper are different ones, "
-        "and they cancel. The paired difference is the right statistic and it "
-        "shows **no systematic durability bias**.",
+        f"Comparing the two *medians* instead gives "
+        f"{difference_of_medians:+.4f} s/lap — a different number, and here "
+        "even a different **sign**. That is the whole reason the paired "
+        "statistic is the right one: a difference of summaries asks whether "
+        "the two sources are steep in aggregate, while the summary of "
+        "differences asks whether they disagree *about the same circuit*, "
+        "which is the actual question. The circuits where each source is "
+        "steeper are different ones, and in aggregate they cancel.",
+        "",
+        "This distinction is not academic here. An earlier version of this "
+        "check reported the difference of medians as a small durability bias "
+        "and nearly published it; the paired difference is what showed there "
+        "was none.",
         "",
         "| circuit | core (FastF1) | breadth (Kaggle) | difference |",
         "|---|---|---|---|",
@@ -249,8 +293,7 @@ def main() -> int:
         f"A slope understated by {median_difference:+.4f} s/lap would move the "
         "lap at which a stop still looks worth its pit loss out to roughly "
         f"**lap {reach:.0f}** — several times the length of any Grand Prix. The "
-        "audit's gap is **12 laps**. Even taking the misleading difference of "
-        "medians (+0.0057) the reach is beyond a race distance.",
+        f"audit's gap is **12 laps**. {_medians_aside(difference_of_medians)}",
         "",
         "**Both explanations are now measured, and neither accounts for the "
         "finding.** Track position was tested and moved the recommendation the "

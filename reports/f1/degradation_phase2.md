@@ -723,11 +723,7 @@ new-era race is not reliably harder to predict than another unseen old-era
 season. That is consistent with this project's central finding that slopes
 are unstable season to season regardless of regulation change.
 
-Stated as a limitation rather than a conclusion: this is two races at two
-circuits, one season into a new formula. It is enough to justify not pooling
-coefficients across the boundary; it is not enough to claim the new era is
-either harder or easier to predict, and this table will answer that properly
-only once several new-era seasons exist.
+Stated as a limitation rather than a conclusion: this is 12 races at 12 circuits, one season into a new formula — 5 predicted better than every pre-era fold, 5 inside the pre-era range, 2 worse than all of them. It is enough to justify not pooling coefficients across the boundary; it is not enough to claim the new era is either harder or easier to predict, and this table will answer that properly only once several new-era seasons exist.
 
 ## Is the instability an OLS artefact? A GP robustness check
 

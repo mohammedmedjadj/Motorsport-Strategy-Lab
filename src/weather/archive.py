@@ -89,9 +89,23 @@ def fetch_open_meteo(lat: float, lng: float, date: str,
     import urllib.parse
     import urllib.request
 
+    # `timezone` is not optional decoration. Open-Meteo defaults to GMT, and
+    # start_date/end_date are interpreted *in the requested timezone* — so
+    # without this the "race day" is a 24-hour UTC slice, not the local day the
+    # race was run on. The trap is that the returned timestamps are labelled
+    # identically either way ("2024-04-07T00:00 .. 23:00"), so nothing in the
+    # response looks wrong; only the values differ. Suzuka 2024 reads 0.30 mm
+    # of precipitation on the UTC slice and 0.00 mm on the local day.
+    #
+    # It matters because `wet` is a threshold on the day's total precipitation,
+    # and that flag drops whole race-seasons from the Kaggle breadth
+    # degradation fit — which is the independent source the slope-bias check
+    # compares the core fits against. A misaligned window there corrupts
+    # exactly the comparison whose worth is that it is independent.
     params = urllib.parse.urlencode({
         "latitude": lat, "longitude": lng, "start_date": date, "end_date": date,
         "hourly": "temperature_2m,relative_humidity_2m,precipitation",
+        "timezone": "auto",
     })
     with urllib.request.urlopen(f"{_ARCHIVE_URL}?{params}", timeout=timeout) as resp:
         payload = json.loads(resp.read().decode())
