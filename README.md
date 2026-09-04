@@ -8,7 +8,7 @@
   <a href="https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab/actions/workflows/tests.yml"><img src="https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab/actions/workflows/tests.yml/badge.svg" alt="Test suite status"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-CC%20BY--NC--SA%204.0-E10600" alt="License: CC BY-NC-SA 4.0"></a>
   <img src="https://img.shields.io/badge/python-3.11%2B-00D9FF" alt="Python 3.11+">
-  <img src="https://img.shields.io/badge/tests-408%20passing-2ea44f" alt="408 tests passing">
+  <img src="https://img.shields.io/badge/tests-428%20passing-2ea44f" alt="428 tests passing">
   <img src="https://img.shields.io/badge/series-F1%20%C2%B7%20WEC%20%C2%B7%20IMSA%20%C2%B7%20ELMS-FFB800" alt="Series: F1, WEC, IMSA, ELMS">
 </p>
 
@@ -1190,6 +1190,19 @@ to, not illustrated with one.
 > optimiser has. They have less, and land nearer.
 > ([baselines](reports/cross_series/baselines.md))
 
+> **The transfer difference survives being tested, not just described.**
+> Mean leave-one-race-out R² across 51 circuit-classes, one value per class
+> because folds inside a class share a fitted slope: GT3 **+0.104**
+> [+0.050, +0.170] against prototypes **−0.060** [−0.199, +0.021]. Difference
+> **+0.164** [+0.059, +0.312], permutation p = **0.0009** over 10,000
+> relabellings. The pit-loss correlation carries an interval too — **−0.982**
+> [−0.986, −0.745], bootstrapped over races rather than over the six class
+> points, because a bootstrap with n = 6 is decoration. The 22.5 s edge gets no
+> interval, and the report says why: it is a maximum, the bootstrap is the
+> wrong instrument for one, and the honest number is that removing the single
+> race defining it moves the edge to 13.2 s.
+> ([formal tests](reports/cross_series/formal_tests.md))
+
 > **What actually transfers across seasons — almost nothing, and it is the
 > short circuits —** **R² +0.573** at IMSA's Lime Rock (GTD), +0.497 (GTD PRO),
 > +0.273 and +0.256 at Laguna Seca, then **+0.217** at WEC's Bahrain. Everywhere
@@ -1312,7 +1325,7 @@ Motorsport-Strategy-Lab/
                         #   run_fuel_limited_sensitivity.py,
                         #   run_sc_contamination_check.py (adversarial audit
                         #   pass); demo_extensions.py; generate_banner.py
-  tests/                # pytest, across four series and six classes, 408
+  tests/                # pytest, across four series and six classes, 428
                         #   tests -- incl. the demo, driven headlessly by
                         #   test_demo_app.py, and the report-staleness guards
                         #   that check prose still matches the artifacts

@@ -181,6 +181,36 @@ def baseline_decisions_scored() -> list[str]:
     return [f"{total:,}", str(total)]
 
 
+
+def _formal() -> pd.DataFrame:
+    return pd.read_csv(DERIVED / "cross_series" / "formal_tests.csv")
+
+
+def transfer_difference_interval() -> list[str]:
+    """The GT3-minus-prototype difference, with its interval.
+
+    Two renderings, because the generated report tabulates to four decimals
+    and the README quotes to three. Forcing one house style on both would
+    make this guard the first thing someone deletes to get a build green.
+    """
+    row = _formal()[_formal()["result"] == "GT3 minus prototype"].iloc[0]
+    return [
+        f"{row['estimate']:+.{d}f}** | [{row['ci_low']:+.{d}f}, "
+        f"{row['ci_high']:+.{d}f}]" for d in (3, 4)
+    ] + [
+        f"{row['estimate']:+.{d}f}** [{row['ci_low']:+.{d}f}, "
+        f"{row['ci_high']:+.{d}f}]" for d in (3, 4)
+    ]
+
+
+def correlation_interval() -> str:
+    """The pit-loss correlation's interval, bootstrapped over races."""
+    row = _formal()[
+        _formal()["result"] == "pit loss vs tyre-limited share (r)"
+    ].iloc[0]
+    return f"[{row['ci_low']:+.3f}, {row['ci_high']:+.3f}]".replace("-", "−")
+
+
 # --------------------------------------------------------------------------
 # The claims. Each one names the document a reader would find it in.
 # --------------------------------------------------------------------------
@@ -239,6 +269,19 @@ CLAIMS = (
         best_transfer,
         ("README.md",),
         "'Bahrain is the strongest transfer' was published and was false",
+    ),
+    Claim(
+        "transfer difference and its interval",
+        transfer_difference_interval,
+        ("README.md", "reports/cross_series/formal_tests.md"),
+        "the claim that GT3 transfers and prototypes do not, now tested rather "
+        "than described",
+    ),
+    Claim(
+        "pit-loss correlation interval",
+        correlation_interval,
+        ("README.md",),
+        "bootstrapped over races, not over the six class points",
     ),
     Claim(
         "decisions the baselines were scored on",

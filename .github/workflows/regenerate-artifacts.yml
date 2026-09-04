@@ -132,6 +132,8 @@ jobs:
       # single-series job.
       - name: Baseline comparison
         run: python scripts/run_baseline_comparison.py
+      - name: Formal tests and intervals
+        run: python scripts/run_formal_tests.py
       # Last, because the figures read the artifacts every step above writes.
       # A figure that disagrees with its own data is the same defect as a
       # sentence that does, and it is harder to notice.
