@@ -341,7 +341,7 @@ them.
 | layer | coverage |
 |---|---|
 | per-compound degradation, cluster-robust intervals | 73 coefficients, 25 circuits |
-| Safety Car / VSC posteriors | 25 circuits, 152 race editions, 229 events |
+| Safety Car / VSC posteriors | 25 circuits, 153 race editions, 230 events |
 | track-position value | 25 circuits |
 | decision audit | 357 replayed stops, 74 races |
 
@@ -1038,9 +1038,9 @@ series it actually covers, because they differ:
   race edition is left out, its probability formed from the other editions only,
   and graded with proper scoring rules (Brier, log-loss, Brier skill vs
   climatology). The honest answer: **per circuit they do not beat the base
-  rate** — 2-8 F1 editions per circuit (median 6, 152 in total) and 1-6
+  rate** — 2-8 F1 editions per circuit (median 6, 153 in total) and 1-6
   endurance ones are too few, so the point estimates are little more than the
-  series rate. Widening F1 from 27 race editions to 147 did not change that
+  series rate. Widening F1 from 27 race editions to 153 did not change that
   answer, which is the useful part: it is a sample-size limit per circuit, not
   a shortage of races overall. A built-in positive control
   (endurance FCY grouped by *series*, IMSA ~0.97 vs WEC ~0.27) does show clear

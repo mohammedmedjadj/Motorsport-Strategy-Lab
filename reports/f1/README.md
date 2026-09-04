@@ -11,7 +11,7 @@ model rather than a single net slope.
 | rounds ingested | 104 of 115 |
 | fitting window | 2022–2025; 2026 held out as a new regulation era |
 | degradation | per compound, 73 coefficients, cluster-robust intervals |
-| neutralisations | Safety Car **and** VSC, 25 circuits, 152 editions, 229 events |
+| neutralisations | Safety Car **and** VSC, 25 circuits, 153 editions, 230 events |
 | track position | 25 circuits, 0.0047 (Monaco) to 0.064 (Las Vegas) |
 | decision audit | 357 replayed stops across 74 races |
 

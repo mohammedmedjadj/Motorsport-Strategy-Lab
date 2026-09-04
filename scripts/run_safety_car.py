@@ -54,30 +54,23 @@ SC_SEASONS: tuple[int, ...] = tuple(range(2018, 2026))
 #: Seasons before the frozen calendar starts inherit the earliest naming it
 #: carries, which is correct for this window: the renames in scope all happen
 #: at its far end, not its near one.
-#: Event names as they were before the frozen calendar begins, with the first
-#: season the *current* name applies from.
+#: Historical event names are **not** listed here, and that is deliberate.
 #:
-#: A Grand Prix can be renamed without moving. Mexico ran as the "Mexican Grand
-#: Prix" through 2020 and as the "Mexico City Grand Prix" from 2021; Brazil as
-#: the "Brazilian Grand Prix" through 2020 and as "São Paulo" from 2021. Reusing
-#: the current name for an older season loses those editions in silence — the
-#: same defect as mapping Madrid onto Barcelona, running backwards in time
-#: instead of forwards. It cost four real editions before it was noticed, and
-#: only because the skip list was read.
-RENAMED_FROM: dict[str, tuple[int, str]] = {
-    "mexico_city": (2021, "Mexican Grand Prix"),
-    "interlagos": (2021, "Brazilian Grand Prix"),
-}
-
-
+#: An earlier version carried a ``RENAMED_FROM`` table so that pre-2021 seasons
+#: requested "Mexican Grand Prix" instead of "Mexico City Grand Prix". It worked,
+#: and it was a workaround for a defect one level down: the loader's guard
+#: compared event *names*, so it rejected a correct fuzzy match whenever a Grand
+#: Prix had been renamed without moving.
+#:
+#: ``event_matches_request`` now accepts a match on the resolved **location**
+#: as well as the name, which is the property that actually distinguishes a
+#: rename from a substitution. With the root cause fixed the table is a second
+#: source of truth with nothing to say, so it is gone.
 def _circuit_gps() -> tuple[tuple[int, str, str], ...]:
     from src.ingestion.config import _SEASON_EVENTS
 
     known = sorted(_SEASON_EVENTS)
     earliest = {circuit: name for name, circuit in _SEASON_EVENTS[known[0]]}
-    for circuit, (renamed_from, old_name) in RENAMED_FROM.items():
-        if circuit in earliest:
-            earliest[circuit] = (renamed_from, old_name, earliest[circuit])
 
     out: list[tuple[int, str, str]] = []
     for season in SC_SEASONS:
@@ -85,13 +78,7 @@ def _circuit_gps() -> tuple[tuple[int, str, str], ...]:
             out.extend((season, name, circuit)
                        for name, circuit in _SEASON_EVENTS[season])
             continue
-        for circuit, value in earliest.items():
-            if isinstance(value, tuple):
-                renamed_from, old_name, current = value
-                name = old_name if season < renamed_from else current
-            else:
-                name = value
-            out.append((season, name, circuit))
+        out.extend((season, name, circuit) for circuit, name in earliest.items())
     return tuple(out)
 
 

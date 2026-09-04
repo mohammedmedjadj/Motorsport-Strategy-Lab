@@ -49,10 +49,18 @@ The mechanism is in
 [`when_tyres_beat_fuel.md`](when_tyres_beat_fuel.md): a cheap stop is
 **necessary but not sufficient**. No race above a 22.5 s pit loss is
 tyre-limited anywhere in 205 race-seasons (Mann-Whitney **p = 1.1 × 10⁻¹⁴**),
-and below that threshold real degradation decides (**p = 1.5 × 10⁻⁸**). The
-22.5 s edge sat in exactly the same place when this was computed on 66 entries,
-which is the most encouraging thing about it: tripling the sample moved the
-p-values by nine orders of magnitude and moved the threshold not at all.
+and below that threshold real degradation decides (**p = 1.5 × 10⁻⁸**). That is
+**150 race-seasons above the edge, across all six classes, with no exception.**
+
+The *rule* is what that supports; the *number* is weaker than it looks. The edge
+sits at 22.5 s because one race puts it there (IMSA GTD Indianapolis 2025) and
+the next tyre-limited race is at 13.2 s. This document used to argue that the
+threshold was trustworthy because it "sat in exactly the same place when this
+was computed on 66 entries" — but a maximum over a growing sample can only move
+up, so a stable maximum shows that no counterexample appeared above it, not that
+the threshold is well located. Quote 22.5 s as an order of magnitude, and see
+[`when_tyres_beat_fuel.md`](when_tyres_beat_fuel.md) before treating it as a
+constant.
 
 The cleanest single illustration is Mugello 2024, where LMP2 is tyre-limited on
 a 9.2 s stop and Pro/Am at the same circuit in the same year is not, on a

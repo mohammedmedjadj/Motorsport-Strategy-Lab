@@ -67,86 +67,88 @@ COTA's own 2024 pit-loss median (74.0s, 88 clean stops) and 2025 median (21.0s, 
 
 ## Degradation, for comparison (already established, restated here for the single table)
 
-| Series | Circuit | Mean LORO within-stint R2 |
-|---|---|---|
-| f1 | austin | -0.051 |
-| f1 | bahrain | +0.255 |
-| f1 | baku | +0.269 |
-| f1 | barcelona | +0.018 |
-| f1 | hungaroring | +0.000 |
-| f1 | imola | -0.230 |
-| f1 | interlagos | +0.083 |
-| f1 | jeddah | +0.307 |
-| f1 | las_vegas | +0.128 |
-| f1 | losail | +0.249 |
-| f1 | melbourne | +0.132 |
-| f1 | mexico_city | -0.047 |
-| f1 | miami | +0.106 |
-| f1 | monaco | +0.078 |
-| f1 | montreal | +0.001 |
-| f1 | monza | -0.113 |
-| f1 | red_bull_ring | +0.154 |
-| f1 | ricard | +nan |
-| f1 | shanghai | -0.580 |
-| f1 | silverstone | -0.106 |
-| f1 | singapore | -0.081 |
-| f1 | spa | -0.284 |
-| f1 | suzuka | -0.393 |
-| f1 | yas_marina | +0.045 |
-| f1 | zandvoort | -0.020 |
-| imsa | Daytona | +0.031 |
-| imsa | Detroit | -0.014 |
-| imsa | Indianapolis | +0.029 |
-| imsa | Laguna Seca | +0.058 |
-| imsa | Long Beach | +0.013 |
-| imsa | Road America | +0.001 |
-| imsa | Road Atlanta | +0.039 |
-| imsa | Sebring | -0.002 |
-| imsa | Watkins Glen | +0.013 |
-| imsa | Daytona | -0.020 |
-| imsa | Indianapolis | +0.073 |
-| imsa | Laguna Seca | +0.273 |
-| imsa | Lime Rock | +0.573 |
-| imsa | Long Beach | -0.001 |
-| imsa | Mid-Ohio | +0.060 |
-| imsa | Mosport | +0.064 |
-| imsa | Road America | +0.004 |
-| imsa | Road Atlanta | +0.039 |
-| imsa | Sebring | +0.031 |
-| imsa | VIR | +0.125 |
-| imsa | Watkins Glen | +0.058 |
-| imsa | Daytona | +0.058 |
-| imsa | Detroit | -0.054 |
-| imsa | Indianapolis | +0.171 |
-| imsa | Laguna Seca | +0.256 |
-| imsa | Lime Rock | +0.497 |
-| imsa | Long Beach | -0.012 |
-| imsa | Mosport | +0.071 |
-| imsa | Road America | -0.019 |
-| imsa | Road Atlanta | +0.069 |
-| imsa | Sebring | +0.021 |
-| imsa | VIR | +0.091 |
-| imsa | Watkins Glen | +0.065 |
-| wec | Bahrain | +0.217 |
-| wec | COTA | -1.490 |
-| wec | Fuji | +0.055 |
-| wec | Imola | -0.009 |
-| wec | Interlagos | -0.087 |
-| wec | Le Mans | -0.008 |
-| wec | Sebring | +0.016 |
-| wec | Spa | +0.018 |
-| elms | Barcelona | +0.035 |
-| elms | Imola | -0.001 |
-| elms | Paul Ricard | -0.011 |
-| elms | Portimao | -0.067 |
-| elms | Spa | -0.004 |
-| elms | Barcelona | +0.027 |
-| elms | Imola | -0.003 |
-| elms | Paul Ricard | -0.011 |
-| elms | Portimao | -0.455 |
-| elms | Spa | -0.012 |
+A circuit transfers only within a class: the same track is a different degradation problem for a GT3 car and a prototype, and collapsing them would average away the one result this table exists to show.
 
-**COTA is the worst-transferring circuit for both quantities, independently measured.** -6.330 within-stint R2 for degradation is not just negative like most circuits, it is an order of magnitude more negative than anywhere else in either series -- and the shorter 2025 race format (above) plausibly explains this too: fewer laps per stint changes the fuel-burn/degradation separation the fixed-effects model relies on, not just the pit-loss magnitude. Two independent estimators flagging the same circuit-season pair is a stronger signal than either alone that 2025 COTA is a genuinely different race, not noise in one particular model.
+| Series | Class | Circuit | Mean LORO within-stint R2 |
+|---|---|---|---|
+| f1 | — | austin | -0.051 |
+| f1 | — | bahrain | +0.255 |
+| f1 | — | baku | +0.269 |
+| f1 | — | barcelona | +0.018 |
+| f1 | — | hungaroring | +0.000 |
+| f1 | — | imola | -0.230 |
+| f1 | — | interlagos | +0.083 |
+| f1 | — | jeddah | +0.307 |
+| f1 | — | las_vegas | +0.128 |
+| f1 | — | losail | +0.249 |
+| f1 | — | melbourne | +0.132 |
+| f1 | — | mexico_city | -0.047 |
+| f1 | — | miami | +0.106 |
+| f1 | — | monaco | +0.078 |
+| f1 | — | montreal | +0.001 |
+| f1 | — | monza | -0.113 |
+| f1 | — | red_bull_ring | +0.154 |
+| f1 | — | ricard | not measurable (1 season) |
+| f1 | — | shanghai | -0.580 |
+| f1 | — | silverstone | -0.106 |
+| f1 | — | singapore | -0.081 |
+| f1 | — | spa | -0.284 |
+| f1 | — | suzuka | -0.393 |
+| f1 | — | yas_marina | +0.045 |
+| f1 | — | zandvoort | -0.020 |
+| elms | LMP2 | Barcelona | +0.035 |
+| elms | LMP2 Pro/Am | Barcelona | +0.027 |
+| elms | LMP2 | Imola | -0.001 |
+| elms | LMP2 Pro/Am | Imola | -0.003 |
+| elms | LMP2 | Paul Ricard | -0.011 |
+| elms | LMP2 Pro/Am | Paul Ricard | -0.011 |
+| elms | LMP2 | Portimao | -0.067 |
+| elms | LMP2 Pro/Am | Portimao | -0.455 |
+| elms | LMP2 | Spa | -0.004 |
+| elms | LMP2 Pro/Am | Spa | -0.012 |
+| imsa | GTD | Daytona | -0.020 |
+| imsa | GTDPRO | Daytona | +0.058 |
+| imsa | GTP | Daytona | +0.031 |
+| imsa | GTDPRO | Detroit | -0.054 |
+| imsa | GTP | Detroit | -0.014 |
+| imsa | GTD | Indianapolis | +0.073 |
+| imsa | GTDPRO | Indianapolis | +0.171 |
+| imsa | GTP | Indianapolis | +0.029 |
+| imsa | GTD | Laguna Seca | +0.273 |
+| imsa | GTDPRO | Laguna Seca | +0.256 |
+| imsa | GTP | Laguna Seca | +0.058 |
+| imsa | GTD | Lime Rock | +0.573 |
+| imsa | GTDPRO | Lime Rock | +0.497 |
+| imsa | GTD | Long Beach | -0.001 |
+| imsa | GTDPRO | Long Beach | -0.012 |
+| imsa | GTP | Long Beach | +0.013 |
+| imsa | GTD | Mid-Ohio | +0.060 |
+| imsa | GTD | Mosport | +0.064 |
+| imsa | GTDPRO | Mosport | +0.071 |
+| imsa | GTD | Road America | +0.004 |
+| imsa | GTDPRO | Road America | -0.019 |
+| imsa | GTP | Road America | +0.001 |
+| imsa | GTD | Road Atlanta | +0.039 |
+| imsa | GTDPRO | Road Atlanta | +0.069 |
+| imsa | GTP | Road Atlanta | +0.039 |
+| imsa | GTD | Sebring | +0.031 |
+| imsa | GTDPRO | Sebring | +0.021 |
+| imsa | GTP | Sebring | -0.002 |
+| imsa | GTD | VIR | +0.125 |
+| imsa | GTDPRO | VIR | +0.091 |
+| imsa | GTD | Watkins Glen | +0.058 |
+| imsa | GTDPRO | Watkins Glen | +0.065 |
+| imsa | GTP | Watkins Glen | +0.013 |
+| wec | HYPERCAR | Bahrain | +0.217 |
+| wec | HYPERCAR | COTA | -1.490 |
+| wec | HYPERCAR | Fuji | +0.055 |
+| wec | HYPERCAR | Imola | -0.009 |
+| wec | HYPERCAR | Interlagos | -0.087 |
+| wec | HYPERCAR | Le Mans | -0.008 |
+| wec | HYPERCAR | Sebring | +0.016 |
+| wec | HYPERCAR | Spa | +0.018 |
+
+**COTA HYPERCAR is the worst-transferring circuit-class for degradation, and the same circuit transfers worst on pit loss too — two independent estimators flagging the same race.** A within-stint R2 of -1.490 is 3.3x more negative than the next-worst (Portimao LMP2 Pro/Am, -0.455). The shorter 2025 race format described above plausibly explains it: fewer laps per stint changes the fuel-burn/degradation separation the fixed-effects model relies on, not just the pit-loss magnitude.
 
 ## Neutralisation occurrence, for comparison (already established, restated here)
 
@@ -157,8 +159,8 @@ A third fitted quantity already had a leave-one-race-out test before this report
 | IMSA FCY | circuit | 63 | 0.968 | -0.5054 |
 | WEC FCY | circuit | 33 | 0.273 | -0.5384 |
 | WEC Safety Car | circuit | 33 | 0.576 | -0.1389 |
-| F1 Safety Car | circuit | 147 | 0.571 | -0.1008 |
-| F1 VSC | circuit | 147 | 0.415 | -0.1910 |
+| F1 Safety Car | circuit | 153 | 0.569 | -0.1116 |
+| F1 VSC | circuit | 153 | 0.425 | -0.1767 |
 | Endurance FCY (by series) | series | 125 | 0.680 | +0.3860 |
 
 Five of six targets score **negative** skill -- a per-circuit base rate does not beat the series-wide average out of sample, the same qualitative conclusion as degradation (does not transfer) rather than pit loss (does). The lone exception, Endurance FCY pooled *by series* rather than by circuit (skill +0.3860), is itself evidence for the same idea pit loss vs. degradation already established: pooling at the right level (series, not circuit, for a quantity this rare) recovers signal that per-circuit fitting throws away to noise -- the same logic behind pooling toward Bahrain's precision would fix if extended, and the same logic Section 7 of the Activity #3 roadmap's hierarchical-Bayesian proposal targets directly.

@@ -128,6 +128,11 @@ jobs:
         run: python scripts/run_sc_contamination_check.py
       - name: Fuel-limited sensitivity sweep
         run: python scripts/run_fuel_limited_sensitivity.py
+      # Last, because the figures read the artifacts every step above writes.
+      # A figure that disagrees with its own data is the same defect as a
+      # sentence that does, and it is harder to notice.
+      - name: Headline figures
+        run: python scripts/make_headline_figures.py
 
       - name: Report drift
         run: .github/scripts/report_drift.sh "cross-series"

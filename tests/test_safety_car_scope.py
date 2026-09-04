@@ -13,9 +13,18 @@ thirty-one lines to notice that two of them were a different kind of miss.
 
 This is the same defect as mapping the 2026 Spanish Grand Prix onto Barcelona,
 running backwards in time instead of forwards, and it is the second time it has
-appeared. The guards below are per-case rather than general because the general
-version needs the network: only FastF1's own schedule knows whether a race
-happened at a track under some other name.
+appeared.
+
+The first fix was a `RENAMED_FROM` table in `scripts/run_safety_car.py` listing
+the four known historical names. It worked and it did not generalise: every
+future rename would be lost silently until somebody read the skip list again.
+It has been **removed** in favour of a property that separates the two cases
+without a list — *a rename keeps the location, a substitution changes it* — now
+enforced by `event_matches_request` and pinned in `tests/test_event_matching.py`.
+
+Replacing it recovered every edition the table did and lost none. The guards
+below stay, because what they protect is the *outcome* — these four editions
+being present — and that must hold no matter which mechanism delivers it.
 """
 
 from __future__ import annotations
@@ -68,8 +77,9 @@ def test_renamed_editions_are_not_skipped(season: str, circuit: str) -> None:
     ]
     assert not offending, (
         f"{slug} is in the skip list as a naming failure: {offending}. That "
-        "edition was run, under a different event name that season. Add the "
-        "historical name to RENAMED_FROM in scripts/run_safety_car.py rather "
+        "edition was run, under a different event name that season. Check "
+        "CIRCUIT_LOCATIONS in src/ingestion/config.py — the circuit is "
+        "probably missing a Location spelling FastF1 reports for it — rather "
         "than accepting the skip."
     )
 

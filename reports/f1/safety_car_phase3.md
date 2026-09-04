@@ -8,34 +8,33 @@ values alone would be false precision.
 
 ## Editions not included
 
-- 2018_jeddah: LookupError: 2018_jeddah: requested 'Saudi Arabian Grand Prix' but FastF1 fuzzy-matched 'Australian Grand Prix' — edition most likely not held that season
-- 2018_imola: LookupError: 2018_imola: requested 'Emilia Romagna Grand Prix' but FastF1 fuzzy-matched 'German Grand Prix' — edition most likely not held that season
-- 2018_miami: LookupError: 2018_miami: requested 'Miami Grand Prix' but FastF1 fuzzy-matched 'Italian Grand Prix' — edition most likely not held that season
-- 2018_zandvoort: LookupError: 2018_zandvoort: requested 'Dutch Grand Prix' but FastF1 fuzzy-matched 'Chinese Grand Prix' — edition most likely not held that season
+- 2018_jeddah: LookupError: 2018_jeddah: requested 'Saudi Arabian Grand Prix' but FastF1 fuzzy-matched 'Australian Grand Prix' at 'Melbourne', which is not a location jeddah reports — this edition was most likely not held that season, and FastF1 substituted a different race
+- 2018_imola: LookupError: 2018_imola: requested 'Emilia Romagna Grand Prix' but FastF1 fuzzy-matched 'German Grand Prix' at 'Hockenheim', which is not a location imola reports — this edition was most likely not held that season, and FastF1 substituted a different race
+- 2018_miami: LookupError: 2018_miami: requested 'Miami Grand Prix' but FastF1 fuzzy-matched 'Italian Grand Prix' at 'Monza', which is not a location miami reports — this edition was most likely not held that season, and FastF1 substituted a different race
+- 2018_zandvoort: LookupError: 2018_zandvoort: requested 'Dutch Grand Prix' but FastF1 fuzzy-matched 'Chinese Grand Prix' at 'Shanghai', which is not a location zandvoort reports — this edition was most likely not held that season, and FastF1 substituted a different race
 - 2018_monza: DataNotLoadedError: The data you are trying to access has not been loaded yet. See `Session.load`
-- 2019_jeddah: LookupError: 2019_jeddah: requested 'Saudi Arabian Grand Prix' but FastF1 fuzzy-matched 'Australian Grand Prix' — edition most likely not held that season
-- 2019_imola: LookupError: 2019_imola: requested 'Emilia Romagna Grand Prix' but FastF1 fuzzy-matched 'German Grand Prix' — edition most likely not held that season
-- 2019_miami: LookupError: 2019_miami: requested 'Miami Grand Prix' but FastF1 fuzzy-matched 'Italian Grand Prix' — edition most likely not held that season
-- 2019_zandvoort: LookupError: 2019_zandvoort: requested 'Dutch Grand Prix' but FastF1 fuzzy-matched 'Chinese Grand Prix' — edition most likely not held that season
-- 2019_mexico_city: DataNotLoadedError: The data you are trying to access has not been loaded yet. See `Session.load`
-- 2020_jeddah: LookupError: 2020_jeddah: requested 'Saudi Arabian Grand Prix' but FastF1 fuzzy-matched 'Austrian Grand Prix' — edition most likely not held that season
-- 2020_melbourne: LookupError: 2020_melbourne: requested 'Australian Grand Prix' but FastF1 fuzzy-matched 'Austrian Grand Prix' — edition most likely not held that season
-- 2020_miami: LookupError: 2020_miami: requested 'Miami Grand Prix' but FastF1 fuzzy-matched 'Italian Grand Prix' — edition most likely not held that season
-- 2020_monaco: LookupError: 2020_monaco: requested 'Monaco Grand Prix' but FastF1 fuzzy-matched 'Italian Grand Prix' — edition most likely not held that season
-- 2020_baku: LookupError: 2020_baku: requested 'Azerbaijan Grand Prix' but FastF1 fuzzy-matched 'Austrian Grand Prix' — edition most likely not held that season
-- 2020_montreal: LookupError: 2020_montreal: requested 'Canadian Grand Prix' but FastF1 fuzzy-matched 'Hungarian Grand Prix' — edition most likely not held that season
-- 2020_ricard: LookupError: 2020_ricard: requested 'French Grand Prix' but FastF1 fuzzy-matched 'Belgian Grand Prix' — edition most likely not held that season
-- 2020_zandvoort: LookupError: 2020_zandvoort: requested 'Dutch Grand Prix' but FastF1 fuzzy-matched 'Russian Grand Prix' — edition most likely not held that season
-- 2020_singapore: LookupError: 2020_singapore: requested 'Singapore Grand Prix' but FastF1 fuzzy-matched 'Hungarian Grand Prix' — edition most likely not held that season
-- 2020_suzuka: LookupError: 2020_suzuka: requested 'Japanese Grand Prix' but FastF1 fuzzy-matched 'Spanish Grand Prix' — edition most likely not held that season
-- 2020_austin: LookupError: 2020_austin: requested 'United States Grand Prix' but FastF1 fuzzy-matched 'Hungarian Grand Prix' — edition most likely not held that season
-- 2020_mexico_city: LookupError: 2020_mexico_city: requested 'Mexican Grand Prix' but FastF1 fuzzy-matched 'Belgian Grand Prix' — edition most likely not held that season
-- 2020_interlagos: LookupError: 2020_interlagos: requested 'Brazilian Grand Prix' but FastF1 fuzzy-matched 'Belgian Grand Prix' — edition most likely not held that season
-- 2021_melbourne: LookupError: 2021_melbourne: requested 'Australian Grand Prix' but FastF1 fuzzy-matched 'Austrian Grand Prix' — edition most likely not held that season
-- 2021_miami: LookupError: 2021_miami: requested 'Miami Grand Prix' but FastF1 fuzzy-matched 'Italian Grand Prix' — edition most likely not held that season
-- 2021_montreal: LookupError: 2021_montreal: requested 'Canadian Grand Prix' but FastF1 fuzzy-matched 'Hungarian Grand Prix' — edition most likely not held that season
-- 2021_singapore: LookupError: 2021_singapore: requested 'Singapore Grand Prix' but FastF1 fuzzy-matched 'Hungarian Grand Prix' — edition most likely not held that season
-- 2021_suzuka: LookupError: 2021_suzuka: requested 'Japanese Grand Prix' but FastF1 fuzzy-matched 'Spanish Grand Prix' — edition most likely not held that season
+- 2019_jeddah: LookupError: 2019_jeddah: requested 'Saudi Arabian Grand Prix' but FastF1 fuzzy-matched 'Australian Grand Prix' at 'Melbourne', which is not a location jeddah reports — this edition was most likely not held that season, and FastF1 substituted a different race
+- 2019_imola: LookupError: 2019_imola: requested 'Emilia Romagna Grand Prix' but FastF1 fuzzy-matched 'German Grand Prix' at 'Hockenheim', which is not a location imola reports — this edition was most likely not held that season, and FastF1 substituted a different race
+- 2019_miami: LookupError: 2019_miami: requested 'Miami Grand Prix' but FastF1 fuzzy-matched 'Italian Grand Prix' at 'Monza', which is not a location miami reports — this edition was most likely not held that season, and FastF1 substituted a different race
+- 2019_zandvoort: LookupError: 2019_zandvoort: requested 'Dutch Grand Prix' but FastF1 fuzzy-matched 'Chinese Grand Prix' at 'Shanghai', which is not a location zandvoort reports — this edition was most likely not held that season, and FastF1 substituted a different race
+- 2020_jeddah: LookupError: 2020_jeddah: requested 'Saudi Arabian Grand Prix' but FastF1 fuzzy-matched 'Austrian Grand Prix' at 'Spielberg', which is not a location jeddah reports — this edition was most likely not held that season, and FastF1 substituted a different race
+- 2020_melbourne: LookupError: 2020_melbourne: requested 'Australian Grand Prix' but FastF1 fuzzy-matched 'Austrian Grand Prix' at 'Spielberg', which is not a location melbourne reports — this edition was most likely not held that season, and FastF1 substituted a different race
+- 2020_miami: LookupError: 2020_miami: requested 'Miami Grand Prix' but FastF1 fuzzy-matched 'Italian Grand Prix' at 'Monza', which is not a location miami reports — this edition was most likely not held that season, and FastF1 substituted a different race
+- 2020_monaco: LookupError: 2020_monaco: requested 'Monaco Grand Prix' but FastF1 fuzzy-matched 'Italian Grand Prix' at 'Monza', which is not a location monaco reports — this edition was most likely not held that season, and FastF1 substituted a different race
+- 2020_baku: LookupError: 2020_baku: requested 'Azerbaijan Grand Prix' but FastF1 fuzzy-matched 'Austrian Grand Prix' at 'Spielberg', which is not a location baku reports — this edition was most likely not held that season, and FastF1 substituted a different race
+- 2020_montreal: LookupError: 2020_montreal: requested 'Canadian Grand Prix' but FastF1 fuzzy-matched 'Hungarian Grand Prix' at 'Budapest', which is not a location montreal reports — this edition was most likely not held that season, and FastF1 substituted a different race
+- 2020_ricard: LookupError: 2020_ricard: requested 'French Grand Prix' but FastF1 fuzzy-matched 'Belgian Grand Prix' at 'Spa-Francorchamps', which is not a location ricard reports — this edition was most likely not held that season, and FastF1 substituted a different race
+- 2020_zandvoort: LookupError: 2020_zandvoort: requested 'Dutch Grand Prix' but FastF1 fuzzy-matched 'Russian Grand Prix' at 'Sochi', which is not a location zandvoort reports — this edition was most likely not held that season, and FastF1 substituted a different race
+- 2020_singapore: LookupError: 2020_singapore: requested 'Singapore Grand Prix' but FastF1 fuzzy-matched 'Hungarian Grand Prix' at 'Budapest', which is not a location singapore reports — this edition was most likely not held that season, and FastF1 substituted a different race
+- 2020_suzuka: LookupError: 2020_suzuka: requested 'Japanese Grand Prix' but FastF1 fuzzy-matched 'Spanish Grand Prix' at 'Barcelona', which is not a location suzuka reports — this edition was most likely not held that season, and FastF1 substituted a different race
+- 2020_austin: LookupError: 2020_austin: requested 'United States Grand Prix' but FastF1 fuzzy-matched 'Hungarian Grand Prix' at 'Budapest', which is not a location austin reports — this edition was most likely not held that season, and FastF1 substituted a different race
+- 2020_mexico_city: LookupError: 2020_mexico_city: requested 'Mexico City Grand Prix' but FastF1 fuzzy-matched 'Russian Grand Prix' at 'Sochi', which is not a location mexico_city reports — this edition was most likely not held that season, and FastF1 substituted a different race
+- 2020_interlagos: LookupError: 2020_interlagos: requested 'São Paulo Grand Prix' but FastF1 fuzzy-matched 'Turkish Grand Prix' at 'Istanbul', which is not a location interlagos reports — this edition was most likely not held that season, and FastF1 substituted a different race
+- 2021_melbourne: LookupError: 2021_melbourne: requested 'Australian Grand Prix' but FastF1 fuzzy-matched 'Austrian Grand Prix' at 'Spielberg', which is not a location melbourne reports — this edition was most likely not held that season, and FastF1 substituted a different race
+- 2021_miami: LookupError: 2021_miami: requested 'Miami Grand Prix' but FastF1 fuzzy-matched 'Italian Grand Prix' at 'Monza', which is not a location miami reports — this edition was most likely not held that season, and FastF1 substituted a different race
+- 2021_montreal: LookupError: 2021_montreal: requested 'Canadian Grand Prix' but FastF1 fuzzy-matched 'Hungarian Grand Prix' at 'Budapest', which is not a location montreal reports — this edition was most likely not held that season, and FastF1 substituted a different race
+- 2021_singapore: LookupError: 2021_singapore: requested 'Singapore Grand Prix' but FastF1 fuzzy-matched 'Hungarian Grand Prix' at 'Budapest', which is not a location singapore reports — this edition was most likely not held that season, and FastF1 substituted a different race
+- 2021_suzuka: LookupError: 2021_suzuka: requested 'Japanese Grand Prix' but FastF1 fuzzy-matched 'Spanish Grand Prix' at 'Barcelona', which is not a location suzuka reports — this edition was most likely not held that season, and FastF1 substituted a different race
 
 (2020-2021 gaps are COVID cancellations — those races never took place.)
 
@@ -271,26 +270,27 @@ values alone would be false precision.
 - Per-lap deployment rate = 0.01873 [0.00722, 0.03564]
 - Durations (laps): n=6, mean=1.8, min=1, max=3
 
-## mexico_city (6 editions, 426 race laps observed)
+## mexico_city (7 editions, 497 race laps observed)
 
 | Season | Laps | SC | VSC | Red | SC deploy laps | VSC deploy laps |
 |---|---|---|---|---|---|---|
 | 2018 | 71 | 0 | 3 | 0 | - | [5, 31, 62] |
+| 2019 | 71 | 0 | 1 | 0 | - | [1] |
 | 2021 | 71 | 1 | 0 | 0 | [1] | - |
 | 2022 | 71 | 0 | 1 | 0 | - | [65] |
 | 2023 | 71 | 2 | 1 | 1 | [33, 35] | [5] |
 | 2024 | 71 | 1 | 0 | 0 | [1] | - |
 | 2025 | 71 | 0 | 1 | 0 | - | [70] |
 
-**SC** — races with >= 1: 3/6; deployments: 4.
-- P(>= 1 per race) = 0.500 [0.167, 0.833]
-- Per-lap deployment rate = 0.01056 [0.00317, 0.02233]
+**SC** — races with >= 1: 3/7; deployments: 4.
+- P(>= 1 per race) = 0.438 [0.139, 0.765]
+- Per-lap deployment rate = 0.00905 [0.00272, 0.01914]
 - Durations (laps): n=4, mean=3.2, min=1, max=6
 
-**VSC** — races with >= 1: 4/6; deployments: 6.
-- P(>= 1 per race) = 0.643 [0.286, 0.923]
-- Per-lap deployment rate = 0.01526 [0.00588, 0.02903]
-- Durations (laps): n=6, mean=2.0, min=1, max=3
+**VSC** — races with >= 1: 5/7; deployments: 7.
+- P(>= 1 per race) = 0.688 [0.352, 0.935]
+- Per-lap deployment rate = 0.01509 [0.00630, 0.02765]
+- Durations (laps): n=7, mean=2.1, min=1, max=3
 
 ## miami (4 editions, 228 race laps observed)
 

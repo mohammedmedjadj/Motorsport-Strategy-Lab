@@ -134,6 +134,68 @@ def _summarise(rows: list[dict[str, object]]) -> pd.DataFrame:
     return summary.sort_values("relative_rmse")
 
 
+def _worst_transfer_sentence(
+    end_deg_mean: pd.Series, summary: pd.DataFrame
+) -> str:
+    """State which circuit transfers worst, from the numbers, not from memory.
+
+    This paragraph used to assert "-6.330 within-stint R2 ... an order of
+    magnitude more negative than anywhere else". The table directly above it
+    said -1.490. The table recomputed when the scope widened to every class and
+    the sentence did not, because it was prose and prose does not recompute.
+    Both the value and the claim it supports are now derived, so widening the
+    scope again either keeps the sentence true or changes it.
+    """
+    scores = end_deg_mean.dropna().sort_values()
+    if scores.empty:
+        return "No endurance circuit-class has a measurable transfer score."
+
+    (series, event, car_class), worst = scores.index[0], scores.iloc[0]
+    runner_up = float(scores.iloc[1]) if len(scores) > 1 else float("nan")
+
+    # "An order of magnitude worse than anywhere else" is a claim about the
+    # gap to the next-worst, so check it rather than repeat it.
+    gap = abs(worst) / abs(runner_up) if runner_up and abs(runner_up) > 0 else float("inf")
+    if gap >= 10:
+        severity = (
+            f"an order of magnitude more negative than the next-worst "
+            f"({scores.index[1][1]} {scores.index[1][2]}, {runner_up:+.3f})"
+        )
+    elif gap >= 2:
+        severity = (
+            f"{gap:.1f}x more negative than the next-worst "
+            f"({scores.index[1][1]} {scores.index[1][2]}, {runner_up:+.3f})"
+        )
+    else:
+        severity = (
+            f"the worst of them, though not by much — the next-worst "
+            f"({scores.index[1][1]} {scores.index[1][2]}) sits at {runner_up:+.3f}"
+        )
+
+    # Does the same circuit also transfer worst on pit loss? That coincidence
+    # is the whole point of the paragraph, so it has to be checked, not assumed.
+    pit_worst = summary.iloc[-1]
+    both = str(pit_worst["circuit"]).casefold() == str(event).casefold()
+
+    opening = (
+        f"**{event} {car_class} is the worst-transferring circuit-class for "
+        "degradation, and the same circuit transfers worst on pit loss too — "
+        "two independent estimators flagging the same race.**"
+        if both else
+        f"**{event} {car_class} transfers worst for degradation** "
+        f"({worst:+.3f}); the worst for pit loss is a different circuit, "
+        f"{pit_worst['circuit']} ({pit_worst['series']}, relative RMSE "
+        f"{pit_worst['relative_rmse']:.2f})."
+    )
+
+    return (
+        f"{opening} A within-stint R2 of {worst:+.3f} is {severity}. The "
+        "shorter 2025 race format described above plausibly explains it: "
+        "fewer laps per stint changes the fuel-burn/degradation separation "
+        "the fixed-effects model relies on, not just the pit-loss magnitude."
+    )
+
+
 def main() -> int:
     f1_rows = _f1_pit_loss_rows()
     end_rows = _endurance_pit_loss_rows()
@@ -150,9 +212,14 @@ def main() -> int:
 
     end_deg_loro_path = ENDURANCE_DERIVED_DIR / "endurance_degradation_loro.csv"
     end_deg = pd.read_csv(end_deg_loro_path)
+    # Keyed on the class as well as the circuit. Indexing on (series, event)
+    # alone kept every class row but showed only two of the three columns that
+    # identify it, so IMSA printed three indistinguishable "Daytona" lines with
+    # different numbers and a reader had no way to tell which was GTP.
     end_deg_mean = (
         end_deg[end_deg["held_out_season"] == "MEAN"]
-        .set_index(["series", "event"])["r2_within"]
+        .set_index(["series", "event", "car_class"])["r2_within"]
+        .sort_index()
     )
 
     lines = [
@@ -227,26 +294,27 @@ def main() -> int:
     lines += [
         "## Degradation, for comparison (already established, restated here for the single table)",
         "",
-        "| Series | Circuit | Mean LORO within-stint R2 |",
-        "|---|---|---|",
+        "A circuit transfers only within a class: the same track is a "
+        "different degradation problem for a GT3 car and a prototype, and "
+        "collapsing them would average away the one result this table exists "
+        "to show.",
+        "",
+        "| Series | Class | Circuit | Mean LORO within-stint R2 |",
+        "|---|---|---|---|",
     ]
     for c, r2 in f1_degradation_r2.items():
-        lines.append(f"| f1 | {c} | {r2:+.3f} |")
-    for (series, event), r2 in end_deg_mean.items():
-        lines.append(f"| {series} | {event} | {r2:+.3f} |")
+        # One season in scope means no fold to hold out. That is "not
+        # measurable here", which is a different statement from a bad score,
+        # and printing "+nan" said neither.
+        value = "not measurable (1 season)" if pd.isna(r2) else f"{r2:+.3f}"
+        lines.append(f"| f1 | — | {c} | {value} |")
+    for (series, event, car_class), r2 in end_deg_mean.items():
+        value = "not measurable (1 season)" if pd.isna(r2) else f"{r2:+.3f}"
+        lines.append(f"| {series} | {car_class} | {event} | {value} |")
 
     lines += [
         "",
-        "**COTA is the worst-transferring circuit for both quantities, "
-        "independently measured.** -6.330 within-stint R2 for degradation "
-        "is not just negative like most circuits, it is an order of "
-        "magnitude more negative than anywhere else in either series -- and "
-        "the shorter 2025 race format (above) plausibly explains this too: "
-        "fewer laps per stint changes the fuel-burn/degradation separation "
-        "the fixed-effects model relies on, not just the pit-loss magnitude. "
-        "Two independent estimators flagging the same circuit-season pair is "
-        "a stronger signal than either alone that 2025 COTA is a genuinely "
-        "different race, not noise in one particular model.",
+        _worst_transfer_sentence(end_deg_mean, summary),
         "",
         "## Neutralisation occurrence, for comparison (already established, restated here)",
         "",

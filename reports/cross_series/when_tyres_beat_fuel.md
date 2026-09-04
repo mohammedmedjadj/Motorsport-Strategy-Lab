@@ -45,10 +45,29 @@ takes more stops than the fuel minimum.
 | tyre-limited (25) | **7.5 s** | 4.7 – 22.5 |
 | fuel-limited (180) | **57.1 s** | 5.4 – 98.2 |
 
-Mann-Whitney **p = 1.1 × 10⁻¹⁴**, and the separation has a hard edge: **no race
-with a pit loss above 22.5 s is tyre-limited anywhere in the data.** That edge
-sat at 22.5 s on 66 entries and sits at 22.5 s on 205 — it did not move when the
-sample tripled, which is the most encouraging thing about it.
+Mann-Whitney **p = 1.1 × 10⁻¹⁴**, and the separation has an edge: **no race with
+a pit loss above 22.5 s is tyre-limited anywhere in the data.** That is **150 of
+the 205 race-seasons, spread across all six classes, with zero exceptions** —
+GTD 32, GTD PRO 33, GTP 26, Hypercar 24, LMP2 21, LMP2 Pro/Am 14.
+
+**The rule is robust; the exact number is not, and the distinction matters.**
+The edge sits at 22.5 s because exactly one race puts it there — IMSA GTD
+Indianapolis 2025. The next tyre-limited race is at **13.2 s**, a 9.3 s gap with
+16 fuel-limited races inside it. Drop that single race and the edge moves to
+13.2 s, and 17 more races fall above it.
+
+This document previously argued the threshold was trustworthy because "it sat at
+22.5 s on 66 entries and sits at 22.5 s on 205 — it did not move when the sample
+tripled". That reasoning is weaker than it looks: **a maximum over a growing
+sample can only move up**, so a stable maximum is not evidence that the
+threshold is well located — only that no new counterexample appeared above it.
+The 139 added races produced no tyre-limited case above 22.5 s, which is real
+evidence for the *rule* and none at all for the *number*.
+
+So: treat "a cheap stop is necessary" as established, and treat 22.5 s as an
+order of magnitude — somewhere in the low tens of seconds — rather than a
+calibrated constant. A single additional GT3 race with an expensive stop and an
+unusual tyre could move it.
 
 A WEC Hypercar stop costs 60–90 s, which buys roughly 2,000 laps of degradation
 at a typical +0.03 s/lap slope. No tyre wears fast enough to repay that.

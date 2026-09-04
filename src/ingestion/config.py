@@ -258,3 +258,55 @@ BREADTH_CIRCUIT_ALIASES: dict[str, str] = {
 def breadth_key(circuit: str) -> str:
     """The Kaggle breadth layer's name for a core circuit slug."""
     return BREADTH_CIRCUIT_ALIASES.get(circuit, circuit)
+
+
+#: Every ``Location`` string FastF1 has reported for each circuit.
+#:
+#: This exists to make the "did FastF1 give us the race we asked for?" check
+#: correct rather than merely strict. FastF1 fuzzy-matches event names and, when
+#: the requested event does not exist in a season, **returns an unrelated one
+#: with only a warning**: asking for the 2018 Miami Grand Prix returns the
+#: Italian Grand Prix at Monza, and asking for the cancelled 2020 Monaco Grand
+#: Prix returns the same. Silently analysing Monza as Monaco is the failure this
+#: guards against.
+#:
+#: Checking the *name* alone is too crude in the other direction. A Grand Prix
+#: can be renamed without moving — Mexico ran as the "Mexican Grand Prix"
+#: through 2020 and the "Mexico City Grand Prix" from 2021, Brazil as the
+#: "Brazilian Grand Prix" then "São Paulo" — and a substring check rejects those
+#: legitimate matches. **A rename keeps the location; a substitution changes
+#: it**, so the location is the discriminator.
+#:
+#: Several circuits report more than one spelling across seasons (Monaco /
+#: Monte Carlo, Yas Island / Yas Marina), so each maps to a set. One entry is
+#: upstream nonsense rather than a variant: the 2026 Bahrain Grand Prix is
+#: listed at "Kuala Lumpur". It is kept so the check cannot fail on a real race,
+#: and noted here so nobody mistakes it for a fact about Bahrain.
+CIRCUIT_LOCATIONS: dict[str, frozenset[str]] = {
+    "austin": frozenset({"Austin"}),
+    "bahrain": frozenset({"Sakhir", "Kuala Lumpur"}),
+    "baku": frozenset({"Baku"}),
+    "barcelona": frozenset({"Barcelona"}),
+    "hungaroring": frozenset({"Budapest"}),
+    "imola": frozenset({"Imola"}),
+    "interlagos": frozenset({"São Paulo"}),
+    "jeddah": frozenset({"Jeddah"}),
+    "las_vegas": frozenset({"Las Vegas"}),
+    "losail": frozenset({"Lusail"}),
+    "madrid": frozenset({"Madrid"}),
+    "melbourne": frozenset({"Melbourne"}),
+    "mexico_city": frozenset({"Mexico City"}),
+    "miami": frozenset({"Miami", "Miami Gardens"}),
+    "monaco": frozenset({"Monaco", "Monte Carlo"}),
+    "montreal": frozenset({"Montréal"}),
+    "monza": frozenset({"Monza"}),
+    "red_bull_ring": frozenset({"Spielberg"}),
+    "ricard": frozenset({"Le Castellet"}),
+    "shanghai": frozenset({"Shanghai"}),
+    "silverstone": frozenset({"Silverstone"}),
+    "singapore": frozenset({"Marina Bay"}),
+    "spa": frozenset({"Spa-Francorchamps"}),
+    "suzuka": frozenset({"Suzuka"}),
+    "yas_marina": frozenset({"Yas Island", "Yas Marina"}),
+    "zandvoort": frozenset({"Zandvoort"}),
+}

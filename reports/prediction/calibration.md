@@ -18,8 +18,8 @@ negative means it is *worse* than knowing nothing.
 | IMSA FCY | circuit | 63 | 0.97 | 0.046 | 0.031 | -0.505 | no better than base rate |
 | WEC FCY | circuit | 33 | 0.27 | 0.305 | 0.198 | -0.538 | no better than base rate |
 | WEC Safety Car | circuit | 33 | 0.58 | 0.278 | 0.244 | -0.139 | no better than base rate |
-| F1 Safety Car | circuit | 152 | 0.57 | 0.273 | 0.245 | -0.116 | no better than base rate |
-| F1 VSC | circuit | 152 | 0.42 | 0.289 | 0.244 | -0.186 | no better than base rate |
+| F1 Safety Car | circuit | 153 | 0.57 | 0.273 | 0.245 | -0.112 | no better than base rate |
+| F1 VSC | circuit | 153 | 0.42 | 0.287 | 0.244 | -0.177 | no better than base rate |
 | Endurance FCY (by series) | series | 125 | 0.68 | 0.134 | 0.218 | +0.386 | beats base rate |
 
 ## What this says (and it is not the flattering answer)
