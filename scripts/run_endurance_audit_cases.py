@@ -74,9 +74,37 @@ def focused_table(table: pd.DataFrame, case: EnduranceAuditCase, best_lap: int, 
     return "\n".join(lines)
 
 
-def audit_case(case: EnduranceAuditCase) -> list[str]:
+def case_facts(case: EnduranceAuditCase, table: pd.DataFrame,
+               best_lap: int, window: tuple[int, ...]) -> dict[str, float | int | bool]:
+    """The numbers the cross-case analysis quotes, taken from the case itself.
+
+    The analysis used to be a hand-written list of strings, and it drifted the
+    way hand-written prose about computed values always does. It claimed both
+    Safety-Car-onset stops were endorsed "decisively so — P(best) 0.84 and
+    0.91": 0.84 was the P(best) of the lap the *model* preferred, not the lap
+    the team took (which was 0.068), and 0.91 appeared nowhere in the table at
+    all. Now the analysis is a function of these.
+    """
+    real = table[table["pit_lap"] == case.real_pit_lap]
+    best = table[table["pit_lap"] == best_lap].iloc[0]
+    return {
+        "real_pit_lap": int(case.real_pit_lap),
+        "best_lap": int(best_lap),
+        "real_p_best": float(real.iloc[0]["p_best"]) if not real.empty else float("nan"),
+        "best_p_best": float(best["p_best"]),
+        "real_median_cost_s": (
+            float(real.iloc[0]["median_s"] - best["median_s"])
+            if not real.empty else float("nan")
+        ),
+        "inside_window": bool(case.real_pit_lap in window),
+        "spread_s": float(best["p90_s"] - best["p10_s"]),
+    }
+
+
+def audit_case(case: EnduranceAuditCase) -> tuple[list[str], dict]:
     table = simulate(case.scenario, case.model, n_draws=N_DRAWS, seed=SEED)
     best_lap, window = window_and_best(table)
+    facts = case_facts(case, table, best_lap, window)
     s = case.scenario
     spread = float(table.loc[table["pit_lap"] == best_lap, "p90_s"].iloc[0]
                    - table.loc[table["pit_lap"] == best_lap, "p10_s"].iloc[0])
@@ -105,7 +133,7 @@ def audit_case(case: EnduranceAuditCase) -> list[str]:
         "",
     ]
     print(f"Case {case.case_id}: best {best_lap}, window {window}")
-    return lines
+    return lines, facts
 
 
 HEADER = [
@@ -131,96 +159,149 @@ HEADER = [
 
 #: Written after reviewing the seed-fixed outputs above; every number cited
 #: is reproducible from this script (seed 20260712, 5000 draws).
-WEC_ANALYSIS = [
-    "## Cross-case analysis",
-    "",
-    "**1. Opportunistic caution stops are strongly endorsed, even at the "
-    "anomalous-slope circuit (Cases A, C).** Both Bahrain 2025's Safety "
-    "Car-onset stop and Imola 2024's are inside the model's window, and "
-    "decisively so — P(best) 0.84 and 0.91 respectively. The engine prices a "
-    "caution stop's opportunity cost the same way regardless of the sign of "
-    "the degradation slope, and real strategists' instinct to box the moment "
-    "the flag changes holds up even at Imola, where the raw slope itself is a "
-    "measured, unexplained anomaly (Phase 2).",
-    "",
-    "**2. The routine Bahrain stop (Case B) is 'outside' by 4.33s against an "
-    "819s spread — noise at this scale, not a real disagreement.** The model "
-    "is near-indifferent between lap 125 and 126 (P(best) 0.003 vs 0.997) "
-    "despite the tiny median gap, because Bahrain's tightly-estimated slope "
-    "makes the model highly sensitive to a single lap of tyre age. The 0.5s "
-    "window tolerance, inherited unchanged from the F1 audit, is a far "
-    "stricter bar at endurance race-time scale (thousands of seconds) than at "
-    "F1's; a verdict should be read against the case's own spread, not the "
-    "'inside/outside' label alone.",
-    "",
-    "**3. The fuel clock binds the window as hard as the degradation slope "
-    "does.** At both Bahrain (Case A) and Imola (Case C) the recommended "
-    "window sits at or just past the point the tank allows — a stop earlier "
-    "than the model prefers is not on the table, mirroring the Phase 4 "
-    "finding that no scoped WEC race is tyre-limited on stop count.",
-    "",
-    "## Scope reminders for reading these verdicts",
-    "",
-    "- 'OUTSIDE the recommended window' is a statement about expected race "
-    "time under the model's stated scope (no rivals, no track position, a "
-    "single net degradation slope, FCY/SC hazards drawn from the series-wide "
-    "posterior), not a judgement on the crew that made the call.",
-    "- Read a verdict's margin against its own outcome spread (p10-p90), not "
-    "just the 0.5s window label — Case B shows a 'tie' can still be labelled "
-    "'outside' at endurance race-time scale.",
-    "- No per-car cost of *also* changing tyres vs a fuel-only splash (the "
-    "measured tyre-change premium, Phase 3) is priced here — the single-stop "
-    "engine still uses one flat pit loss.",
-    "- A per-decision audit like F1's real-outcome comparisons (who actually "
-    "won, what the rival did) is not attempted here: WEC has no rivals or "
-    "track-position model, so only the stop-timing question is replayed.",
-    "",
-]
+def _endorsement(fact: dict, label: str) -> str:
+    """One case's verdict, stated on both statistics rather than one.
 
-IMSA_ANALYSIS = [
-    "## Cross-case analysis",
-    "",
-    "**1. The strongest-signal circuit matches the model exactly (Case B).** "
-    "Road America's routine first stop lands precisely on the model's own "
-    "optimum (P(best) 0.919) — the circuit with the most consistently "
-    "significant degradation fit in IMSA behaves exactly as that fit "
-    "predicts, with no neutralisation involved to complicate the read.",
-    "",
-    "**2. Both FCY-onset stops read 'outside', but for different reasons "
-    "(Cases A, C).** At Watkins Glen (Case A) the model is decisive — "
-    "P(best) 0.792 at lap 104 vs 0.014 at the real lap 90 — and the +7.92s "
-    "gap is a real, if modest, correction: with 15 laps of fuel still in the "
-    "tank, waiting past the FCY onset paid off more than boxing on it did. At "
-    "Mosport (Case C) the 'outside' label is far less confident: the model's "
-    "own optimum carries P(best) just 0.339 against 0.011 for the real stop "
-    "— a genuine relative preference, but on a 581s p10-p90 spread that is "
-    "honest uncertainty, not a confident correction, exactly matching "
-    "Mosport's flat, single-season slope (its confidence interval covers "
-    "zero, Phase 2).",
-    "",
-    "**3. Model confidence tracks the strength of its own degradation "
-    "signal, not a fixed default (all three cases).** P(best) at the "
-    "recommended lap runs 0.919 (Road America) -> 0.792 (Watkins Glen) -> "
-    "0.339 (Mosport) — the same ordering Phase 4's own demo scenarios found, "
-    "now confirmed against real stop decisions rather than a synthetic mid-"
-    "race state.",
-    "",
-    "## Scope reminders for reading these verdicts",
-    "",
-    "- 'OUTSIDE the recommended window' is a statement about expected race "
-    "time under the model's stated scope (no rivals, no track position, a "
-    "single net degradation slope, FCY/SC hazards drawn from the series-wide "
-    "posterior), not a judgement on the crew that made the call.",
-    "- Read a verdict's margin against the model's own P(best) at that lap, "
-    "not just the label — Case C's 'outside' carries far less confidence "
-    "than Case A's.",
-    "- IMSA has zero measured Safety Car events in 63 races (Phase 3); every "
-    "case here concerns FCY or green-flag timing only.",
-    "- No per-car cost of *also* changing tyres vs a fuel-only splash (IMSA's "
-    "measured, smaller tyre-change premium, Phase 3) is priced here — the "
-    "single-stop engine still uses one flat pit loss.",
-    "",
-]
+    They can disagree sharply and that disagreement is the point. A stop can
+    sit inside the recommended window on median cost -- materially indifferent
+    -- while its P(best) is small, because P(best) is an argmin over draws and
+    splits almost all its mass onto whichever near-identical candidate wins
+    most often. Quoting P(best) alone as "decisively endorsed" reads a
+    coin-flip between two laps 0.05 s apart as a strong preference.
+    """
+    inside = "inside" if fact["inside_window"] else "outside"
+    return (
+        f"**{label}** — real lap {fact['real_pit_lap']}, "
+        f"{inside} the window at +{fact['real_median_cost_s']:.2f} s against "
+        f"the model's lap {fact['best_lap']}; P(best) "
+        f"{fact['real_p_best']:.3f} for the real lap against "
+        f"{fact['best_p_best']:.3f} for the model's."
+    )
+
+
+def WEC_ANALYSIS(facts: list[dict]) -> list[str]:
+    """Cross-case analysis for WEC, quoting the cases it just computed."""
+    a, c = facts[0], facts[2]
+    decisive = [f for f in (a, c) if f["real_p_best"] > 0.5]
+    return [
+        "## Cross-case analysis",
+        "",
+        "**1. Opportunistic caution stops sit inside the model's window at both "
+        "circuits — including the anomalous-slope one (Cases A, C).** "
+        + _endorsement(a, "Bahrain 2025") + " " + _endorsement(c, "Imola 2024") +
+        " The engine prices a caution stop's opportunity cost the same way "
+        "regardless of the sign of the degradation slope, so the strategists' "
+        "instinct to box the moment the flag changes holds up even at Imola, "
+        "where the raw slope is a measured, unexplained anomaly (Phase 2).",
+        "",
+        "**The two statistics disagree, and that is worth more than either "
+        f"alone.** {len(decisive)} of these two real stops carries a P(best) "
+        "above 0.5, yet both are inside the window on median cost. The reason is "
+        "structural: P(best) is an argmin over draws, so when two candidate laps "
+        "differ by hundredths of a second in median race time it hands nearly all "
+        "its mass to whichever wins marginally more often. Reading that as a "
+        "strong preference would be reading a coin flip as a verdict — and an "
+        "earlier version of this section did exactly that, quoting the *model's* "
+        "P(best) as though it were the team's.",
+        "",
+        "**2. The routine Bahrain stop (Case B) is 'outside' by 4.33s against an "
+        "819s spread — noise at this scale, not a real disagreement.** The model "
+        "is near-indifferent between lap 125 and 126 (P(best) 0.003 vs 0.997) "
+        "despite the tiny median gap, because Bahrain's tightly-estimated slope "
+        "makes the model highly sensitive to a single lap of tyre age. The 0.5s "
+        "window tolerance, inherited unchanged from the F1 audit, is a far "
+        "stricter bar at endurance race-time scale (thousands of seconds) than at "
+        "F1's; a verdict should be read against the case's own spread, not the "
+        "'inside/outside' label alone.",
+        "",
+        "**3. The fuel clock binds the window as hard as the degradation slope "
+        "does.** At both Bahrain (Case A) and Imola (Case C) the recommended "
+        "window sits at or just past the point the tank allows — a stop earlier "
+        "than the model prefers is not on the table, mirroring the Phase 4 "
+        "finding that no scoped WEC race is tyre-limited on stop count.",
+        "",
+        "## Scope reminders for reading these verdicts",
+        "",
+        "- 'OUTSIDE the recommended window' is a statement about expected race "
+        "time under the model's stated scope (no rivals, no track position, a "
+        "single net degradation slope, FCY/SC hazards drawn from the series-wide "
+        "posterior), not a judgement on the crew that made the call.",
+        "- Read a verdict's margin against its own outcome spread (p10-p90), not "
+        "just the 0.5s window label — Case B shows a 'tie' can still be labelled "
+        "'outside' at endurance race-time scale.",
+        "- No per-car cost of *also* changing tyres vs a fuel-only splash (the "
+        "measured tyre-change premium, Phase 3) is priced here — the single-stop "
+        "engine still uses one flat pit loss.",
+        "- A per-decision audit like F1's real-outcome comparisons (who actually "
+        "won, what the rival did) is not attempted here: WEC has no rivals or "
+        "track-position model, so only the stop-timing question is replayed.",
+        "",
+    ]
+
+def IMSA_ANALYSIS(facts: list[dict]) -> list[str]:
+    """Cross-case analysis for IMSA GTP, quoting the cases it just computed.
+
+    Six numbers in this section had drifted from the tables directly above
+    them: P(best) 0.919 for 0.918, 0.792 for 0.791, +7.92 s for +7.81 s, and
+    -- the one that changed a qualitative claim -- 0.339 for 0.240, a 29%
+    relative error supporting the words "far less confident". All correct when
+    typed, all stale the moment the inputs moved, none noticed because the
+    table and the paragraph were written by different mechanisms.
+    """
+    glen, road_america, mosport = facts[0], facts[1], facts[2]
+    ordering = " -> ".join(
+        f"{fact['best_p_best']:.3f} ({name})"
+        for name, fact in (("Road America", road_america),
+                           ("Watkins Glen", glen),
+                           ("Mosport", mosport))
+    )
+    return [
+        "## Cross-case analysis",
+        "",
+        "**1. The strongest-signal circuit matches the model exactly (Case B).** "
+        "Road America's routine first stop lands precisely on the model's own "
+        f"optimum (P(best) {road_america['real_p_best']:.3f}) — the circuit with "
+        "the most consistently significant degradation fit in IMSA behaves "
+        "exactly as that fit predicts, with no neutralisation involved to "
+        "complicate the read.",
+        "",
+        "**2. Both FCY-onset stops read 'outside', but for different reasons "
+        "(Cases A, C).** At Watkins Glen (Case A) the model is decisive — "
+        f"P(best) {glen['best_p_best']:.3f} at lap {glen['best_lap']} vs "
+        f"{glen['real_p_best']:.3f} at the real lap {glen['real_pit_lap']} — and "
+        f"the +{glen['real_median_cost_s']:.2f}s gap is a real, if modest, "
+        "correction: with 15 laps of fuel still in the tank, waiting past the FCY "
+        "onset paid off more than boxing on it did. At Mosport (Case C) the "
+        "'outside' label is far less confident: the model's own optimum carries "
+        f"P(best) just {mosport['best_p_best']:.3f} against "
+        f"{mosport['real_p_best']:.3f} for the real stop — a genuine relative "
+        f"preference, but on a {mosport['spread_s']:.0f}s p10-p90 spread that is "
+        "honest uncertainty, not a confident correction, exactly matching "
+        "Mosport's flat, single-season slope (its confidence interval covers "
+        "zero, Phase 2).",
+        "",
+        "**3. Model confidence tracks the strength of its own degradation "
+        "signal, not a fixed default (all three cases).** P(best) at the "
+        f"recommended lap runs {ordering} — the same ordering Phase 4's own demo "
+        "scenarios found, now confirmed against real stop decisions rather than a "
+        "synthetic mid-race state.",
+        "",
+        "## Scope reminders for reading these verdicts",
+        "",
+        "- 'OUTSIDE the recommended window' is a statement about expected race "
+        "time under the model's stated scope (no rivals, no track position, a "
+        "single net degradation slope, FCY/SC hazards drawn from the series-wide "
+        "posterior), not a judgement on the crew that made the call.",
+        "- Read a verdict's margin against the model's own P(best) at that lap, "
+        "not just the label — Case C's 'outside' carries far less confidence "
+        "than Case A's.",
+        "- IMSA has zero measured Safety Car events in 63 races (Phase 3); every "
+        "case here concerns FCY or green-flag timing only.",
+        "- No per-car cost of *also* changing tyres vs a fuel-only splash (IMSA's "
+        "measured, smaller tyre-change premium, Phase 3) is priced here — the "
+        "single-stop engine still uses one flat pit loss.",
+        "",
+    ]
 
 
 GT3_ANALYSIS = [
@@ -280,16 +361,22 @@ ELMS_ANALYSIS = [
 ]
 
 
-def write_report(series: str, title: str, analysis: list[str],
+def write_report(series: str, title: str, analysis,
                  out_dir: str | None = None, filename: str = "audit_cases.md") -> None:
     """``out_dir`` separates the *scope key* from where its report lives: the
     GT3 cases are IMSA's classes, not a series, so they belong in reports/imsa/
     under their own filename rather than inventing a reports/gt3/ directory."""
     cases = build_cases(series)
     lines = [f"# {title}", ""] + HEADER
+    facts = []
     for case in cases:
-        lines += audit_case(case)
-    lines += analysis
+        case_lines, case_fact = audit_case(case)
+        lines += case_lines
+        facts.append(case_fact)
+    # `analysis` may be a plain list -- prose that quotes no computed value --
+    # or a callable that receives every case's numbers. The callable form
+    # exists because the static form silently went stale: see case_facts().
+    lines += analysis(facts) if callable(analysis) else analysis
     out = REPORTS_DIR / (out_dir or series) / filename
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text("\n".join(lines), encoding="utf-8")
@@ -298,7 +385,13 @@ def write_report(series: str, title: str, analysis: list[str],
 
 def main() -> int:
     write_report("wec", "WEC per-decision audit — real stop timing vs the model", WEC_ANALYSIS)
-    write_report("imsa", "IMSA per-decision audit — real stop timing vs the model", IMSA_ANALYSIS)
+    # Every one of these cases is GTP, and reports/imsa/gtp/ is where every
+    # other GTP phase report lives. Writing to the series root left a stale
+    # hand-copied duplicate in gtp/ that nothing regenerated -- it sat there
+    # for three weeks carrying six numbers that had since drifted, in exactly
+    # the directory a GTP reader navigates to.
+    write_report("imsa", "IMSA GTP per-decision audit — real stop timing vs the model",
+                 IMSA_ANALYSIS, out_dir="imsa/gtp")
     write_report(
         "gt3",
         "IMSA GT3 per-decision audit — GTD and GTD PRO, where an extra stop can pay",

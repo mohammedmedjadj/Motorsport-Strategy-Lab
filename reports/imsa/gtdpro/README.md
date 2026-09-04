@@ -46,7 +46,7 @@ particular.
 
 Its per-decision case study is **Laguna Seca 2026**, filed with GTD's because
 the two classes share a car and the comparison between them is the point:
-[`../gtd/audit_cases.md`](../gtd/audit_cases.md) case G-B. The question it asks
+[`../gt3_audit_cases.md`](../gt3_audit_cases.md) case G-B. The question it asks
 is whether the recommended window differs at all between the same car with a
 professional crew and with an amateur one.
 

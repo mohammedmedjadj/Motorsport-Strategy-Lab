@@ -176,7 +176,7 @@ p-values had drifted a long way from the artifacts; the post-mortem is in
 ## 7. What is not here
 
 - **Per-decision audit: now present** for both GT3 classes
-  ([`gt3_audit_cases.md`](audit_cases.md)), on the two circuits the
+  ([`gt3_audit_cases.md`](../gt3_audit_cases.md)), on the two circuits the
   cross-series rule marks tyre-limited.
 - **No established amateur effect on degradation** — see §6. The design is in
   place and the measurement is inconclusive at 44 pairs, which is a different

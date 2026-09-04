@@ -608,7 +608,7 @@ says so rather than picking a winner anyway.
 | 2. Degradation       | [`reports/imsa/degradation_phase2.md`](reports/imsa/gtp/degradation_phase2.md) + `src/degradation/endurance_validation.py` + tests | Net slope per circuit-season with CIs; leave-one-season-out and leave-one-circuit-out both run and clearly distinguished; the fuel/degradation split reported only as a diagnostic |
 | 3. Neutralisations   | [`reports/imsa/safety_car_phase3.md`](reports/imsa/gtp/safety_car_phase3.md) + tests                                                 | Per-circuit and series-wide Beta-Binomial/Gamma-Poisson posteriors on 63 races; the zero-Safety-Car case handled by the Jeffreys prior rather than hard-coded                      |
 | 4. Simulator         | [`reports/imsa/simulator_phase4.md`](reports/imsa/gtp/simulator_phase4.md) + tests                                                   | Fuel-range constraint enforced, one demo scenario per circuit, reproducible                                                                                                        |
-| 5. Decision audit    | [`reports/imsa/audit_cases.md`](reports/imsa/gtp/audit_cases.md) + `src/audit/endurance_cases.py` + tests                          | Three real stop decisions, states rebuilt from committed laps, replayed through the single-stop engine and compared quantitatively                                                 |
+| 5. Decision audit    | [`reports/imsa/gtp/audit_cases.md`](reports/imsa/gtp/audit_cases.md) + `src/audit/endurance_cases.py` + tests                          | Three real stop decisions, states rebuilt from committed laps, replayed through the single-stop engine and compared quantitatively                                                 |
 | 6. Methodology       | [`reports/imsa/methodology.md`](reports/imsa/methodology.md)                                                                     | Full write-up — motivation, method, results, threats to validity, future work — every number traceable to project output, IMSA-only, never pooled with WEC                       |
 | 7. Packaging         | [`reports/imsa/packaging_phase7.md`](reports/imsa/packaging_phase7.md)                                                           | Runs from a fresh clone (104 endurance-scoped tests, offline); IMSA's own reproduction commands; upstream contribution ideas, including the one question worth asking the source  |
 
@@ -629,7 +629,7 @@ says so rather than picking a winner anyway.
   ([`reports/endurance_audit.md`](reports/cross_series/endurance_audit.md)) — real winning
   stint lengths versus each circuit's fuel range.
 - A **per-decision audit, the IMSA analogue of F1's Phase 5, now exists**
-  ([`reports/imsa/audit_cases.md`](reports/imsa/gtp/audit_cases.md)): three real
+  ([`reports/imsa/gtp/audit_cases.md`](reports/imsa/gtp/audit_cases.md)): three real
   stop decisions (an opportunistic FCY-onset stop at Watkins Glen, a routine
   green-flag stop at Road America, an opportunistic FCY stop at the flat-
   signal Mosport) replayed through the single-stop engine. Model confidence

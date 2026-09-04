@@ -43,4 +43,4 @@ cannot drift from the data:
 
 Plus [`findings.md`](findings.md) — the class write-up, including the
 crew-rating comparison against GTD PRO — and
-[`audit_cases.md`](audit_cases.md).
+[`../gt3_audit_cases.md`](../gt3_audit_cases.md).

@@ -1,4 +1,4 @@
-# IMSA per-decision audit — real stop timing vs the model
+# IMSA GTP per-decision audit — real stop timing vs the model
 
 Real stop decisions replayed through the single-next-stop simulator (5000 draws, seed 20260712). Race states (tyre age, laps since last refuel, the real stop lap) are reconstructed from the committed derived laps, not quoted from memory. See ``src/audit/endurance_cases.py`` for the case-selection rationale — there is no public strategy narrative to draw on for these races the way F1's audit has, so cases are chosen by a measurable, uniformly-applied criterion instead (an opportunistic neutralisation-onset stop, or a routine green-flag one) rather than by fame.
 
@@ -64,11 +64,11 @@ Reading guide: the model optimises **expected race time** to the next stop only,
 
 ## Cross-case analysis
 
-**1. The strongest-signal circuit matches the model exactly (Case B).** Road America's routine first stop lands precisely on the model's own optimum (P(best) 0.919) — the circuit with the most consistently significant degradation fit in IMSA behaves exactly as that fit predicts, with no neutralisation involved to complicate the read.
+**1. The strongest-signal circuit matches the model exactly (Case B).** Road America's routine first stop lands precisely on the model's own optimum (P(best) 0.918) — the circuit with the most consistently significant degradation fit in IMSA behaves exactly as that fit predicts, with no neutralisation involved to complicate the read.
 
-**2. Both FCY-onset stops read 'outside', but for different reasons (Cases A, C).** At Watkins Glen (Case A) the model is decisive — P(best) 0.792 at lap 104 vs 0.014 at the real lap 90 — and the +7.92s gap is a real, if modest, correction: with 15 laps of fuel still in the tank, waiting past the FCY onset paid off more than boxing on it did. At Mosport (Case C) the 'outside' label is far less confident: the model's own optimum carries P(best) just 0.339 against 0.011 for the real stop — a genuine relative preference, but on a 581s p10-p90 spread that is honest uncertainty, not a confident correction, exactly matching Mosport's flat, single-season slope (its confidence interval covers zero, Phase 2).
+**2. Both FCY-onset stops read 'outside', but for different reasons (Cases A, C).** At Watkins Glen (Case A) the model is decisive — P(best) 0.791 at lap 104 vs 0.014 at the real lap 90 — and the +7.81s gap is a real, if modest, correction: with 15 laps of fuel still in the tank, waiting past the FCY onset paid off more than boxing on it did. At Mosport (Case C) the 'outside' label is far less confident: the model's own optimum carries P(best) just 0.240 against 0.009 for the real stop — a genuine relative preference, but on a 581s p10-p90 spread that is honest uncertainty, not a confident correction, exactly matching Mosport's flat, single-season slope (its confidence interval covers zero, Phase 2).
 
-**3. Model confidence tracks the strength of its own degradation signal, not a fixed default (all three cases).** P(best) at the recommended lap runs 0.919 (Road America) -> 0.792 (Watkins Glen) -> 0.339 (Mosport) — the same ordering Phase 4's own demo scenarios found, now confirmed against real stop decisions rather than a synthetic mid-race state.
+**3. Model confidence tracks the strength of its own degradation signal, not a fixed default (all three cases).** P(best) at the recommended lap runs 0.918 (Road America) -> 0.791 (Watkins Glen) -> 0.240 (Mosport) — the same ordering Phase 4's own demo scenarios found, now confirmed against real stop decisions rather than a synthetic mid-race state.
 
 ## Scope reminders for reading these verdicts
 
