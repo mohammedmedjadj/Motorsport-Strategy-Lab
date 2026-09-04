@@ -30,6 +30,7 @@ import matplotlib  # noqa: E402
 matplotlib.use("Agg")
 
 import matplotlib.pyplot as plt  # noqa: E402
+import numpy as np  # noqa: E402
 import pandas as pd  # noqa: E402
 
 from src.ingestion.config import (  # noqa: E402
@@ -88,6 +89,25 @@ def r1_transfer() -> str:
                 (row.r2_within, row.Index), fontsize=8.5,
                 va="center", color="#222222",
             )
+
+    # Two circuit-classes sit far below the rest (COTA Hypercar at -1.49 is 3x
+    # the next-worst), and on a full-range axis they squeeze all 49 others into
+    # a tenth of the canvas, hiding the structure the figure exists to show.
+    # The axis is clipped and anything outside it is named, because dropping an
+    # inconvenient point without saying so is a different thing entirely.
+    floor = -0.55
+    off_scale = mean[mean["r2_within"] < floor]
+    ax.set_xlim(floor, mean["r2_within"].max() + 0.30)
+    if not off_scale.empty:
+        named = ", ".join(
+            f"{row.event} {row.car_class} {row.r2_within:+.2f}"
+            for row in off_scale.itertuples()
+        )
+        ax.annotate(
+            f"off scale, worse: {named}",
+            (floor, 0), fontsize=8.5, color="#8a4b52",
+            xytext=(8, 2), textcoords="offset points", va="bottom",
+        )
 
     ax.set_yticks([])
     ax.set_xlabel("leave-one-race-out mean within-stint R2   ->   transfers better")
@@ -201,27 +221,43 @@ def r3_audit_bias() -> str:
     ]
     groups.sort(key=lambda pair: pair[1].median())
 
-    fig, ax = plt.subplots(figsize=(10, 5.6))
-    ax.set_xlim(-32, 92)
+    fig, ax = plt.subplots(figsize=(10, 5.8))
+    ax.set_xlim(-34, 98)
+
+    # A strip of points all at one height reads as an extent, not a density:
+    # 632 IMSA decisions drew a solid bar and hid where the mass actually sits.
+    # A box carries the quartiles, and the jittered cloud behind it carries the
+    # sample size and the tail. The jitter is seeded so the figure is stable
+    # across runs -- an unseeded one re-draws differently every time and the
+    # drift check would fail on noise.
+    rng = np.random.default_rng(20260904)
     for position, (label, deltas) in enumerate(groups):
+        colour = "#2b2d42" if label == "F1" else "#00798c"
         ax.scatter(
-            deltas, [position] * len(deltas), s=14, alpha=0.16,
-            color="#2b2d42" if label == "F1" else "#00798c", zorder=2,
+            deltas, position + rng.uniform(-0.26, 0.26, len(deltas)),
+            s=11, alpha=0.30, color=colour, linewidth=0, zorder=2,
         )
-        median = deltas.median()
-        ax.scatter([median], [position], marker="|", s=900, linewidth=2.6,
-                   color="#d1495b", zorder=4)
+        ax.boxplot(
+            [deltas], positions=[position], vert=False, widths=0.52,
+            showfliers=False, medianprops={"color": "#d1495b", "linewidth": 2.4},
+            boxprops={"color": "#333333", "linewidth": 1.1},
+            whiskerprops={"color": "#333333", "linewidth": 1.1},
+            capprops={"color": "#333333", "linewidth": 1.1},
+            zorder=3,
+        )
         # "Later" needs a definition, and it is not delta > 0: the audit calls
         # a disagreement of one lap an agreement, so the same bar is used here.
         later = (deltas > 1).mean() * 100
         ax.annotate(
-            f"median {median:+.0f}    {later:.0f}% later    n = {len(deltas)}",
-            (62, position), fontsize=9, va="center", color="#333333",
+            f"median {deltas.median():+.0f}    {later:.0f}% later    "
+            f"n = {len(deltas)}",
+            (58, position), fontsize=9, va="center", color="#333333",
         )
 
-    ax.axvline(0, color="#444444", linewidth=1.2, zorder=3)
+    ax.axvline(0, color="#444444", linewidth=1.2, zorder=4)
     ax.set_yticks(range(len(groups)))
     ax.set_yticklabels([label for label, _ in groups])
+    ax.set_ylim(-0.6, len(groups) - 0.4)
     ax.set_xticks([-30, -20, -10, 0, 10, 20, 30, 40, 50])
     ax.set_xlabel("model's lap  -  team's lap      (negative = model stops earlier)")
     total = sum(len(deltas) for _, deltas in groups)
