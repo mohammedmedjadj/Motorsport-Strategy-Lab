@@ -40,6 +40,22 @@ print(session.event["EventName"], "|", session.event["Location"])
 
 Monaco 2020 was cancelled. Asking for it returns Monza.
 
+`outreach/fastf1_repro.py` in this repository runs all of these against a clean
+install. Verified output on **fastf1 3.8.3**:
+
+```
+requested                              returned                   location
+2018 Miami Grand Prix                  Italian Grand Prix         Monza
+2020 Monaco Grand Prix                 Italian Grand Prix         Monza
+2018 Las Vegas Grand Prix              French Grand Prix          Le Castellet
+2024 Monaco Grand Prix                 Monaco Grand Prix          Monaco        <- control, correct
+2018 Mexico City Grand Prix            Mexican Grand Prix         Mexico City   <- rename, correct
+```
+
+Three requests for events that did not exist in that season returned three
+different unrelated races. The last two rows are the cases that must keep
+working: an event that exists, and one that was renamed without moving.
+
 ### Current behaviour
 
 A warning is logged —
@@ -64,10 +80,24 @@ for season in range(2018, 2026):
 ```
 
 produces a dataset where some rows are the wrong circuit entirely, and nothing
-downstream can tell. In our case an eight-season sweep across 26 circuits would
-have silently attributed Monza's laps to Monaco, Miami and three other
-circuits — 28 of 180 requested editions do not exist, and every one of them
-returned some other race.
+downstream can tell.
+
+Our own sweep is 2018–2025 across 26 circuits: **180 requested editions, of
+which 26 did not run that season — and all 26 came back as some other race.**
+That is 14% of the requests, and the substitutes are not a single fallback but
+ten different Grands Prix:
+
+| handed back instead | times |
+|---|---|
+| Italian | 5 |
+| Hungarian | 5 |
+| Austrian | 4 |
+| Australian, German, Chinese, Russian, Spanish | 2 each |
+| Belgian, Turkish | 1 each |
+
+Every one of those would have entered the dataset as the circuit we asked for.
+We only know the count because we added a guard; before that, the same sweep
+reported a clean run.
 
 ### What makes this hard to guard against downstream
 
@@ -98,6 +128,6 @@ the smallest and we have the test cases from our own guard.
 
 ### Environment
 
-- FastF1 version: *(fill in from `fastf1.__version__` before filing)*
-- Python 3.11 / 3.13, Windows and Linux
+- FastF1 **3.8.3**
+- Python 3.13, Windows 11
 - Reproduces from a cold cache and a warm one
