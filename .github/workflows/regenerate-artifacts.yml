@@ -139,6 +139,8 @@ jobs:
       # sentence that does, and it is harder to notice.
       - name: Headline figures
         run: python scripts/make_headline_figures.py
+      - name: Supporting figures
+        run: python scripts/make_supporting_figures.py
 
       - name: Report drift
         run: .github/scripts/report_drift.sh "cross-series"

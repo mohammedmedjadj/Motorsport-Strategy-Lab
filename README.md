@@ -8,7 +8,7 @@
   <a href="https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab/actions/workflows/tests.yml"><img src="https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab/actions/workflows/tests.yml/badge.svg" alt="Test suite status"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-CC%20BY--NC--SA%204.0-E10600" alt="License: CC BY-NC-SA 4.0"></a>
   <img src="https://img.shields.io/badge/python-3.11%2B-00D9FF" alt="Python 3.11+">
-  <img src="https://img.shields.io/badge/tests-428%20passing-2ea44f" alt="428 tests passing">
+  <img src="https://img.shields.io/badge/tests-433%20passing-2ea44f" alt="433 tests passing">
   <img src="https://img.shields.io/badge/series-F1%20%C2%B7%20WEC%20%C2%B7%20IMSA%20%C2%B7%20ELMS-FFB800" alt="Series: F1, WEC, IMSA, ELMS">
 </p>
 
@@ -21,10 +21,16 @@
   <a href="CONTRIBUTING.md">Contributing</a>
 </p>
 
-A motorsport race and strategy research project: a three-layer decision-support
-system — tyre degradation model, safety-car probability model, Monte Carlo
-strategy simulator — plus a retrospective audit that replays real strategy
-calls through the simulator and checks what it would have recommended.
+A motorsport strategy research project across **four championships and seven
+car classes**, built to one protocol so the answers are comparable: fitted tyre
+degradation, Bayesian neutralisation risk, measured pit loss and track position,
+an exact multi-stop dynamic program and a Monte Carlo engine — then **1,280 real
+pit-stop decisions replayed** against all of it, three rule-of-thumb baselines
+scored on the same decisions, and confidence intervals on every headline.
+
+Two of its three results are negative and the third is measured but
+**unexplained**. That is the point rather than an apology: the two candidate
+explanations for it were proposed here, tested here, and both failed.
 
 It started on **Formula 1** (via FastF1) and has since been extended to
 **endurance racing, WEC and IMSA**, which FastF1 doesn't cover. Both series
@@ -97,6 +103,28 @@ Jump to: [Formula 1](#formula-1) · [IMSA](#imsa) · [ELMS](#elms) ·
 [WEC](#wec) · [Cross-series extensions](#modelling-extensions-across-series) ·
 [Methods](#mathematical-methods).
 
+## Three results, three figures
+
+<table>
+<tr>
+<td width="33%"><img src="reports/figures/r1_transfer.png" alt="Leave-one-race-out transfer per circuit-class"></td>
+<td width="33%"><img src="reports/figures/r2_pit_loss_rule.png" alt="Pit loss against tyre-limited share"></td>
+<td width="33%"><img src="reports/figures/r3_audit_bias.png" alt="Model lap minus team lap, per series"></td>
+</tr>
+<tr>
+<td valign="top"><b>Transfer is a property of the circuit-class, not the championship.</b> 51 circuit-classes, one protocol. GT3 at Lime Rock reaches R² <b>+0.573</b>; only 5 clear 0.2. The near-spec control (ELMS LMP2 — one chassis, one engine, no BoP) fails too, so the instability is not the hardware. Difference GT3 − prototype <b>+0.164</b> [+0.059, +0.312], permutation p = 0.0009.</td>
+<td valign="top"><b>The cost of the stop, not the car, sets the strategy regime.</b> Across 205 race-seasons, class median pit loss against tyre-limited share: <b>r = −0.982</b> [−0.986, −0.745], monotonic with no inversion. 150 race-seasons sit above a 22.5 s pit loss and <b>not one</b> is tyre-limited — though that edge is a maximum set by a single race, so quote the rule, not the constant.</td>
+<td valign="top"><b>An exact optimiser stops later than teams do, and nobody knows why.</b> 1,280 replayed first stops, four series, one criterion. Median +12 laps in IMSA, +10 in F1. Track position: <b>tested, rejected</b>. Slope bias: <b>tested, not detected</b>. The finding stands as measured and unexplained.</td>
+</tr>
+</table>
+
+**And a rule of thumb sits closer to real practice than the optimiser, in three
+series out of four** — in IMSA, one that uses no fitted quantity at all.
+
+<p align="center">
+  <img src="reports/figures/s5_baselines.png" alt="Median lap error: optimiser against three baselines" width="88%">
+</p>
+
 ## Why this project
 
 Most public F1 data projects (and racing data projects in general) stop at "predict the pit-stop lap," a regression
@@ -123,36 +151,136 @@ over.
 
 ## How it fits together
 
+The old version of this diagram showed four boxes — ingest, model, simulate,
+audit. That stopped being true a long time ago. What is actually here is a
+measurement layer, an engine that consumes it, and **four independent ways of
+attacking the result**, two of which have already destroyed a claim this
+project published.
+
 ```mermaid
-flowchart LR
-    A[Data Ingestion<br/>FastF1 · WEC/IMSA dataset] --> B[Modeling<br/>Tyre Degradation]
-    A --> C[Modeling<br/>Bayesian Neutralisation Risk]
-    B --> D[Simulation<br/>Monte Carlo Strategy Engine]
-    C --> D
-    D --> E[Retrospective Audit<br/>replay real strategy calls]
+flowchart TB
+    subgraph SOURCE["Sources"]
+        direction LR
+        FF["FastF1<br/>F1 per-lap, flags, compound"]
+        END["Endurance timing<br/>WEC · IMSA · ELMS"]
+        EXT["Kaggle history + Open-Meteo<br/><i>not redistributable</i>"]
+    end
+
+    subgraph MEASURE["Measured layers — each with its own interval"]
+        direction LR
+        DEG["Degradation<br/>fixed effects, cluster-robust"]
+        NEU["Neutralisation<br/>Beta-Binomial, Jeffreys prior"]
+        PIT["Pit loss<br/>trimmed, per class"]
+        POS["Track position<br/>adjacent-swap rate"]
+    end
+
+    subgraph ENGINE["Engine"]
+        direction LR
+        MC["Monte Carlo<br/>common random numbers"]
+        DP["Exact multi-stop DP<br/>hard fuel constraint"]
+        ADV["Adversarial rival<br/>Stackelberg cover"]
+    end
+
+    subgraph CHECK["Four ways to attack the result"]
+        direction LR
+        AUD["Decision audit<br/>1,280 real stops"]
+        BASE["Baselines<br/>3 rules of thumb"]
+        HYP["Hypothesis tests<br/>both rejected"]
+        STAT["Intervals<br/>cluster bootstrap + permutation"]
+    end
+
+    SOURCE --> MEASURE --> ENGINE --> CHECK
+    CHECK --> OUT["94 reports · 34 figures · Streamlit demo"]
+
+    classDef src fill:#eef2f5,stroke:#7e9aa8,color:#1a1a1a
+    classDef meas fill:#00798c,stroke:#005f6e,color:#fff
+    classDef eng fill:#30638e,stroke:#234a6b,color:#fff
+    classDef chk fill:#d1495b,stroke:#a53848,color:#fff
+    classDef out fill:#2ea44f,stroke:#1a7f37,color:#fff
+    class FF,END,EXT src
+    class DEG,NEU,PIT,POS meas
+    class MC,DP,ADV eng
+    class AUD,BASE,HYP,STAT chk
+    class OUT out
 ```
+
+**Why four checks and not one.** An audit alone says the model disagrees with
+practice; it cannot say whether the disagreement is the model's fault. The
+baselines answer "would a simpler rule have done better" (often, yes). The
+hypothesis tests take the explanations *this project proposed* and try to kill
+them (both died). The intervals say how far each number could move. Any one of
+them alone would have let a wrong claim stand.
+
+### What each series contributes that the others cannot
+
+| | F1 | WEC | IMSA | ELMS |
+|---|---|---|---|---|
+| per-lap **compound** | ✅ modelled | ❌ absent from source | ❌ absent | ❌ absent |
+| fuel / tyre **separable** | ✅ no refuelling | ❌ | ❌ | ❌ |
+| **refuelling** | ❌ since 2010 | ✅ binding constraint | ✅ | ✅ |
+| classes in scope | 1 | 1 (Hypercar) | **3** (GTP, GTD, GTD PRO) | **2** (LMP2, Pro/Am) |
+| Safety Car regime | mixed | 19 of 33 | **0 of 63** | **23 of 29** |
+| the control it provides | compound effects | — | crew rating, cheap stops | **near-spec field** |
+
+ELMS earns its place as the **control**: one chassis, one engine, no
+Balance of Performance. Its slopes fail to transfer exactly as the
+BoP-adjusted GT3 fields do, which is what rules out "heterogeneous machinery"
+as the explanation for instability.
+
+<p align="center">
+  <img src="reports/figures/s1_neutralisation_regimes.png" alt="Share of races seeing a Safety Car, per series" width="82%">
+</p>
+
+Every conclusion that discounts a stop taken under caution depends on that
+rate. A pooled endurance model would sit between 0% and 79% and describe none
+of the three, which is why these are never merged.
+
+### The measured layers, at a glance
+
+<table>
+<tr>
+<td width="50%"><img src="reports/figures/s2_pit_loss_spectrum.png" alt="Pit loss per class, log scale"></td>
+<td width="50%"><img src="reports/figures/s4_track_position.png" alt="Adjacent-swap rate per F1 circuit"></td>
+</tr>
+<tr>
+<td valign="top"><b>Pit loss</b> — 23 s in F1, 24 s for IMSA GTD, 74 s for WEC Hypercar. A GT3 stop is a tyre change; a prototype stop is a tank, a driver and four tyres. This axis is what result 2 turns on.</td>
+<td valign="top"><b>Track position</b> — a 14-fold range from Monaco to Las Vegas, and unlike degradation it <i>transfers between seasons</i>. It is the primitive the adversarial-rival model is built on.</td>
+</tr>
+</table>
+
+<p align="center">
+  <img src="reports/figures/s3_f1_degradation.png" alt="F1 tyre-age slope per circuit and compound, with cluster-robust intervals" width="72%">
+</p>
+
+73 fitted coefficients across 25 circuits, per compound, with cluster-robust
+intervals. Where an interval crosses zero the circuit has **no measurable
+wear** on that compound — reported rather than smoothed away.
+
+### Phase status, per series
 
 ```mermaid
 flowchart LR
-    subgraph F1["Formula 1"]
+    subgraph F1["Formula 1 — 26 circuits, 2022-2026"]
         direction LR
-        f0["0 Data<br/>availability"] --> f1["1 Data<br/>quality"] --> f2["2 Degradation"] --> f3["3 SC/VSC"] --> f4["4 Simulator"] --> f5["5 Audit"] --> f6["6 Methodology"] --> f7["7 Packaging"]
+        f0["0 availability"] --> f1["1 quality"] --> f2["2 degradation"] --> f3["3 SC/VSC"] --> f4["4 simulator"] --> f5["5 audit"] --> f6["6 methodology"] --> f7["7 packaging"]
     end
-    subgraph END["WEC & IMSA"]
+    subgraph END["WEC · IMSA · ELMS — 7 classes"]
         direction LR
-        e0["0 Data<br/>availability"] --> e1["1 Data<br/>quality"] --> e2["2 Degradation"] --> e3["3 Neutralisation"] --> e4["4 Simulator"] --> e5["5 Audit"] --> e6["6 Methodology"] --> e7["7 Packaging"]
+        e0["0 availability"] --> e1["1 quality"] --> e2["2 degradation"] --> e3["3 neutralisation"] --> e4["4 simulator"] --> e5["5 audit"] --> e6["6 methodology"] --> e7["7 packaging"]
+    end
+    subgraph X["Cross-series — added after the phases closed"]
+        direction LR
+        x1["baselines"] --> x2["formal tests"] --> x3["generalisation audit"] --> x4["hypothesis tests"]
     end
     classDef done fill:#2ea44f,stroke:#1a7f37,color:#fff
-    classDef partial fill:#FFB800,stroke:#b58600,color:#1a1a1a
-    class f0,f1,f2,f3,f4,f5,f6,f7 done
-    class e0,e1,e2,e3,e4,e5,e6,e7 done
+    class f0,f1,f2,f3,f4,f5,f6,f7,e0,e1,e2,e3,e4,e5,e6,e7,x1,x2,x3,x4 done
 ```
 
-All four series run the full pipeline through phase 7. Each keeps its own
-reports throughout, because they are
-separate series and the data says so: across their committed races, WEC sees a
-Safety Car in 19 of 33, ELMS in **23 of 29**, and IMSA in **0 of 63** — three
-neutralisation regimes that no pooled model would describe.
+All four series run the full pipeline through phase 7, each keeping its own
+reports throughout — they are separate series and the data says so. The
+cross-series row is what was added once the per-series phases closed, and it is
+where the project stopped being a set of models and started being a set of
+claims that can be attacked.
 
 ## The interactive demo
 
@@ -1325,7 +1453,7 @@ Motorsport-Strategy-Lab/
                         #   run_fuel_limited_sensitivity.py,
                         #   run_sc_contamination_check.py (adversarial audit
                         #   pass); demo_extensions.py; generate_banner.py
-  tests/                # pytest, across four series and six classes, 428
+  tests/                # pytest, across four series and seven classes, 433
                         #   tests -- incl. the demo, driven headlessly by
                         #   test_demo_app.py, and the report-staleness guards
                         #   that check prose still matches the artifacts

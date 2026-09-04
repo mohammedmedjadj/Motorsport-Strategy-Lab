@@ -211,6 +211,32 @@ def correlation_interval() -> str:
     return f"[{row['ci_low']:+.3f}, {row['ci_high']:+.3f}]".replace("-", "−")
 
 
+
+def neutralisation_regimes() -> list[str]:
+    """Races seeing a Safety Car, per endurance series.
+
+    Computed the way the project defines it — `race_timeline` collapses per-car
+    flags to the race's *modal* flag for that lap, because a Safety Car is a
+    state of the race and not of one car. A figure that re-derived this from
+    the raw per-car rows reported WEC 23 of 33 against the published 19, and
+    the figure was the one that was wrong. Pinned here so the two cannot part
+    company again.
+    """
+    import sys
+
+    sys.path.insert(0, str(REPO))
+    from src.safety_car.endurance import RACE_KEY, race_timeline
+
+    flags = pd.read_csv(DERIVED / "endurance" / "race_flags.csv")
+    timeline = race_timeline(flags)
+    counts = {}
+    for key, race in timeline.groupby(RACE_KEY, sort=True):
+        series = str(key[0]).lower()
+        hit, total = counts.get(series, (0, 0))
+        counts[series] = (hit + bool((race["flags"] == "SF").any()), total + 1)
+    return [f"{hit} of {total}" for hit, total in counts.values()]
+
+
 # --------------------------------------------------------------------------
 # The claims. Each one names the document a reader would find it in.
 # --------------------------------------------------------------------------
@@ -269,6 +295,13 @@ CLAIMS = (
         best_transfer,
         ("README.md",),
         "'Bahrain is the strongest transfer' was published and was false",
+    ),
+    Claim(
+        "Safety Car regimes across the endurance series",
+        neutralisation_regimes,
+        ("README.md",),
+        "every stop taken under caution is discounted by this rate, so a wrong "
+        "one moves every strategy conclusion in that series",
     ),
     Claim(
         "transfer difference and its interval",

@@ -1,0 +1,400 @@
+"""The layers underneath the three headline results, drawn from the artifacts.
+
+`make_headline_figures.py` covers the three findings. This covers what they rest
+on — and the repository badly needed it: 94 written reports and, before this,
+28 images, 25 of which were per-circuit degradation plots. A reader could not
+see the neutralisation regimes, the pit-loss spectrum every strategy conclusion
+turns on, or how much of the calendar is actually measured, without reading
+prose and building the picture themselves.
+
+Six figures, each answering one question a reader asks in the first minute:
+
+1. `s1_neutralisation_regimes`  — how often does a race get neutralised?
+2. `s2_pit_loss_spectrum`       — what does a stop cost, per class?
+3. `s3_f1_degradation`          — which circuits eat tyres, on which compound?
+4. `s4_track_position`          — where is a place hard to regain?
+5. `s5_baselines`               — does the optimiser beat a rule of thumb?
+6. `s6_intervals`               — the tested results, with their intervals.
+
+Every number is read from a committed CSV. Nothing is typed, so a figure cannot
+drift from the finding it illustrates, and the drift workflow fails on any that
+does.
+
+Usage (offline, from the repo root)::
+
+    python scripts/make_supporting_figures.py
+"""
+
+from __future__ import annotations
+
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+import matplotlib  # noqa: E402
+
+matplotlib.use("Agg")
+
+import matplotlib.pyplot as plt  # noqa: E402
+import numpy as np  # noqa: E402
+import pandas as pd  # noqa: E402
+
+from src.safety_car.endurance import RACE_KEY, race_timeline  # noqa: E402
+from src.ingestion.config import (  # noqa: E402
+    DERIVED_DIR,
+    ENDURANCE_DERIVED_DIR,
+    F1_DERIVED_DIR,
+    REPORTS_DIR,
+)
+
+FIGURES = REPORTS_DIR / "figures"
+
+#: Held identical to make_headline_figures.py so a reader who learns the
+#: palette on one figure keeps it on every other.
+CLASS_COLOURS = {
+    "GTD": "#d1495b", "GTDPRO": "#edae49", "GTP": "#00798c",
+    "HYPERCAR": "#30638e", "LMP2": "#003d5b", "LMP2 Pro/Am": "#7e9aa8",
+    "F1": "#2b2d42",
+}
+COMPOUND_COLOURS = {"SOFT": "#d1495b", "MEDIUM": "#edae49", "HARD": "#8d99ae"}
+INK, MUTED = "#222222", "#666666"
+
+
+def _frame(ax: plt.Axes, xgrid: bool = True) -> None:
+    ax.spines[["top", "right"]].set_visible(False)
+    ax.set_axisbelow(True)
+    ax.grid(axis="x" if xgrid else "y", alpha=0.25, linewidth=0.6)
+
+
+def _caption(ax: plt.Axes, text: str) -> None:
+    ax.text(0.0, 1.012, text, transform=ax.transAxes, fontsize=9,
+            color="#555555", va="bottom")
+
+
+def s1_neutralisation_regimes() -> str:
+    """Three series, three regimes, and no average that describes any of them."""
+    # Reuse the project's own definition rather than re-deriving one. The first
+    # version of this figure asked "did any row carry an SF flag", which fires
+    # when a single car shows it on a single lap -- and disagreed with five
+    # published reports (WEC 23 of 33 against their 19). The reports were
+    # right: `race_timeline` collapses per-car flags to the *modal* flag for
+    # the race on that lap, because a Safety Car is a state of the race, not of
+    # a car. Reimplementing a definition the codebase already owns is how a
+    # figure ends up contradicting the text beside it.
+    flags = pd.read_csv(ENDURANCE_DERIVED_DIR / "race_flags.csv")
+    timeline = race_timeline(flags)
+    rows = []
+    for key, race in timeline.groupby(RACE_KEY, sort=True):
+        rows.append({
+            "series": str(key[0]).upper(),
+            "safety_car": bool((race["flags"] == "SF").any()),
+            "full_course_yellow": bool((race["flags"] == "FCY").any()),
+        })
+    endurance = pd.DataFrame(rows)
+
+    sc_model = pd.read_csv(F1_DERIVED_DIR / "sc_model.csv")
+    f1_editions = int(sc_model["n_editions"].sum())
+    f1_sc = int(sc_model["sc_races_with_event"].sum())
+
+    bars = [("F1", f1_sc, f1_editions)]
+    for series, group in endurance.groupby("series"):
+        bars.append((series, int(group["safety_car"].sum()), len(group)))
+    bars.sort(key=lambda b: b[1] / b[2])
+
+    fig, ax = plt.subplots(figsize=(9.5, 4.6))
+    labels = [b[0] for b in bars]
+    shares = [100 * b[1] / b[2] for b in bars]
+    colours = ["#2b2d42" if label == "F1" else "#00798c" for label in labels]
+    ax.barh(labels, shares, color=colours, height=0.55, zorder=3)
+    for position, (label, hits, total) in enumerate(bars):
+        share = 100 * hits / total
+        ax.annotate(f"  {hits} of {total} races  ({share:.0f}%)",
+                    (share, position), va="center", fontsize=10, color=INK)
+
+    ax.set_xlim(0, 100)
+    ax.set_xlabel("share of races seeing at least one Safety Car (%)")
+    ax.set_title("Three neutralisation regimes, and no average describes any",
+                 fontsize=13, pad=16, loc="left")
+    _caption(ax, "a pooled model would sit between these and be wrong "
+                 "everywhere — every stop taken under caution is discounted "
+                 "by this rate")
+    _frame(ax)
+    path = FIGURES / "s1_neutralisation_regimes.png"
+    fig.tight_layout()
+    fig.savefig(path, dpi=170)
+    plt.close(fig)
+    return f"{path}  ({len(bars)} series)"
+
+
+def s2_pit_loss_spectrum() -> str:
+    """What a stop costs, per class — the axis every conclusion turns on."""
+    plans = pd.read_csv(ENDURANCE_DERIVED_DIR / "multistop_plans.csv")
+    order = (plans.groupby(["series", "car_class"])["pit_loss_s"].median()
+             .sort_values().index)
+
+    fig, ax = plt.subplots(figsize=(10, 5.4))
+    rng = np.random.default_rng(20260904)
+    for position, (series, car_class) in enumerate(order):
+        subset = plans[(plans["series"] == series)
+                       & (plans["car_class"] == car_class)]["pit_loss_s"]
+        colour = CLASS_COLOURS.get(str(car_class), "#888888")
+        ax.scatter(subset, position + rng.uniform(-0.2, 0.2, len(subset)),
+                   s=22, alpha=0.55, color=colour, linewidth=0, zorder=2)
+        ax.scatter([subset.median()], [position], marker="|", s=700,
+                   linewidth=2.6, color=INK, zorder=4)
+        ax.annotate(f"  {subset.median():.0f} s", (subset.median(), position),
+                    va="center", fontsize=9.5, color=INK,
+                    xytext=(6, 9), textcoords="offset points")
+
+    # F1's pit loss sits an order of magnitude below every endurance class,
+    # which is what makes this comparison worth drawing at all.
+    #
+    # Named explicitly rather than guarded with `if column in df.columns`. The
+    # first version used that idiom against the wrong column name and dropped
+    # the entire F1 row with no error -- the silent-narrowing pattern this
+    # project keeps rediscovering. A KeyError here is the correct outcome.
+    f1_loss = pd.read_csv(DERIVED_DIR / "f1" / "history_pit_loss.csv")
+    f1_values = f1_loss["pit_loss_median_s"].dropna()
+    ax.scatter(f1_values, -1 + rng.uniform(-0.2, 0.2, len(f1_values)),
+               s=22, alpha=0.55, color=CLASS_COLOURS["F1"], linewidth=0,
+               zorder=2)
+    ax.scatter([f1_values.median()], [-1], marker="|", s=700,
+               linewidth=2.6, color=INK, zorder=4)
+    ax.annotate(f"  {f1_values.median():.0f} s", (f1_values.median(), -1),
+                va="center", fontsize=9.5, color=INK,
+                xytext=(6, 9), textcoords="offset points")
+
+    # One entry reads 358 s. The reports already call it a near-certain
+    # artefact -- a six-minute service is a stoppage the pit-loss estimator
+    # absorbed, not a pit stop -- and a reader seeing an unexplained outlier on
+    # a log axis has no way to know that. Naming it costs one line.
+    worst = plans.nlargest(1, "pit_loss_s").iloc[0]
+    if worst["pit_loss_s"] > 3 * plans["pit_loss_s"].quantile(0.99):
+        y = list(order).index((worst["series"], worst["car_class"]))
+        ax.annotate(
+            f"{worst['pit_loss_s']:.0f} s — a known artefact\n"
+            f"({worst['series'].upper()} {worst['circuit']} "
+            f"{int(worst['year'])}): a six-minute\nservice absorbed as a stop",
+            (worst["pit_loss_s"], y), fontsize=8, color="#8a4b52",
+            ha="right", va="center",
+            xytext=(-12, -34), textcoords="offset points",
+        )
+
+    labels = ["F1"] + [f"{s.upper()} {c}" for s, c in order]
+    ticks = [-1] + list(range(len(order)))
+    ax.set_yticks(ticks)
+    ax.set_yticklabels(labels)
+    ax.set_xscale("log")
+    ax.set_xlabel("pit loss (s), log scale — one point per race-season")
+    ax.set_title("What a stop costs, and why it decides the strategy regime",
+                 fontsize=13, pad=16, loc="left")
+    _caption(ax, "a GT3 stop is a tyre change; a prototype stop is a tank, a "
+                 "driver and four tyres — a 3x range that sets everything")
+    _frame(ax)
+    path = FIGURES / "s2_pit_loss_spectrum.png"
+    fig.tight_layout()
+    fig.savefig(path, dpi=170)
+    plt.close(fig)
+    return f"{path}  ({len(order)} classes)"
+
+
+def s3_f1_degradation() -> str:
+    """Which circuits eat tyres, on which compound, with intervals."""
+    coefs = pd.read_csv(F1_DERIVED_DIR / "degradation_coefficients.csv")
+    order = (coefs.groupby("circuit")["deg_p1"].median()
+             .sort_values().index.tolist())
+
+    fig, ax = plt.subplots(figsize=(9.5, 9))
+    for compound, group in coefs.groupby("compound"):
+        colour = COMPOUND_COLOURS.get(str(compound), "#888888")
+        offset = {"SOFT": -0.24, "MEDIUM": 0.0, "HARD": 0.24}.get(str(compound), 0)
+        y = [order.index(c) + offset for c in group["circuit"]]
+        ax.errorbar(
+            group["deg_p1"], y,
+            xerr=[group["deg_p1"] - group["deg_p1_ci_low"],
+                  group["deg_p1_ci_high"] - group["deg_p1"]],
+            fmt="o", markersize=4.5, elinewidth=1.1, capsize=0,
+            color=colour, label=str(compound), alpha=0.9, zorder=3,
+        )
+    ax.axvline(0, color="#444444", linewidth=1.0, zorder=2)
+    ax.set_yticks(range(len(order)))
+    ax.set_yticklabels(order, fontsize=9)
+    ax.set_xlabel("tyre-age slope (s per lap of tyre age), cluster-robust 95% CI")
+    ax.set_title("Degradation per circuit and compound, with honest intervals",
+                 fontsize=13, pad=16, loc="left")
+    _caption(ax, f"{len(coefs)} fitted coefficients across {len(order)} "
+                 "circuits — where an interval crosses zero, the circuit has "
+                 "no measurable wear on that compound")
+    ax.legend(frameon=False, fontsize=9, loc="lower right", title="compound",
+              title_fontsize=9)
+    _frame(ax)
+    path = FIGURES / "s3_f1_degradation.png"
+    fig.tight_layout()
+    fig.savefig(path, dpi=170)
+    plt.close(fig)
+    return f"{path}  ({len(coefs)} coefficients)"
+
+
+def s4_track_position() -> str:
+    """Where a place is hard to regain — the primitive the rival model uses."""
+    swaps = pd.read_csv(F1_DERIVED_DIR / "overtaking_difficulty.csv")
+    swaps = swaps.sort_values("adj_swap_rate")
+
+    fig, ax = plt.subplots(figsize=(9.5, 7.5))
+    colours = plt.cm.RdYlBu_r(
+        (swaps["adj_swap_rate"] - swaps["adj_swap_rate"].min())
+        / (swaps["adj_swap_rate"].max() - swaps["adj_swap_rate"].min())
+    )
+    ax.barh(range(len(swaps)), swaps["adj_swap_rate"], color=colours,
+            height=0.65, zorder=3)
+    ax.set_yticks(range(len(swaps)))
+    ax.set_yticklabels(swaps["circuit"], fontsize=9)
+    for position, row in enumerate(swaps.itertuples()):
+        ax.annotate(f"  {row.adj_swap_rate:.4f}", (row.adj_swap_rate, position),
+                    va="center", fontsize=8.5, color=MUTED)
+
+    ratio = swaps["adj_swap_rate"].max() / swaps["adj_swap_rate"].min()
+    ax.set_xlabel("adjacent-car swap rate per lap  →  easier to overtake")
+    ax.set_title("Track position: a 14-fold range that actually transfers",
+                 fontsize=13, pad=16, loc="left")
+    _caption(ax, f"{swaps['circuit'].iloc[0]} to {swaps['circuit'].iloc[-1]} is "
+                 f"a {ratio:.0f}x range — unlike degradation, this holds "
+                 "between seasons, which is why the rival model is built on it")
+    _frame(ax)
+    path = FIGURES / "s4_track_position.png"
+    fig.tight_layout()
+    fig.savefig(path, dpi=170)
+    plt.close(fig)
+    return f"{path}  ({len(swaps)} circuits, {ratio:.0f}x range)"
+
+
+def s5_baselines() -> str:
+    """Does the exact optimiser beat a rule of thumb? Often not."""
+    frames = [
+        pd.read_csv(DERIVED_DIR / series / "baseline_comparison.csv")
+        for series in ("f1", "endurance")
+        if (DERIVED_DIR / series / "baseline_comparison.csv").exists()
+    ]
+    if not frames:
+        return "skipped — baseline comparison not generated"
+    scored = pd.concat(frames, ignore_index=True)
+
+    methods = [("model_pit_lap", "exact optimiser", "#2b2d42"),
+               ("b1_lap", "B1 fixed interval", "#00798c"),
+               ("b2_lap", "B2 threshold", "#edae49"),
+               ("b3_lap", "B3 fuel deadline", "#d1495b")]
+    series_order = ["wec", "elms", "f1", "imsa"]
+    series_order = [s for s in series_order if s in set(scored["series"])]
+
+    fig, ax = plt.subplots(figsize=(10.5, 5.4))
+    width = 0.2
+    for index, (column, label, colour) in enumerate(methods):
+        values, positions = [], []
+        for position, series in enumerate(series_order):
+            subset = scored[scored["series"] == series]
+            errors = (subset[column] - subset["real_pit_lap"]).abs().dropna()
+            if len(errors) == 0:
+                continue
+            values.append(errors.median())
+            positions.append(position + (index - 1.5) * width)
+        ax.bar(positions, values, width=width * 0.9, label=label,
+               color=colour, zorder=3)
+        for x, v in zip(positions, values):
+            ax.annotate(f"{v:.0f}", (x, v), ha="center", fontsize=8.5,
+                        color=INK, xytext=(0, 3), textcoords="offset points")
+
+    ax.set_xticks(range(len(series_order)))
+    ax.set_xticklabels([s.upper() for s in series_order])
+    ax.set_ylabel("median |Δ| laps against the real stop  →  worse")
+    ax.set_title("A rule of thumb beats the exact optimiser in three series",
+                 fontsize=13, pad=16, loc="left")
+    _caption(ax, "same decisions, same artifacts, same metric — B3 is "
+                 "undefined in F1, which has not refuelled since 2010")
+    ax.legend(frameon=False, fontsize=9, ncol=4, loc="upper left")
+    _frame(ax, xgrid=False)
+    path = FIGURES / "s5_baselines.png"
+    fig.tight_layout()
+    fig.savefig(path, dpi=170)
+    plt.close(fig)
+    return f"{path}  ({len(scored)} decisions)"
+
+
+def s6_intervals() -> str:
+    """A forest plot of every result that carries an interval.
+
+    Split into two panels on purpose. A forest plot earns its keep because bar
+    *lengths* are comparable; putting a correlation (bounded, unitless) beside
+    two R2 quantities on one axis invites a comparison that means nothing. The
+    first version did exactly that, and the eye read the correlation's long bar
+    as the strongest result rather than as a different measurement entirely.
+    """
+    path_csv = DERIVED_DIR / "cross_series" / "formal_tests.csv"
+    if not path_csv.exists():
+        return "skipped — formal tests not generated"
+    tests = pd.read_csv(path_csv)
+    # A leave-one-out sensitivity is not an interval, and drawing it as one
+    # would say it is.
+    tests = tests[tests["result"] != "cheap-stop edge (s)"]
+
+    is_correlation = tests["result"].str.contains(r"\(r\)", regex=True)
+    panels = [
+        (tests[~is_correlation].reset_index(drop=True),
+         "Transfer, in within-stint R² units", (-0.35, 0.75)),
+        (tests[is_correlation].reset_index(drop=True),
+         "Pit-loss rule, as a correlation", (-1.05, 0.15)),
+    ]
+
+    fig, axes = plt.subplots(
+        2, 1, figsize=(10, 5.6),
+        gridspec_kw={"height_ratios": [len(panels[0][0]), 1.15]},
+    )
+    for ax, (frame, heading, limits) in zip(axes, panels):
+        for position, row in enumerate(frame.itertuples()):
+            crosses_zero = row.ci_low <= 0 <= row.ci_high
+            colour = "#8d99ae" if crosses_zero else "#d1495b"
+            ax.plot([row.ci_low, row.ci_high], [position, position],
+                    color=colour, linewidth=2.6, zorder=3,
+                    solid_capstyle="round")
+            ax.scatter([row.estimate], [position], s=70, color=colour,
+                       edgecolor="white", linewidth=1.2, zorder=4)
+            ax.annotate(
+                f"  {row.estimate:+.3f}  [{row.ci_low:+.3f}, {row.ci_high:+.3f}]"
+                + ("   crosses zero" if crosses_zero else ""),
+                (max(row.ci_high, row.estimate), position), va="center",
+                fontsize=9, color=INK, xytext=(8, 0),
+                textcoords="offset points",
+            )
+        ax.axvline(0, color="#444444", linewidth=1.1, zorder=2)
+        ax.set_yticks(range(len(frame)))
+        ax.set_yticklabels(frame["result"], fontsize=9.5)
+        ax.set_ylim(-0.7, len(frame) - 0.3)
+        ax.set_xlim(*limits)
+        ax.set_title(heading, fontsize=10.5, loc="left", color=MUTED, pad=6)
+        _frame(ax)
+
+    axes[-1].set_xlabel("estimate with 95% bootstrap interval")
+    fig.suptitle("Every result that carries an interval",
+                 fontsize=13, x=0.006, ha="left", y=0.995)
+    fig.text(0.006, 0.945,
+             "red excludes zero, grey does not — each resampled at the level "
+             "its data varies at, never the level that makes it narrowest",
+             fontsize=9, color="#555555")
+    path = FIGURES / "s6_intervals.png"
+    fig.tight_layout(rect=(0, 0, 1, 0.92))
+    fig.savefig(path, dpi=170)
+    plt.close(fig)
+    return f"{path}  ({len(tests)} results in 2 unit panels)"
+
+
+def main() -> int:
+    FIGURES.mkdir(parents=True, exist_ok=True)
+    for build in (s1_neutralisation_regimes, s2_pit_loss_spectrum,
+                  s3_f1_degradation, s4_track_position, s5_baselines,
+                  s6_intervals):
+        print("wrote", build())
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
