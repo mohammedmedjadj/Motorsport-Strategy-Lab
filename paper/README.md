@@ -71,7 +71,22 @@ that does not exist as described would do more damage than the missing citation.
 ## Publication route
 
 **Zenodo first**, because it needs nothing from anybody: a real DOI, dated and
-citable, and it forecloses neither arXiv nor a journal submission.
+citable, and it forecloses neither arXiv nor a journal submission. The
+repository is already prepared for it:
+
+1. Sign in to [zenodo.org](https://zenodo.org) with GitHub, and enable this
+   repository in *Settings → GitHub*.
+2. Tag and publish a release on GitHub (`v1.0.0`). Zenodo archives the tarball
+   automatically and mints a DOI.
+3. It reads [`../.zenodo.json`](../.zenodo.json) for the title, abstract,
+   licence, keywords and the two related-work DOIs, so nothing needs retyping
+   in their web form.
+4. Put the DOI badge in the README and the DOI itself in
+   [`../CITATION.cff`](../CITATION.cff), which is what makes GitHub's own
+   *Cite this repository* button produce the right citation.
+
+Do step 1 **before** tagging: Zenodo only archives releases published after the
+repository is enabled, so a release tagged first has to be deleted and redone.
 
 arXiv needs an endorsement in the relevant category. A serious reply from any of
 the authors above is the realistic route to one, which is what

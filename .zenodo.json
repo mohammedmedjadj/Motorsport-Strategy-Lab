@@ -1,0 +1,46 @@
+{
+  "title": "Motorsport Strategy Lab: cross-championship race-strategy models and a retrospective audit of 1,280 real pit-stop decisions",
+  "upload_type": "software",
+  "license": "cc-by-nc-sa-4.0",
+  "creators": [
+    {
+      "name": "Medjadj, Mohammed Reda"
+    }
+  ],
+  "description": "<p>Race-strategy models are typically fitted and validated within one championship, often within one race. This work applies one protocol across four championships and seven car classes &mdash; Formula 1, WEC, IMSA and ELMS &mdash; and asks two questions the existing literature rarely does: does a fitted degradation model predict a season it has never seen, and does its recommendation resemble what a professional team actually did.</p><p><strong>Three results.</strong> Tyre-degradation slopes transfer as a property of the <em>circuit-class</em> rather than of the championship: of 51 circuit-classes measured by leave-one-race-out, only 5 reach a within-stint R&sup2; of 0.2. GT3 classes transfer measurably better than prototypes (difference +0.164, 95% CI [+0.059, +0.312], permutation p = 0.0009), but a near-specification control field &mdash; one chassis, one engine, no Balance of Performance &mdash; fails exactly as the balanced fields do, ruling out heterogeneous machinery as the cause.</p><p>Whether an extra stop can ever pay is set by the cost of the stop rather than by the car: across 205 race-seasons the class-level correlation between median pit loss and tyre-limited share is &minus;0.982, and 150 race-seasons above a 22.5&nbsp;s pit loss contain no tyre-limited race at all. The rule is robust; the constant is a maximum set by a single race and is reported as such.</p><p>Replaying 1,280 real first pit stops shows an exact optimiser stopping later than teams did on 80% of Formula 1 decisions, by a median of 12 laps. Both explanations proposed for this were tested here and both failed, and three rule-of-thumb baselines scored on the same decisions beat the optimiser in three championships out of four &mdash; in one of them, a rule using no fitted quantity at all. The result is reported as measured and unexplained.</p><p><strong>What underwrites it.</strong> Every quantity is measured from published timing or absent; nothing is imputed. Standard errors are cluster-robust throughout. Two estimators built for this work were validated on synthetic races and then withdrawn when they failed on real fields, and those withdrawals are described rather than omitted. Every artifact derived from committed data is regenerated in continuous integration, which fails on any difference between the working tree and the repository. The manuscript contains no numbers of its own: every quantity is a macro generated from the committed artifacts.</p>",
+  "keywords": [
+    "motorsport",
+    "race strategy",
+    "Formula 1",
+    "WEC",
+    "IMSA",
+    "ELMS",
+    "endurance racing",
+    "tyre degradation",
+    "dynamic programming",
+    "Monte Carlo simulation",
+    "cluster-robust inference",
+    "model validation",
+    "reproducibility",
+    "negative results"
+  ],
+  "access_right": "open",
+  "language": "eng",
+  "related_identifiers": [
+    {
+      "identifier": "https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab",
+      "relation": "isSupplementTo",
+      "scheme": "url"
+    },
+    {
+      "identifier": "10.1016/j.ejor.2024.07.011",
+      "relation": "cites",
+      "scheme": "doi"
+    },
+    {
+      "identifier": "arXiv:2512.00640",
+      "relation": "cites",
+      "scheme": "arxiv"
+    }
+  ]
+}

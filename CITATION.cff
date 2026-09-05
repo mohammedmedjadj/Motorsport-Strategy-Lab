@@ -1,19 +1,45 @@
 cff-version: 1.2.0
-message: "If you use this project, please cite it as below."
-title: "Motorsport Strategy Lab: Bayesian and Monte Carlo Race Strategy Research for F1, WEC and IMSA"
+title: "Motorsport Strategy Lab: cross-championship race-strategy models and a retrospective decision audit"
+message: >-
+  If you use this software, data or its results, please cite it. The DOI below
+  is minted by Zenodo from a tagged GitHub release; see .zenodo.json.
+type: software
 authors:
-  - family-names: "Medjadj"
-    given-names: "Mohammed Reda"
+  - family-names: Medjadj
+    given-names: Mohammed Reda
 repository-code: "https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab"
-license: "CC-BY-NC-SA-4.0"
-version: 0.1.0
-date-released: 2026-07-23
+url: "https://mohammedmedjadj.github.io/Motorsport-Strategy-Lab/"
+abstract: >-
+  Race-strategy models are typically fitted and validated within one
+  championship, often within one race. This work applies one protocol across
+  four championships and seven car classes — Formula 1, WEC, IMSA and ELMS —
+  and asks two questions the existing literature rarely does: does a fitted
+  degradation model predict a season it has never seen, and does its
+  recommendation resemble what a professional team actually did.
+
+  Three results. Tyre-degradation slopes transfer as a property of the
+  circuit-class rather than of the championship, and a near-specification
+  control field fails exactly as the performance-balanced fields do, ruling out
+  heterogeneous machinery as the cause. Whether an extra pit stop can ever pay
+  is set by the cost of the stop rather than by the car. And replaying 1,280
+  real first pit stops shows an exact optimiser stopping consistently later
+  than teams did — a result reported as measured and unexplained, after both
+  proposed explanations were tested here and both failed, and after three
+  rule-of-thumb baselines scored on the same decisions beat the optimiser in
+  three championships out of four.
+
+  Every quantity is measured from published timing or absent; nothing is
+  imputed. Two estimators built for this work were validated on synthetic data
+  and then withdrawn when they failed on real fields, and those withdrawals are
+  described rather than omitted.
 keywords:
   - motorsport
-  - formula1
-  - motorsport-strategy
-  - bayesian-statistics
-  - monte-carlo-simulation
-  - sports-analytics
-# Add `doi` and/or `preferred-citation` here if this project is later
-# published as a preprint or paper.
+  - race strategy
+  - Formula 1
+  - endurance racing
+  - tyre degradation
+  - dynamic programming
+  - Monte Carlo simulation
+  - model validation
+  - reproducibility
+license: CC-BY-NC-SA-4.0
