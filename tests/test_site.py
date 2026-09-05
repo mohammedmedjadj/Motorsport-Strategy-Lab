@@ -160,9 +160,17 @@ def test_the_site_baseline_table_matches_the_comparison(page: str) -> None:
 def test_the_site_states_the_test_count_it_can_back_up(page: str) -> None:
     """A test-count claim that has drifted is worse than no claim.
 
-    Checked loosely — within a small margin of the files actually present —
-    because the exact figure moves with every commit and a guard that fails on
-    every commit gets deleted.
+    Bounded by a relationship rather than a tolerance. The first version allowed
+    the claim to sit within 60 of the number of `def test_` lines, and failed
+    the moment parameterisation legitimately turned 380 definitions into 446
+    collected cases — an arbitrary margin either fires on honest change or never
+    fires at all.
+
+    What must hold instead: pytest collects at least one case per test function,
+    so a claim *below* the definition count is plainly wrong, and a claim more
+    than double it would mean parameterisation had grown past anything this
+    suite does. Between those the number is not checkable without running
+    pytest, and this file is meant to run in a second.
     """
     import re
 
@@ -170,12 +178,13 @@ def test_the_site_states_the_test_count_it_can_back_up(page: str) -> None:
     if not match:
         pytest.skip("the site states no test count")
     claimed = int(match.group(1) or match.group(2))
-    actual = sum(
+    defined = sum(
         len(re.findall(r"^def test_", path.read_text(encoding="utf-8"), re.M))
         for path in (REPO / "tests").glob("test_*.py")
     )
-    assert abs(claimed - actual) <= 60, (
-        f"the site claims {claimed} tests; the suite defines about {actual} "
-        "test functions. Parameterised cases make the exact figure differ, but "
-        "not by this much."
+    assert defined <= claimed <= 2 * defined, (
+        f"the site claims {claimed} tests against {defined} test functions. "
+        "Collection yields at least one case per function, so a lower claim is "
+        "wrong outright and a claim past double means this bound needs "
+        "rethinking rather than widening."
     )
