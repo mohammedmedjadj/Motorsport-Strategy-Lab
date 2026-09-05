@@ -1,4 +1,4 @@
-# The figures, and the rule they are held to
+# The figures
 
 Nine figures, all generated from committed artifacts by
 [`make_headline_figures.py`](../../scripts/make_headline_figures.py) and

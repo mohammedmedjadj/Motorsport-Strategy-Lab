@@ -196,10 +196,12 @@ def test_no_report_sits_at_the_root_of_reports() -> None:
     stray = sorted(
         path.name
         for path in (REPO / "reports").glob("*.md")
-        if path.name != "README.md"
+        # PROVENANCE.md is about the repository as a whole -- who decided
+        # what -- so it has no series or class to live under.
+        if path.name not in {"README.md", "PROVENANCE.md"}
     )
     assert not stray, (
-        f"reports/ should hold only README.md; found {stray}. Either move the "
+        f"reports/ should hold only README.md and PROVENANCE.md; found {stray}. Either move the "
         "document into the series, class or cross_series directory it belongs "
         "to, or fix the generator that wrote it there."
     )

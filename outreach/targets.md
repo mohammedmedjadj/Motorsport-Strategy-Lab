@@ -1,4 +1,4 @@
-# Targets, and how to find the right person
+# Who to contact
 
 **No names are listed here on purpose.** I can describe categories and how to
 identify the right person in each, but I will not invent an individual's name,
@@ -22,40 +22,42 @@ see, and write the verified name straight into the table.
 
 ## Category 1 — authors of the papers you cite
 
-**The highest-response category by a wide margin**, because you are asking
-someone a precise question about their own work, which is the one email
-academics reliably answer.
+The highest-response category by a wide margin. You are asking someone a precise
+question about their own work, which is the one email academics reliably answer.
 
-**Before you can use this category you have to do the literature review**, and
-it is a blocking dependency for the paper as well as for these emails. The
-project's README currently compares itself to *public notebooks*. Formal
-research exists and a reviewer who sees it missing stops reading — this is the
-single most likely reason a submission gets rejected without review.
+**The literature review is done.** Twelve papers, each verified against a real
+publication record, are in
+[`../reports/cross_series/related_work.md`](../reports/cross_series/related_work.md),
+and thirteen entries are in the paper's bibliography. Nothing blocks these
+emails any more.
 
-Search, and record what you actually find:
+The four worth writing to first, and why:
 
-| where | query |
-|---|---|
-| Google Scholar | `"pit stop" strategy optimization dynamic programming motorsport` |
-| Google Scholar | `Formula 1 tyre degradation model machine learning` |
-| Google Scholar | `endurance racing strategy simulation Monte Carlo` |
-| arXiv | `cat:cs.LG AND (abs:"formula 1" OR abs:"motorsport")` |
-| arXiv | `abs:"race strategy" AND abs:"reinforcement learning"` |
-| Semantic Scholar | follow the citation graph out from anything you find |
+**Cole Cappello and Andrew Hoegh** (arXiv:2512.00640) are the closest to this
+work on both data and method — Bayesian state-space tyre degradation from
+FastF1. Their evaluation is one race and they say generalising across races is
+future work with no evidence offered. That sentence is your premise. Ask them
+question 1, on whether a cluster bootstrap resampling circuit-classes is the
+right test.
 
-For each paper record: exact title, authors, venue, year, DOI, **what it does
-that this project does not, and what this project does that it does not.**
-That last column is the literature review, and it is also section 1 of the
-paper.
+**Felipe Aguad and Charles Thraves** (EJOR 319(3):908–919) wrote the Stackelberg
+dynamic-programming treatment your adversarial component reuses. Thraves also
+co-wrote the CEJOR dynamic programme with Oscar Carrasco Heine. Ask them question
+2 — whether replaying real decisions against an optimiser compares comparable
+things — since their game formulation has no occasion to check it and they will
+have an opinion.
 
-> There is a list of five candidate papers in my planning notes — an EJOR 2024
-> Stackelberg/DP paper, a Frontiers in AI 2025 deep-learning paper, a
-> driver-versus-car paper, an arXiv real-time Monte Carlo system, and an arXiv
-> RL-with-energy-management paper. **Treat every one of those as unverified.**
-> I have not checked a single title, author or venue against a real publication
-> record in this session, and a citation that turns out not to exist would do
-> more damage to your application than the missing literature review does. Look
-> each one up before it goes anywhere near an email or a bibliography.
+**Alexander Heilmeier's group at TUM** built the race simulation most of this
+field rests on, and released the code. Three papers between 2018 and 2020. They
+are the people most likely to have hit the same transfer problem and decided not
+to write about it.
+
+**Juan S. Santillana** (arXiv:2607.06495) deployed a calibrated Monte Carlo
+engine live at two Grands Prix. Different question from yours, but the only
+person in this list who has had to defend a strategy model to people watching a
+race in real time.
+
+Everyone above is reachable by the address on their paper.
 
 ## Category 2 — academics in sports analytics and operations research
 
@@ -89,11 +91,12 @@ deposited paper changes how the message reads.
 
 ## Sequencing
 
-1. **Literature review first.** It gates the Variant A emails, the paper's
-   section 1, and your credibility with categories 1 and 2.
-2. **Categories 1 and 2 next**, while the paper is being written — a methods
-   answer is only useful before you have finalised the methods.
-3. **Category 3 after the Zenodo DOI.**
+1. **Categories 1 and 2 now.** The literature review is done and the paper's
+   related-work section is written, so these are unblocked. A methods answer is
+   only useful before the methods are finalised, which is the position you are
+   in today.
+2. **Category 3 after the Zenodo DOI.** A link to a citable deposit changes how
+   the message reads to someone on a pit wall.
 
 ## Rules
 

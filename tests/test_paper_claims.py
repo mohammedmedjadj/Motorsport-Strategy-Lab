@@ -359,12 +359,21 @@ def test_published_number_matches_its_artifact(claim: Claim) -> None:
     accepted = [computed] if isinstance(computed, str) else computed
     missing = []
     for document in claim.documents:
-        path = REPO / document
-        if not path.exists():
-            missing.append(f"{document} (file not found)")
-            continue
-        text = path.read_text(encoding="utf-8")
-        if not any(value in text for value in accepted):
+        # The README was split in two: a short one that a reader gets through
+        # in ninety seconds, and docs/full-readme.md holding the per-series
+        # detail. A claim published in either is published, so both count.
+        candidates = [REPO / document]
+        if document == "README.md":
+            candidates.append(REPO / "docs" / "full-readme.md")
+
+        found = False
+        for path in candidates:
+            if path.exists() and any(
+                value in path.read_text(encoding="utf-8") for value in accepted
+            ):
+                found = True
+                break
+        if not found:
             missing.append(document)
 
     assert not missing, (

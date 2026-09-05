@@ -1,0 +1,1676 @@
+# Motorsport Strategy Lab — the long version
+
+This is the full README, kept because it holds the per-series detail: every
+phase report for every championship, the modelling extensions, the engineering
+rules, and the full repository map. The [short
+README](../README.md) covers the results and how to run them; this covers
+everything underneath.
+
+---
+
+## Three results, three figures
+
+<table>
+<tr>
+<td width="33%"><img src="reports/figures/r1_transfer.png" alt="Leave-one-race-out transfer per circuit-class"></td>
+<td width="33%"><img src="reports/figures/r2_pit_loss_rule.png" alt="Pit loss against tyre-limited share"></td>
+<td width="33%"><img src="reports/figures/r3_audit_bias.png" alt="Model lap minus team lap, per series"></td>
+</tr>
+<tr>
+<td valign="top"><b>Transfer is a property of the circuit-class, not the championship.</b> 51 circuit-classes, one protocol. GT3 at Lime Rock reaches R² <b>+0.573</b>; only 5 clear 0.2. The near-spec control (ELMS LMP2 — one chassis, one engine, no BoP) fails too, so the instability is not the hardware. Difference GT3 − prototype <b>+0.164</b> [+0.059, +0.312], permutation p = 0.0009.</td>
+<td valign="top"><b>The cost of the stop, not the car, sets the strategy regime.</b> Across 205 race-seasons, class median pit loss against tyre-limited share: <b>r = −0.982</b> [−0.986, −0.745], monotonic with no inversion. 150 race-seasons sit above a 22.5 s pit loss and <b>not one</b> is tyre-limited — though that edge is a maximum set by a single race, so quote the rule, not the constant.</td>
+<td valign="top"><b>An exact optimiser stops later than teams do, and nobody knows why.</b> 1,280 replayed first stops, four series, one criterion. Median +12 laps in IMSA, +10 in F1. Track position: <b>tested, rejected</b>. Slope bias: <b>tested, not detected</b>. The finding stands as measured and unexplained.</td>
+</tr>
+</table>
+
+**And a rule of thumb sits closer to real practice than the optimiser in 5 of
+the 7 classes** — in four of them, a rule that uses no fitted quantity at all.
+
+📄 **The paper is written**: [`paper/main.tex`](paper/main.tex) — and it contains
+no numbers of its own. Every quantity is a macro generated from the committed
+artifacts, so the manuscript cannot drift from the data the way this project's
+prose repeatedly has. [How and why](paper/README.md).
+
+<p align="center">
+  <img src="reports/figures/s5_baselines.png" alt="Median lap error: optimiser against three baselines" width="88%">
+</p>
+
+## Why this project
+
+This used to say that public racing projects stop at predicting the pit-stop
+lap, and that the comparison class was "dozens of notebooks". That was wrong on
+both counts, and worth correcting properly.
+
+There is a real literature here, going back at least to Bekker and Lotz in 2009
+and running through a decade of work from Heilmeier's group at TUM, dynamic
+programming treatments by Carrasco Heine and Thraves, a Stackelberg game
+formulation by Aguad and Thraves, and a recent wave of learning-based
+approaches. Twelve papers, verified against their publication records, are
+catalogued in [`reports/cross_series/related_work.md`](reports/cross_series/related_work.md).
+
+Measured against that, the modelling here is not especially advanced. It is
+simpler than Heilmeier's probabilistic race simulation, it ignores energy
+management entirely where van Kampen and colleagues optimise it jointly with
+stint planning, and it is less statistically careful per race than Cappello and
+Hoegh's state-space model.
+
+What the literature does not do is validate. Two gaps run through nearly all of
+it:
+
+1. **Nobody tests whether the fitted parameters transfer.** A degradation model
+   is fitted, and its quality is reported on the data it was fitted to. Cappello
+   and Hoegh come closest and say so plainly — their evaluation is one race, and
+   they name generalisation across races and circuits as future work with no
+   evidence offered. This project measures it on 51 circuit-classes under one
+   protocol, and the answer is that transfer is rare.
+2. **Nobody confronts the optimiser with what teams actually did**, at scale.
+   Optimisers get compared to other optimisers, or to the optimum under their
+   own assumptions. Here, 1,280 real first stops are replayed on one criterion,
+   and the model turns out to stop later than the pit wall on 80% of the F1
+   decisions.
+
+So the contribution is the validation rather than the machinery. That is a
+narrower claim than the one this section used to make, and it is one that
+survives someone checking.
+
+F1 data comes from [FastF1](https://github.com/theOehrly/Fast-F1); WEC and
+IMSA data come from a community-maintained dataset (details under
+[WEC](#wec) and [IMSA](#imsa)). Nothing is invented to fill a gap — if a
+source doesn't have something, that's stated as a limitation, not patched
+over.
+
+## How it fits together
+
+The old version of this diagram showed four boxes — ingest, model, simulate,
+audit. That stopped being true a long time ago. What is actually here is a
+measurement layer, an engine that consumes it, and **four independent ways of
+attacking the result**, two of which have already destroyed a claim this
+project published.
+
+```mermaid
+flowchart TB
+    subgraph SOURCE["Sources"]
+        direction LR
+        FF["FastF1<br/>F1 per-lap, flags, compound"]
+        END["Endurance timing<br/>WEC · IMSA · ELMS"]
+        EXT["Kaggle history + Open-Meteo<br/><i>not redistributable</i>"]
+    end
+
+    subgraph MEASURE["Measured layers — each with its own interval"]
+        direction LR
+        DEG["Degradation<br/>fixed effects, cluster-robust"]
+        NEU["Neutralisation<br/>Beta-Binomial, Jeffreys prior"]
+        PIT["Pit loss<br/>trimmed, per class"]
+        POS["Track position<br/>adjacent-swap rate"]
+    end
+
+    subgraph ENGINE["Engine"]
+        direction LR
+        MC["Monte Carlo<br/>common random numbers"]
+        DP["Exact multi-stop DP<br/>hard fuel constraint"]
+        ADV["Adversarial rival<br/>Stackelberg cover"]
+    end
+
+    subgraph CHECK["Four ways to attack the result"]
+        direction LR
+        AUD["Decision audit<br/>1,280 real stops"]
+        BASE["Baselines<br/>3 rules of thumb"]
+        HYP["Hypothesis tests<br/>both rejected"]
+        STAT["Intervals<br/>cluster bootstrap + permutation"]
+    end
+
+    SOURCE --> MEASURE --> ENGINE --> CHECK
+    CHECK --> OUT["94 reports · 34 figures · Streamlit demo"]
+
+    classDef src fill:#eef2f5,stroke:#7e9aa8,color:#1a1a1a
+    classDef meas fill:#00798c,stroke:#005f6e,color:#fff
+    classDef eng fill:#30638e,stroke:#234a6b,color:#fff
+    classDef chk fill:#d1495b,stroke:#a53848,color:#fff
+    classDef out fill:#2ea44f,stroke:#1a7f37,color:#fff
+    class FF,END,EXT src
+    class DEG,NEU,PIT,POS meas
+    class MC,DP,ADV eng
+    class AUD,BASE,HYP,STAT chk
+    class OUT out
+```
+
+**Why four checks and not one.** An audit alone says the model disagrees with
+practice; it cannot say whether the disagreement is the model's fault. The
+baselines answer "would a simpler rule have done better" (often, yes). The
+hypothesis tests take the explanations *this project proposed* and try to kill
+them (both died). The intervals say how far each number could move. Any one of
+them alone would have let a wrong claim stand.
+
+### What each series contributes that the others cannot
+
+Four championships is not four times the same work. Each one supplies something
+the others structurally cannot, and the gaps are as informative as the coverage.
+
+**Formula 1 is the only series where tyre compound is recorded at all.** The
+endurance timing source does not carry it, so every endurance degradation model
+here is a net slope where F1's is per compound. F1 is also the only series that
+has not refuelled since 2010, which is what lets fuel burn and tyre wear be
+separated: fuel mass is a whole-race function of the lap while tyre age resets
+every stint, so two regressors identify both. In endurance they are inseparable
+in all but six of 210 races, because teams change tyres at essentially every
+fuel stop.
+
+**The three endurance series supply the fuel constraint** that F1 lost. A tank
+that runs out is a hard bound on how long "stay out" can mean anything, and it
+is why the multi-stop dynamic program exists at all.
+
+**IMSA supplies three classes at the same rounds** — GTP, GTD and GTD PRO — with
+median pit losses of 57, 24 and 40 seconds. That is the natural experiment
+behind result 2, and it is also why classes are never pooled here: those three
+disagree on the project's headline endurance conclusion, and averaging them
+produced a number describing none of them.
+
+**ELMS supplies the control, and it is the one that matters most.** LMP2 is
+near-specification: one chassis, one engine, no Balance of Performance. The
+obvious explanation for unstable degradation slopes is heterogeneous,
+performance-balanced machinery. ELMS LMP2 has none of that and its slopes fail
+to transfer exactly as the balanced GT3 fields do. The instability is not the
+hardware, and no amount of F1 data could have shown that.
+
+**Neutralisation regimes differ so much they cannot be pooled.** A Safety Car
+appears in 19 of 33 WEC races and 23 of 29 in ELMS. IMSA records one in none of
+its 63, running Full Course Yellows instead. Any pooled endurance model would
+sit somewhere between and describe none of the three, and since every stop taken
+under caution is discounted by that rate, it would push each championship's
+strategy conclusions in a different wrong direction.
+
+<p align="center">
+  <img src="reports/figures/s1_neutralisation_regimes.png" alt="Share of races seeing a Safety Car, per series" width="82%">
+</p>
+
+Every conclusion that discounts a stop taken under caution depends on that
+rate. A pooled endurance model would sit between 0% and 79% and describe none
+of the three, which is why these are never merged.
+
+### The measured layers, at a glance
+
+<table>
+<tr>
+<td width="50%"><img src="reports/figures/s2_pit_loss_spectrum.png" alt="Pit loss per class, log scale"></td>
+<td width="50%"><img src="reports/figures/s4_track_position.png" alt="Adjacent-swap rate per F1 circuit"></td>
+</tr>
+<tr>
+<td valign="top"><b>Pit loss</b> — 23 s in F1, 24 s for IMSA GTD, 74 s for WEC Hypercar. A GT3 stop is a tyre change; a prototype stop is a tank, a driver and four tyres. This axis is what result 2 turns on.</td>
+<td valign="top"><b>Track position</b> — a 14-fold range from Monaco to Las Vegas, and unlike degradation it <i>transfers between seasons</i>. It is the primitive the adversarial-rival model is built on.</td>
+</tr>
+</table>
+
+<p align="center">
+  <img src="reports/figures/s3_f1_degradation.png" alt="F1 tyre-age slope per circuit and compound, with cluster-robust intervals" width="72%">
+</p>
+
+73 fitted coefficients across 25 circuits, per compound, with cluster-robust
+intervals. Where an interval crosses zero the circuit has **no measurable
+wear** on that compound — reported rather than smoothed away.
+
+### Phase status, per series
+
+```mermaid
+flowchart LR
+    subgraph F1["Formula 1 — 26 circuits, 2022-2026"]
+        direction LR
+        f0["0 availability"] --> f1["1 quality"] --> f2["2 degradation"] --> f3["3 SC/VSC"] --> f4["4 simulator"] --> f5["5 audit"] --> f6["6 methodology"] --> f7["7 packaging"]
+    end
+    subgraph END["WEC · IMSA · ELMS — 7 classes"]
+        direction LR
+        e0["0 availability"] --> e1["1 quality"] --> e2["2 degradation"] --> e3["3 neutralisation"] --> e4["4 simulator"] --> e5["5 audit"] --> e6["6 methodology"] --> e7["7 packaging"]
+    end
+    subgraph X["Cross-series — added after the phases closed"]
+        direction LR
+        x1["baselines"] --> x2["formal tests"] --> x3["generalisation audit"] --> x4["hypothesis tests"]
+    end
+    classDef done fill:#2ea44f,stroke:#1a7f37,color:#fff
+    class f0,f1,f2,f3,f4,f5,f6,f7,e0,e1,e2,e3,e4,e5,e6,e7,x1,x2,x3,x4 done
+```
+
+All four series run the full pipeline through phase 7, each keeping its own
+reports throughout — they are separate series and the data says so. The
+cross-series row is what was added once the per-series phases closed, and it is
+where the project stopped being a set of models and started being a set of
+claims that can be attacked.
+
+## The interactive demo
+
+`demo/app.py` is a Streamlit front-end over the **same measured models and
+simulator engines** used everywhere else here — there is no separate or
+simplified model built for the shop window. Pick a class, set a race state,
+press Simulate, and it re-runs the real thing.
+
+**Seven panels, one per modelled class:** F1, WEC Hypercar, IMSA GTP, IMSA
+GTD, IMSA GTD PRO, ELMS LMP2, ELMS LMP2 Pro/Am. The class is the unit, not the
+series — IMSA runs three classes at the same rounds whose tyre-change premiums
+are 8.7 s, 17.6 s and 16.9 s, so a panel keyed on series alone would show one
+class's model under another's name.
+
+Each panel states its own class's caveats and quotes its own measured numbers.
+Where two classes disagree — GTD against GTD PRO, and the two ELMS classes —
+the panels say so rather than presenting one number.
+
+The F1 panel enforces what the engine cannot know: until the car has used two
+different dry compounds, running to the flag is excluded, because it is a
+disqualification rather than a strategy. The endurance panels add the exact
+multi-stop dynamic program alongside the next-stop simulation, and say plainly
+when the remaining distance exceeds one tank.
+
+**It is tested, headlessly, like everything else.**
+[`tests/test_demo_app.py`](tests/test_demo_app.py) drives the real app with
+Streamlit's `AppTest`, presses the real button and asserts on real output —
+P(best) sums to 100%, no candidate stop lies beyond the fuel range, no-stop is
+absent until the two-compound box is ticked, no two classes show the same
+model, and every scoped class is reachable. Until that file existed, "the demo
+works" was the one claim in this repository backed by nothing.
+
+Run it with `pip install -r demo/requirements.txt && streamlit run demo/app.py`.
+Deployment notes: [`demo/README.md`](demo/README.md).
+
+---
+
+## Repository map
+
+Each series is self-contained, but the three endurance series share code where
+the underlying problem is genuinely the same:
+
+```
+src/degradation/   model.py (F1) | endurance.py + endurance_validation.py (endurance, shared)
+                   crew_rating.py (the IMSA and ELMS Pro/Am natural experiments)
+src/safety_car/    model.py (F1) | endurance.py (endurance, shared)
+src/simulator/     engine.py (F1) | endurance.py + multistop.py (endurance, shared)
+src/data/          F1 uses src/ingestion/ (FastF1); endurance uses base_loader.py
+                   + endurance_loader.py, scoped by endurance_scope.py
+src/audit/         systematic.py (F1) | systematic_endurance.py (endurance)
+                   baselines.py -- series-agnostic, three rules of thumb
+src/stats/         inference.py -- series-agnostic, intervals about the results
+data/derived/      f1/ | wec/ | imsa/ | elms/ | endurance/ | cross_series/
+reports/           f1/ | wec/ | imsa/ | elms/ | cross_series/ | figures/
+paper/             main.tex + numbers.tex (generated)
+docs/              index.html + figures/ -- the GitHub Pages site
+```
+
+The three endurance series share one loader and one
+degradation/neutralisation/simulator module apiece, because all three need the
+same three-way split — pit visit versus tyre change versus driver stint — that
+FastF1's data model never forces on the F1 side.
+
+What is never shared is the fitted numbers. Coefficients, posteriors and
+simulator constants are estimated **per class**, never pooled — six endurance
+classes, not three series. The two series-agnostic modules above are the
+exception that proves it: `baselines.py` and `inference.py` hold no fitted
+number at all, only rules and estimators that are handed one. That distinction is load-bearing rather than
+fastidious: IMSA's GTP and GTD run the same rounds and disagree on this
+project's headline endurance conclusion, and pooling them would have averaged
+the disagreement away.
+
+---
+
+## Formula 1
+
+### Key results
+
+**The simulator stops too late, systematically, and the audit measures it.**
+Every real first pit stop on the calendar is replayed: the model is asked five
+laps before it, for the top five classified finishers of each race, on a
+criterion applied uniformly so nothing is picked for being interesting.
+
+| across 357 decisions, 74 races | decisions | median Δ |
+|---|---|---|
+| model agrees within one lap | 24 (7%) | — |
+| **model would have stayed out** | **286 (80%)** | **+12 laps** |
+| model would have stopped earlier | 47 (13%) | −4 laps |
+
+The obvious explanation is that teams box opportunistically into a safety car
+the model cannot foresee. **Measured, that is not it**: the bias is +9 laps on
+green-flag stops and +12 on neutralised ones — present in both, barely larger
+in the second. Two candidates remain, neither tested: the engine has **no track
+position**, so it can never pay for an undercut, which is exactly why a real
+team stops before it has to; or the fitted slopes are biased toward durability
+by the same unmodelled track-evolution term diagnosed on the endurance side.
+
+This is a limitation the project measures about its own simulator, on the whole
+calendar rather than on a race someone argued about.
+[`reports/f1/systematic_audit.md`](reports/f1/systematic_audit.md)
+
+**Degradation varies 41-fold between circuits, and does not transfer between
+seasons.** Median tyre-age slopes run from Melbourne's −0.004 s/lap to Spa's
++0.153 across 25 circuits. But a slope fitted on a circuit's other seasons
+predicts a held-out one badly: the within-stint R² is at or below zero in
+roughly 40% of folds. Both facts matter — the first is why a per-circuit model
+is worth having, the second is why every coefficient in this project is carried
+as a distribution and never quoted as a point value.
+
+**Safety-car probability is a genuine circuit property, and it spans 0.17 to
+0.92.** Hungaroring and Austin at one end, Jeddah and Interlagos at the other,
+over 152 race editions. Monaco's "guaranteed" safety car is not: 3 of 7 editions
+since 2018, P = 0.44 [0.14, 0.77] — notably less certain than the reputation.
+
+**Track position varies 14-fold and is stable where degradation is not.**
+Adjacent cars swap places at 0.0047 per lap at Monaco against 0.064 at Las
+Vegas. Unlike degradation this is track geometry, so it transfers between
+seasons — which is what makes it usable as a fixed circuit constant, and it is
+the primitive the adversarial-rival model is built on.
+
+Degradation slopes fitted on two seasons routinely fail to predict a third
+season's stints — the within-stint R² frequently goes negative out of
+sample — even though the identical pipeline scores 0.85 on synthetic data at
+its noise floor. That's the reason every coefficient in this project is
+carried as a distribution and never quoted as a point value. And on the
+folklore side: Monaco's reputation for a "guaranteed" safety car holds up in
+3 of 7 editions since 2018 (P = 0.44, credible interval [0.14, 0.77]) —
+notably less certain than the reputation suggests.
+
+Full numbers: [`reports/f1/`](reports/f1/), one report per phase.
+
+### For the FastF1 community
+
+Three pieces of this repo are meant to be reusable outside the project (see
+`reports/methodology.md` for the fuller argument):
+
+1. the flag-based cleaning layer (`src/ingestion/cleaning.py`), which keeps a
+   per-reason count of every excluded lap instead of silently dropping rows;
+2. the `TrackStatus` event extractor (`src/safety_car/dataset.py`), which
+   maps SC/VSC/red-flag periods to race laps and guards against FastF1's
+   fuzzy-matching silently substituting a cancelled event with the wrong one
+   (`src/ingestion/loader.py`);
+3. the measured circuit constants — pit losses, SC/VSC pace ratios — and the
+   method used to recompute them from any race.
+
+### System overview
+
+| Layer                 | Module               | What it does                                                                                                  |
+| --------------------- | -------------------- | ------------------------------------------------------------------------------------------------------------- |
+| 1. Tyre degradation   | `src/degradation/` | Lap-time evolution vs tyre age, per compound and circuit                                                      |
+| 2. Safety-car risk    | `src/safety_car/`  | SC/VSC deployment probability per circuit from`TrackStatus` history, with explicit uncertainty              |
+| 3. Strategy simulator | `src/simulator/`   | Monte Carlo simulation combining layers 1-2 into a pit-window recommendation with a full outcome distribution |
+| 4. Decision audit     | `src/audit/`       | Replays real race decision points and compares the model's call with what actually happened                   |
+
+### Modelling extensions
+
+Layered on top of the four core modules, each with its own tests and a
+written justification in [`reports/f1/`](reports/f1/):
+
+- **Vectorised Monte Carlo** — every draw evaluated in one broadcast pass
+  instead of a Python loop; about 12x faster and bit-identical to the
+  original per-draw results.
+- **Optional quasi-Monte Carlo** (`simulate(..., sampler="qmc")`) — scrambled
+  Sobol' sequences over the smooth part of the model. Cuts variance sharply
+  when the underlying function is smooth, and is a measured no-op once
+  safety-car jumps dominate — reported as such rather than oversold.
+- **Multi-objective Pareto front** (`recommend.pareto_front`) — the exact set
+  of non-dominated pit laps trading race time against track position, where
+  the single-objective recommendation would otherwise collapse a real
+  trade-off into one number.
+- **Gaussian-process degradation** (`degradation.gp_model`) — a
+  nonparametric check confirming the cross-season instability is a property
+  of the data, not an artefact of assuming a polynomial shape.
+- **Online Kalman filter** (`degradation.kalman`) — tracks the current tyre's
+  degradation rate lap by lap, converging to the same answer as the
+  retrospective fit while also catching a mid-stint change in wear rate.
+- **Track-position value / overtaking difficulty** (`simulator.track_position`)
+  — measured from real timing as the rate at which nose-to-tail cars swap order
+  on green laps, per circuit. Monaco holds an adjacent rival with ~0.94
+  probability over 15 laps vs ~0.57 at Barcelona. Unlike degradation it is
+  **stable season to season** (it is track geometry), so it is a trustworthy
+  circuit constant — and it is the racecraft primitive the adversarial-rival
+  model is built on (see "Modelling extensions across series" below).
+  See [`reports/f1/track_position.md`](reports/f1/track_position.md).
+
+### Data scope
+
+**Every round of the calendar: 26 circuits, 2022-2026, 115 rounds**, of which
+104 are ingested — the rest are 2026 races that have not been run yet and are
+picked up automatically once they are. Every layer below is fitted on all of
+them.
+
+| layer | coverage |
+|---|---|
+| per-compound degradation, cluster-robust intervals | 73 coefficients, 25 circuits |
+| Safety Car / VSC posteriors | 25 circuits, 153 race editions, 230 events |
+| track-position value | 25 circuits |
+| decision audit | 357 replayed stops, 74 races |
+
+A complementary **breadth layer** reaches back to 2011 across 35 circuits from
+a Kaggle per-lap export, trading compound and flag fidelity for fourteen
+seasons of history — the two measure the same net slope from independent
+sources, so where they overlap they cross-check each other.
+
+**Fitting stops at the 2026 regulation boundary.** Ingestion is deliberately
+era-blind — a race is collected the same way whichever formula it ran under —
+while every *fitted* quantity treats the new era as a held-out test set rather
+than pooling a tyre-age slope across a rules change. See "2026 is walled off"
+under the limitations.
+
+**2022 is in the fitting window, and that was a measurement rather than a
+choice.** It had been excluded on the grounds that early ground-effect cars
+porpoised and would add noise unrelated to tyre wear. Held out fold by fold,
+2022 has the *highest* median transfer R² of the four seasons (+0.046) and the
+*fewest* folds at or below zero (6 of 20, against 10-11 of 23 elsewhere). The
+assumption cost a season of data at every circuit and did not survive being
+checked.
+
+**Verified, not assumed.** [`scripts/check_data_availability.py`](scripts/check_data_availability.py)
+confirms real FastF1 loads (laps, track status, weather) before a season enters
+the scope, and [`reports/f1/data_availability_phase0.md`](reports/f1/data_availability_phase0.md)
+records what it found.
+
+### F1 phase plan & Definition of Done
+
+Each phase stopped for explicit validation before the next one started.
+
+| Phase                       | Deliverable                                      | Definition of Done                                                                                                                                                      |
+| --------------------------- | ------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 0. Setup & scoping          | Repo, environment, verified data scope           | Every round on the calendar loads through FastF1 with laps,`TrackStatus`, and weather confirmed present; a round that has not been run is recorded as a skip, never as a failure |
+| 1. Ingestion pipeline       | `src/ingestion/` + tests + data quality report | One clean DataFrame per circuit-season; in/out laps and inaccurate laps handled; report states the % of laps excluded and why                                           |
+| 2. Tyre degradation model   | `src/degradation/` + tests + figures           | Per-compound/per-circuit fits, cross-validated without mixing one race's laps across train/test; limitations (e.g. the fuel effect isn't fully isolated) stated plainly |
+| 3. SC/VSC probability model | `src/safety_car/` + tests                      | Per-circuit probabilities with confidence intervals, and an explicit discussion of how much the small sample sizes limit them                                           |
+| 4. Monte Carlo simulator    | `src/simulator/` + tests                       | Given a race state, produces a pit-window recommendation as an outcome distribution, seeded and reproducible                                                            |
+| 5. Retrospective audit      | `reports/f1/audit_cases.md`                    | Real race moments replayed through the simulator, model vs. actual decision compared quantitatively, disagreements analysed honestly                                    |
+| 6. Methodology report       | `reports/methodology.md`                       | Full write-up — motivation, method, results, limitations, future work — every number traceable to project output                                                      |
+| 7. Packaging                | Final README, clean-clone check                  | Runs from a fresh clone **except the two Kaggle-fed layers** (breadth degradation, reliability) — see [`data/external/README.md`](data/external/README.md); contribution ideas for the FastF1 community written up                                                                                         |
+
+### F1 breadth layer — the whole calendar (Kaggle history)
+
+The FastF1 model above now covers the whole current calendar, but only back to
+2022. A complementary **breadth layer** fits the same net-slope degradation, pit
+loss and reliability across **35 circuits and 2011-2024** from a Kaggle per-lap
+export, trading compound and flag fidelity for fourteen seasons of history.
+
+The two layers measure the same quantity from independent sources, so where they
+overlap they are a genuine cross-check rather than duplication — and
+`BREADTH_CIRCUIT_ALIASES` in `src/ingestion/config.py` maps between them, because
+the two naming conventions were chosen years apart (`barcelona` against
+`catalunya`, `singapore` against `marina_bay`).
+
+Three results worth naming:
+
+- **Fuel/tyre confound solved, not just documented** (`degradation.f1_history`).
+  Because F1 has had no refuelling since 2010, fuel mass is a whole-race function
+  of the absolute lap while tyre age resets each stint, so a two-regressor fit
+  **separates tyre wear from fuel burn** — impossible in endurance (every stop
+  refuels). Isolated tyre wear is positive in **88%** of races.
+- **Wet races are excluded via a real weather layer** (`weather.archive`,
+  Open-Meteo) so a wet-to-dry track is never read as tyre wear.
+- **Reliability / attrition** (`reliability.f1_reliability`) over 5 980 entries:
+  permanent circuits finish better than street circuits, and the early hybrid
+  era is the least reliable — both measured, not assumed.
+
+See [`reports/f1/degradation_history.md`](reports/f1/degradation_history.md),
+[`reports/f1/pit_loss_history.md`](reports/f1/pit_loss_history.md),
+[`reports/f1/reliability.md`](reports/f1/reliability.md),
+[`reports/f1/weather.md`](reports/f1/weather.md).
+
+### F1 known limitations (stated up front)
+
+- **Sample size for SC probability is structurally small** — about three
+  usable races per circuit in the *FastF1 high-fidelity* window (the Kaggle
+  breadth layer lifts degradation/pit-loss/reliability coverage to 35 circuits,
+  but Kaggle carries no per-lap SC flag, so neutralisation calibration still
+  needs FastF1). Wide intervals are reported as the honest answer.
+- **Scrubbed (lightly-used) tyres** shift a stint's intercept, not its slope, so
+  the degradation rate is unbiased by them; FastF1 handles them exactly via its
+  `TyreLife` / `FreshTyre` columns.
+- **Track evolution and traffic** are absorbed into the whole-race fuel/evolution
+  term the breadth layer isolates; driver pace is a fixed effect.
+- **2026 is walled off — and now measured rather than asserted.** The new
+  regulations (power unit, active aero + Manual Override Mode, lighter/narrower
+  cars, less fuel, narrower tyres) are their own era, so no fitted coefficient
+  pools across the boundary (`REGULATION_ERA_START` in
+  `src/ingestion/config.py`): degradation, the simulator's circuit constants
+  and the overtaking constant are all fit on 2023-2025 only. That is not
+  fussiness — pooling 2026 into Suzuka's fit *halves* its tyre-age slope
+  (HARD +0.131 → +0.066 s/lap) and flips the cross-validated degree selection.
+  With Suzuka 2026 and Monaco 2026 now ingested, the wall itself is testable
+  for the first time, and the answer is split: a pre-era fit predicts Suzuka
+  2026 **better** than it predicts any pre-era Suzuka season, and Monaco 2026
+  **worse** than any pre-era Monaco season. Two races is far too few to
+  conclude anything about the new formula; it is already enough to justify not
+  pooling the coefficients. See the era-transfer table in
+  [`reports/f1/degradation_phase2.md`](reports/f1/degradation_phase2.md).
+  (The Kaggle breadth layer is unaffected — its source stops at 2024.)
+
+---
+
+## IMSA
+
+IMSA is modelled as **three separate classes**, never pooled. They share a
+loader and model code; they share no fitted number. The split is not
+bookkeeping: the prototype and the GT3 classes **disagree on this project's
+headline endurance conclusion**. "Every measured race is fuel-limited on stop
+count" holds for GTP (one exception, Laguna Seca) and fails for GTD, which is
+tyre-limited at five circuits and takes six stops against a fuel minimum of
+two at Laguna Seca. Pooling them would have averaged that away.
+
+**Three branches, each with its own directory and its own complete tables**
+— [`reports/imsa/gtp/`](reports/imsa/gtp/) ·
+[`reports/imsa/gtd/`](reports/imsa/gtd/) ·
+[`reports/imsa/gtdpro/`](reports/imsa/gtdpro/), indexed by
+[`reports/imsa/README.md`](reports/imsa/README.md).
+
+| class | what it is | race-seasons | circuits | seasons | median slope | every race |
+|---|---|---|---|---|---|---|
+| **GTP** | manufacturer prototype (Hypercar-adjacent) | 33 | 10 | 2023–2026 | +0.0166 s/lap | [slopes](reports/imsa/gtp/degradation_all_races.md) · [strategy](reports/imsa/gtp/strategy_all_races.md) |
+| **GTD** | GT3, **Pro/Am** (mandatory bronze/silver driver) | 60 | 13 | 2021–2026 | +0.0200 s/lap | [slopes](reports/imsa/gtd/degradation_all_races.md) · [strategy](reports/imsa/gtd/strategy_all_races.md) |
+| **GTD PRO** | GT3, **all-professional** line-ups | 47 | 12 | 2022–2026 | +0.0190 s/lap | [slopes](reports/imsa/gtdpro/degradation_all_races.md) · [strategy](reports/imsa/gtdpro/strategy_all_races.md) |
+
+GTD and GTD PRO are the *same cars under the same Balance of Performance*.
+Keeping them apart is what makes the crew-rating question measurable at all:
+the class boundary *is* the crew rating, so no external driver-rating data is
+needed. Results in
+[`reports/imsa/gtd_findings.md`](reports/imsa/gtd/findings.md) §6.
+
+The IMSA WeatherTech SportsCar Championship needed the same treatment as
+WEC — FastF1 doesn't cover it either. IMSA shares its loader and model code
+with WEC (`src/data/endurance_loader.py`, `src/degradation/endurance.py`,
+`src/safety_car/endurance.py`, `src/simulator/endurance.py`), since both
+series face the same pit-visit/tyre-change/driver-stint distinction, but
+every number below comes from IMSA's own data and is never pooled with
+WEC's.
+
+### Data scope — all three classes, measured the same way
+
+**140 race-seasons across 2021-2026**, every eligible race the source carries
+for each class. The three are fitted, validated, planned and audited on the
+same code and reported side by side, because the only way to know a class is
+different is to measure it identically.
+
+| | GTP | GTD | GTD PRO |
+|---|---|---|---|
+| what it is | manufacturer prototype | GT3, Pro/Am | GT3, all-professional |
+| race-seasons | 33 | **60** | 47 |
+| circuits | 10 | 13 | 12 |
+| seasons | 2023–2026 | 2021–2026 | 2022–2026 |
+| raw laps | 82,348 | 201,249 | 102,465 |
+| kept for modelling | 73.2% | 73.2% | 73.4% |
+| median net slope | +0.0166 s/lap | +0.0200 | +0.0190 |
+| races fitting a negative slope | 5 of 33 | 8 of 60 | 7 of 47 |
+| median pit loss | 57.0 s | **24.4 s** | 39.6 s |
+| tyre-change premium | **8.7 s** | 17.6 s | 16.9 s |
+| tyre-limited races | 2 of 32 | **15 of 58** | 7 of 46 |
+| best season-to-season transfer | +0.058 | **+0.573** (Lime Rock) | +0.497 (Lime Rock) |
+
+Two things in that table are the reason the classes are never pooled.
+
+**The pit stop, not the car, sets the strategy regime.** GTD stops in 24 s and
+is tyre-limited in a quarter of its races; GTP stops in 57 s and is
+tyre-limited in 6%. Pooling them would produce an "IMSA" answer describing
+neither, and for a while this project published exactly that.
+
+**GT3 slopes transfer between seasons and prototype slopes do not.** Lime Rock
+reaches a leave-one-race-out R² of +0.573 in GTD and +0.497 in GTD PRO — the
+two best transfers anywhere in this project, ahead of WEC's Bahrain. GTP's best
+circuit reaches +0.058. Short circuits with cheap stops are predictable in a
+way long ones with expensive stops are not, and that is the same axis the
+cross-series rule turns on.
+
+**GTD and GTD PRO are the same car under the same Balance of Performance**,
+differing only in whether an amateur-rated driver is mandatory. That makes the
+class boundary *exactly* the crew rating, and it is what let this project
+measure two things without any external driver-rating data:
+
+- the **tyre-change premium is the car, not the crew** — 17.6 s against 16.9 s
+  holding the car fixed, against 8.7 s when the car changes;
+- **no crew effect on tyre wear survives** — Pro/Am fit +0.0040 s/lap steeper
+  over 44 matched pairs (p = 0.032), and that p-value does not survive a sign
+  test, dropping the in-progress season, or dropping races hit by the known
+  track-evolution defect. See [`reports/imsa/gtd/findings.md`](reports/imsa/gtd/findings.md).
+
+### Verification, and what it caught
+
+IMSA needed the same treatment as WEC — FastF1 does not cover it. It shares the
+loader and estimator code (`src/data/endurance_loader.py`,
+`src/degradation/endurance.py`, `src/safety_car/endurance.py`,
+`src/simulator/endurance.py`) because all three endurance series face the same
+pit-visit / tyre-change / driver-stint distinction, and shares no fitted number
+with any of them.
+
+Two traps the source hides, both regression-tested
+([`reports/imsa/data_availability_phase0.md`](reports/imsa/data_availability_phase0.md)):
+
+- **A pit visit is not a driver stint.** The #01 GTP car made 13 pit visits
+  across 4 driver stints at Watkins Glen; the difference is fuel-only stops,
+  and a model that conflates them mis-measures both pit loss and tyre age.
+- **Class labels are renamed mid-scope.** IMSA's prototype class went from
+  `DPi` to `GTP` in 2023. Until an alias covered it, 30 races were invisible to
+  the traffic layer — measurable fields went from 33 to 52 when it was fixed.
+
+### System overview
+
+| Layer | Module | What it establishes across all three classes |
+|---|---|---|
+| 0. Data | `src/data/` | Pit visit, tyre change and driver stint kept as three distinct signals |
+| 1. Data quality | per class | 73% of raw laps kept, on identical accounting: [GTP](reports/imsa/gtp/data_quality_all_races.md) · [GTD](reports/imsa/gtd/data_quality_all_races.md) · [GTD PRO](reports/imsa/gtdpro/data_quality_all_races.md) |
+| 2. Degradation | `src/degradation/endurance.py` | Slopes transfer in GT3 (+0.57 at Lime Rock) and not in GTP (+0.058 at best) |
+| 3. Neutralisations | `src/safety_car/endurance.py` | Full Course Yellow in 61 of 63 races, 100% at 14 of 17 events; **zero Safety Cars in any of them** — a regime WEC and ELMS do not share |
+| 4. Strategy | `src/simulator/multistop.py` | 24 of 136 planned races are tyre-limited, and which ones tracks the pit loss, not the class |
+| 5. Decision audit | `src/audit/endurance_cases.py` | Real stop decisions replayed; model confidence tracks each circuit's own degradation signal |
+
+Reports: [index](reports/imsa/README.md) ·
+[data availability](reports/imsa/data_availability_phase0.md) ·
+[GTP](reports/imsa/gtp/) · [GTD](reports/imsa/gtd/) · [GTD PRO](reports/imsa/gtdpro/) ·
+[methodology](reports/imsa/methodology.md)
+
+### Key results
+
+**IMSA is a neutralisation regime of its own.** A Full Course Yellow appears in
+**61 of 63 races** — every edition at 14 of its 17 events — and a Safety Car in
+**none of them**. WEC prefers the Safety Car, in 19 of 33; ELMS is the most
+Safety-Car-dominated of the three, in 23 of 29. Three championships, three
+regimes, and a pooled "endurance" hazard model would describe none of them.
+This is the single strongest argument in the project for never merging series.
+
+**Fuel and tyre wear cannot be separated here, and that is a measurement, not a
+shortcut.** 85-100% of pit visits also change tyres, so `laps_since_refuel` and
+`tyre_age` stay correlated +0.83 to +1.00 after fixed effects at every circuit.
+Fitting both yields a collinear ridge, so only the net slope is reported —
+gated behind a `separable` flag that would flip on its own if a race with
+enough fuel-only stops ever appeared. Across the project, 6 of 140 IMSA races
+clear it, all of them Sebring; WEC and ELMS clear none.
+
+**A modelling error found here changed every series' numbers.** Road America
+2024 first fitted −0.53 s/lap with a 13.9-second RMSE, an order of magnitude
+off every other race. Laps 2 and 3 of that 62-lap sprint are a field-wide
+standing-start effect — every car at roughly twice its normal pace, flagged
+"green" in the source. The per-car traffic trim could not catch it: in a race
+that short the anomaly inflates each car's own cutoff along with it. The fix
+adds a **field-wide filter ahead of the per-car one**, and because it runs in
+the shared estimator it moved WEC's and ELMS's fits too. It is regression-
+tested against both a synthetic case and the real race.
+
+The simulator's confidence follows the strength of the underlying signal
+rather than defaulting to some fixed level of certainty: Road America, the
+one circuit with a statistically significant slope in every season checked,
+gives the most decisive recommendation of the four; Mosport, whose slope
+covers zero, spreads under two seconds across every candidate pit lap and
+says so rather than picking a winner anyway.
+
+### IMSA phase plan & Definition of Done
+
+| Phase                | Deliverable                                                                                                                       | Definition of Done                                                                                                                                                                 |
+| -------------------- | --------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 0. Data availability | [`reports/imsa/data_availability_phase0.md`](reports/imsa/data_availability_phase0.md)                                           | Source verified by direct query; scope frozen at 4 circuits, 1-3 seasons each; both verification traps documented and regression-tested                                            |
+| 1. Data quality      | [`reports/imsa/data_quality_phase1.md`](reports/imsa/gtp/data_quality_phase1.md)                                                     | Lap-level accounting for all 10 race-seasons, stage by stage, mirroring the F1 quality report                                                                                      |
+| 2. Degradation       | [`reports/imsa/degradation_phase2.md`](reports/imsa/gtp/degradation_phase2.md) + `src/degradation/endurance_validation.py` + tests | Net slope per circuit-season with CIs; leave-one-season-out and leave-one-circuit-out both run and clearly distinguished; the fuel/degradation split reported only as a diagnostic |
+| 3. Neutralisations   | [`reports/imsa/safety_car_phase3.md`](reports/imsa/gtp/safety_car_phase3.md) + tests                                                 | Per-circuit and series-wide Beta-Binomial/Gamma-Poisson posteriors on 63 races; the zero-Safety-Car case handled by the Jeffreys prior rather than hard-coded                      |
+| 4. Simulator         | [`reports/imsa/simulator_phase4.md`](reports/imsa/gtp/simulator_phase4.md) + tests                                                   | Fuel-range constraint enforced, one demo scenario per circuit, reproducible                                                                                                        |
+| 5. Decision audit    | [`reports/imsa/gtp/audit_cases.md`](reports/imsa/gtp/audit_cases.md) + `src/audit/endurance_cases.py` + tests                          | Three real stop decisions, states rebuilt from committed laps, replayed through the single-stop engine and compared quantitatively                                                 |
+| 6. Methodology       | [`reports/imsa/methodology.md`](reports/imsa/methodology.md)                                                                     | Full write-up — motivation, method, results, threats to validity, future work — every number traceable to project output, IMSA-only, never pooled with WEC                       |
+| 7. Packaging         | [`reports/imsa/packaging_phase7.md`](reports/imsa/packaging_phase7.md)                                                           | Runs from a fresh clone (104 endurance-scoped tests, offline); IMSA's own reproduction commands; upstream contribution ideas, including the one question worth asking the source  |
+
+### IMSA known limitations
+
+- Mosport has only one season of GTP data — a verified calendar fact, not a
+  gap in this pipeline (see Data scope above) — so it has no
+  leave-one-season-out result; the simulator's Mosport demo still runs on its
+  single available fit.
+- No tyre compound survives in the source, so degradation is a single net
+  slope rather than a per-compound curve.
+- No rivals, no track position, and no driver-stint regulatory constraints in
+  the simulator; IMSA is heavily multi-class (GTP/GTD/GTDPRO/LMP2/LMP3), and
+  a two-car rival abstraction wouldn't represent that honestly.
+- Road America's negative degradation slope is reported as measured, a
+  genuine open question rather than something smoothed over.
+- A **retrospective audit of real winners now exists** across IMSA and WEC
+  ([`reports/endurance_audit.md`](reports/cross_series/endurance_audit.md)) — real winning
+  stint lengths versus each circuit's fuel range.
+- A **per-decision audit, the IMSA analogue of F1's Phase 5, now exists**
+  ([`reports/imsa/gtp/audit_cases.md`](reports/imsa/gtp/audit_cases.md)): three real
+  stop decisions (an opportunistic FCY-onset stop at Watkins Glen, a routine
+  green-flag stop at Road America, an opportunistic FCY stop at the flat-
+  signal Mosport) replayed through the single-stop engine. Model confidence
+  at the recommended lap tracks the strength of each circuit's own
+  degradation signal exactly as Phase 4's demo scenarios found — decisive at
+  Road America (P(best) 0.92), still decisive at Watkins Glen (0.79), and
+  honestly uncertain at Mosport (0.34 on a 581s spread), where the "outside
+  the window" verdict is a real but low-confidence preference rather than a
+  confident correction.
+
+---
+
+## ELMS
+
+The European Le Mans Series is modelled as **two separate classes**, never
+pooled — `LMP2` and `LMP2 Pro/Am`. It shares its source and this project's
+code with WEC and IMSA, and shares no fitted number with either.
+
+ELMS was not added for breadth. It was added because it is the one series that
+could **falsify a hypothesis this project had carried since its F1 phase**, and
+it did.
+
+**Two branches, each with its own directory and its own complete tables** —
+[`reports/elms/lmp2/`](reports/elms/lmp2/) ·
+[`reports/elms/lmp2_proam/`](reports/elms/lmp2_proam/), indexed by
+[`reports/elms/README.md`](reports/elms/README.md).
+
+| | LMP2 | LMP2 Pro/Am |
+|---|---|---|
+| what it is | near-spec Oreca 07 / Gibson, professional crews from 2023 | the same car, a bronze-rated driver mandatory |
+| race-seasons | 25 | 17 |
+| circuits | 9 | 8 |
+| seasons | 2021–2025 | 2023–2025 |
+| raw laps | 35,750 | 16,722 |
+| kept for modelling | 70.1% | 67.1% |
+| median net slope | +0.0161 s/lap | +0.0205 |
+| races fitting a negative slope | 7 of 25 | 5 of 17 |
+| median pit loss | 61.7 s | 63.8 s |
+| tyre-change premium | 25.1 s | 35.4 s |
+| tyre-limited races | 1 of 25 | 0 of 17 |
+| best season-to-season transfer | +0.035 | +0.027 |
+| every race | [slopes](reports/elms/lmp2/degradation_all_races.md) · [strategy](reports/elms/lmp2/strategy_all_races.md) | [slopes](reports/elms/lmp2_proam/degradation_all_races.md) · [strategy](reports/elms/lmp2_proam/strategy_all_races.md) |
+
+**Neither class transfers between seasons at all** — the best circuit in either
+reaches R² +0.035, against +0.573 for IMSA's GT3 at Lime Rock. On a field where
+the chassis and engine are the same for everyone, that is the point of the
+series being here.
+
+Before 2023 the `LMP2` label covers every entry rather than the professional
+subset. Every comparison between the two classes is restricted to 2023 on for
+that reason, and the restriction is enforced in code
+(`src/degradation/crew_rating.py`), not remembered.
+
+### Data scope
+
+**52,472 race laps across 42 race-seasons, 69.6% kept for modelling** (median
+per race). Nine circuits, all European:
+
+| circuit | LMP2 | LMP2 Pro/Am |
+|---|---|---|
+| Aragon | 2023 | 2023 |
+| Barcelona | 2022–2025 | 2023–2025 |
+| Imola | 2022, 2024, 2025 | 2024, 2025 |
+| Monza | 2022 | — |
+| Mugello | 2024 | 2024 |
+| Paul Ricard | 2022–2025 | 2023–2025 |
+| Portimao | 2021–2025 | 2023–2025 |
+| Silverstone | 2025 | 2025 |
+| Spa | 2021–2025 | 2023–2025 |
+
+Fields run 7–17 cars, so the cluster-robust `t(G−1)` reference is doing real
+work rather than being a formality: at 7 cars it is a `t(6)`, whose 95%
+interval is 22% wider than the normal's.
+
+### Key results
+
+**The control experiment, and it came back negative.** LMP2 is close to a
+one-make formula — one chassis, one engine — where Hypercar and GTP are
+manufacturer prototypes equalised by Balance of Performance. Degradation
+slopes that fail to transfer between seasons had an obvious candidate cause in
+heterogeneous, BoP-adjusted machinery. They still fail on a near-spec field.
+Leave-one-race-out mean within-stint R² is at or below zero at every circuit
+(Portimao **−0.067** for LMP2, **−0.455** for Pro/Am), so a slope fitted on a
+circuit's other seasons explains **none** of the held-out season's
+within-stint variance. **The instability is not the car.** A hypothesis
+carried since the F1 phase, closed by a negative control — which is the most
+useful thing this series contributed.
+
+**A third neutralisation regime.** 23 of 29 ELMS races see a Safety Car, at a
+posterior rate of 0.01592/lap, against WEC's 0.00605 and IMSA's prior floor of
+0.00004 — IMSA records none at all. Three series, three regimes, and the same
+conclusion every time this project has checked: a pooled "endurance"
+neutralisation model would describe none of them.
+
+**The second crew-rating experiment, and it disagrees with IMSA's.** Pro/Am
+crews degrade **−0.0053 s/lap *less*** than professionals over 17 matched
+pairs (p = 0.148), the opposite sign to IMSA's +0.0040 (p = 0.032). Neither
+survives its own robustness checks. See
+[`reports/elms/crew_rating_findings.md`](reports/elms/crew_rating_findings.md).
+
+**Fuel and degradation are not separable in a single ELMS race** — 0 of 42
+clear the threshold, against IMSA's 6 of 140 and WEC's 0 of 28. No ELMS round
+in scope is long enough to need the fuel-only splash stops that make IMSA's
+Sebring the one exception anywhere in this project.
+
+**Almost entirely fuel-limited.** Median pit loss **64.8 s** against a 24-lap
+fuel range — an expensive stop on a short tank. The one exception anywhere in
+ELMS is LMP2 at Mugello, whose 9.2 s pit loss is the cheapest in the series
+and which takes six stops against a fuel minimum of four. It is one of the
+nine entries behind the cross-series pit-loss rule.
+
+### ELMS phase plan & Definition of Done
+
+| Phase                | Deliverable                                                                       | Definition of Done                                                                                                                              |
+| -------------------- | --------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| 0. Data availability | [`reports/elms/data_availability_phase0.md`](reports/elms/data_availability_phase0.md) | Source verified by direct query; both LMP2 classes scoped separately, with the pre-2023 label change documented and regression-tested        |
+| 1. Data quality      | [`reports/elms/data_quality_phase1.md`](reports/elms/data_quality_phase1.md)           | Lap-level accounting for all 42 race-seasons, stage by stage, mirroring the WEC and IMSA quality reports                                     |
+| 2. Degradation       | [`reports/elms/degradation_phase2.md`](reports/elms/degradation_phase2.md)             | Net slope per circuit-season with cluster-robust CIs; the near-spec control result reported whichever way it came out                        |
+| 3. Neutralisations   | [`reports/elms/safety_car_phase3.md`](reports/elms/safety_car_phase3.md)               | Series-wide Beta-Binomial/Gamma-Poisson posteriors on 29 races; SC and FCY told apart empirically, and ELMS's own regime not pooled with either |
+| 4. Simulator         | [`reports/elms/simulator_phase4.md`](reports/elms/simulator_phase4.md)                 | Fuel-range constraint enforced, both classes modelled separately, reproducible                                                              |
+| 5. Decision audit    | [`reports/elms/audit_cases.md`](reports/elms/audit_cases.md)                           | Mugello 2024's double Safety Car stop replayed in both classes through the single-stop engine                                                |
+| 6. Methodology       | [`reports/elms/methodology.md`](reports/elms/methodology.md) + [`results.md`](reports/elms/results.md) + [`crew_rating_findings.md`](reports/elms/crew_rating_findings.md) | Full write-up — the falsifiable prediction stated before the fit, the result that closed it, threats to validity including one unfixed defect and one published figure that was wrong; ELMS-only, never pooled |
+| 7. Packaging         | [`reports/elms/packaging_phase7.md`](reports/elms/packaging_phase7.md)                 | Runs from a fresh clone, offline; ELMS's own reproduction commands                                                                           |
+
+### ELMS known limitations
+
+- **The negative slopes are a model defect, not a measurement.** 7 of 25 LMP2
+  and 5 of 17 Pro/Am races fit a negative net slope, and Portimao 2023 fits
+  −0.213 s/lap for a tyre that is wearing, because the track dries by 17.8 s a
+  lap over the race and the model carries no race-time term. Two corrections
+  were built for this, both validated on synthetic data and both **withdrawn
+  because the real-data refit was worse**. Read every ELMS slope as a lower
+  bound. Full diagnosis, including what is honestly not known:
+  [`reports/track_evolution_omitted_variable.md`](reports/cross_series/track_evolution_omitted_variable.md).
+- No tyre compound survives in the source, so degradation is a single net
+  slope rather than a per-compound curve.
+- Nine circuits, all European, and no round longer than four hours — so ELMS
+  says nothing about the 12- and 24-hour formats where WEC and IMSA differ
+  most.
+- The pit-stop comparison between the two classes shows a 10.3 s difference in
+  tyre-change premium, but their *fuel-only* stops also differ by 9.2 s, which
+  no driver rating should change. That is reported as unexplained rather than
+  as a crew finding.
+- No rivals and no track position in the simulator, as with WEC and IMSA.
+
+---
+
+## WEC
+
+**One modelled class, Hypercar**, so WEC needs no class branch — the series
+directory *is* the class directory. Complete per-race tables:
+[`reports/wec/hypercar/`](reports/wec/hypercar/), indexed by
+[`reports/wec/README.md`](reports/wec/README.md).
+
+| | Hypercar |
+|---|---|
+| race-seasons | 28 |
+| circuits | 11 |
+| seasons | 2022–2026 |
+| raw laps | 84,679 |
+| kept for modelling | 78.4% |
+| median net slope | +0.0139 s/lap |
+| races fitting a negative slope | 9 of 28 |
+| median pit loss | **74.0 s** — the most expensive stop in the project |
+| tyre-change premium | 21.6 s |
+| tyre-limited races | **0 of 27** |
+| best season-to-season transfer | +0.217 (Bahrain) |
+| every race | [slopes](reports/wec/hypercar/degradation_all_races.md) · [strategy](reports/wec/hypercar/strategy_all_races.md) |
+
+The bottom three rows are one fact seen three ways. A 74-second stop buys
+roughly 2,000 laps of degradation at a typical slope, so no WEC tyre wears
+fast enough to repay an extra stop — and none of the 27 planned races is
+tyre-limited. Bahrain is the exception on transfer, at R² +0.217, and held the
+project record until IMSA's GT3 classes were scoped.
+
+The World Endurance Championship needed its own ingestion path and its own
+fitted models — FastF1 only covers Formula 1 — built to the same standard as
+the F1 work above: verified data, a cross-validated degradation model, a
+Bayesian neutralisation model, a Monte Carlo simulator.
+
+### Data scope
+
+**Four HYPERCAR circuits, two to three seasons each (2023-2025)** — the same
+shape as the F1 scope, spanning short and long formats across three
+continents:
+
+| Circuit | Seasons          | Race | Why it is in the set                                                       |
+| ------- | ---------------- | ---- | -------------------------------------------------------------------------- |
+| Spa     | 2023, 2024, 2025 | 6h   | High-speed European circuit; the reference case for the whole build        |
+| Fuji    | 2023, 2024, 2025 | 6h   | Different layout and climate from Spa                                      |
+| Bahrain | 2023, 2024, 2025 | 8h   | The longest of the four scoped formats                                     |
+| Imola   | 2024, 2025       | 6h   | HYPERCAR only started racing here in 2024 — checked directly, not assumed |
+
+Le Mans 2024 was left out on purpose: the source holds only 43 HYPERCAR laps
+for what should be a 300+ lap race, meaning the event is incomplete upstream.
+Picking it anyway because it's the famous one would have poisoned every
+model built on it — the same discipline that shaped the F1 scope in the
+first place.
+
+All 33 available HYPERCAR-class WEC races (2021-2026) went into the
+neutralisation model, which wants as large a sample as it can get. The 11
+race-seasons above (3+3+3+2) were the ones selected for degradation and
+simulator work — as close to F1's 12 (four circuits, three seasons) as the
+real calendar allows.
+
+**What the verification caught before any model got built:** see
+[`reports/wec/data_availability_phase0.md`](reports/wec/data_availability_phase0.md).
+The source turned out to be one dataset covering IMSA, WEC, ELMS and ALMS
+together, which made a separately-planned WEC API unnecessary. Two things had
+to be caught early: the raw data mixes practice, qualifying and warm-up laps
+in with race laps, and `stint_number` in the source means the *driver*
+stint, not the tyre stint.
+
+### System overview
+
+| Layer                 | Module                                                                      | Key finding                                                                                                                                    |
+| --------------------- | --------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| 0. Data               | `src/data/` (shared with IMSA)                                            | Pit visit, tyre change, and driver stint kept as three distinct signals rather than one                                                        |
+| 1. Data quality       | [`reports/wec/data_quality_phase1.md`](reports/wec/data_quality_phase1.md) | 78.7% of raw laps kept across 11 race-seasons, mostly lost to neutralisation and ordinary traffic, not data gaps                               |
+| 2. Tyre degradation   | `src/degradation/endurance.py`                                            | Bahrain transfers best in WEC (mean R² +0.217 over four folds); four IMSA GT3 circuit-classes transfer better still, so the earlier "only circuit anywhere" claim is retired |
+| 3. Neutralisations    | `src/safety_car/endurance.py`                                             | A real Safety Car procedure exists alongside FCY and is used more often, at every scoped circuit (Spa: P=0.79 SC vs P=0.50 FCY)                |
+| 4. Strategy simulator | `src/simulator/endurance.py`                                              | Both hazards sampled independently, F1's SC/VSC pattern; at Spa it's the fuel tank, not tyre wear, that ends up deciding the stop              |
+| 5. Decision audit     | `src/audit/endurance_cases.py`                                            | Three real stop decisions replayed; opportunistic SC-onset stops confirmed at both Bahrain and the anomalous-slope Imola                       |
+
+Reports: [data availability](reports/wec/data_availability_phase0.md) ·
+[data quality](reports/wec/data_quality_phase1.md) ·
+[degradation](reports/wec/degradation_phase2.md) ·
+[neutralisations](reports/wec/safety_car_phase3.md) ·
+[simulator](reports/wec/simulator_phase4.md) ·
+[decision audit](reports/wec/audit_cases.md) ·
+[reliability/attrition](reports/wec/reliability.md) ·
+[methodology](reports/wec/methodology.md)
+
+### Key results
+
+Degradation slopes mostly don't transfer, whether the test holds out a season
+or an entire circuit — with one real exception inside WEC. Leave-one-race-out
+per circuit (the same protocol as the F1 model) gives a mean within-stint R²
+at or near zero almost everywhere: Imola −0.009, Le Mans −0.008, Sebring
++0.016, Spa +0.018, Fuji +0.055. Interlagos is negative at −0.087 and **COTA
+collapses to −1.490**, which is far worse than predicting the mean and is a
+symptom of the unmodelled track-evolution term rather than a measurement.
+
+Bahrain breaks the pattern, and is the reason this project believed for a
+while that transfer was possible somewhere: a pooled slope explains about a
+fifth of a held-out race's within-stint variance (**mean R² +0.217**), the
+best of any WEC circuit. Its net slope is *not* as stable as this section once
+claimed, though — across four seasons it runs +0.030, +0.052, +0.058, +0.049,
+a spread of nearly two to one rather than the tight band reported when only
+three seasons were in scope.
+
+**And Bahrain is no longer the strongest transfer in the project.** Widening to
+IMSA's GT3 classes found four circuit-classes above it, led by **Lime Rock GTD
+at +0.573** and GTD PRO at +0.497, with Laguna Seca's two GT3 classes at +0.273
+and +0.256. Short circuits with cheap stops transfer better than long ones with
+expensive stops — the same axis the cross-series pit-loss rule turns on. The
+claim "the strongest transfer found anywhere, F1 included" was true of the
+scope that existed when it was written and has not been true since.
+
+A separate leave-one-circuit-out test, holding out an entire track instead of a
+season, gives a negative mean R² with outright sign disagreements — a harder,
+different question with the same broad answer.
+
+A fuel/degradation split was attempted and abandoned once the data made
+clear it wasn't identified: 84-99% of pit visits also change tyres, so the
+two effects move together (correlation +0.95 to +1.00 after fixed effects)
+at every circuit. Only the combined net slope is reported, gated behind a
+`separable` flag that would flip on its own if a race with enough fuel-only
+stops ever turned up.
+
+Fuel is a binding constraint here in a way F1 never has to deal with. Every one
+of WEC's 11 measured circuit-seasons takes exactly its fuel-minimum stop count
+— the only class in the project with no tyre-limited race anywhere — and the
+tank is what decides where the stop falls, not the tyre. The *break-even
+slope*, how much steeper degradation would have to be before an extra stop
+paid, runs from **×4.3 at Bahrain to ×62 at Interlagos**. A regression test
+pins the fuel boundary so it cannot silently regress.
+
+Pit loss varies by circuit far more than it does in F1: **Imola's 17.8 s and
+COTA's 21.0 s against Sebring's 91.1 s** — a five-fold spread, where F1's own
+Monaco-vs-Singapore contrast is 19.1 s against 27.3 s. That spread is not
+cosmetic. It is the variable the cross-series rule turns out to run on, and
+WEC sits at the expensive end of it at every circuit but two.
+
+Building the leave-one-season-out analysis also surfaced a genuine
+data-quality bug — a field-wide standing-start effect mislabelled "green" in
+the source, which distorted one IMSA race's fit before a new trim caught it.
+See [IMSA&#39;s key results](#imsa) for the full account; the fix changes WEC's
+numbers too, most visibly at Imola.
+
+### WEC phase plan & Definition of Done
+
+| Phase                | Deliverable                                                                                                                     | Definition of Done                                                                                                                                                                 |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 0. Data availability | [`reports/wec/data_availability_phase0.md`](reports/wec/data_availability_phase0.md)                                           | Source verified by direct query; scope frozen at 4 circuits, 2-3 seasons each; both verification traps documented and regression-tested                                            |
+| 1. Data quality      | [`reports/wec/data_quality_phase1.md`](reports/wec/data_quality_phase1.md)                                                     | Lap-level accounting for all 11 race-seasons, stage by stage, mirroring the F1 quality report                                                                                      |
+| 2. Degradation       | [`reports/wec/degradation_phase2.md`](reports/wec/degradation_phase2.md) + `src/degradation/endurance_validation.py` + tests | Net slope per circuit-season with CIs; leave-one-season-out and leave-one-circuit-out both run and clearly distinguished; the fuel/degradation split reported only as a diagnostic |
+| 3. Neutralisations   | [`reports/wec/safety_car_phase3.md`](reports/wec/safety_car_phase3.md) + tests                                                 | Per-circuit and series-wide Beta-Binomial/Gamma-Poisson posteriors on 33 races; SC and FCY told apart empirically, not assumed                                                     |
+| 4. Simulator         | [`reports/wec/simulator_phase4.md`](reports/wec/simulator_phase4.md) + tests                                                   | Both neutralisation kinds modelled, fuel-range constraint enforced, one demo scenario per circuit, reproducible                                                                    |
+| 5. Decision audit    | [`reports/wec/audit_cases.md`](reports/wec/audit_cases.md) + `src/audit/endurance_cases.py` + tests                          | Three real stop decisions, states rebuilt from committed laps, replayed through the single-stop engine and compared quantitatively                                                 |
+| 6. Methodology       | [`reports/wec/methodology.md`](reports/wec/methodology.md)                                                                     | Full write-up — motivation, method, results, threats to validity, future work — every number traceable to project output, WEC-only, never pooled with IMSA                       |
+| 7. Packaging         | [`reports/wec/packaging_phase7.md`](reports/wec/packaging_phase7.md)                                                           | Runs from a fresh clone (104 endurance-scoped tests, offline) **except the Kaggle-fed reliability layer** — see [`data/external/README.md`](data/external/README.md); WEC's own reproduction commands; upstream contribution ideas written up for the endurance data community           |
+
+### WEC known limitations
+
+- No tyre compound survives in the source, so degradation is a single net
+  slope rather than the per-compound curve F1 fits.
+- SC and FCY are modelled as independent hazards, though in reality an FCY
+  can escalate into an SC — the same caveat the F1 model states for its own
+  SC/VSC pair.
+- No rivals, no track position, and no driver-stint regulatory constraints
+  (WEC requires three drivers minimum) in the simulator.
+- Imola has only two seasons of HYPERCAR data, one fewer than the other
+  three scoped circuits, so its leave-one-season-out result rests on a
+  single fold in each direction.
+- Imola's negative degradation slope and noticeably wider RMSE are reported
+  as measured, not explained away.
+- A **retrospective audit of real winners now exists** for both endurance
+  series ([`reports/endurance_audit.md`](reports/cross_series/endurance_audit.md)): 49 of 61
+  scoped-race winners ran fuel-limited stints (WEC 25/28, IMSA 24/33),
+  corroborating the multi-stop model's headline — that no scoped race is
+  tyre-limited on stop count, which holds 21/21 circuits — against what teams
+  actually did; the exceptions plausibly reflect neutralisation-shortened
+  stints.
+- A **per-decision audit, the WEC analogue of F1's Phase 5, now exists**
+  ([`reports/wec/audit_cases.md`](reports/wec/audit_cases.md)): three real
+  stop decisions (an opportunistic Safety Car-onset stop at Bahrain, a
+  routine green-flag stop at Bahrain, an opportunistic SC stop at the
+  anomalous-slope Imola) replayed through the single-stop engine. Both
+  opportunistic SC stops land inside the model's window (P(best) 0.84 and
+  0.91); the routine Bahrain stop is technically "outside" but by 4.33s
+  against an 819s p10-p90 spread — noise at endurance race-time scale, the
+  audit's own stated caveat about its 0.5s window tolerance (inherited
+  unchanged from F1) being a much stricter bar here.
+- A **reliability/attrition layer, WEC's analogue of the F1 breadth layer's
+  finding**, now exists ([`reports/wec/reliability.md`](reports/wec/reliability.md)):
+  results-level Kaggle history (3035 car-entries, 2011-2023, all classes) gives
+  the classified-finish rate by class and by race duration. HYPERCAR finishes
+  87.6% of the time; the falsifiable positive control (finish rate should drop
+  as races get longer) holds — 24h races finish at 71.2% against 90.5-94.4%
+  for 4-8h races.
+
+---
+
+## Modelling extensions across series
+
+Four more extensions sit outside any single series section on purpose — either
+because they span several championships, or because the problem they solve is
+specific to endurance racing and has no F1 analogue. Each one states the
+series it actually covers, because they differ:
+
+- **Adversarial rival**, for **F1, WEC and IMSA** (`simulator.adversarial` for
+  F1, `simulator.adversarial_endurance` for endurance, sharing one game-solving
+  core; the endurance form is quantified on WEC and IMSA, not yet on ELMS) — the pit stop as a two-player game: the rival **reacts**, covering your
+  undercut instead of following a frozen plan. Both cars run head-to-head lap by
+  lap, the pit exchange is resolved, the lead locked in with the measured
+  track-position stickiness (see F1's [track-position value](#formula-1)
+  above), and the game solved (rival best-response, Stackelberg optimum). It
+  quantifies what a frozen-rival simulator hides: in F1, assuming the rival
+  won't cover overstates an undercut by **+0.352** at Barcelona and only
+  **+0.015** at Monaco — the cover matters where overtaking is possible, not
+  where it is sticky, which is the reverse of the intuition; in endurance, the
+  overstatement **scales with degradation** — up to ~0.44 at steep-wear
+  Bahrain, ~0.08 at flat Watkins Glen. See
+  [`reports/f1/adversarial_rival.md`](reports/f1/adversarial_rival.md) and the
+  endurance simulator reports.
+- **Inter-class traffic cost** (`simulator.traffic`, **endurance only — WEC,
+  IMSA and ELMS** — since F1 has no multi-class field) — a prototype is forever
+  lapping slower-class cars, and each one costs it time. Measured from the
+  multi-class field by comparing start/finish crossing times, which solves the
+  lapping problem without needing positions, across **105 race-seasons**
+  (materialised reproducibly by `scripts/materialise_endurance_fields.py`) with
+  a cross-season stability check. A HYPERCAR at Spa loses **0.81 s/lap** in
+  traffic against clear air averaged over five seasons, ~0.25 s per GT car
+  directly ahead — but the season-to-season standard deviation is **0.48 s**,
+  on a range from 0.25 s in 2023 to 1.67 s in 2022. Honestly non-uniform across
+  circuits *and* seasons, with the spread quantified rather than hidden: any
+  single season's figure is close to meaningless on its own, which is why the
+  simulator folds this in as variance rather than as a point correction. See
+  the endurance simulator reports.
+- **Multi-stop strategy**, **endurance only — WEC, IMSA and ELMS**
+  (`simulator.multistop`) — the
+  single-stop engine plans the *next* stop; a 6-24 h race needs 2-10. An exact
+  dynamic program finds the minimum-time stop sequence under the hard
+  fuel-tank constraint traded against tyre degradation, then runs it through
+  the same neutralisation sampling for a full-race time distribution. The
+  headline this produced was **"no measured endurance race is tyre-limited —
+  every one is fuel-limited on stop count"**, and *that claim is now known to
+  be false*. It was true of the prototype classes it was measured on and was
+  stated as a fact about endurance racing. Widening to GT3 and to ELMS found
+  **25 of 205 race-seasons tyre-limited**, concentrated in the cheap-stop
+  classes: 15 of 58 IMSA GTD, 7 of 46 GTD PRO, 2 of 32 GTP, 1 of 25 ELMS LMP2,
+  and **none at all** in either WEC Hypercar or ELMS LMP2 Pro/Am. The
+  *break-even slope* says how much steeper degradation would have to be to flip
+  a race, and it spans **×1.0 at ELMS Mugello to ×807 at ELMS Portimao** —
+  nearly three orders of magnitude between two circuits in the same
+  championship. The measured traffic
+  spread folds in as calibrated, zero-mean race-time variance: it widens the
+  uncertainty band without biasing which plan wins. See
+  [`reports/when_tyres_beat_fuel.md`](reports/cross_series/when_tyres_beat_fuel.md) and the
+  endurance simulator reports.
+- **Out-of-sample calibration**, for **F1, WEC and IMSA** (`src.prediction`;
+  ELMS is not a separate calibration target) —
+  the simulator prices every lap with a per-circuit Safety Car / Full Course
+  Yellow probability; this asks whether those numbers actually *forecast*. Each
+  race edition is left out, its probability formed from the other editions only,
+  and graded with proper scoring rules (Brier, log-loss, Brier skill vs
+  climatology). The honest answer: **per circuit they do not beat the base
+  rate** — 2-8 F1 editions per circuit (median 6, 153 in total) and 1-6
+  endurance ones are too few, so the point estimates are little more than the
+  series rate. Widening F1 from 27 race editions to 153 did not change that
+  answer, which is the useful part: it is a sample-size limit per circuit, not
+  a shortage of races overall. A built-in positive control
+  (endurance FCY grouped by *series*, IMSA ~0.97 vs WEC ~0.27) does show clear
+  skill, proving the harness detects real signal and rejects noise rather than
+  always returning zero. A limitation the project measures about its own
+  simulator. See [`reports/prediction/calibration.md`](reports/prediction/calibration.md).
+
+---
+
+## What four series say that one cannot
+
+The strongest results in this project are **comparisons**, and none of them
+could have been produced inside a single championship. Full write-up:
+[`reports/cross_series_synthesis.md`](reports/cross_series/synthesis.md).
+
+> **The pit stop decides the strategy regime, not the car.** Across six
+> populations the correlation between a class's median pit loss and the share
+> of its races where an extra stop beats the fuel minimum is **−0.982**,
+> across all 205 planned race-seasons, and the ordering has **no inversions**.
+> WEC Hypercar, at a 74-second stop, is fuel-limited in all 27 of its races;
+> IMSA GTD, at 24 seconds, is tyre-limited in 15 of 58. This overturned the
+> project's own published conclusion twice — "every measured race is
+> fuel-limited" was a fact about *expensive stops* stated as a fact about
+> endurance racing.
+
+> **The tyre-change premium is the car, not the crew.** Holding the GT3 car
+> fixed and changing only the driver rating moves it 17.6 s → 16.9 s; changing
+> the car moves it 8.7 s → 17.6 s. Measuring this required IMSA's GTD PRO to
+> be scoped as a class in its own right.
+
+> **No consistent crew effect on tyre wear.** Two natural experiments with the
+> same design disagree in sign — IMSA **+0.0040** s/lap (44 pairs, p = 0.032),
+> ELMS **−0.0053** (17 pairs, p = 0.148). Only IMSA's clears 5%, and it clears
+> it once: a sign test, dropping the in-progress season, and dropping the races
+> hit by the known track-evolution defect each put it back above the line
+> (0.096 / 0.094 / 0.054). One test alone would have been written up as a
+> trend. Computed by `src/degradation/crew_rating.py` and pinned by
+> `tests/test_crew_rating.py`, so no document here can quote a p-value the
+> code does not produce.
+
+> **Slope instability is not the machinery.** ELMS LMP2 is near-spec — one
+> chassis, one engine — and its slopes fail to transfer between seasons
+> exactly as the Balance-of-Performance classes do. A hypothesis carried since
+> the F1 phase, closed by a negative control.
+
+## Key findings across all four series
+
+Results that needed the whole scope to exist, or that changed what an earlier
+version of this project claimed. Each is measured across every race it applies
+to, not illustrated with one.
+
+> **The published confidence intervals were about twice too narrow —**
+> **median 2.23x wider once corrected** (range 1.48-2.93x), at every circuit
+> and for every compound. Lap times inside one car's race are not
+> independent observations, so the classical OLS standard error counted the
+> same information repeatedly. Switching to cluster-robust standard errors
+> changed no point estimate — only what was claimed about their precision.
+> Downstream the effect splits: across 48 decision points the P10-P90
+> race-time band widens by a median of just 3% (safety-car risk, not
+> coefficient uncertainty, dominates that spread) but the **recommended pit
+> lap changes in 16 of 48 cases**. The time output was never badly wrong;
+> the decision output was.
+> ([`reports/f1/degradation_phase2.md`](reports/f1/degradation_phase2.md))
+
+> **A filter that was measuring away the thing it measured —**
+> **up to 25% of the endurance degradation slope.** The traffic trim cut the
+> slowest 10% of each car's laps, and within a stint the slowest laps are
+> the oldest-tyre laps. On synthetic races with a known +0.080 s/lap slope
+> it recovered +0.060 at realistic traffic noise; trimming the first-pass
+> *residual* instead recovers +0.0802. Independent sign that the fix moves
+> estimates toward physical sense rather than merely upward: IMSA races with
+> a negative slope — tyres apparently getting faster with age — fall from 11
+> to 5. It also flipped a published finding, at exactly one circuit.
+> ([WEC](reports/wec/methodology.md) · [IMSA](reports/imsa/methodology.md))
+
+> **Safety-car probability is a real circuit property, and reputation is a poor
+> guide to it.** Across 25 circuits and 152 race editions it spans **0.17 to
+> 0.92** — Hungaroring and Austin at one end, Jeddah and Interlagos at the
+> other. Monaco, whose safety car is treated as a certainty, measures
+> **P = 0.44** [0.14, 0.77]: 3 of 7 editions since 2018. The interval width is
+> the result as much as the point estimate, which is why the simulator carries
+> the posterior rather than the mean.
+> ([`reports/f1/safety_car_phase3.md`](reports/f1/safety_car_phase3.md))
+
+> **How far the simulator is from real strategy is set by how often the
+> championship neutralises.** Every real first stop in all four series is
+> replayed on one criterion — **1,280 decisions across 275 race-classes** — and the
+> endurance ordering is clean:
+>
+> | series | first stops under caution | median Δ, green | median Δ, all |
+> |---|---|---|---|
+> | WEC | 8% | **+1 lap** | +1 |
+> | ELMS | 20% | +3 | +2 |
+> | IMSA | 53% | +7 | +12 |
+>
+> **WEC and ELMS agree with real strategy to within one or two laps** — the
+> strongest corroboration this simulator has. IMSA is not a different model; it
+> is the same model in a championship that throws a Full Course Yellow in 61 of
+> 63 races, so more than half its stops are opportunistic and the model is asked
+> three laps before the caution exists.
+>
+> **F1 is the contrast that isolates the cause.** There the caution split is
+> small (+9 laps under green against +12) and the disagreement is large anyway,
+> because F1 has **no fuel cap** — nothing bounds how long "stay out" can run.
+> Give the same engine a fuel clock and it lands on the real answer.
+>
+> **Both explanations for the rest were tested, and both failed.** That the
+> engine cannot pay for an undercut: re-running all 357 decisions through the
+> cover-aware adversarial engine moves the recommendation *away* from the real
+> stop, +11 laps against +9, closer in 65 and further in 188. That the fitted
+> slopes make tyres look too durable: measured against an independent source
+> separating tyre wear from fuel burn by a different method, the two agree at
+> **r = +0.85** with a median paired difference of **+0.0006 s/lap** — an error
+> that would move a stop by several race distances, not twelve laps.
+>
+> So the finding stands as measured and **unexplained**. That is a worse
+> position than having a plausible story, and a better one than publishing a
+> story two measurements contradict.
+> ([undercut](reports/f1/undercut_hypothesis.md) ·
+> [slope bias](reports/f1/slope_bias_check.md))
+> ([F1](reports/f1/systematic_audit.md) ·
+> [IMSA](reports/imsa/systematic_audit.md) ·
+> [ELMS](reports/elms/systematic_audit.md) ·
+> [WEC](reports/wec/systematic_audit.md))
+
+> **A rule of thumb sits closer to real practice than the exact optimiser, in
+> 5 of the 7 classes.** Three baselines scored on 1,263 of the audit's 1,280
+> decisions, from the same artifacts, on the same metric.
+>
+> | class | optimiser | B1 interval | B2 threshold | B3 fuel |
+> |---|---|---|---|---|
+> | Formula 1 | 10 | 11 | **7** | — |
+> | IMSA GTP | 9 | 9 | 54 | 14 |
+> | IMSA GTD | 12 | **7** | 18 | 14 |
+> | IMSA GTD PRO | 12 | **9** | 33 | 15 |
+> | WEC Hypercar | 2 | 2 | 39 | **1** |
+> | ELMS LMP2 | **2** | 3 | 45 | 4 |
+> | ELMS LMP2 Pro/Am | 3 | **2** | 45 | 4 |
+>
+> Median absolute lap error against the real stop. Reported per class, because
+> IMSA runs three of them at the same rounds with median pit losses of 57, 24
+> and 40 seconds — one IMSA row averages three strategy regimes into a number
+> describing none. That grouping also hid something: GTP, the class with the
+> dearest stops, disagrees least of the three.
+>
+> B1 wins in four of those classes and uses **no fitted quantity at all**, only
+> the race length and the number of stops the tank forces. Where the optimiser
+> holds an advantage it is usually on precision rather than typical error — in
+> WEC Hypercar it lands within two laps 85% of the time against B3's 72%.
+>
+> Two things this does not say. Closer to what teams did is not better: the
+> audit scores agreement with practice, never which plan was faster. And it
+> does not rescue the 12-lap finding. It removes one more explanation, since
+> the gap cannot come from the simpler methods lacking information the
+> optimiser has. They have less, and they land nearer.
+> ([baselines](reports/cross_series/baselines.md))
+
+> **The transfer difference survives being tested, not just described.**
+> Mean leave-one-race-out R² across 51 circuit-classes, one value per class
+> because folds inside a class share a fitted slope: GT3 **+0.104**
+> [+0.050, +0.170] against prototypes **−0.060** [−0.199, +0.021]. Difference
+> **+0.164** [+0.059, +0.312], permutation p = **0.0009** over 10,000
+> relabellings. The pit-loss correlation carries an interval too — **−0.982**
+> [−0.986, −0.745], bootstrapped over races rather than over the six class
+> points, because a bootstrap with n = 6 is decoration. The 22.5 s edge gets no
+> interval, and the report says why: it is a maximum, the bootstrap is the
+> wrong instrument for one, and the honest number is that removing the single
+> race defining it moves the edge to 13.2 s.
+> ([formal tests](reports/cross_series/formal_tests.md))
+
+> **What actually transfers across seasons — almost nothing, and it is the
+> short circuits —** **R² +0.573** at IMSA's Lime Rock (GTD), +0.497 (GTD PRO),
+> +0.273 and +0.256 at Laguna Seca, then **+0.217** at WEC's Bahrain. Everywhere
+> else checked — F1 included, and all of ELMS — within-stint R² sits at or below
+> zero out of sample, reaching **−1.49** at WEC's COTA. Bahrain was reported as
+> the project's one exception for as long as only F1 and WEC existed; the GT3
+> classes overturned that, and the pattern that replaced it is that transfer
+> tracks circuit length and stop cost, not machinery. This is why every
+> coefficient here is carried as a distribution, never a point value.
+> ([`reports/wec/degradation_phase2.md`](reports/wec/degradation_phase2.md))
+
+> **"Nothing generalises" was itself an overclaim — it depends what "nothing" is —**
+> the same leave-one-out test applied to **pit loss** (never run before this
+> pass) shows it transfers well almost everywhere (relative RMSE 0.13-0.54
+> at 20 of 21 circuits) — the opposite conclusion from degradation, because
+> pit loss is closer to a fixed procedural quantity than a fitted trend.
+> The one large exception, **WEC COTA** (relative RMSE 1.10), traces to a
+> real race-format change — 120 laps in 2025 versus 183 in 2024 — and is
+> also the single worst-transferring circuit for degradation (R² −6.33):
+> two independent estimators flagging the same circuit-season pair.
+> ([`reports/generalization_audit.md`](reports/cross_series/generalization_audit.md))
+
+> **Three endurance series, three different hazards entirely —**
+> IMSA sees a Full Course Yellow in **61 of 63** races and has **never** shown
+> a Safety Car in any of them. WEC prefers the Safety Car, in 19 of 33. ELMS
+> is the most Safety-Car-dominated of the three, in **23 of 29**, at a
+> posterior rate of 0.0159/lap against WEC's 0.0060 and IMSA's prior floor of
+> 0.00004. "Endurance racing" isn't one hazard model, and a pooled one would
+> describe none of the three.
+> ([`reports/imsa/safety_car_phase3.md`](reports/imsa/gtp/safety_car_phase3.md))
+
+> **Ignoring how a rival reacts flatters your own plan by a measurable amount —**
+> On a worked Barcelona duel, a frozen-rival simulator overstates a naive
+> undercut's win probability by **+0.352** — 0.733 against 0.380 once the rival
+> covers. At Monaco the same scenario gives **+0.015**: where position is sticky
+> you were not getting past anyway, so the cover barely matters. Allowing the
+> rival to choose its compound as well as its lap cannot reduce the
+> overstatement — a game-theoretic invariant — but on the current fit it adds
+> nothing, because the cover it picks is the tyre it was already taking.
+> ([`reports/f1/adversarial_rival.md`](reports/f1/adversarial_rival.md))
+
+> **The retrospective audit corroborates the simulator, and both were
+> over-generalised —** **160 of 209** audited race winners across WEC, IMSA and
+> ELMS ran a fuel-limited longest stint (at the 3-lap tolerance the audit uses;
+> see the [sensitivity sweep](reports/cross_series/fuel_limited_sensitivity.md)). The
+> multi-stop model agrees on the same races. What both were once read as
+> saying — "strategy is fuel-limited, not tyre-limited, in endurance racing" —
+> is **not** what they say: 49 of the 209 winners were not fuel-limited, and
+> the multi-stop model finds 25 of 205 race-seasons tyre-limited, concentrated
+> in the cheap-stop classes. The corroboration is real; the generalisation drawn
+> from it was the error.
+> ([`reports/endurance_audit.md`](reports/cross_series/endurance_audit.md))
+
+---
+
+## Engineering rules (all four series)
+
+- **No fabricated data.** Anything a source doesn't provide is documented as
+  unavailable, never estimated silently.
+- **No data leakage.** The decision models only ever use information that
+  was knowable at the simulated moment of the race.
+- **Uncertainty is first-class.** Every probability and recommendation ships
+  with an interval or a distribution, never a bare point estimate.
+- **Reproducibility.** Fixed seeds for all stochastic code, pinned dependency
+  versions (`requirements.lock`), FastF1 cache enabled for F1; WEC, IMSA and
+  ELMS races are committed as derived CSVs so their tests run fully offline.
+- **Tested.** `pytest` covers ingestion parsing and cleaning, degradation
+  model non-regression, and simulator physical-consistency invariants, for all
+  four series — plus a layer of guards that check the *reports* still quote
+  what the artifacts say, added after published figures were found to have
+  drifted from the data they were computed from.
+- **Typed and documented.** Docstrings and type hints throughout `src/`.
+- **Nothing is pooled across series, or across classes.** F1, WEC, IMSA and
+  ELMS each get their own fitted coefficients, posteriors, and simulator
+  constants, and so does each of the six endurance classes; only the
+  estimator code — and, for WEC/IMSA, the data schema — is shared.
+
+## Repository structure
+
+```
+Motorsport-Strategy-Lab/
+  data/
+    cache/              # FastF1 cache (gitignored)
+    derived/
+      f1/               # F1 derived laps + track status, one file per round,
+                        #   26 circuits x 2022-2026; model coefficients
+      imsa/             # IMSA derived laps: 3 classes, 140 race-seasons
+      wec/              # WEC derived laps: 11 circuits, 28 race-seasons
+      elms/             # ELMS derived laps: 2 classes, 42 race-seasons
+      endurance/        # cross-series artifacts: flags, fits, plans, traffic
+  src/
+    ingestion/          # FastF1 loading, cleaning, validation (F1 only);
+                        #   config.py holds the frozen calendar, keyed per season
+    data/               # multi-series loader + endurance_scope.py (the endurance
+                        #   scope) + coverage.py (which layer covers which race)
+    degradation/        # model.py (F1, OLS + LORO CV), gp_model.py, kalman.py;
+                        #   endurance.py + endurance_validation.py (shared);
+                        #   crew_rating.py (the two Pro/Am natural experiments)
+    safety_car/         # model.py (F1 SC/VSC); endurance.py (WEC+ELMS FCY/SC,
+                        #   IMSA FCY only)
+    simulator/          # engine.py (F1, vectorised + optional Sobol QMC),
+                        #   recommend.py (Pareto front); endurance.py, multistop.py
+    audit/              # F1 decision audit; endurance_cases.py (per-decision),
+                        #   endurance_state.py (winner-vs-fuel-range audit);
+                        #   baselines.py -- the three rules of thumb the
+                        #   optimiser is scored against
+    stats/              # inference.py -- cluster bootstrap, permutation test,
+                        #   boundary sensitivity. Kept apart from
+                        #   degradation/robust.py on purpose: that computes
+                        #   standard errors INSIDE an estimator, this describes
+                        #   uncertainty ABOUT a reported result
+    prediction/         # backtest.py -- neutralisation calibration, scored with
+                        #   proper scoring rules against a climatology baseline
+    reliability/        # attrition models (F1 + WEC, results-level)
+    weather/            # archive.py -- Open-Meteo, local race day not a UTC slice
+    reporting/          # class_reports.py -- generates the per-class tables
+  notebooks/            # kaggle_demo.ipynb -- validated end-to-end demo,
+                        #   published to Kaggle; never the source of truth
+                        #   for a reported number, which always lives in
+                        #   reports/ + the pytest artifact drift guards
+  demo/                 # app.py -- Streamlit UI over the real simulators;
+                        #   one panel per modelled class (7 of them), driven
+                        #   headlessly by tests/test_demo_app.py
+  scripts/              # run_ingestion.py + run_ingestion_waves.py (the whole
+                        #   F1 calendar, across FastF1's hourly rate limit),
+                        #   run_degradation.py, run_safety_car.py,
+                        #   run_simulator_demo.py (F1); run_endurance_flags.py +
+                        #   run_endurance_models.py + run_multistop.py
+                        #   (endurance); run_class_reports.py (per-class tables);
+                        #   run_generalization_audit.py,
+                        #   run_fuel_limited_sensitivity.py,
+                        #   run_sc_contamination_check.py (adversarial audit
+                        #   pass); run_baseline_comparison.py + run_formal_tests.py
+                        #   (does the optimiser beat a rule of thumb, and what
+                        #   are the intervals); make_headline_figures.py +
+                        #   make_supporting_figures.py + make_paper_numbers.py;
+                        #   demo_extensions.py; generate_banner.py
+  tests/                # pytest, across four series and seven classes, 461
+                        #   tests -- incl. the demo, driven headlessly by
+                        #   test_demo_app.py, and the report-staleness guards
+                        #   that check prose still matches the artifacts
+  paper/                # main.tex -- the manuscript, containing NO digits of its
+                        #   own; every quantity is a macro in numbers.tex,
+                        #   generated by scripts/make_paper_numbers.py
+  docs/                 # index.html -- the GitHub Pages site, plus figures/
+                        #   kept byte-identical to reports/figures/ by
+                        #   tests/test_site.py
+  outreach/             # the contact pack: one-pager, three methodological
+                        #   questions, three email variants, and a ready-to-file
+                        #   FastF1 bug report with a self-contained reproduction
+  reports/              # one branch per modelled class -- see reports/README.md
+    figures/            # 9 figures generated from committed artifacts: three
+                        #   headline results, six supporting layers
+    f1/                 # phase 0-5 + extensions (breadth layer, adversarial
+                        #   rival, track position), audit cases, methodology.md
+    imsa/               # README.md + series-level phase 0, methodology, packaging
+      gtp/              #   the prototype class: phase reports + complete tables
+      gtd/              #   GT3 Pro/Am: findings.md, audit cases, complete tables
+      gtdpro/           #   GT3 all-pro: complete tables
+    elms/               # README.md + phase reports covering both classes together
+      lmp2/             #   complete tables
+      lmp2_proam/       #   complete tables
+    wec/                # README.md + phase 0-7, audit cases, reliability,
+      hypercar/         #   methodology; one class, so one branch
+    cross_series/       # results that need more than one championship: the
+                        #   synthesis, when_tyres_beat_fuel, the endurance audit,
+                        #   the track-evolution defect, the adversarial pass
+    prediction/         # out-of-sample calibration backtest
+  assets/               # banner.png/svg, social-preview.png, fonts/ (OFL-licensed)
+  .github/
+    workflows/          # tests.yml, post-race-refresh.yml
+    ISSUE_TEMPLATE/      # bug report + feature request
+  README.md
+  LICENSE               # CC BY-NC-SA 4.0
+  CONTRIBUTING.md
+  CITATION.cff
+  pyproject.toml
+  requirements.txt      # top-level deps; requirements.lock pins exact versions
+```
+
+## Quick start — a real result in three commands
+
+Everything except two Kaggle-fed layers runs offline from the clone, because
+the derived data is committed. No API key, no download, no account.
+
+```bash
+git clone https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab.git
+cd Motorsport-Strategy-Lab && pip install -r requirements.txt
+python scripts/run_baseline_comparison.py
+```
+
+That replays 1,263 real pit-stop decisions against three rules of thumb and
+prints the table showing the exact optimiser losing to them in three
+championships out of four. It reads only committed CSVs and takes about a
+minute.
+
+Two more that need nothing else:
+
+```bash
+python scripts/run_formal_tests.py        # intervals on every headline result
+python scripts/make_headline_figures.py   # the three figures at the top of this page
+```
+
+To see it move rather than read about it:
+
+```bash
+pip install -r demo/requirements.txt && streamlit run demo/app.py
+```
+
+## Setup
+
+```bash
+git clone https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab.git
+cd Motorsport-Strategy-Lab
+python -m venv .venv
+.venv/Scripts/activate          # Windows; use .venv/bin/activate on Unix
+pip install -r requirements.txt # or requirements.lock for exact pins
+python scripts/check_data_availability.py   # populates the FastF1 cache (F1 only)
+pytest
+```
+
+The first F1 run downloads several hundred MB into `data/cache/` (gitignored)
+and is served from cache after that. All endurance races are already
+committed as derived CSVs (`data/derived/wec/`, `data/derived/imsa/`,
+`data/derived/elms/`), so their tests run fully offline with no extra setup; `scripts/run_endurance_flags.py`
+re-pulls the neutralisation dataset only if you want to refresh it.
+
+## Automated post-race refresh
+
+`.github/workflows/post-race-refresh.yml` re-runs the full F1 pipeline
+(ingest → degradation → safety car → simulator → audit) on a schedule
+(Mondays, after a race weekend) and on manual dispatch, gates the result
+behind the test suite, and commits the regenerated artifacts **only when they
+actually change** — figures excluded, since matplotlib's PNG timestamps would
+otherwise diff on every run.
+
+There is an honest tension worth naming: the rest of this project is built on
+*reproducibility* — deterministic outputs, tests that assert exact numbers. A
+live-refresh pipeline pulls the other way. The resolution is that `SEASONS`
+in `src/ingestion/config.py` is **rolling** (`2022 … current year`), so the
+scope extends itself on 1 January each year and the refresh only ever commits
+when regenerating actually changes a byte. Over a scope whose races are all
+already ingested, the pipeline reproduces its own output exactly and commits
+nothing.
+
+**Current status: 12 rounds of 2026 F1 data are ingested**, and they are held
+out of every fitted coefficient as a new regulation era — trained against, not
+trained on. `tests/test_era_holdout.py` proves there is no leakage by bounding
+each circuit's fitted lap count against what the pre-era window can supply, and
+checks the holdout is actually *evaluated* rather than merely excluded: a
+holdout nobody scores is discarded data plus an unsupported claim.
+
+They were ingested locally, not by the schedule. The scheduled refresh has not
+been able to reach the timing API from GitHub's hosted runners — FastF1's
+primary endpoint errors there, it falls back to its livetiming mirror (which
+only serves in-progress sessions), and every race then fails with
+`SessionNotAvailableError`, including seasons finished years ago. That is an
+access problem outside this repository rather than a pipeline bug, and it means
+**the automation cannot currently extend the scope on its own.** The pipeline is
+built to survive it rather than paper over it: a season with no ingested data is
+skipped with a warning instead of crashing the degradation step
+(`src/degradation/dataset.py`), and a *total* ingest failure refuses to write at
+all rather than overwriting good committed data with an empty result
+(`src/ingestion/pipeline.py`). Both are regression-tested; the second exists
+because the workflow did once auto-commit exactly that regression, which was
+caught and reverted.
+
+The WEC/IMSA side is intentionally left out of the automation: its reports
+and several tests are pinned to exact race counts, so an automatic data pull
+would fail the workflow's own test gate by design — refreshing endurance data
+stays a manual, reviewed step. Their ingestion never depended on the F1 timing
+API, so the runner problem above does not touch them.
+
+## Mathematical methods
+
+The measured layers, the engine and the four checks each lean on a
+deliberately chosen technique rather than one off-the-shelf model:
+
+**Degradation — fixed-effects linear regression.** Lap time is decomposed as
+`a_{driver,race} + fuel_slope × lap_number + degradation(tyre_age)`, fit by
+ordinary least squares via `numpy.linalg.lstsq`, with one dummy-variable
+intercept per driver-race pair absorbing car pace, driver pace, and track
+conditions that would otherwise confound the tyre-age effect. Standard errors
+are **cluster-robust** (CR1 sandwich, clustered on the driver-race, referred to
+a `t(G−1)` distribution rather than a normal), because lap-to-lap errors within
+one driver's race are anything but independent — a coverage simulation in
+`tests/test_robust_se.py` shows the classical interval holding only 75% of the
+time at the between-unit slope variation these data actually show, against 95%
+for the robust one. A Moore-Penrose pseudoinverse handles the rank-deficient
+cases (a driver-race seen on only one tyre compound, for instance). The degree of the tyre-age polynomial
+(linear or quadratic) is chosen per circuit by leave-one-race-out
+cross-validation, scored on the *within-stint*, demeaned residual — because a
+driver-race intercept fit on training data cannot be observed on a held-out
+race, comparing raw lap times would silently leak information. Two robustness
+checks sit alongside the OLS model: a Gaussian-process regression (RBF
+kernel, hyperparameters fit by maximising the log marginal likelihood via
+Cholesky factorisation) shows the polynomial assumption isn't the source of
+the instability, and a Kalman filter (a local-linear-trend state-space model,
+run lap by lap) tracks degradation online instead of retrospectively.
+
+**Safety-car and neutralisation risk — conjugate Bayesian models.** Two
+questions, two matching distributions: whether a race sees at least one
+deployment is a **Beta-Binomial** (posterior mean `(k+0.5)/(n+1)` under a
+Jeffreys prior), and the deployment rate per lap is a **Gamma-Poisson**, also
+Jeffreys. With as few as three to eight editions of a circuit, a frequentist
+point estimate would be false precision; the conjugate posterior gives an
+exact credible interval instead, and a circuit that has never seen a safety
+car still gets a small, non-zero, honestly wide probability rather than a
+hard zero.
+
+**The strategy simulator — Monte Carlo with variance reduction and exact
+Pareto search.** Each candidate pit lap is evaluated over thousands of
+simulated race continuations, with every source of uncertainty resampled
+per draw: degradation and fuel coefficients from their confidence intervals,
+neutralisation hazards from their Gamma posteriors, lap noise at the
+cross-validated residual scale. Candidates share the same random draws
+(common random numbers), so the comparison between two pit laps isn't
+polluted by unrelated noise. An optional sampler replaces the i.i.d. draws
+with a scrambled Sobol' low-discrepancy sequence, mapped to the model's
+Normal marginals by the inverse CDF — a form of randomised quasi-Monte Carlo
+that cuts estimator variance sharply when the underlying function is smooth,
+and is honestly reported as a no-op when a jump process (a safety car) is
+what actually drives the variance. Where a decision genuinely trades off two
+objectives — race time against track position — the engine returns the exact
+Pareto front by pairwise non-dominance rather than collapsing to one number;
+on a small discrete grid of candidate laps this is exact, so a metaheuristic
+like NSGA-II would buy nothing.
+
+**Inference about the results — cluster bootstrap and permutation.**
+`src/stats/inference.py` is kept apart from the estimator's own standard errors
+on purpose: that module describes uncertainty *inside* a fit, this one describes
+uncertainty *about a reported result*, and mixing them is how a within-fit
+standard error ends up quoted as a claim about a finding. Group differences get
+a percentile bootstrap resampling the **cluster** — the circuit-class, never the
+fold, since folds inside a class share a pooled fitted slope — alongside a
+permutation test on the group labels, because the two fail differently and
+agreement between them is worth more than either alone. The class-level
+correlation is bootstrapped over *races*, recomputing each class summary inside
+every replicate; resampling six fixed championships would produce an interval
+over a variation that does not exist. And the cheap-stop threshold gets **no**
+interval, because it is a maximum: the statistic sits on the boundary of its own
+support, so the bootstrap distribution is degenerate above it and understates
+uncertainty below. A leave-one-out sensitivity is reported instead.
+
+**Baselines — three rules, written to win.** `src/audit/baselines.py` holds a
+fixed-interval rule using no fitted quantity at all, a threshold rule that stops
+once the tyre's accumulated loss exceeds the pit loss (exact triangular sum, not
+the integral — they differ by about a second over a 40-lap stint and this is the
+only quantity the rule compares to the stop cost), and a fuel-deadline rule that
+returns *undefined* in Formula 1 rather than inventing a deadline where
+refuelling has been banned since 2010.
+
+## License & attribution
+
+This repository — code, derived data, reports and notebooks — is released
+under **CC BY-NC-SA 4.0** (Attribution-NonCommercial-ShareAlike) — see
+[`LICENSE`](LICENSE). Copyright Mohammed Reda Medjadj, 2026. In short: reuse
+and adaptation are welcome with credit, but not for commercial purposes, and
+any derivative must carry the same license. (This project was MIT-licensed
+earlier; MIT's permissive terms allowed unattributed commercial reuse, which
+no longer matches the intent now that the work is published more widely —
+CC BY-NC-SA keeps it open for research and learning while requiring
+attribution and blocking commercial appropriation.)
+
+F1 data is accessed through [FastF1](https://github.com/theOehrly/Fast-F1),
+which sources official Formula 1 live-timing data; this project is
+unaffiliated with Formula 1, the FIA, or any team. WEC and IMSA data are
+accessed through a community-maintained dataset
+(`hf://datasets/tobil/imsa/imsa.duckdb`, maintained by "tobil" on Hugging
+Face and itself released under the MIT License); this project is
+unaffiliated with IMSA, the FIA World Endurance Championship, or any
+competing team. All data is used for independent research and analysis; no
+proprietary or non-public information is used anywhere in this project.
+FastF1 and the upstream WEC/IMSA dataset remain under their own MIT terms;
+this license applies to this project's own code, models, and derived
+output.

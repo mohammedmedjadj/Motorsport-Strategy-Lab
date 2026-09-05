@@ -83,7 +83,7 @@ these papers could produce, because none of them asks that question.
 Both are cheap to state and neither requires the modelling to be sophisticated.
 That is the point: the contribution is the validation, not the machinery.
 
-## Not cited, and why
+## Left out
 
 Earlier notes named a "Frontiers in Artificial Intelligence 2025" deep-learning
 paper and a driver-versus-car paper attributed to Menon et al. Neither could be

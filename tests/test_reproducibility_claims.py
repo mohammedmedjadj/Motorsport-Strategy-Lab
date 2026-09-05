@@ -109,7 +109,11 @@ def test_the_two_qualified_claims_still_carry_their_qualification() -> None:
     accuracy worth preserving, since a blanket caveat everywhere would make the
     two real limitations invisible.
     """
-    readme = (REPO / "README.md").read_text(encoding="utf-8")
+    # The fresh-clone claims are per-series packaging detail, so they live in
+    # the long README now. The short one makes no such claim at all, which is
+    # also fine -- what this guards against is an unqualified promise, not the
+    # absence of one.
+    readme = (REPO / "docs" / "full-readme.md").read_text(encoding="utf-8")
     rows = [
         line for line in readme.splitlines()
         if "Runs from a fresh clone" in line

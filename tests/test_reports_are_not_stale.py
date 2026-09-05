@@ -189,9 +189,13 @@ def test_quoted_tyre_change_premiums_match_the_artifact() -> None:
 
 
 def test_readme_class_table_matches_the_scope() -> None:
-    """The README's IMSA table is the first thing a reader sees about the
-    classes. It stated a candidate class as unbuilt long after it was built."""
-    text = _text("README.md")
+    """The class table is the first thing a reader sees about IMSA's classes.
+    It stated a candidate class as unbuilt long after it was built.
+
+    Reads the long README: the short one carries the results and points here
+    for the per-series detail, and this table is per-series detail.
+    """
+    text = _text("docs/full-readme.md")
     fits = pd.read_csv(ENDURANCE_DERIVED_DIR / "endurance_degradation_fits.csv")
     for car_class, label in (("GTP", "GTP"), ("GTD", "GTD"), ("GTDPRO", "GTD PRO")):
         n = len(fits[(fits["series"] == "imsa") & (fits["car_class"] == car_class)])
@@ -491,7 +495,7 @@ def test_no_report_claims_every_endurance_race_is_fuel_limited() -> None:
         f"{r.series}/{r.circuit}/{r.car_class} {r.year}"
         for r in list(tyre_limited.itertuples())[:3]
     )
-    for report in sorted(REPO.glob("reports/**/*.md")) + [REPO / "README.md"]:
+    for report in sorted(REPO.glob("reports/**/*.md")) + [REPO / "docs" / "full-readme.md"]:
         for paragraph in re.split(r"\n\s*\n", report.read_text(encoding="utf-8")):
             lowered = paragraph.lower()
             claims = (

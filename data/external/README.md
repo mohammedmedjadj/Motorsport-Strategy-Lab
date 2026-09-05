@@ -62,7 +62,7 @@ A results-level WEC history: 3,035 car-entries, 2011–2023, all classes. One ro
 per car per race with its finishing status, which is what the attrition model
 consumes. Same instruction as above about the URL and the licence.
 
-## The three ways out of this, and why none is taken yet
+## Three ways out
 
 1. **Commit the inputs.** ~21 MB, and it depends entirely on a licence neither
    file records. Check the licence — if it permits redistribution, committing

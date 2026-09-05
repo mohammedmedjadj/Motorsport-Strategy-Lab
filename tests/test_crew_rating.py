@@ -125,7 +125,10 @@ def test_the_primary_crew_documents_quote_both_results(fits: pd.DataFrame) -> No
     documents = [
         "reports/elms/crew_rating_findings.md",
         "reports/cross_series/synthesis.md",
-        "README.md",
+        # The crew-rating results are per-series detail, so they live in the
+        # long README. The short one carries the three headline results and
+        # points here.
+        "docs/full-readme.md",
     ]
     for result in compare_crew_ratings(fits):
         p_value = f"{result.p_value:.3f}"
@@ -149,7 +152,8 @@ _HISTORICAL = ("previously", "originally", "used to", "before the", "superseded"
 #: Everything that could carry a crew figure in front of a reader, including
 #: the demo, which is not a report and was carrying the inverted numbers in its
 #: user-facing caveat text after all four reports had been corrected.
-_SWEPT = ("README.md", "demo/app.py", "reports/**/*.md", "reports/*.md")
+_SWEPT = ("README.md", "docs/full-readme.md", "demo/app.py",
+          "reports/**/*.md", "reports/*.md")
 
 
 def _crew_paragraphs(text: str) -> list[str]:
