@@ -90,6 +90,10 @@ python scripts/make_headline_figures.py  # the three figures above
 streamlit run demo/app.py                # after pip install -r demo/requirements.txt
 ```
 
+Seven panels, one per modelled class, running the same simulator and the same
+fitted models the reports use. To host it:
+[`deploy/huggingface/`](deploy/huggingface/README.md).
+
 ## What underwrites it
 
 No fabricated data anywhere. Every quantity is measured from published timing or

@@ -1,0 +1,10 @@
+# What the Space installs. This is the project's own requirements.txt with
+# streamlit added, because streamlit is deliberately a demo-only dependency
+# here -- `pip install -r requirements.txt` should not pull a web framework for
+# someone who only wants to run the analysis.
+fastf1
+scipy
+pytest
+hypothesis
+duckdb
+streamlit>=1.60

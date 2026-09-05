@@ -72,9 +72,14 @@ streamlit run demo/app.py
 
 ## Deploy (Hugging Face Spaces, Streamlit SDK)
 
-1. Create a Space, SDK = Streamlit.
-2. Point it at this repo (or push a copy), with `demo/app.py` as the app file
-   and `demo/requirements.txt` as the requirements file — both Space settings,
-   configured from the Hugging Face UI, not from this repo.
-3. No secrets or network access needed: everything the app reads
-   (`data/derived/`) is already committed.
+Ready to go: [`deploy/huggingface/`](../deploy/huggingface/README.md) holds the
+three files a Space needs and this repository deliberately does not have — a
+root `app.py`, a `requirements.txt` with streamlit in it, and a README carrying
+the YAML configuration Spaces reads.
+
+They live in their own directory rather than at the root because Spaces insists
+on those paths, and putting them at the root here would mean shipping a web
+framework to everyone who only wants to run the analysis. The deployment
+instructions are in that README.
+
+No secrets, no network access: everything the app reads is committed.
