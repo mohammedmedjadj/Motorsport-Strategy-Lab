@@ -387,12 +387,40 @@ def s6_intervals() -> str:
     return f"{path}  ({len(tests)} results in 2 unit panels)"
 
 
+def sync_site_figures() -> str:
+    """Copy every figure into docs/, which is what GitHub Pages serves.
+
+    The site cannot reference ../reports/figures/ -- Pages serves docs/ as the
+    root -- so the choice is a copy or a broken image. A copy that nothing
+    refreshes is the stale-duplicate problem this project has already had once,
+    so it happens here, after every figure is regenerated, and
+    tests/test_site.py fails if the two directories ever differ.
+    """
+    import shutil
+
+    site = REPORTS_DIR.parent / "docs" / "figures"
+    site.mkdir(parents=True, exist_ok=True)
+    copied = 0
+    for source in sorted(FIGURES.glob("*.png")):
+        target = site / source.name
+        if not target.exists() or target.read_bytes() != source.read_bytes():
+            shutil.copy2(source, target)
+        copied += 1
+    # Anything in the site that no longer exists upstream is a dead image.
+    for stale in sorted(site.glob("*.png")):
+        if not (FIGURES / stale.name).exists():
+            stale.unlink()
+            print(f"  removed orphaned site figure {stale.name}")
+    return f"{site}  ({copied} figures in sync)"
+
+
 def main() -> int:
     FIGURES.mkdir(parents=True, exist_ok=True)
     for build in (s1_neutralisation_regimes, s2_pit_loss_spectrum,
                   s3_f1_degradation, s4_track_position, s5_baselines,
                   s6_intervals):
         print("wrote", build())
+    print("synced", sync_site_figures())
     return 0
 
 

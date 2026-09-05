@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Motorsport Strategy Lab — does a tyre-degradation model transfer?</title>
+<meta name="description" content="Race strategy across Formula 1, WEC, IMSA and ELMS: one protocol, seven car classes, 1,280 real pit-stop decisions replayed. Two negative results and one that is measured but unexplained.">
+<meta property="og:title" content="Motorsport Strategy Lab">
+<meta property="og:description" content="One protocol across four championships. 1,280 real pit-stop decisions replayed. Two of three results are negative, and the third is unexplained.">
+<meta property="og:image" content="figures/r3_audit_bias.png">
+<style>
+  :root {
+    --ink: #16181d; --muted: #5c6470; --line: #e3e6ea;
+    --bg: #ffffff; --panel: #f7f8fa;
+    --red: #d1495b; --teal: #00798c; --navy: #2b2d42; --amber: #edae49;
+    --max: 1080px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ink: #e8eaed; --muted: #9aa3af; --line: #2a2f38;
+      --bg: #14161a; --panel: #1b1e24;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: var(--max); margin: 0 auto; padding: 0 24px; }
+  a { color: var(--teal); }
+  header {
+    border-bottom: 1px solid var(--line); padding: 64px 0 48px;
+    background: linear-gradient(180deg, var(--panel), transparent);
+  }
+  h1 { font-size: clamp(30px, 5vw, 46px); line-height: 1.12; margin: 0 0 14px; letter-spacing: -0.02em; }
+  .sub { font-size: clamp(17px, 2.2vw, 21px); color: var(--muted); margin: 0 0 26px; max-width: 60ch; }
+  .byline { font-size: 14px; color: var(--muted); margin: 0 0 26px; }
+  .links { display: flex; flex-wrap: wrap; gap: 10px; }
+  .btn {
+    display: inline-block; padding: 9px 16px; border-radius: 8px;
+    border: 1px solid var(--line); text-decoration: none; color: var(--ink);
+    font-size: 14.5px; font-weight: 500; background: var(--bg);
+  }
+  .btn.primary { background: var(--navy); border-color: var(--navy); color: #fff; }
+  .btn:hover { border-color: var(--teal); }
+  section { padding: 56px 0; border-bottom: 1px solid var(--line); }
+  h2 { font-size: clamp(22px, 3.2vw, 30px); margin: 0 0 8px; letter-spacing: -0.01em; }
+  h2 .n { color: var(--muted); font-weight: 400; margin-right: 10px; }
+  .lede { color: var(--muted); margin: 0 0 26px; max-width: 66ch; }
+  figure { margin: 0 0 22px; }
+  figure img {
+    width: 100%; height: auto; display: block;
+    border: 1px solid var(--line); border-radius: 10px; background: #fff;
+  }
+  figcaption { font-size: 13.5px; color: var(--muted); margin-top: 9px; }
+  .cols { display: grid; gap: 26px; grid-template-columns: 1fr; }
+  @media (min-width: 820px) { .cols.two { grid-template-columns: 1fr 1fr; } }
+  .stat { border-left: 3px solid var(--red); padding: 2px 0 2px 16px; margin: 20px 0; }
+  .stat b { font-size: 26px; display: block; line-height: 1.2; }
+  .stat span { color: var(--muted); font-size: 14.5px; }
+  table { border-collapse: collapse; width: 100%; font-size: 14.5px; margin: 4px 0 18px; }
+  th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--line); }
+  th { color: var(--muted); font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: .04em; }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .win { color: var(--red); font-weight: 700; }
+  .note {
+    background: var(--panel); border-radius: 10px; padding: 18px 20px;
+    font-size: 15px; margin: 22px 0; border: 1px solid var(--line);
+  }
+  .note strong { color: var(--ink); }
+  footer { padding: 44px 0 72px; color: var(--muted); font-size: 14px; }
+  .scroll { overflow-x: auto; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <h1>Does a tyre-degradation model transfer?</h1>
+    <p class="sub">One protocol across four championships and seven car classes.
+      1,280 real pit-stop decisions replayed against it. Two of the three
+      results are negative, and the third is measured but unexplained.</p>
+    <p class="byline">Mohammed Reda Medjadj · Formula&nbsp;1 · WEC · IMSA · ELMS</p>
+    <div class="links">
+      <a class="btn primary" href="https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab">Repository</a>
+      <a class="btn" href="https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab/blob/main/paper/main.tex">The paper</a>
+      <a class="btn" href="https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab/tree/main/reports">94 reports</a>
+      <a class="btn" href="https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab/tree/main/outreach">Three open questions</a>
+    </div>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <h2><span class="n">1</span>Transfer is a property of the circuit-class, not the championship</h2>
+    <p class="lede">Fit a degradation slope on every season of a circuit but one,
+      predict the held-out season, score the within-stint residual. Do it the
+      same way everywhere.</p>
+    <figure>
+      <img src="figures/r1_transfer.png" alt="Leave-one-race-out mean within-stint R-squared for 51 circuit-classes, sorted; only five exceed 0.2.">
+      <figcaption>51 circuit-classes across IMSA, WEC and ELMS. One point each.</figcaption>
+    </figure>
+    <div class="cols two">
+      <div>
+        <div class="stat"><b>+0.573</b><span>best transfer anywhere — IMSA GTD at Lime Rock</span></div>
+        <div class="stat"><b>5 of 51</b><span>circuit-classes reaching R² = 0.2 at all</span></div>
+      </div>
+      <div>
+        <p>GT3 classes transfer measurably better than prototypes: difference
+          <strong>+0.164</strong>, 95% CI [+0.059, +0.312], permutation
+          <em>p</em> = 0.0009. Resampled at the circuit-class, never the fold —
+          folds inside a class share a fitted slope.</p>
+        <p>The obvious explanation is performance-balanced machinery. It is
+          <strong>ruled out</strong>: ELMS LMP2 is near-specification — one
+          chassis, one engine, no Balance of Performance — and fails exactly as
+          the balanced fields do. The instability is not the hardware.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2><span class="n">2</span>The cost of the stop, not the car, sets the strategy regime</h2>
+    <p class="lede">An exact dynamic program plans every endurance race under a
+      hard fuel constraint and reports whether the tyre-optimal plan needs more
+      stops than the tank forces.</p>
+    <figure>
+      <img src="figures/r2_pit_loss_rule.png" alt="Left: class median pit loss against tyre-limited share, r = -0.982. Right: every race-season with the 22.5 second edge marked.">
+      <figcaption>205 race-seasons. Left, six classes; right, every race.</figcaption>
+    </figure>
+    <div class="cols two">
+      <div>
+        <div class="stat"><b>−0.982</b><span>pit loss vs tyre-limited share, 95% CI [−0.986, −0.745]</span></div>
+        <div class="stat"><b>150 → 0</b><span>race-seasons above a 22.5 s pit loss, and how many are tyre-limited</span></div>
+      </div>
+      <div>
+        <p>Monotonic across all six classes with no inversion. The interval is
+          bootstrapped over <em>races</em>, recomputing each class summary inside
+          every replicate — bootstrapping six fixed championships would produce
+          an interval over a variation that does not exist.</p>
+        <div class="note"><strong>The rule is robust; the constant is not.</strong>
+          The 22.5 s edge is a maximum set by a single race — the next
+          tyre-limited race sits at 13.2 s. No interval is reported for it,
+          because a bootstrap of a maximum is degenerate on one side. Quote the
+          rule; treat the number as an order of magnitude.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2><span class="n">3</span>An exact optimiser stops later than teams do, and nobody knows why</h2>
+    <p class="lede">Every real first stop is replayed. The model is asked five
+      laps early, given the state as it was, and its recommendation compared to
+      the lap the team chose.</p>
+    <figure>
+      <img src="figures/r3_audit_bias.png" alt="Distribution of model lap minus team lap per series: IMSA median +12, F1 +10, ELMS +2, WEC +1.">
+      <figcaption>1,280 replayed decisions, four championships, one criterion.</figcaption>
+    </figure>
+    <div class="cols two">
+      <div>
+        <p><strong>Two explanations were proposed here, and both were tested here.</strong></p>
+        <p><strong>No track position</strong>, so the engine cannot pay for an
+          undercut. Re-running all 357 F1 decisions through a cover-aware
+          Stackelberg engine moves the recommendation <em>away</em> from the real
+          stop. <span class="win">Rejected.</span></p>
+        <p><strong>Slopes biased toward durability.</strong> Against an
+          independent source separating tyre wear from fuel burn by a different
+          method, the paired difference is negligible — an error that size moves
+          a stop by several race distances, not ten laps.
+          <span class="win">Not detected.</span></p>
+      </div>
+      <div>
+        <div class="note"><strong>The result stands as measured and
+          unexplained.</strong> That is a worse position than having a plausible
+          story, and a better one than publishing a story two measurements
+          contradict.</div>
+        <p>What is left to try is the question itself. The model is offered every
+          remaining lap; a pit wall is choosing among a handful inside a strategy
+          already committed to, under a tyre allocation the engine does not see.
+          Testing that means changing the audit, not the model — and it is the
+          first of the
+          <a href="https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab/blob/main/outreach/questions.md">three questions</a>
+          this project would most like answered.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>And a rule of thumb beats it, in three championships out of four</h2>
+    <p class="lede">Three baselines, scored on the same decisions, from the same
+      artifacts, on the same metric. Written to win if they could — a straw man
+      would prove nothing.</p>
+    <div class="scroll">
+      <table>
+        <thead><tr>
+          <th>Championship</th><th class="num">Exact optimiser</th>
+          <th class="num">B1 fixed interval</th><th class="num">B2 threshold</th>
+          <th class="num">B3 fuel deadline</th>
+        </tr></thead>
+        <tbody>
+          <tr><td>Formula 1</td><td class="num">10</td><td class="num">11</td><td class="num win">7</td><td class="num">—</td></tr>
+          <tr><td>IMSA</td><td class="num">12</td><td class="num win">8</td><td class="num">29</td><td class="num">14</td></tr>
+          <tr><td>WEC</td><td class="num">2</td><td class="num">2</td><td class="num">39</td><td class="num win">1</td></tr>
+          <tr><td>ELMS</td><td class="num win">2</td><td class="num">3</td><td class="num">45</td><td class="num">4</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:14px;color:var(--muted);margin-top:-6px">Median absolute
+      lap error against the real stop. B1 uses <em>no fitted quantity at all</em>
+      — and it is the one that wins in IMSA. B3 is undefined in Formula 1, which
+      has not refuelled since 2010, and is reported as undefined rather than
+      substituted with the race end.</p>
+    <div class="note"><strong>Closer to what teams did is not the same as
+      better.</strong> Every number here scores agreement with practice, never
+      which plan was faster. What it does settle is narrower and still worth
+      having: the 12-lap gap cannot come from the simpler methods lacking
+      information the optimiser has. They have less, and land nearer.</div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>What underwrites it</h2>
+    <div class="cols two">
+      <div>
+        <p><strong>No fabricated data, anywhere.</strong> Every quantity is
+          measured from published timing or absent. Where a source lacks
+          something, that is a stated limitation and the affected layer is not
+          fitted.</p>
+        <p><strong>Two estimators were withdrawn.</strong> A track-evolution
+          correction was validated on synthetic races and failed twice on real
+          fields. It is described rather than omitted, and the omitted variable
+          is reported as diagnosed and unfixed.</p>
+      </div>
+      <div>
+        <p><strong>The paper contains no numbers.</strong> Every quantity in the
+          manuscript is a macro generated from the committed artifacts, so it
+          cannot drift from the data — regenerate and it is correct, or CI
+          fails.</p>
+        <p><strong>446 tests</strong>, including a file whose only job is to
+          recompute each published headline from its artifact and assert the
+          result appears in the document that publishes it.</p>
+      </div>
+    </div>
+    <figure style="margin-top:10px">
+      <img src="figures/s6_intervals.png" alt="Forest plot of every result carrying a confidence interval, split into R-squared units and correlation units.">
+      <figcaption>Every result that carries an interval, each resampled at the
+        level its data varies at — never at the level that makes it narrowest.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p>Formula 1 timing via <a href="https://github.com/theOehrly/Fast-F1">FastF1</a>.
+      Endurance timing from a community-maintained dataset. Weather from
+      Open-Meteo.</p>
+    <p>Code and data:
+      <a href="https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab">github.com/mohammedmedjadj/Motorsport-Strategy-Lab</a>
+      · CC BY-NC-SA 4.0</p>
+  </div>
+</footer>
+
+</body>
+</html>

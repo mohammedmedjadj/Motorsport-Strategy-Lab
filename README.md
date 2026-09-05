@@ -10,11 +10,13 @@
   <a href="https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab/actions/workflows/tests.yml"><img src="https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab/actions/workflows/tests.yml/badge.svg" alt="Test suite status"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-CC%20BY--NC--SA%204.0-E10600" alt="License: CC BY-NC-SA 4.0"></a>
   <img src="https://img.shields.io/badge/python-3.11%2B-00D9FF" alt="Python 3.11+">
-  <img src="https://img.shields.io/badge/tests-439%20passing-2ea44f" alt="439 tests passing">
+  <img src="https://img.shields.io/badge/tests-446%20passing-2ea44f" alt="446 tests passing">
   <img src="https://img.shields.io/badge/series-F1%20%C2%B7%20WEC%20%C2%B7%20IMSA%20%C2%B7%20ELMS-FFB800" alt="Series: F1, WEC, IMSA, ELMS">
 </p>
 
 <p align="center">
+  <a href="https://mohammedmedjadj.github.io/Motorsport-Strategy-Lab/">Website</a> ·
+  <a href="paper/main.tex">Paper</a> ·
   <a href="reports/f1/methodology.md">Methodology</a> ·
   <a href="#key-findings-across-all-four-series">Key Findings</a> ·
   <a href="reports/f1/audit_cases.md">Audit Cases</a> ·
@@ -1460,7 +1462,7 @@ Motorsport-Strategy-Lab/
                         #   run_fuel_limited_sensitivity.py,
                         #   run_sc_contamination_check.py (adversarial audit
                         #   pass); demo_extensions.py; generate_banner.py
-  tests/                # pytest, across four series and seven classes, 439
+  tests/                # pytest, across four series and seven classes, 446
                         #   tests -- incl. the demo, driven headlessly by
                         #   test_demo_app.py, and the report-staleness guards
                         #   that check prose still matches the artifacts
@@ -1490,6 +1492,35 @@ Motorsport-Strategy-Lab/
   CITATION.cff
   pyproject.toml
   requirements.txt      # top-level deps; requirements.lock pins exact versions
+```
+
+## Quick start — a real result in three commands
+
+Everything except two Kaggle-fed layers runs offline from the clone, because
+the derived data is committed. No API key, no download, no account.
+
+```bash
+git clone https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab.git
+cd Motorsport-Strategy-Lab && pip install -r requirements.txt
+python scripts/run_baseline_comparison.py
+```
+
+That replays 1,263 real pit-stop decisions against three rules of thumb and
+prints the table showing the exact optimiser losing to them in three
+championships out of four. It reads only committed CSVs and takes about a
+minute.
+
+Two more that need nothing else:
+
+```bash
+python scripts/run_formal_tests.py        # intervals on every headline result
+python scripts/make_headline_figures.py   # the three figures at the top of this page
+```
+
+To see it move rather than read about it:
+
+```bash
+pip install -r demo/requirements.txt && streamlit run demo/app.py
 ```
 
 ## Setup
