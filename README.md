@@ -10,7 +10,7 @@
   <a href="https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab/actions/workflows/tests.yml"><img src="https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab/actions/workflows/tests.yml/badge.svg" alt="Test suite status"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-CC%20BY--NC--SA%204.0-E10600" alt="License: CC BY-NC-SA 4.0"></a>
   <img src="https://img.shields.io/badge/python-3.11%2B-00D9FF" alt="Python 3.11+">
-  <img src="https://img.shields.io/badge/tests-434%20passing-2ea44f" alt="434 tests passing">
+  <img src="https://img.shields.io/badge/tests-439%20passing-2ea44f" alt="439 tests passing">
   <img src="https://img.shields.io/badge/series-F1%20%C2%B7%20WEC%20%C2%B7%20IMSA%20%C2%B7%20ELMS-FFB800" alt="Series: F1, WEC, IMSA, ELMS">
 </p>
 
@@ -122,6 +122,11 @@ Jump to: [Formula 1](#formula-1) · [IMSA](#imsa) · [ELMS](#elms) ·
 
 **And a rule of thumb sits closer to real practice than the optimiser, in three
 series out of four** — in IMSA, one that uses no fitted quantity at all.
+
+📄 **The paper is written**: [`paper/main.tex`](paper/main.tex) — and it contains
+no numbers of its own. Every quantity is a macro generated from the committed
+artifacts, so the manuscript cannot drift from the data the way this project's
+prose repeatedly has. [How and why](paper/README.md).
 
 <p align="center">
   <img src="reports/figures/s5_baselines.png" alt="Median lap error: optimiser against three baselines" width="88%">
@@ -1455,7 +1460,7 @@ Motorsport-Strategy-Lab/
                         #   run_fuel_limited_sensitivity.py,
                         #   run_sc_contamination_check.py (adversarial audit
                         #   pass); demo_extensions.py; generate_banner.py
-  tests/                # pytest, across four series and seven classes, 434
+  tests/                # pytest, across four series and seven classes, 439
                         #   tests -- incl. the demo, driven headlessly by
                         #   test_demo_app.py, and the report-staleness guards
                         #   that check prose still matches the artifacts

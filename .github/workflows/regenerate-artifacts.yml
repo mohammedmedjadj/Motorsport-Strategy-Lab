@@ -141,6 +141,10 @@ jobs:
         run: python scripts/make_headline_figures.py
       - name: Supporting figures
         run: python scripts/make_supporting_figures.py
+      # The manuscript quotes no number it did not derive; this is what makes
+      # that true. A stale numbers.tex fails here rather than in a submitted PDF.
+      - name: Paper numbers
+        run: python scripts/make_paper_numbers.py
 
       - name: Report drift
         run: .github/scripts/report_drift.sh "cross-series"
