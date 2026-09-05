@@ -14,38 +14,55 @@ Three rules, scored on **the same decisions, from the same artifacts, on the sam
 
 **1263 of the audit's 1280 decisions scored** (99%). The shortfall is decisions whose inputs could not be recovered: an F1 circuit with no fitted model or a driver whose state at the decision lap is missing from the committed laps, and endurance decisions whose race-season has no row in the multi-stop plan table. Nothing is dropped for being awkward — the filter is whether the same inputs the optimiser saw are still available, and where they are not, no method is scored rather than one being scored on a guess.
 
-| series | method | answered | coverage | median \|Δ\| laps | mean | within 2 laps |
+| class | method | answered | coverage | median \|Δ\| laps | mean | within 2 laps |
 |---|---|---|---|---|---|---|
-| elms | exact optimiser | 171 | 100% | 2 | 4.2 | 53% |
-| elms | B1 fixed interval | 171 | 100% | 3 | 3.6 | 50% |
-| elms | B2 threshold | 108 | 63% | 45 | 46.8 | 3% |
-| elms | B3 fuel deadline | 171 | 100% | 4 | 5.0 | 33% |
-| f1 | exact optimiser | 357 | 100% | 10 | 12.0 | 13% |
-| f1 | B1 fixed interval | 357 | 100% | 11 | 10.8 | 5% |
-| f1 | B2 threshold | 290 | 81% | 7 | 10.2 | 18% |
-| f1 | B3 fuel deadline | 0 | 0% | — | — | — |
-| imsa | exact optimiser | 615 | 100% | 12 | 13.7 | 21% |
-| imsa | B1 fixed interval | 615 | 100% | 8 | 10.4 | 23% |
-| imsa | B2 threshold | 475 | 77% | 29 | 41.3 | 5% |
-| imsa | B3 fuel deadline | 615 | 100% | 14 | 16.3 | 13% |
-| wec | exact optimiser | 120 | 100% | 2 | 2.9 | 85% |
-| wec | B1 fixed interval | 120 | 100% | 2 | 4.2 | 58% |
-| wec | B2 threshold | 81 | 68% | 39 | 50.3 | 0% |
-| wec | B3 fuel deadline | 120 | 100% | 1 | 4.6 | 72% |
+| ELMS LMP2 | exact optimiser | 101 | 100% | 2 | 4.0 | 58% |
+| ELMS LMP2 | B1 fixed interval | 101 | 100% | 3 | 3.8 | 45% |
+| ELMS LMP2 | B2 threshold | 61 | 60% | 45 | 46.7 | 0% |
+| ELMS LMP2 | B3 fuel deadline | 101 | 100% | 4 | 4.7 | 39% |
+| ELMS LMP2 Pro/Am | exact optimiser | 70 | 100% | 3 | 4.5 | 46% |
+| ELMS LMP2 Pro/Am | B1 fixed interval | 70 | 100% | 2 | 3.2 | 57% |
+| ELMS LMP2 Pro/Am | B2 threshold | 47 | 67% | 45 | 47.0 | 6% |
+| ELMS LMP2 Pro/Am | B3 fuel deadline | 70 | 100% | 4 | 5.3 | 24% |
+| Formula 1 | exact optimiser | 357 | 100% | 10 | 12.0 | 13% |
+| Formula 1 | B1 fixed interval | 357 | 100% | 11 | 10.8 | 5% |
+| Formula 1 | B2 threshold | 290 | 81% | 7 | 10.2 | 18% |
+| Formula 1 | B3 fuel deadline | 0 | 0% | — | — | — |
+| IMSA GTD | exact optimiser | 256 | 100% | 12 | 13.1 | 16% |
+| IMSA GTD | B1 fixed interval | 256 | 100% | 7 | 8.9 | 26% |
+| IMSA GTD | B2 threshold | 198 | 77% | 18 | 34.8 | 8% |
+| IMSA GTD | B3 fuel deadline | 256 | 100% | 14 | 14.7 | 10% |
+| IMSA GTD PRO | exact optimiser | 210 | 100% | 12 | 14.6 | 23% |
+| IMSA GTD PRO | B1 fixed interval | 210 | 100% | 9 | 11.2 | 20% |
+| IMSA GTD PRO | B2 threshold | 172 | 82% | 33 | 39.0 | 4% |
+| IMSA GTD PRO | B3 fuel deadline | 210 | 100% | 15 | 17.8 | 12% |
+| IMSA GTP | exact optimiser | 149 | 100% | 9 | 13.6 | 27% |
+| IMSA GTP | B1 fixed interval | 149 | 100% | 9 | 11.9 | 22% |
+| IMSA GTP | B2 threshold | 105 | 70% | 54 | 57.5 | 2% |
+| IMSA GTP | B3 fuel deadline | 149 | 100% | 14 | 16.8 | 18% |
+| WEC Hypercar | exact optimiser | 120 | 100% | 2 | 2.9 | 85% |
+| WEC Hypercar | B1 fixed interval | 120 | 100% | 2 | 4.2 | 58% |
+| WEC Hypercar | B2 threshold | 81 | 68% | 39 | 50.3 | 0% |
+| WEC Hypercar | B3 fuel deadline | 120 | 100% | 1 | 4.6 | 72% |
 
 **Coverage is part of the result, not a footnote.** A rule that answers a fifth of the decisions and is close on those has not beaten one that answers all of them, and a table of medians alone would say it had. B2 declines whenever the fitted tyre never accumulates enough loss to repay the stop before the flag; B3 declines wherever there is no measured fuel range, and everywhere in F1.
 
 ## What this says
 
-- **ELMS**: the optimiser leads on both statistics — median **2 laps**, within two laps 53% of the time. The machinery earns its place here.
-- **F1**: **B2 threshold beats the exact optimiser on median error** — 7 laps against 10 laps, on 81% of decisions. It also lands within two laps more often (18% against 13%), so both statistics agree.
-- **IMSA**: **B1 fixed interval beats the exact optimiser on median error** — 8 laps against 12 laps, on 100% of decisions. It also lands within two laps more often (23% against 21%), so both statistics agree.
-- **WEC**: **B3 fuel deadline beats the exact optimiser on median error** — 1 lap against 2 laps, on 100% of decisions. The optimiser still lands within two laps more often (85% against 72%) — it is further out on average but more often nearly exact.
+**A rule of thumb is closer to real practice than the exact optimiser in 5 of 7 classes**, ties it in 1, and loses in 1.
 
-**Closer to what teams did is not the same as better.** Every number here scores agreement with real strategy, which is what the audit measures and not a claim about which plan was faster. A rule that matches practice may be matching a shared habit; the optimiser being further away may mean it is wrong, or may mean teams leave time on the table. This comparison cannot separate those, and neither can the audit.
+- **ELMS LMP2**: the optimiser leads at 2 laps against the best rule's 3 laps. The machinery earns its place here.
+- **ELMS LMP2 Pro/Am**: **B1 fixed interval is closer**, 2 laps against 3 laps on 100% of decisions.
+- **Formula 1**: **B2 threshold is closer**, 7 laps against 10 laps on 81% of decisions.
+- **IMSA GTD**: **B1 fixed interval is closer**, 7 laps against 12 laps on 100% of decisions.
+- **IMSA GTD PRO**: **B1 fixed interval is closer**, 9 laps against 12 laps on 100% of decisions. The optimiser still lands within two laps more often (23% against 20%) --- further out on average, more often nearly exact.
+- **IMSA GTP**: the optimiser and B1 fixed interval both sit at 9 laps. It keeps a small edge on precision: within two laps 27% of the time against 22%.
+- **WEC Hypercar**: **B3 fuel deadline is closer**, 1 lap against 2 laps on 100% of decisions. The optimiser still lands within two laps more often (85% against 72%) --- further out on average, more often nearly exact.
 
-What it does settle is narrower and still worth having: **in F1 and IMSA the exact optimiser is not the closest thing here to what teams actually do.** A threshold rule using two fitted numbers, and in IMSA a rule using none at all, sit nearer. Whatever the 12-lap gap is, it is not explained by the baselines lacking information the optimiser has.
+Closer to what teams did is not the same as better. Every number here scores agreement with real strategy, not which plan was faster. A rule that matches practice may be matching a shared habit, and the optimiser being further away may mean it is wrong or may mean teams leave time on the table. Neither this comparison nor the audit can separate those.
 
-B2 is far out in all three endurance series, and that is the rule being wrong rather than broken: it stops when the *tyre* has cost more than the stop, while an endurance stop is forced by the *tank*. B3, which runs the tank out, is the one that belongs there — and it is the optimiser's closest rival in WEC.
+What it does settle is narrower and worth having. The gap cannot come from the simpler methods lacking information the optimiser has. They have less, and they land nearer.
+
+B2 is far out in every endurance class, and that is the rule being wrong rather than broken. It stops when the *tyre* has cost more than the stop; an endurance stop is forced by the *tank*. B3, which runs the tank out, is the rule that belongs there.
 
 The baselines were written to win if they could. A straw man would prove nothing, and the outcome where a naive rule sits closer to practice than the exact optimum is the more interesting one — it would not weaken the audit's finding but sharpen it, into a claim about what an optimiser is for rather than about how good this one is.

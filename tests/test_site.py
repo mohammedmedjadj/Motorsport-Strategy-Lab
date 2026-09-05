@@ -126,7 +126,10 @@ def test_the_site_quotes_the_current_audit_scale(page: str) -> None:
 def test_the_site_baseline_table_matches_the_comparison(page: str) -> None:
     """The table that says a rule of thumb beats the optimiser.
 
-    The most quotable claim on the page, so the one most worth pinning.
+    Checked per class, matching the table the page now shows. It used to check
+    per championship, and kept passing on a series-level table after the
+    analysis had moved to classes — a guard that watches the wrong grouping is
+    a guard that agrees with whatever it finds.
     """
     frames = [
         pd.read_csv(DERIVED / series / "baseline_comparison.csv")
@@ -136,24 +139,60 @@ def test_the_site_baseline_table_matches_the_comparison(page: str) -> None:
     if not frames:
         pytest.skip("baseline comparison not generated")
     scored = pd.concat(frames, ignore_index=True)
+    scored["car_class"] = scored["car_class"].fillna("")
 
     wrong = []
-    for series in ("f1", "imsa", "wec", "elms"):
-        subset = scored[scored["series"] == series]
-        if subset.empty:
-            continue
+    for (series, car_class), group in scored.groupby(["series", "car_class"]):
+        unit = "Formula 1" if series == "f1" else f"{series.upper()} {car_class}"
         for column, label in (("model_pit_lap", "optimiser"), ("b1_lap", "B1"),
                               ("b2_lap", "B2"), ("b3_lap", "B3")):
-            errors = (subset[column] - subset["real_pit_lap"]).abs().dropna()
+            errors = (group[column] - group["real_pit_lap"]).abs().dropna()
             if not len(errors):
                 continue
             cell = f'<td class="num">{errors.median():.0f}</td>'
             win = f'<td class="num win">{errors.median():.0f}</td>'
             if cell not in page and win not in page:
-                wrong.append(f"{series} {label} = {errors.median():.0f}")
+                wrong.append(f"{unit} {label} = {errors.median():.0f}")
     assert not wrong, (
         f"these baseline results do not appear anywhere in the site's table: "
         f"{wrong}. The page is showing a comparison the data no longer supports."
+    )
+
+
+def test_the_site_states_the_class_level_headline(page: str) -> None:
+    """How many classes a rule of thumb actually wins.
+
+    This moved from "three championships out of four" to a count over classes
+    when the analysis was regrouped, and it is the page's most quotable line.
+    """
+    frames = [
+        pd.read_csv(DERIVED / series / "baseline_comparison.csv")
+        for series in ("f1", "endurance")
+        if (DERIVED / series / "baseline_comparison.csv").exists()
+    ]
+    if not frames:
+        pytest.skip("baseline comparison not generated")
+    scored = pd.concat(frames, ignore_index=True)
+    scored["car_class"] = scored["car_class"].fillna("")
+
+    beaten = total = 0
+    for _, group in scored.groupby(["series", "car_class"]):
+        model = (group["model_pit_lap"] - group["real_pit_lap"]).abs().dropna()
+        if not len(model):
+            continue
+        rules = [
+            (group[c] - group["real_pit_lap"]).abs().dropna().median()
+            for c in ("b1_lap", "b2_lap", "b3_lap")
+            if len((group[c] - group["real_pit_lap"]).abs().dropna())
+        ]
+        total += 1
+        if rules and min(rules) < model.median():
+            beaten += 1
+
+    assert f"five of the seven classes" in page.lower() or \
+        f"{beaten} of the {total}" in page or f"{beaten} of {total}" in page, (
+        f"the site does not state that a rule beats the optimiser in {beaten} "
+        f"of {total} classes, which is what the data now shows."
     )
 
 

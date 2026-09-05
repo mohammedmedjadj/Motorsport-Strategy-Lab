@@ -10,7 +10,7 @@
   <a href="https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab/actions/workflows/tests.yml"><img src="https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab/actions/workflows/tests.yml/badge.svg" alt="Test suite status"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-CC%20BY--NC--SA%204.0-E10600" alt="License: CC BY-NC-SA 4.0"></a>
   <img src="https://img.shields.io/badge/python-3.11%2B-00D9FF" alt="Python 3.11+">
-  <img src="https://img.shields.io/badge/tests-446%20passing-2ea44f" alt="446 tests passing">
+  <img src="https://img.shields.io/badge/tests-461%20passing-2ea44f" alt="461 tests passing">
   <img src="https://img.shields.io/badge/series-F1%20%C2%B7%20WEC%20%C2%B7%20IMSA%20%C2%B7%20ELMS-FFB800" alt="Series: F1, WEC, IMSA, ELMS">
 </p>
 
@@ -122,8 +122,8 @@ Jump to: [Formula 1](#formula-1) · [IMSA](#imsa) · [ELMS](#elms) ·
 </tr>
 </table>
 
-**And a rule of thumb sits closer to real practice than the optimiser, in three
-series out of four** — in IMSA, one that uses no fitted quantity at all.
+**And a rule of thumb sits closer to real practice than the optimiser in 5 of
+the 7 classes** — in four of them, a rule that uses no fitted quantity at all.
 
 📄 **The paper is written**: [`paper/main.tex`](paper/main.tex) — and it contains
 no numbers of its own. Every quantity is a macro generated from the committed
@@ -136,21 +136,41 @@ prose repeatedly has. [How and why](paper/README.md).
 
 ## Why this project
 
-Most public F1 data projects (and racing data projects in general) stop at "predict the pit-stop lap," a regression
-that already exists in dozens of notebooks. Three things set this one apart:
+This used to say that public racing projects stop at predicting the pit-stop
+lap, and that the comparison class was "dozens of notebooks". That was wrong on
+both counts, and worth correcting properly.
 
-1. Every output is a **distribution**, not a number. A pit window is a range
-   of outcomes with probabilities attached, not a single best guess.
-2. Tyre degradation and safety-car risk are modelled independently and then
-   combined inside a **Monte Carlo simulator**, which is closer to how a
-   strategy team actually reasons about a race than fitting one model to
-   lap times and calling it done.
-3. The results are checked against reality, **uniformly**. Every real first
-   pit stop on the F1 calendar — 357 decisions across 74 races — is replayed
-   through the simulator and compared with what the team actually did, on a
-   criterion applied to all of them rather than to races that were argued
-   about. The headline that comes back is a limitation of this project's own
-   model: it stops too late on 80% of them.
+There is a real literature here, going back at least to Bekker and Lotz in 2009
+and running through a decade of work from Heilmeier's group at TUM, dynamic
+programming treatments by Carrasco Heine and Thraves, a Stackelberg game
+formulation by Aguad and Thraves, and a recent wave of learning-based
+approaches. Twelve papers, verified against their publication records, are
+catalogued in [`reports/cross_series/related_work.md`](reports/cross_series/related_work.md).
+
+Measured against that, the modelling here is not especially advanced. It is
+simpler than Heilmeier's probabilistic race simulation, it ignores energy
+management entirely where van Kampen and colleagues optimise it jointly with
+stint planning, and it is less statistically careful per race than Cappello and
+Hoegh's state-space model.
+
+What the literature does not do is validate. Two gaps run through nearly all of
+it:
+
+1. **Nobody tests whether the fitted parameters transfer.** A degradation model
+   is fitted, and its quality is reported on the data it was fitted to. Cappello
+   and Hoegh come closest and say so plainly — their evaluation is one race, and
+   they name generalisation across races and circuits as future work with no
+   evidence offered. This project measures it on 51 circuit-classes under one
+   protocol, and the answer is that transfer is rare.
+2. **Nobody confronts the optimiser with what teams actually did**, at scale.
+   Optimisers get compared to other optimisers, or to the optimum under their
+   own assumptions. Here, 1,280 real first stops are replayed on one criterion,
+   and the model turns out to stop later than the pit wall on 80% of the F1
+   decisions.
+
+So the contribution is the validation rather than the machinery. That is a
+narrower claim than the one this section used to make, and it is one that
+survives someone checking.
 
 F1 data comes from [FastF1](https://github.com/theOehrly/Fast-F1); WEC and
 IMSA data come from a community-maintained dataset (details under
@@ -1310,28 +1330,36 @@ to, not illustrated with one.
 > [ELMS](reports/elms/systematic_audit.md) ·
 > [WEC](reports/wec/systematic_audit.md))
 
-> **A rule of thumb sits closer to real practice than the exact optimiser —
-> in three series out of four.** Three baselines were scored on 1,263 of the
-> audit's 1,280 decisions (99%), from the same artifacts, on the same metric.
+> **A rule of thumb sits closer to real practice than the exact optimiser, in
+> 5 of the 7 classes.** Three baselines scored on 1,263 of the audit's 1,280
+> decisions, from the same artifacts, on the same metric.
 >
-> | series | exact optimiser | best baseline |
-> |---|---|---|
-> | **F1** | 10 laps | **B2 threshold, 7 laps** |
-> | **IMSA** | 12 laps | **B1 fixed interval, 8 laps** |
-> | **WEC** | 2 laps | **B3 fuel deadline, 1 lap** |
-> | ELMS | 2 laps | none — the optimiser leads on both statistics |
+> | class | optimiser | B1 interval | B2 threshold | B3 fuel |
+> |---|---|---|---|---|
+> | Formula 1 | 10 | 11 | **7** | — |
+> | IMSA GTP | 9 | 9 | 54 | 14 |
+> | IMSA GTD | 12 | **7** | 18 | 14 |
+> | IMSA GTD PRO | 12 | **9** | 33 | 15 |
+> | WEC Hypercar | 2 | 2 | 39 | **1** |
+> | ELMS LMP2 | **2** | 3 | 45 | 4 |
+> | ELMS LMP2 Pro/Am | 3 | **2** | 45 | 4 |
 >
-> B2 uses the fitted slope and the measured pit loss and nothing else. B1 —
-> which wins in IMSA — uses **no fitted quantity at all**, only the race length
-> and the number of stops the tank forces. Where the optimiser holds an
-> advantage it is on *precision* rather than typical error: in WEC it lands
-> within two laps 85% of the time against B3's 72%.
+> Median absolute lap error against the real stop. Reported per class, because
+> IMSA runs three of them at the same rounds with median pit losses of 57, 24
+> and 40 seconds — one IMSA row averages three strategy regimes into a number
+> describing none. That grouping also hid something: GTP, the class with the
+> dearest stops, disagrees least of the three.
 >
-> Two things this does not say. *Closer to what teams did* is not *better*: the
-> whole audit scores agreement with practice, never which plan was faster. And
-> it does not rescue the 12-lap finding — it removes one more explanation for
-> it, since the gap cannot come from the simpler methods lacking information the
-> optimiser has. They have less, and land nearer.
+> B1 wins in four of those classes and uses **no fitted quantity at all**, only
+> the race length and the number of stops the tank forces. Where the optimiser
+> holds an advantage it is usually on precision rather than typical error — in
+> WEC Hypercar it lands within two laps 85% of the time against B3's 72%.
+>
+> Two things this does not say. Closer to what teams did is not better: the
+> audit scores agreement with practice, never which plan was faster. And it
+> does not rescue the 12-lap finding. It removes one more explanation, since
+> the gap cannot come from the simpler methods lacking information the
+> optimiser has. They have less, and they land nearer.
 > ([baselines](reports/cross_series/baselines.md))
 
 > **The transfer difference survives being tested, not just described.**
@@ -1484,7 +1512,7 @@ Motorsport-Strategy-Lab/
                         #   are the intervals); make_headline_figures.py +
                         #   make_supporting_figures.py + make_paper_numbers.py;
                         #   demo_extensions.py; generate_banner.py
-  tests/                # pytest, across four series and seven classes, 446
+  tests/                # pytest, across four series and seven classes, 461
                         #   tests -- incl. the demo, driven headlessly by
                         #   test_demo_app.py, and the report-staleness guards
                         #   that check prose still matches the artifacts

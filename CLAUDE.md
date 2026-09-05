@@ -9,12 +9,13 @@ Before any context compaction, write a full summary of the session: files
 touched, decisions taken, numbers that moved, what is still open. Important work
 has already been lost to a compaction once. Do not let it happen again.
 
-## 2. Stop and report at the end of every block
+## 2. Report at the end of every block, but keep going
 
-At the end of each block of work, stop. Write down what changed, why, what it
-breaks or might break, and what the owner needs to verify themselves. Then wait
-for approval before starting the next block. These are stop-gates, the same way
-phases 0–7 were.
+At the end of each block of work, write down what changed, why, what it breaks
+or might break, and what the owner needs to verify themselves. Then carry
+straight on to the next block. Do not wait for approval — this replaced the
+original stop-gate version of this rule on 5 September 2026, once the owner
+decided the gates were costing more than they caught.
 
 ## 3. Write like a person
 

@@ -33,6 +33,7 @@ import matplotlib.pyplot as plt  # noqa: E402
 import numpy as np  # noqa: E402
 import pandas as pd  # noqa: E402
 
+from src.reporting.names import car_class as class_name  # noqa: E402
 from src.ingestion.config import (  # noqa: E402
     ENDURANCE_DERIVED_DIR,
     F1_DERIVED_DIR,
@@ -52,6 +53,15 @@ CLASS_COLOURS = {
     "LMP2 Pro/Am": "#7e9aa8",
     "F1": "#2b2d42",
 }
+
+
+INK, MUTED = "#222222", "#666666"
+
+
+def _caption(ax: plt.Axes, text: str) -> None:
+    """Subtitle under the title, in the same place on every figure here."""
+    ax.text(0.0, 1.012, text, transform=ax.transAxes, fontsize=9,
+            color="#555555", va="bottom")
 
 
 def _style(ax: plt.Axes) -> None:
@@ -211,73 +221,89 @@ def r2_pit_loss_rule() -> str:
 
 
 def r3_audit_bias() -> str:
-    """An optimiser stops later than teams do, in every series measured."""
+    """An optimiser stops later than teams do, in every class measured.
+
+    Split by **class**, not by series. IMSA runs GTP, GTD and GTD PRO at the
+    same rounds with pit losses of 57, 24 and 40 seconds; pooling their 632
+    decisions into one IMSA row averages three different strategy regimes into
+    a number describing none of them. The first version of this figure did
+    exactly that, and it is the same mistake the project refuses to make
+    everywhere else — the class is the unit, and a figure is not exempt.
+
+    The championship pattern survives the split and is easier to see for it:
+    rows are grouped and coloured by series, so the caution-rate story reads
+    down the axis while each class keeps its own row.
+    """
     f1 = pd.read_csv(F1_DERIVED_DIR / "systematic_audit.csv")
     endurance = pd.read_csv(ENDURANCE_DERIVED_DIR / "systematic_audit.csv")
 
-    groups = [("F1", f1["delta_laps"])] + [
-        (str(series).upper(), group["delta_laps"])
-        for series, group in endurance.groupby("series")
-    ]
-    groups.sort(key=lambda pair: pair[1].median())
+    groups: list[tuple[str, str, pd.Series]] = [("F1", "Formula 1", f1["delta_laps"])]
+    for (series, car_class), group in endurance.groupby(["series", "car_class"]):
+        groups.append((
+            str(series).upper(),
+            f"{str(series).upper()} {class_name(str(car_class))}",
+            group["delta_laps"],
+        ))
+    # Within a championship, order by disagreement; championships themselves
+    # by their median, so the caution-rate ordering stays legible.
+    series_median = {}
+    for series, _, deltas in groups:
+        series_median.setdefault(series, []).append(deltas.median())
+    groups.sort(key=lambda g: (
+        sum(series_median[g[0]]) / len(series_median[g[0]]), g[2].median()
+    ))
 
-    fig, ax = plt.subplots(figsize=(10, 5.8))
+    series_colour = {"F1": "#2b2d42", "WEC": "#30638e",
+                     "ELMS": "#003d5b", "IMSA": "#00798c"}
+
+    fig, ax = plt.subplots(figsize=(10.5, 6.8))
     ax.set_xlim(-34, 98)
-
-    # A strip of points all at one height reads as an extent, not a density:
-    # 632 IMSA decisions drew a solid bar and hid where the mass actually sits.
-    # A box carries the quartiles, and the jittered cloud behind it carries the
-    # sample size and the tail. The jitter is seeded so the figure is stable
-    # across runs -- an unseeded one re-draws differently every time and the
-    # drift check would fail on noise.
     rng = np.random.default_rng(20260904)
-    for position, (label, deltas) in enumerate(groups):
-        colour = "#2b2d42" if label == "F1" else "#00798c"
+    for position, (series, label, deltas) in enumerate(groups):
+        colour = series_colour.get(series, "#666666")
         ax.scatter(
-            deltas, position + rng.uniform(-0.26, 0.26, len(deltas)),
+            deltas, position + rng.uniform(-0.24, 0.24, len(deltas)),
             s=11, alpha=0.30, color=colour, linewidth=0, zorder=2,
         )
         ax.boxplot(
-            [deltas], positions=[position], vert=False, widths=0.52,
+            [deltas], positions=[position], vert=False, widths=0.5,
             showfliers=False, medianprops={"color": "#d1495b", "linewidth": 2.4},
             boxprops={"color": "#333333", "linewidth": 1.1},
             whiskerprops={"color": "#333333", "linewidth": 1.1},
             capprops={"color": "#333333", "linewidth": 1.1},
             zorder=3,
         )
-        # "Later" needs a definition, and it is not delta > 0: the audit calls
-        # a disagreement of one lap an agreement, so the same bar is used here.
+        # The audit calls a one-lap disagreement an agreement, so "later" uses
+        # the same bar rather than delta > 0.
         later = (deltas > 1).mean() * 100
         ax.annotate(
             f"median {deltas.median():+.0f}    {later:.0f}% later    "
             f"n = {len(deltas)}",
-            (58, position), fontsize=9, va="center", color="#333333",
+            (58, position), fontsize=9, va="center", color=INK,
         )
 
     ax.axvline(0, color="#444444", linewidth=1.2, zorder=4)
     ax.set_yticks(range(len(groups)))
-    ax.set_yticklabels([label for label, _ in groups])
-    ax.set_ylim(-0.6, len(groups) - 0.4)
+    ax.set_yticklabels([label for _, label, _ in groups], fontsize=9.5)
+    ax.set_ylim(-0.7, len(groups) - 0.3)
     ax.set_xticks([-30, -20, -10, 0, 10, 20, 30, 40, 50])
     ax.set_xlabel("model's lap  -  team's lap      (negative = model stops earlier)")
-    total = sum(len(deltas) for _, deltas in groups)
+    total = sum(len(deltas) for _, _, deltas in groups)
     ax.set_title(
-        "An exact optimiser stops later than real teams, in all four series",
-        fontsize=13, pad=16, loc="left",
+        "An exact optimiser stops later than real teams, in every class measured",
+        fontsize=13, pad=30, loc="left",
     )
-    ax.text(
-        0.0, 1.01,
-        f"{total} replayed first-stop decisions - the same criterion in every "
-        "series - two candidate explanations tested, both rejected",
-        transform=ax.transAxes, fontsize=9, color="#555555", va="bottom",
-    )
+    _caption(ax,
+             f"{total} replayed first-stop decisions across {len(groups)} "
+             "classes.\nOne criterion everywhere. Two candidate explanations "
+             "tested, both rejected.")
     _style(ax)
 
     path = FIGURES / "r3_audit_bias.png"
     fig.tight_layout()
     fig.savefig(path, dpi=170)
     plt.close(fig)
-    return f"{path}  ({total} decisions across {len(groups)} series)"
+    return f"{path}  ({total} decisions across {len(groups)} classes)"
 
 
 def main() -> int:

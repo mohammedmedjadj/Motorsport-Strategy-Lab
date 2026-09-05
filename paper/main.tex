@@ -56,7 +56,8 @@ Third, replaying \NDecisions{} real first pit stops through an exact optimiser
 shows it stopping later than teams did on \FoneLateShare{}\% of Formula~1
 decisions, by a median of \FoneLateMedian{} laps. Both explanations we proposed
 for this were tested and both failed, and three rule-of-thumb baselines scored
-on the same decisions beat the optimiser in three championships out of four.
+on the same decisions beat it in \NClassesRuleWins{} of
+\NClassesScored{} classes.
 
 We report the third result as measured and unexplained. Two estimators built for
 this work were validated on synthetic data and then withdrawn when they failed
@@ -87,35 +88,58 @@ measured from published timing or absent.
 
 \section{Related work}
 
-\citet{aguad2024} formulate the Formula~1 pit stop as a zero-sum feedback
-Stackelberg game solved by dynamic programming, with three tyre compounds and
-stochastic yellow flags, and find that a strategically-reasoning competitor
-gains over 15\% in winning odds against a non-strategic one. Their model is the
-closest existing work to the adversarial component of this project's simulator,
-and we reuse the framing rather than reinventing it. What their setting does not
-address --- because it is not the question they ask --- is whether the
-degradation parameters such a game consumes are stable enough to be trusted
-across seasons.
+Race-strategy research is largely about building the optimiser. The methods vary
+widely --- discrete-event simulation, Monte Carlo, dynamic programming,
+mixed-integer programming, reinforcement learning, game theory --- and the goal
+is consistent: compute a better plan than a team would otherwise choose.
 
-\citet{cappello2025} come closest to the present work on data and method. They
-build a Bayesian state-space model of tyre degradation from FastF1 timing,
-modelling lap time as a function of fuel mass and a latent tyre-pace state with
-pit stops as state resets, and show it beating an ARIMA baseline. Two features
-of their study define the gap this paper fills. Their evaluation is a single
-race --- one driver at the 2025 Austrian Grand Prix --- and they state
-explicitly that generalisation to multiple races or circuits is future work with
-no empirical evidence offered. They also report that compound-specific
-degradation differences were not statistically distinct, which is an independent
-observation consistent with the instability this paper measures at scale.
+\citet{bekker2009} give the earliest sustained operations-research treatment,
+simulating a full race with overtaking and traffic under the refuelling rules of
+the time. \citet{heilmeier2018} introduce the lap-time decomposition that much of
+the later work rests on, combining fuel mass, tyre degradation and driver
+effects, and \citet{heilmeier2020mc} extend it to a probabilistic simulation
+sampling accidents, safety cars and lap-time variability. \citet{heilmeier2020nn}
+then train neural networks on that simulation's output to make calls in real
+time. \citet{carrasco2022} give an exact dynamic program over stop laps and
+compound choice, extended to a stochastic version, and \citet{aguad2024}
+formulate the problem as a zero-sum feedback Stackelberg game between two
+drivers, finding that a strategic competitor gains over 15\% in winning odds.
+Outside Formula~1, \citet{vankampen2022} solve endurance stint planning and
+powertrain operation jointly for an electric car under thermal limits. Recent
+work adds learning: \citet{thomas2025} apply explainable reinforcement learning
+to compound and stop timing, \citet{fieni2025} combine a mixed-integer program
+with an RL agent over energy, tyre wear and pit timing, and \citet{todd2025}
+forecast tyre energy from team-internal telemetry. \citet{santillana2026}
+deploys a calibrated real-time Monte Carlo engine live, generating
+natural-language briefings faithful to its own probabilistic state.
 
-The wider literature includes discrete-event race simulation, dynamic-programming
-treatments of stop timing in operations-research venues, learning-based and
-multi-agent strategy formulations, and explainable time-series prediction of tyre
-energy from team-internal telemetry. What none of it does, as far as we have
-found, is apply one protocol across championships and then confront the resulting
-optimiser with what teams actually did. That combination --- multi-series
-transfer measurement plus retrospective decision audit --- is this paper's
-contribution.
+Two things are rare across all of it, and together they define what this paper
+adds.
+
+The first is out-of-sample validation of the fitted parameters. A tyre model is
+fitted and its quality reported on the data it was fitted to. \citet{cappello2025}
+come closest, building a Bayesian state-space model of degradation from the same
+public timing source used here, with lap time as fuel mass plus a latent tyre
+state and pit stops as resets. Their evaluation is one race, and they state
+explicitly that generalising across races or circuits is future work for which
+they offer no empirical evidence. They also report compound-specific degradation
+differences as not statistically distinct --- an observation consistent with the
+instability we measure at scale.
+
+The second is comparison against what teams actually did. Optimisers get
+compared to other optimisers, to author-constructed baselines, or to the optimum
+under the model's own assumptions. \citet{bekker2009} compare to real races, and
+\citet{aguad2024} compare strategic against non-strategic agents inside their
+own game, but we are not aware of work that replays a large sample of real
+pit-stop decisions and reports where the optimiser and the pit wall diverge.
+
+We should be clear about how narrow the contribution is. The modelling here is
+not more sophisticated than \citet{heilmeier2020mc} or \citet{aguad2024}; in
+places it is deliberately simpler, and it ignores energy management entirely.
+What is different is that one protocol is applied across four championships,
+that the resulting parameters are tested on seasons they were not fitted to, and
+that the optimiser is then confronted with \NDecisions{} real decisions. Two of
+the three results that come back are negative.
 
 \section{Data and protocol}
 
@@ -268,26 +292,38 @@ pit loss and nothing else. B3 runs the fuel load out, and is undefined in
 Formula~1, where refuelling has been prohibited since 2010 --- we report it as
 undefined rather than substituting the race end.
 
+Results are reported per class rather than per championship. IMSA runs GTP, GTD
+and GTD PRO at the same rounds with median pit losses of \ImsaGtpPitLoss{}, \ImsaGtdPitLoss{} and \ImsaGtdproPitLoss{} seconds,
+so a single IMSA row averages three strategy regimes into a number describing
+none of them. That grouping also concealed a difference worth seeing: GTP, the
+IMSA class with the dearest stops, has the smallest disagreement of the three.
+
 \begin{table}[htbp]
 \centering
-\caption{Median absolute lap error against the real stop. Lower is closer to
-what teams did.}
+\caption{Median absolute lap error against the real stop, per class. Lower is
+closer to what teams did. B3 is undefined in Formula~1, which has not refuelled
+since 2010.}
 \label{tab:baselines}
 \begin{tabular}{lrrrr}
 \toprule
 & Optimiser & B1 interval & B2 threshold & B3 fuel \\
 \midrule
-Formula~1 & \FoneModelError{} & \FoneBoneError{} & \textbf{\FoneBtwoError{}} & \FoneBthreeError{} \\
-IMSA      & \ImsaModelError{} & \textbf{\ImsaBoneError{}} & \ImsaBtwoError{} & \ImsaBthreeError{} \\
-WEC       & \WecModelError{}  & \WecBoneError{}  & \WecBtwoError{}  & \textbf{\WecBthreeError{}} \\
-ELMS      & \textbf{\ElmsModelError{}} & \ElmsBoneError{} & \ElmsBtwoError{} & \ElmsBthreeError{} \\
+Formula~1        & \FoneModelError{}            & \FoneBoneError{}            & \textbf{\FoneBtwoError{}}   & \FoneBthreeError{} \\
+IMSA GTP         & \ImsaGtpModelError{}         & \ImsaGtpBoneError{}         & \ImsaGtpBtwoError{}         & \ImsaGtpBthreeError{} \\
+IMSA GTD         & \ImsaGtdModelError{}         & \textbf{\ImsaGtdBoneError{}}     & \ImsaGtdBtwoError{}    & \ImsaGtdBthreeError{} \\
+IMSA GTD PRO     & \ImsaGtdproModelError{}      & \textbf{\ImsaGtdproBoneError{}}  & \ImsaGtdproBtwoError{} & \ImsaGtdproBthreeError{} \\
+WEC Hypercar     & \WecHypercarModelError{}     & \WecHypercarBoneError{}     & \WecHypercarBtwoError{}     & \textbf{\WecHypercarBthreeError{}} \\
+ELMS LMP2        & \textbf{\ElmsLmptwoModelError{}} & \ElmsLmptwoBoneError{}  & \ElmsLmptwoBtwoError{}      & \ElmsLmptwoBthreeError{} \\
+ELMS LMP2 Pro/Am & \ElmsLmptwoProAmModelError{} & \textbf{\ElmsLmptwoProAmBoneError{}} & \ElmsLmptwoProAmBtwoError{} & \ElmsLmptwoProAmBthreeError{} \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-A rule of thumb sits closer to practice than the exact optimiser in three
-championships out of four, and in IMSA the rule that wins uses no fitted
-quantity whatsoever.
+A rule of thumb sits closer to practice than the exact optimiser in
+\NClassesRuleWins{} of \NClassesScored{} classes, ties it in
+\NClassesRuleTies{} and loses in \NClassesOptimiserWins{}. In four of those
+classes the rule that wins is B1, which uses no fitted quantity whatsoever ---
+only the race length and the number of stops the tank forces.
 
 Two things this does not establish. \emph{Closer to what teams did} is not
 \emph{better}: every number here scores agreement with practice, never which
@@ -351,13 +387,19 @@ stop can ever pay is decided by the cost of the stop. And an exact optimiser
 disagrees with professional practice in a consistent direction that we have not
 been able to explain --- having proposed two explanations, tested both, and lost
 both, and having found that simpler rules using strictly less information land
-closer to what teams actually did.
+closer to what teams actually did in \NClassesRuleWins{} of
+\NClassesScored{} classes.
 
 We regard the last of these as the most useful thing here, precisely because it
 is unresolved.
 
 \bibliographystyle{plainnat}
-\begin{thebibliography}{9}
+\begin{thebibliography}{99}
+
+% Every entry below was checked against a publication record -- Crossref for the
+% journal articles, the arXiv API for the preprints -- rather than recalled from
+% memory. Two candidate references carried in earlier notes could not be
+% confirmed and are deliberately absent. See reports/cross_series/related_work.md.
 
 \bibitem[Aguad and Thraves(2024)]{aguad2024}
 Felipe Aguad and Charles Thraves.
@@ -367,16 +409,83 @@ Felipe Aguad and Charles Thraves.
   2024.
 \newblock \doi{10.1016/j.ejor.2024.07.011}.
 
+\bibitem[Bekker and Lotz(2009)]{bekker2009}
+James Bekker and Wynand Lotz.
+\newblock Planning Formula One race strategies using discrete-event simulation.
+\newblock \emph{Journal of the Operational Research Society}, 60(7):952--961,
+  2009.
+\newblock \doi{10.1057/palgrave.jors.2602626}.
+
+\bibitem[Cameron and Miller(2015)]{cameron2015}
+A.~Colin Cameron and Douglas~L. Miller.
+\newblock A practitioner's guide to cluster-robust inference.
+\newblock \emph{Journal of Human Resources}, 50(2):317--372, 2015.
+
 \bibitem[Cappello and Hoegh(2025)]{cappello2025}
 Cole Cappello and Andrew Hoegh.
 \newblock A state-space approach to modeling tire degradation in Formula 1
   racing.
 \newblock \emph{arXiv preprint arXiv:2512.00640}, 2025.
 
-\bibitem[Cameron and Miller(2015)]{cameron2015}
-A.~Colin Cameron and Douglas~L. Miller.
-\newblock A practitioner's guide to cluster-robust inference.
-\newblock \emph{Journal of Human Resources}, 50(2):317--372, 2015.
+\bibitem[Carrasco Heine and Thraves(2022)]{carrasco2022}
+Oscar~F. Carrasco Heine and Charles Thraves.
+\newblock On the optimization of pit stop strategies via dynamic programming.
+\newblock \emph{Central European Journal of Operations Research},
+  31(1):239--268, 2022.
+\newblock \doi{10.1007/s10100-022-00806-4}.
+
+\bibitem[Fieni et~al.(2025)]{fieni2025}
+Giona Fieni, Joschua W\"uthrich, Marc-Philippe Neumann, Mohammad~M. Moradi, and
+  Christopher~H. Onder.
+\newblock Towards learning-based Formula 1 race strategies.
+\newblock \emph{arXiv preprint arXiv:2512.21570}, 2025.
+
+\bibitem[Heilmeier et~al.(2018)]{heilmeier2018}
+Alexander Heilmeier, Michael Graf, and Markus Lienkamp.
+\newblock A race simulation for strategy decisions in circuit motorsports.
+\newblock In \emph{2018 21st International Conference on Intelligent
+  Transportation Systems (ITSC)}, pages 2986--2993, 2018.
+\newblock \doi{10.1109/ITSC.2018.8570012}.
+
+\bibitem[Heilmeier et~al.(2020a)]{heilmeier2020mc}
+Alexander Heilmeier, Michael Graf, Johannes Betz, and Markus Lienkamp.
+\newblock Application of Monte Carlo methods to consider probabilistic effects
+  in a race simulation for circuit motorsport.
+\newblock \emph{Applied Sciences}, 10(12):4229, 2020.
+\newblock \doi{10.3390/app10124229}.
+
+\bibitem[Heilmeier et~al.(2020b)]{heilmeier2020nn}
+Alexander Heilmeier, Andr\'e Thomaser, Michael Graf, and Johannes Betz.
+\newblock Virtual strategy engineer: using artificial neural networks for making
+  race strategy decisions in circuit motorsport.
+\newblock \emph{Applied Sciences}, 10(21):7805, 2020.
+\newblock \doi{10.3390/app10217805}.
+
+\bibitem[Santillana(2026)]{santillana2026}
+Juan~S. Santillana.
+\newblock Pitwall: faithful natural-language race-strategy briefings from a
+  calibrated real-time Monte Carlo engine.
+\newblock \emph{arXiv preprint arXiv:2607.06495}, 2026.
+
+\bibitem[Thomas et~al.(2025)]{thomas2025}
+Devin Thomas, Junqi Jiang, Avinash Kori, Aaron Russo, Steffen Winkler, Stuart
+  Sale, Joseph McMillan, Francesco Belardinelli, and Antonio Rago.
+\newblock Explainable reinforcement learning for Formula One race strategy.
+\newblock \emph{arXiv preprint arXiv:2501.04068}, 2025.
+
+\bibitem[Todd et~al.(2025)]{todd2025}
+Jamie Todd, Junqi Jiang, Aaron Russo, Steffen Winkler, Stuart Sale, Joseph
+  McMillan, and Antonio Rago.
+\newblock Explainable time series prediction of tyre energy in Formula One race
+  strategy.
+\newblock \emph{arXiv preprint arXiv:2501.04067}, 2025.
+
+\bibitem[van Kampen et~al.(2022)]{vankampen2022}
+Jorn van Kampen, Thomas Herrmann, and Mauro Salazar.
+\newblock Maximum-distance race strategies for a fully electric endurance race
+  car.
+\newblock \emph{European Journal of Control}, 68:100679, 2022.
+\newblock \doi{10.1016/j.ejcon.2022.100679}.
 
 \end{thebibliography}
 

@@ -39,6 +39,11 @@ PAPER = REPO_ROOT / "paper"
 #: letters only, so digits have to be spelled out.
 _TEX_NAMES = {"f1": "Fone", "imsa": "Imsa", "wec": "Wec", "elms": "Elms"}
 
+#: Class code to a LaTeX-legal macro fragment, for the same reason.
+_CLASS_TEX = {"GTD": "Gtd", "GTDPRO": "Gtdpro", "GTP": "Gtp",
+              "HYPERCAR": "Hypercar", "LMP2": "Lmptwo",
+              "LMP2 Pro/Am": "LmptwoProAm"}
+
 
 def _tex_name(series: str) -> str:
     return _TEX_NAMES.get(str(series).lower(), str(series).capitalize())
@@ -132,29 +137,50 @@ def _macros() -> dict[str, str]:
         )
 
     # --- baselines ----------------------------------------------------------
+    # Per class, not per championship. IMSA runs three classes at the same
+    # rounds with median pit losses of 57, 24 and 40 seconds; one IMSA row
+    # averages three strategy regimes into a number describing none of them.
     scored = pd.concat(
         [pd.read_csv(DERIVED_DIR / s / "baseline_comparison.csv")
          for s in ("f1", "endurance")],
         ignore_index=True,
     )
+    scored["car_class"] = scored["car_class"].fillna("")
     out["NScored"] = f"{len(scored):,}"
-    for series in ("f1", "imsa", "wec", "elms"):
-        subset = scored[scored["series"] == series]
-        if subset.empty:
-            continue
-        # LaTeX command names are letters only, so "f1" cannot become "F1".
-        # The generator emitted \F1ModelError before a test caught it, and
-        # that fails on the compiler rather than here.
-        name = _tex_name(series)
-        errors = {
-            key: (subset[column] - subset["real_pit_lap"]).abs().dropna()
-            for key, column in (("Model", "model_pit_lap"), ("Bone", "b1_lap"),
-                                ("Btwo", "b2_lap"), ("Bthree", "b3_lap"))
-        }
-        for key, values in errors.items():
+
+    beaten = tied = held = 0
+    for (series, car_class), group in scored.groupby(["series", "car_class"]):
+        name = (_tex_name(series) if series == "f1"
+                else _tex_name(series) + _CLASS_TEX.get(str(car_class), ""))
+        errors = {}
+        for key, column in (("Model", "model_pit_lap"), ("Bone", "b1_lap"),
+                            ("Btwo", "b2_lap"), ("Bthree", "b3_lap")):
+            values = (group[column] - group["real_pit_lap"]).abs().dropna()
+            errors[key] = values.median() if len(values) else None
             out[f"{name}{key}Error"] = (
                 f"{values.median():.0f}" if len(values) else "--"
             )
+        rules = [v for k, v in errors.items() if k != "Model" and v is not None]
+        if errors["Model"] is None or not rules:
+            continue
+        best = min(rules)
+        if best < errors["Model"]:
+            beaten += 1
+        elif best == errors["Model"]:
+            tied += 1
+        else:
+            held += 1
+
+    out["NClassesRuleWins"] = str(beaten)
+    out["NClassesRuleTies"] = str(tied)
+    out["NClassesOptimiserWins"] = str(held)
+    out["NClassesScored"] = str(beaten + tied + held)
+
+    # Per-class median pit loss, quoted in the text to explain why the results
+    # are grouped by class. Derived, because a guard caught them typed.
+    for (series, car_class), group in plans.groupby(["series", "car_class"]):
+        name = _tex_name(series) + _CLASS_TEX.get(str(car_class), "")
+        out[f"{name}PitLoss"] = f"{group['pit_loss_s'].median():.0f}"
 
     # --- the cross-source check --------------------------------------------
     slope = pd.read_csv(F1_DERIVED_DIR / "slope_bias_check.csv")

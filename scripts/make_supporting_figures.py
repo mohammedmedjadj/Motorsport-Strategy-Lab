@@ -40,6 +40,8 @@ import matplotlib.pyplot as plt  # noqa: E402
 import numpy as np  # noqa: E402
 import pandas as pd  # noqa: E402
 
+from src.reporting.names import car_class as car_class_name  # noqa: E402
+from src.reporting.names import circuit as circuit_name  # noqa: E402
 from src.safety_car.endurance import RACE_KEY, race_timeline  # noqa: E402
 from src.ingestion.config import (  # noqa: E402
     DERIVED_DIR,
@@ -172,16 +174,21 @@ def s2_pit_loss_spectrum() -> str:
     worst = plans.nlargest(1, "pit_loss_s").iloc[0]
     if worst["pit_loss_s"] > 3 * plans["pit_loss_s"].quantile(0.99):
         y = list(order).index((worst["series"], worst["car_class"]))
-        ax.annotate(
-            f"{worst['pit_loss_s']:.0f} s — a known artefact\n"
-            f"({worst['series'].upper()} {worst['circuit']} "
-            f"{int(worst['year'])}): a six-minute\nservice absorbed as a stop",
-            (worst["pit_loss_s"], y), fontsize=8, color="#8a4b52",
-            ha="right", va="center",
-            xytext=(-12, -34), textcoords="offset points",
+        # Marked on the point, explained under the axis. An inline callout
+        # this long sat on top of the data it was pointing at.
+        ax.annotate("✕", (worst["pit_loss_s"], y), fontsize=11,
+                    color="#8a4b52", ha="center", va="center", zorder=5)
+        fig.text(
+            0.012, 0.012,
+            f"✕  {worst['pit_loss_s']:.0f} s "
+            f"({worst['series'].upper()} {circuit_name(worst['circuit'])} "
+            f"{int(worst['year'])}) is a known artefact — a six-minute "
+            "service the pit-loss estimator absorbed as a stop. Kept in "
+            "view rather than quietly removed.",
+            fontsize=8.5, color="#8a4b52",
         )
 
-    labels = ["F1"] + [f"{s.upper()} {c}" for s, c in order]
+    labels = ["Formula 1"] + [f"{s.upper()} {car_class_name(c)}" for s, c in order]
     ticks = [-1] + list(range(len(order)))
     ax.set_yticks(ticks)
     ax.set_yticklabels(labels)
@@ -193,19 +200,36 @@ def s2_pit_loss_spectrum() -> str:
                  "driver and four tyres — a 3x range that sets everything")
     _frame(ax)
     path = FIGURES / "s2_pit_loss_spectrum.png"
-    fig.tight_layout()
+    fig.tight_layout(rect=(0, 0.05, 1, 1))
     fig.savefig(path, dpi=170)
     plt.close(fig)
     return f"{path}  ({len(order)} classes)"
 
 
 def s3_f1_degradation() -> str:
-    """Which circuits eat tyres, on which compound, with intervals."""
+    """Which circuits eat tyres, on which compound, with intervals.
+
+    Three things made the first version read as script output. Circuit names
+    came from the slugs (`red_bull_ring`, `yas_marina`). A couple of extreme
+    points stretched the axis until the other twenty-odd circuits sat in a band
+    too narrow to read. And the title ran into its own subtitle.
+
+    Off-scale points are clipped and listed under the axis rather than dropped.
+    Removing them silently would be the same defect as any other silent
+    narrowing here, and there have been enough of those.
+    """
     coefs = pd.read_csv(F1_DERIVED_DIR / "degradation_coefficients.csv")
     order = (coefs.groupby("circuit")["deg_p1"].median()
              .sort_values().index.tolist())
 
-    fig, ax = plt.subplots(figsize=(9.5, 9))
+    # Clip where the mass is. A handful of extremes otherwise compress every
+    # other circuit into a tenth of the axis.
+    low, high = coefs["deg_p1"].quantile([0.05, 0.95])
+    pad = 0.25 * (high - low)
+    limits = (low - pad, high + pad)
+    off = coefs[(coefs["deg_p1"] < limits[0]) | (coefs["deg_p1"] > limits[1])]
+
+    fig, ax = plt.subplots(figsize=(9.5, 10))
     for compound, group in coefs.groupby("compound"):
         colour = COMPOUND_COLOURS.get(str(compound), "#888888")
         offset = {"SOFT": -0.24, "MEDIUM": 0.0, "HARD": 0.24}.get(str(compound), 0)
@@ -215,25 +239,48 @@ def s3_f1_degradation() -> str:
             xerr=[group["deg_p1"] - group["deg_p1_ci_low"],
                   group["deg_p1_ci_high"] - group["deg_p1"]],
             fmt="o", markersize=4.5, elinewidth=1.1, capsize=0,
-            color=colour, label=str(compound), alpha=0.9, zorder=3,
+            color=colour, label=str(compound).title(), alpha=0.9, zorder=3,
         )
     ax.axvline(0, color="#444444", linewidth=1.0, zorder=2)
+    ax.set_xlim(*limits)
+
+    # A small arrow at the edge says a point continues past it; the values
+    # themselves go under the axis, where nothing can collide with them.
+    for row in off.itertuples():
+        beyond = row.deg_p1 > limits[1]
+        ax.annotate(
+            "▸" if beyond else "◂",
+            (limits[1] if beyond else limits[0], order.index(row.circuit)),
+            fontsize=11, color="#8a4b52", ha="center", va="center", zorder=5,
+        )
+
     ax.set_yticks(range(len(order)))
-    ax.set_yticklabels(order, fontsize=9)
+    ax.set_yticklabels([circuit_name(c) for c in order], fontsize=9)
     ax.set_xlabel("tyre-age slope (s per lap of tyre age), cluster-robust 95% CI")
     ax.set_title("Degradation per circuit and compound, with honest intervals",
-                 fontsize=13, pad=16, loc="left")
-    _caption(ax, f"{len(coefs)} fitted coefficients across {len(order)} "
-                 "circuits — where an interval crosses zero, the circuit has "
-                 "no measurable wear on that compound")
-    ax.legend(frameon=False, fontsize=9, loc="lower right", title="compound",
-              title_fontsize=9)
+                 fontsize=13, pad=34, loc="left")
+    _caption(ax, f"{len(coefs)} fitted coefficients across {len(order)} circuits.\n"
+                 "An interval crossing zero means no measurable wear on that "
+                 "compound at that circuit.")
+    ax.legend(frameon=False, fontsize=9, loc="lower right",
+              title="compound", title_fontsize=9,
+              bbox_to_anchor=(1.0, 0.02))
     _frame(ax)
+
+    if len(off):
+        named = ";  ".join(
+            f"{circuit_name(r.circuit)} {str(r.compound).title()} {r.deg_p1:+.3f}"
+            for r in off.itertuples()
+        )
+        fig.text(0.012, 0.012,
+                 f"Outside the axis, clipped rather than dropped:  {named}",
+                 fontsize=8.5, color="#8a4b52")
+
     path = FIGURES / "s3_f1_degradation.png"
-    fig.tight_layout()
+    fig.tight_layout(rect=(0, 0.035, 1, 1))
     fig.savefig(path, dpi=170)
     plt.close(fig)
-    return f"{path}  ({len(coefs)} coefficients)"
+    return f"{path}  ({len(coefs)} coefficients, {len(off)} clipped)"
 
 
 def s4_track_position() -> str:
@@ -249,7 +296,7 @@ def s4_track_position() -> str:
     ax.barh(range(len(swaps)), swaps["adj_swap_rate"], color=colours,
             height=0.65, zorder=3)
     ax.set_yticks(range(len(swaps)))
-    ax.set_yticklabels(swaps["circuit"], fontsize=9)
+    ax.set_yticklabels([circuit_name(c) for c in swaps["circuit"]], fontsize=9)
     for position, row in enumerate(swaps.itertuples()):
         ax.annotate(f"  {row.adj_swap_rate:.4f}", (row.adj_swap_rate, position),
                     va="center", fontsize=8.5, color=MUTED)
@@ -258,7 +305,8 @@ def s4_track_position() -> str:
     ax.set_xlabel("adjacent-car swap rate per lap  →  easier to overtake")
     ax.set_title("Track position: a 14-fold range that actually transfers",
                  fontsize=13, pad=16, loc="left")
-    _caption(ax, f"{swaps['circuit'].iloc[0]} to {swaps['circuit'].iloc[-1]} is "
+    _caption(ax, f"{circuit_name(swaps['circuit'].iloc[0])} to "
+                 f"{circuit_name(swaps['circuit'].iloc[-1])} is "
                  f"a {ratio:.0f}x range — unlike degradation, this holds "
                  "between seasons, which is why the rival model is built on it")
     _frame(ax)
@@ -270,7 +318,14 @@ def s4_track_position() -> str:
 
 
 def s5_baselines() -> str:
-    """Does the exact optimiser beat a rule of thumb? Often not."""
+    """Does the exact optimiser beat a rule of thumb? Often not.
+
+    Per class, not per championship. IMSA's three classes run the same rounds
+    with pit losses of 57, 24 and 40 seconds, and B3 --- run the tank out ---
+    means something different in each. Averaging them into one IMSA bar
+    describes none of them, which is the mistake this project refuses
+    everywhere else.
+    """
     frames = [
         pd.read_csv(DERIVED_DIR / series / "baseline_comparison.csv")
         for series in ("f1", "endurance")
@@ -279,45 +334,62 @@ def s5_baselines() -> str:
     if not frames:
         return "skipped — baseline comparison not generated"
     scored = pd.concat(frames, ignore_index=True)
+    scored["car_class"] = scored["car_class"].fillna("")
+
+    units: list[tuple[str, pd.DataFrame]] = []
+    for series, group in scored.groupby("series"):
+        if str(series) == "f1":
+            units.append(("Formula 1", group))
+            continue
+        for car_class, sub in group.groupby("car_class"):
+            units.append(
+                (f"{str(series).upper()} {car_class_name(str(car_class))}", sub)
+            )
 
     methods = [("model_pit_lap", "exact optimiser", "#2b2d42"),
                ("b1_lap", "B1 fixed interval", "#00798c"),
                ("b2_lap", "B2 threshold", "#edae49"),
                ("b3_lap", "B3 fuel deadline", "#d1495b")]
-    series_order = ["wec", "elms", "f1", "imsa"]
-    series_order = [s for s in series_order if s in set(scored["series"])]
 
-    fig, ax = plt.subplots(figsize=(10.5, 5.4))
-    width = 0.2
+    # Order by how badly the optimiser does, so the pattern reads top to bottom.
+    def optimiser_error(pair):
+        errors = (pair[1]["model_pit_lap"] - pair[1]["real_pit_lap"]).abs().dropna()
+        return errors.median() if len(errors) else 0.0
+
+    units.sort(key=optimiser_error)
+
+    fig, ax = plt.subplots(figsize=(11, 6.4))
+    height = 0.2
     for index, (column, label, colour) in enumerate(methods):
         values, positions = [], []
-        for position, series in enumerate(series_order):
-            subset = scored[scored["series"] == series]
-            errors = (subset[column] - subset["real_pit_lap"]).abs().dropna()
-            if len(errors) == 0:
+        for position, (_, group) in enumerate(units):
+            errors = (group[column] - group["real_pit_lap"]).abs().dropna()
+            if not len(errors):
                 continue
             values.append(errors.median())
-            positions.append(position + (index - 1.5) * width)
-        ax.bar(positions, values, width=width * 0.9, label=label,
-               color=colour, zorder=3)
-        for x, v in zip(positions, values):
-            ax.annotate(f"{v:.0f}", (x, v), ha="center", fontsize=8.5,
-                        color=INK, xytext=(0, 3), textcoords="offset points")
+            positions.append(position + (1.5 - index) * height)
+        ax.barh(positions, values, height=height * 0.9, label=label,
+                color=colour, zorder=3)
+        for y, v in zip(positions, values):
+            ax.annotate(f"{v:.0f}", (v, y), va="center", fontsize=8.5,
+                        color=INK, xytext=(3, 0), textcoords="offset points")
 
-    ax.set_xticks(range(len(series_order)))
-    ax.set_xticklabels([s.upper() for s in series_order])
-    ax.set_ylabel("median |Δ| laps against the real stop  →  worse")
-    ax.set_title("A rule of thumb beats the exact optimiser in three series",
-                 fontsize=13, pad=16, loc="left")
-    _caption(ax, "same decisions, same artifacts, same metric — B3 is "
-                 "undefined in F1, which has not refuelled since 2010")
-    ax.legend(frameon=False, fontsize=9, ncol=4, loc="upper left")
-    _frame(ax, xgrid=False)
+    ax.set_yticks(range(len(units)))
+    ax.set_yticklabels([label for label, _ in units], fontsize=9.5)
+    ax.set_ylim(-0.6, len(units) - 0.4)
+    ax.set_xlabel("median |Δ| laps against the real stop  →  further from practice")
+    ax.set_title("A rule of thumb beats the exact optimiser in most classes",
+                 fontsize=13, pad=30, loc="left")
+    _caption(ax, f"{len(scored):,} decisions, same artifacts, same metric.\n"
+                 "B3 is undefined in Formula 1, which has not refuelled since "
+                 "2010, and is reported as undefined rather than substituted.")
+    ax.legend(frameon=False, fontsize=9, ncol=4, loc="lower right")
+    _frame(ax)
     path = FIGURES / "s5_baselines.png"
     fig.tight_layout()
     fig.savefig(path, dpi=170)
     plt.close(fig)
-    return f"{path}  ({len(scored)} decisions)"
+    return f"{path}  ({len(scored)} decisions across {len(units)} classes)"
 
 
 def s6_intervals() -> str:

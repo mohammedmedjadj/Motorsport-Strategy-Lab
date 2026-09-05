@@ -194,30 +194,36 @@
 
 <section>
   <div class="wrap">
-    <h2>And a rule of thumb beats it, in three championships out of four</h2>
+    <h2>And a rule of thumb beats it, in five of the seven classes</h2>
     <p class="lede">Three baselines, scored on the same decisions, from the same
       artifacts, on the same metric. Written to win if they could — a straw man
       would prove nothing.</p>
     <div class="scroll">
       <table>
         <thead><tr>
-          <th>Championship</th><th class="num">Exact optimiser</th>
+          <th>Class</th><th class="num">Exact optimiser</th>
           <th class="num">B1 fixed interval</th><th class="num">B2 threshold</th>
           <th class="num">B3 fuel deadline</th>
         </tr></thead>
         <tbody>
           <tr><td>Formula 1</td><td class="num">10</td><td class="num">11</td><td class="num win">7</td><td class="num">—</td></tr>
-          <tr><td>IMSA</td><td class="num">12</td><td class="num win">8</td><td class="num">29</td><td class="num">14</td></tr>
-          <tr><td>WEC</td><td class="num">2</td><td class="num">2</td><td class="num">39</td><td class="num win">1</td></tr>
-          <tr><td>ELMS</td><td class="num win">2</td><td class="num">3</td><td class="num">45</td><td class="num">4</td></tr>
+          <tr><td>IMSA GTP</td><td class="num">9</td><td class="num">9</td><td class="num">54</td><td class="num">14</td></tr>
+          <tr><td>IMSA GTD</td><td class="num">12</td><td class="num win">7</td><td class="num">18</td><td class="num">14</td></tr>
+          <tr><td>IMSA GTD PRO</td><td class="num">12</td><td class="num win">9</td><td class="num">33</td><td class="num">15</td></tr>
+          <tr><td>WEC Hypercar</td><td class="num">2</td><td class="num">2</td><td class="num">39</td><td class="num win">1</td></tr>
+          <tr><td>ELMS LMP2</td><td class="num win">2</td><td class="num">3</td><td class="num">45</td><td class="num">4</td></tr>
+          <tr><td>ELMS LMP2 Pro/Am</td><td class="num">3</td><td class="num win">2</td><td class="num">45</td><td class="num">4</td></tr>
         </tbody>
       </table>
     </div>
     <p style="font-size:14px;color:var(--muted);margin-top:-6px">Median absolute
-      lap error against the real stop. B1 uses <em>no fitted quantity at all</em>
-      — and it is the one that wins in IMSA. B3 is undefined in Formula 1, which
-      has not refuelled since 2010, and is reported as undefined rather than
-      substituted with the race end.</p>
+      lap error against the real stop. Reported per class, because IMSA runs
+      three at the same rounds with median pit losses of 57, 24 and 40 seconds —
+      one IMSA row would average three strategy regimes into a number describing
+      none of them. B1 wins four of these and uses <em>no fitted quantity at
+      all</em>. B3 is undefined in Formula 1, which has not refuelled since 2010,
+      and is reported as undefined rather than substituted with the race
+      end.</p>
     <div class="note"><strong>Closer to what teams did is not the same as
       better.</strong> Every number here scores agreement with practice, never
       which plan was faster. What it does settle is narrower and still worth
@@ -245,7 +251,7 @@
           manuscript is a macro generated from the committed artifacts, so it
           cannot drift from the data — regenerate and it is correct, or CI
           fails.</p>
-        <p><strong>446 tests</strong>, including a file whose only job is to
+        <p><strong>461 tests</strong>, including a file whose only job is to
           recompute each published headline from its artifact and assert the
           result appears in the document that publishes it.</p>
       </div>
