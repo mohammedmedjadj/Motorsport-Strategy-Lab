@@ -166,11 +166,16 @@ Detail on any of it: [`docs/full-readme.md`](docs/full-readme.md).
 ## Data and licence
 
 Formula 1 timing from [FastF1](https://github.com/theOehrly/Fast-F1). Endurance
-timing from a community-maintained dataset. Weather from Open-Meteo. Two layers
-read a third-party export this repository does not redistribute, described in
+timing from [`tobil/imsa`](https://huggingface.co/datasets/tobil/imsa) on
+Hugging Face, which is MIT. Weather from Open-Meteo. Two further layers read a
+Kaggle export this repository does not redistribute and whose licence is not
+yet recorded, described in
 [`data/external/README.md`](data/external/README.md).
 
-Released under CC BY-NC-SA 4.0.
+Released under CC BY-NC-SA 4.0, which covers this project's own code, models
+and derived output. It does not reach the upstream sources, and the
+non-commercial term in particular cannot be imposed on MIT-licensed material —
+see [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md).
 
 Archived on Zenodo, and through it in Software Heritage and OpenAIRE. Two DOIs,
 and they are not interchangeable. Cite

@@ -1,5 +1,14 @@
 # External data — what does *not* come with the clone
 
+> **Scope.** This file is about two Kaggle exports and nothing else. It is
+> *not* about the endurance DuckDB (`hf://datasets/tobil/imsa`), which is MIT,
+> is confirmed as such, and is covered in
+> [`../../THIRD_PARTY_NOTICES.md`](../../THIRD_PARTY_NOTICES.md). The two are
+> easy to conflate — both are third-party, both feed committed outputs — and
+> conflating them once already produced an attempt to mark the caveat below
+> resolved using a finding about the other source. The licences described here
+> remain unrecorded.
+
 Three layers of this project read from `data/external/`, which is **gitignored**.
 Their inputs are third-party exports this repository does not redistribute, so
 **those three layers cannot be regenerated from a fresh clone.** Their outputs

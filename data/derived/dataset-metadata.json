@@ -1,7 +1,11 @@
 {
   "title": "Motorsport Strategy Lab - Derived Data",
   "id": "mohammedredamedjadj/motorsport-strategy-lab-derived",
-  "licenses": [{"name": "CC-BY-NC-SA-4.0"}],
+  "licenses": [
+    {
+      "name": "CC-BY-NC-SA-4.0"
+    }
+  ],
   "isPrivate": false,
-  "description": "Derived, measured race-strategy data across F1, WEC and IMSA -- degradation fits, pit loss, neutralisation calibration, multi-stop plans, reliability, retrospective audit. Source code: https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab . Provenance: F1 timing via FastF1; WEC/IMSA via a community-maintained multi-series dataset (huggingface: tobil/imsa). This is the project's own normalised/derived output, not a verbatim republication of any single upstream source. Licensed CC BY-NC-SA 4.0: attribution required, non-commercial use only, share-alike."
+  "description": "Derived, measured race-strategy data across F1, WEC and IMSA -- degradation fits, pit loss, neutralisation calibration, multi-stop plans, reliability, retrospective audit. Source code: https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab . Provenance: F1 timing via FastF1; WEC/IMSA via a community-maintained multi-series dataset (huggingface: tobil/imsa). The endurance tables are reshaped from that DuckDB, which is MIT: lap and sector times are upstream, while stint structure, estimated tyre age and the joined weather columns are computed here. THIRD_PARTY_NOTICES.md in the repository carries the upstream notice. Licensed CC BY-NC-SA 4.0: attribution required, non-commercial use only, share-alike."
 }
