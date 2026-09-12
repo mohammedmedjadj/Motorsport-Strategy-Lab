@@ -2,13 +2,19 @@
 
 It clones this repository and reads `data/derived/` from the clone, so if a
 path it wants is renamed or a module it imports moves, the notebook breaks for
-every reader and nothing in this suite notices. That is how it came to carry a
-link announcing a Kaggle dataset that was never published: a false statement in
-a document written for researchers, sitting there because no test read the file.
+every reader and nothing in this suite notices.
 
-These do not execute the notebook. They check the two things that can rot
-without anyone touching the notebook itself -- the paths and imports it depends
-on -- and the one thing that was actually wrong.
+The identifier checks below exist because of a specific mistake. The Kaggle
+account is `mohammedredamedjadj`; the GitHub one is `mohammedmedjadj`. A dataset
+URL written with the GitHub spelling returns 404, which read as "the dataset was
+never published" and very nearly had a live, attached dataset detached from its
+notebook to fix a problem that did not exist. One character of divergence
+between three files, and no way to see it by reading any of them alone.
+
+So: the dataset the kernel attaches, the dataset the notebook links, and the
+dataset `data/derived/dataset-metadata.json` publishes must be the same string.
+Whether that string resolves is a question for a browser -- what these can do is
+make the three agree, which is what turns a typo into a test failure.
 """
 
 from __future__ import annotations
@@ -21,7 +27,8 @@ import pytest
 
 REPO = Path(__file__).resolve().parents[1]
 NOTEBOOK = REPO / "notebooks" / "kaggle_demo.ipynb"
-METADATA = REPO / "notebooks" / "kernel-metadata.json"
+KERNEL = REPO / "notebooks" / "kernel-metadata.json"
+DATASET = REPO / "data" / "derived" / "dataset-metadata.json"
 
 
 @pytest.fixture(scope="module")
@@ -37,6 +44,12 @@ def _source(notebook: dict, kind: str) -> str:
         for cell in notebook["cells"]
         if cell["cell_type"] == kind
     )
+
+
+def _json(path: Path) -> dict:
+    if not path.exists():
+        pytest.skip(f"{path.relative_to(REPO)} not present")
+    return json.loads(path.read_text(encoding="utf-8"))
 
 
 def test_every_data_path_the_notebook_reads_exists(notebook: dict) -> None:
@@ -67,43 +80,69 @@ def test_every_module_the_notebook_imports_exists(notebook: dict) -> None:
     )
 
 
-def test_the_notebook_announces_no_dataset_that_does_not_exist(
+def test_the_notebook_and_the_kernel_name_the_same_dataset(
     notebook: dict,
 ) -> None:
-    """It linked a Kaggle dataset that was never published, and said so in prose.
-
-    A broken dependency fails loudly. A sentence telling a researcher that data
-    is published, next to a link that 404s, fails quietly and damages more.
-    """
-    prose = _source(notebook, "markdown")
-    offenders = [
-        url for url in re.findall(r"https://www\.kaggle\.com/datasets/\S+", prose)
-    ]
-    assert not offenders, (
-        "the notebook links a Kaggle dataset. Nothing in this repository "
-        "publishes one, and four files under data/derived/ come from sources "
-        "whose licence data/external/README.md records as unchecked -- so a "
-        f"dataset cannot be published under a declared licence either: {offenders}"
+    """A link and an attachment that disagree is a typo nobody can see."""
+    kernel = _json(KERNEL)
+    attached = kernel.get("dataset_sources") or []
+    linked = re.findall(
+        r"https://www\.kaggle\.com/datasets/([\w-]+/[\w-]+)",
+        _source(notebook, "markdown"),
+    )
+    assert attached, (
+        "kernel-metadata.json attaches no dataset. The published notebook is "
+        "attached to one, so pushing this detaches it."
+    )
+    assert linked, (
+        "the notebook links no dataset, but the kernel attaches one. A reader "
+        "has no way to find the data the kernel declares."
+    )
+    assert set(linked) == set(attached), (
+        f"the notebook links {sorted(set(linked))} and the kernel attaches "
+        f"{sorted(set(attached))}. One of them is a typo, and the wrong one "
+        "returns 404 without saying which."
     )
 
 
-def test_the_kernel_declares_no_dataset_source() -> None:
-    """A kernel pointing at a dataset that does not exist cannot be pushed."""
-    if not METADATA.exists():
-        pytest.skip("notebooks/kernel-metadata.json not present")
-    metadata = json.loads(METADATA.read_text(encoding="utf-8"))
-    assert not metadata.get("dataset_sources"), (
-        "kernel-metadata.json declares a dataset source. The notebook clones "
-        "this repository and needs none, and `kaggle kernels push` fails if "
-        f"the dataset does not exist: {metadata['dataset_sources']}"
+def test_the_published_dataset_manifest_matches_what_the_kernel_attaches() -> None:
+    """data/derived/ is what gets pushed as the dataset; it must be that dataset."""
+    kernel = _json(KERNEL)
+    manifest = _json(DATASET)
+    attached = kernel.get("dataset_sources") or []
+    assert manifest.get("id") in attached, (
+        f"data/derived/dataset-metadata.json publishes {manifest.get('id')!r} "
+        f"but the kernel attaches {attached}. Pushing the dataset would update "
+        "one dataset while the notebook reads another."
+    )
+
+
+def test_the_kaggle_and_github_accounts_are_not_confused(notebook: dict) -> None:
+    """One character apart, and the wrong one 404s silently.
+
+    Kaggle URLs must carry the Kaggle account; GitHub URLs the GitHub one.
+    """
+    prose = _source(notebook, "markdown") + _source(notebook, "code")
+    wrong_on_kaggle = re.findall(
+        r"https://www\.kaggle\.com/\S*?/mohammedmedjadj/", prose
+    ) + re.findall(r"https://www\.kaggle\.com/(?:datasets|code)/mohammedmedjadj\b",
+                   prose)
+    assert not wrong_on_kaggle, (
+        "a Kaggle URL uses the GitHub account name. Kaggle is "
+        f"'mohammedredamedjadj': {wrong_on_kaggle}"
+    )
+    wrong_on_github = re.findall(
+        r"https://github\.com/mohammedredamedjadj\b", prose
+    )
+    assert not wrong_on_github, (
+        "a GitHub URL uses the Kaggle account name. GitHub is "
+        f"'mohammedmedjadj': {wrong_on_github}"
     )
 
 
 def test_the_kernel_points_at_the_notebook_beside_it() -> None:
-    if not METADATA.exists():
-        pytest.skip("notebooks/kernel-metadata.json not present")
-    metadata = json.loads(METADATA.read_text(encoding="utf-8"))
-    code_file = metadata.get("code_file", "")
-    assert (METADATA.parent / code_file).exists(), (
+    kernel = _json(KERNEL)
+    code_file = kernel.get("code_file", "")
+    assert (KERNEL.parent / code_file).exists(), (
         f"kernel-metadata.json names code_file {code_file!r}, which is not there"
     )

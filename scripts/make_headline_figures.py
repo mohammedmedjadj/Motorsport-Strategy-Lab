@@ -42,20 +42,11 @@ from src.ingestion.config import (  # noqa: E402
 
 FIGURES = REPORTS_DIR / "figures"
 
-#: One colour per class, held fixed across all three figures so a reader who
-#: learns the palette on one keeps it on the others.
-CLASS_COLOURS = {
-    "GTD": "#d1495b",
-    "GTDPRO": "#edae49",
-    "GTP": "#00798c",
-    "HYPERCAR": "#30638e",
-    "LMP2": "#003d5b",
-    "LMP2 Pro/Am": "#7e9aa8",
-    "F1": "#2b2d42",
-}
-
-
-INK, MUTED = "#222222", "#666666"
+#: One colour per class, held fixed across every figure, the Streamlit demo and
+#: the website, so a reader who learns the palette on one keeps it everywhere.
+#: Defined once in src/reporting/palette.py -- this used to be a hand-copied
+#: dict in two files, each carrying a comment asserting it matched the other.
+from src.reporting.palette import CLASS_COLOURS, INK, MUTED  # noqa: E402
 
 
 def _caption(ax: plt.Axes, text: str) -> None:

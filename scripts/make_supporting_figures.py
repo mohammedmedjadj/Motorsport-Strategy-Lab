@@ -52,15 +52,14 @@ from src.ingestion.config import (  # noqa: E402
 
 FIGURES = REPORTS_DIR / "figures"
 
-#: Held identical to make_headline_figures.py so a reader who learns the
-#: palette on one figure keeps it on every other.
-CLASS_COLOURS = {
-    "GTD": "#d1495b", "GTDPRO": "#edae49", "GTP": "#00798c",
-    "HYPERCAR": "#30638e", "LMP2": "#003d5b", "LMP2 Pro/Am": "#7e9aa8",
-    "F1": "#2b2d42",
-}
-COMPOUND_COLOURS = {"SOFT": "#d1495b", "MEDIUM": "#edae49", "HARD": "#8d99ae"}
-INK, MUTED = "#222222", "#666666"
+#: Shared with make_headline_figures.py, the Streamlit demo and the website's
+#: CSS, from one definition instead of a comment promising they match.
+from src.reporting.palette import (  # noqa: E402
+    CLASS_COLOURS,
+    COMPOUND_COLOURS,
+    INK,
+    MUTED,
+)
 
 
 def _frame(ax: plt.Axes, xgrid: bool = True) -> None:

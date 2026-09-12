@@ -11,12 +11,13 @@
   <a href="https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab/actions/workflows/tests.yml"><img src="https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab/actions/workflows/tests.yml/badge.svg" alt="Test suite status"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-CC%20BY--NC--SA%204.0-E10600" alt="License: CC BY-NC-SA 4.0"></a>
   <img src="https://img.shields.io/badge/python-3.11%2B-00D9FF" alt="Python 3.11+">
-  <img src="https://img.shields.io/badge/tests-491%20passing-2ea44f" alt="491 tests passing">
+  <img src="https://img.shields.io/badge/tests-507%20passing-2ea44f" alt="507 tests passing">
   <img src="https://img.shields.io/badge/series-F1%20%C2%B7%20WEC%20%C2%B7%20IMSA%20%C2%B7%20ELMS-FFB800" alt="Series: F1, WEC, IMSA, ELMS">
 </p>
 
 <p align="center">
   <a href="https://mohammedmedjadj.github.io/Motorsport-Strategy-Lab/">Website</a> ·
+  <a href="https://motorsport-strategy-lab.streamlit.app/">Live demo</a> ·
   <a href="paper/main.tex">Paper</a> ·
   <a href="docs/full-readme.md">Full documentation</a> ·
   <a href="reports/">98 reports</a> ·
@@ -93,9 +94,9 @@ python scripts/make_headline_figures.py  # the three figures above
 streamlit run demo/app.py                # after pip install -r demo/requirements.txt
 ```
 
-Seven panels, one per modelled class, running the same simulator and the same
-fitted models the reports use. To host it:
-[`deploy/huggingface/`](deploy/huggingface/README.md).
+Or open the deployed one: **<https://motorsport-strategy-lab.streamlit.app/>**. Seven panels, one per modelled class,
+running the same simulator and the same fitted models the reports use.
+Deployment notes: [`deploy/streamlit/`](deploy/streamlit/README.md).
 
 ## What underwrites it
 
@@ -114,7 +115,7 @@ weeks of silent drift. The paper contains no numbers of its own: every quantity
 is a macro generated from the artifacts, so the manuscript cannot drift from the
 data.
 
-491 tests, including one file whose only job is to recompute each published
+507 tests, including one file whose only job is to recompute each published
 headline and assert the result appears in the document publishing it.
 
 ## Where the evidence is thin

@@ -42,6 +42,7 @@ import numpy as np
 import pandas as pd
 import streamlit as st
 
+from src.reporting import palette
 from src.simulator.artifacts import CircuitModel, load_circuit_models
 from src.simulator.endurance import EnduranceRaceModel, EnduranceScenario
 from src.simulator.endurance import simulate as simulate_endurance
@@ -60,7 +61,10 @@ from src.simulator.multistop import (
 
 st.set_page_config(page_title="Motorsport Strategy Lab", page_icon="\U0001F3C1", layout="wide")
 
-PURPLE, LILAC = "#7C3AED", "#B8A6E8"
+# One palette for the whole project: these are the values the report figures
+# draw with and the website's CSS declares, not a third set chosen here. Set
+# once, so a new chart inherits the appearance instead of picking its own.
+plt.rcParams.update(palette.matplotlib_rc())
 
 
 @st.cache_resource
@@ -88,22 +92,36 @@ def _races(series: str, car_class: str) -> pd.DataFrame:
 
 
 def _candidate_chart(
-    labels: list[str], median: np.ndarray, p10: np.ndarray, p90: np.ndarray, title: str
+    labels: list[str], median: np.ndarray, p10: np.ndarray, p90: np.ndarray,
+    title: str, best_index: int | None = None,
 ) -> None:
     """Median with a [P10, P90] whisker per candidate — never a bare point
     estimate, since the whole argument of this project is that the spread is
-    the decision-relevant part."""
+    the decision-relevant part.
+
+    `best_index` marks the recommended candidate. The page exists to answer
+    "which lap", and without it the answer was drawn identically to every
+    option it beat.
+    """
     fig, ax = plt.subplots(figsize=(8, 4.2))
     x = np.arange(len(labels))
     ax.errorbar(
         x, median, yerr=[median - p10, p90 - median],
-        fmt="o", color=PURPLE, ecolor=LILAC, capsize=3,
+        fmt="o", color=palette.NAVY, ecolor=palette.SLATE, capsize=3,
+        markersize=5, elinewidth=1.4, zorder=3,
     )
+    if best_index is not None and 0 <= best_index < len(labels):
+        ax.errorbar(
+            [x[best_index]], [median[best_index]],
+            yerr=[[median[best_index] - p10[best_index]],
+                  [p90[best_index] - median[best_index]]],
+            fmt="o", color=palette.RED, ecolor=palette.RED, capsize=3,
+            markersize=8, elinewidth=1.8, zorder=4,
+        )
     ax.set_xticks(x)
     ax.set_xticklabels(labels, rotation=60, ha="right", fontsize=8)
     ax.set_ylabel("Total race time (s)")
-    ax.set_title(title)
-    ax.grid(alpha=0.25)
+    ax.set_title(title, loc="left")
     fig.tight_layout()
     st.pyplot(fig)
 
@@ -220,9 +238,13 @@ def f1_panel() -> None:
     col1, col2 = st.columns([2, 1])
     with col1:
         st.markdown("**Total race time by candidate pit lap**")
+        # `order` permutes the candidates, so the recommendation's position on
+        # the axis is where best_idx *lands*, not best_idx itself.
+        plotted_best = int(np.flatnonzero(order == best_idx)[0])
         _candidate_chart(
             list(np.array(labels)[order]), median[order], p10[order], p90[order],
             f"{circuit.title()} — median ± [P10, P90], {n_draws} draws",
+            best_index=plotted_best,
         )
     with col2:
         st.markdown("**Recommendation**")
@@ -395,12 +417,20 @@ def endurance_panel(series: str, car_class: str, heading: str, intro: str,
     col1, col2 = st.columns([2, 1])
     with col1:
         st.markdown("**Remaining race time by candidate next stop**")
+        # Same reason as the Formula 1 panel: `ordered` is sorted, `best` came
+        # from the unsorted table. Match on the candidate itself.
+        candidates_plotted = list(ordered["Candidate"])
+        plotted_best = (
+            candidates_plotted.index(best["Candidate"])
+            if best["Candidate"] in candidates_plotted else None
+        )
         _candidate_chart(
-            list(ordered["Candidate"]),
+            candidates_plotted,
             ordered["median_s"].to_numpy(),
             ordered["p10_s"].to_numpy(),
             ordered["p90_s"].to_numpy(),
             f"{event} {year} ({car_class}) — median ± [P10, P90], {n_draws} draws",
+            best_index=plotted_best,
         )
     with col2:
         st.markdown("**Recommendation**")

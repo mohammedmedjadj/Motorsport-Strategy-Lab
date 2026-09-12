@@ -1,0 +1,56 @@
+# The demo's appearance, taken from the website rather than invented.
+#
+# Every colour below is a value from the `:root` block in docs/index.html, and
+# tests/test_palette.py fails if the two drift apart. Before this file the demo
+# ran on Streamlit's defaults and drew its charts in a purple and a lilac that
+# appear nowhere else in the project -- three surfaces, three appearances, one
+# project.
+#
+# Verified against streamlit 1.61.1: every key here is in the config template,
+# including the [theme.dark] block, so the demo follows the viewer's light or
+# dark preference the way the site does.
+
+[theme]
+base = "light"
+
+# --bg, --panel, --ink, --line
+backgroundColor = "#ffffff"
+secondaryBackgroundColor = "#f7f8fa"
+textColor = "#16181d"
+borderColor = "#e3e6ea"
+
+# --navy: the site's .btn.primary. --teal: the site's link colour.
+primaryColor = "#2b2d42"
+linkColor = "#00798c"
+
+# The site sets no webfont -- it uses the platform's own UI face. Streamlit
+# cannot be given that stack without shipping font files, so the closest honest
+# match is its sans default. This is the one thing here that does not match the
+# site exactly, and it is deliberate rather than overlooked.
+font = "sans-serif"
+
+# Streamlit's own charts, so a built-in chart and a matplotlib figure from
+# src/reporting/palette.py cannot disagree. Order matches the rcParams cycler:
+# navy, teal, red, amber, slate, ELMS blue.
+chartCategoricalColors = [
+  "#2b2d42", "#00798c", "#d1495b", "#edae49", "#8d99ae", "#003d5b",
+]
+
+[theme.dark]
+# The site's dark override, same five roles.
+backgroundColor = "#14161a"
+secondaryBackgroundColor = "#1b1e24"
+textColor = "#e8eaed"
+borderColor = "#2a2f38"
+# A deviation from the site, on purpose. The site's dark block redefines only
+# the five surface and text variables, so its primary button stays --navy:
+# #2b2d42 on a #14161a ground is a contrast ratio of 1.34, and the button stops
+# reading as a surface at all (its white label is fine at 13.5, so nothing is
+# unreadable -- it just stops looking like a control). Teal reaches 3.55, which
+# clears the 3:1 that WCAG asks of a UI component. Widgets are the whole point
+# of this page, so they take the colour that survives the background.
+primaryColor = "#00798c"
+linkColor = "#00798c"
+chartCategoricalColors = [
+  "#7e9aa8", "#00798c", "#d1495b", "#edae49", "#8d99ae", "#30638e",
+]
