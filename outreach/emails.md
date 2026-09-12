@@ -33,7 +33,7 @@ value of that sentence is that it proves you read the thing.
 > about optimisers or an artefact of asking a question no team is answering.
 >
 > One page of results and three questions are attached; the code and data are at
-> [repo link]. If any of the three is quick for you to answer I'd be very
+> <https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab> (archived: https://doi.org/10.5281/zenodo.22726130). If any of the three is quick for you to answer I'd be very
 > grateful, and if none is, that's a useful answer too.
 >
 > With thanks,
@@ -87,7 +87,7 @@ value of that sentence is that it proves you read the thing.
 >
 > I'm not asking for supervision — one paragraph on whether that design is
 > defensible would already help. One page of results, three questions, and the
-> full code and data at [repo link].
+> full code and data at <https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab> (archived: https://doi.org/10.5281/zenodo.22726130).
 >
 > With thanks,
 > [name]

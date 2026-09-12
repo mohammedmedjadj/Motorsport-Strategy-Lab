@@ -2,7 +2,9 @@ cff-version: 1.2.0
 title: "Motorsport Strategy Lab: cross-championship race-strategy models and a retrospective decision audit"
 message: >-
   If you use this software, data or its results, please cite it. The DOI below
-  is minted by Zenodo from a tagged GitHub release; see .zenodo.json.
+  is version-specific and frozen at v1.0.0, which is what a citation should
+  name. To point at the project rather than at one release, use the concept DOI
+  10.5281/zenodo.22726130, which always resolves to the newest version.
 type: software
 authors:
   - family-names: Medjadj
@@ -43,3 +45,17 @@ keywords:
   - model validation
   - reproducibility
 license: CC-BY-NC-SA-4.0
+version: 1.0.0
+date-released: "2026-09-12"
+doi: 10.5281/zenodo.22726131
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.22726130
+    description: >-
+      The concept DOI. Resolves to the most recent version of the deposit, so
+      it stays correct as versions are added.
+  - type: doi
+    value: 10.5281/zenodo.22726131
+    description: >-
+      The version DOI for v1.0.0. Frozen: cite this when a result needs to be
+      traceable to the exact state that produced it.

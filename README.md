@@ -7,10 +7,11 @@
 </p>
 
 <p align="center">
+  <a href="https://doi.org/10.5281/zenodo.22726130"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.22726130.svg" alt="DOI: 10.5281/zenodo.22726130"></a>
   <a href="https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab/actions/workflows/tests.yml"><img src="https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab/actions/workflows/tests.yml/badge.svg" alt="Test suite status"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-CC%20BY--NC--SA%204.0-E10600" alt="License: CC BY-NC-SA 4.0"></a>
   <img src="https://img.shields.io/badge/python-3.11%2B-00D9FF" alt="Python 3.11+">
-  <img src="https://img.shields.io/badge/tests-470%20passing-2ea44f" alt="470 tests passing">
+  <img src="https://img.shields.io/badge/tests-486%20passing-2ea44f" alt="486 tests passing">
   <img src="https://img.shields.io/badge/series-F1%20%C2%B7%20WEC%20%C2%B7%20IMSA%20%C2%B7%20ELMS-FFB800" alt="Series: F1, WEC, IMSA, ELMS">
 </p>
 
@@ -18,8 +19,9 @@
   <a href="https://mohammedmedjadj.github.io/Motorsport-Strategy-Lab/">Website</a> ·
   <a href="paper/main.tex">Paper</a> ·
   <a href="docs/full-readme.md">Full documentation</a> ·
-  <a href="reports/">94 reports</a> ·
-  <a href="outreach/">Open questions</a>
+  <a href="reports/">98 reports</a> ·
+  <a href="outreach/">Open questions</a> ·
+  <a href="https://doi.org/10.5281/zenodo.22726130">DOI</a>
 </p>
 
 Fitted tyre degradation, Bayesian neutralisation risk, measured pit loss and
@@ -112,7 +114,7 @@ weeks of silent drift. The paper contains no numbers of its own: every quantity
 is a macro generated from the artifacts, so the manuscript cannot drift from the
 data.
 
-470 tests, including one file whose only job is to recompute each published
+486 tests, including one file whose only job is to recompute each published
 headline and assert the result appears in the document publishing it.
 
 ## Where the evidence is thin
@@ -167,5 +169,14 @@ timing from a community-maintained dataset. Weather from Open-Meteo. Two layers
 read a third-party export this repository does not redistribute, described in
 [`data/external/README.md`](data/external/README.md).
 
-Released under CC BY-NC-SA 4.0. Citation details in
-[`CITATION.cff`](CITATION.cff).
+Released under CC BY-NC-SA 4.0.
+
+Archived on Zenodo, and through it in Software Heritage and OpenAIRE. Two DOIs,
+and they are not interchangeable. Cite
+[`10.5281/zenodo.22726130`](https://doi.org/10.5281/zenodo.22726130) to point at the project — it resolves
+to whatever the newest version is. Cite
+[`10.5281/zenodo.22726131`](https://doi.org/10.5281/zenodo.22726131) when you need the exact state a result
+came from: that one is frozen at v1.0.0 and will not move under you.
+
+GitHub's *Cite this repository* button reads [`CITATION.cff`](CITATION.cff) and
+produces the v1.0.0 citation.

@@ -5,7 +5,9 @@ decisions.**
 
 Motorsport Strategy Lab — Formula 1, WEC, IMSA and ELMS, seven car classes,
 one protocol applied identically to all of them.
-Repository: <https://github.com/mohammedmedjadj/motorsport-strategy-lab>
+
+Repository: <https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab>  
+Archived and citable: [10.5281/zenodo.22726130](https://doi.org/10.5281/zenodo.22726130) (Zenodo, Software Heritage, OpenAIRE)
 
 ---
 

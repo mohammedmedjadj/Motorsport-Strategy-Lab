@@ -19,11 +19,16 @@ message goes out improvised.
    else. A maintainer's response on a public tracker is third-party validation
    that no amount of internal testing substitutes for, and the reproduction is
    already written.
-2. **Do the literature review** (`targets.md`). It gates the Variant A emails
-   and section 1 of the paper.
+2. ~~Do the literature review.~~ **Done.** Twelve papers, each checked against
+   Crossref or the arXiv API, are catalogued in
+   [`../reports/cross_series/related_work.md`](../reports/cross_series/related_work.md)
+   and the paper's related-work section is written from it. Variant A is
+   unblocked.
 3. **Contact categories 1 and 2** while the paper is still being written — a
    methods opinion is only useful before the methods are fixed.
-4. **Contact category 3 after the DOI exists.**
+4. ~~Contact category 3 after the DOI exists.~~ **The DOI exists**
+   ([10.5281/zenodo.22726130](https://doi.org/10.5281/zenodo.22726130), archived in Zenodo, Software
+   Heritage and OpenAIRE), so category 3 is unblocked too.
 
 ## The two things not to get wrong
 
@@ -31,10 +36,12 @@ message goes out improvised.
 is a detail that must be verified first, and the ones referring to someone's own
 work are the whole reason the message gets a reply.
 
-**Do not cite a paper you have not opened.** There is a list of five candidate
-references in my planning notes and **not one of them has been verified against
-a real publication record.** A citation to a paper that does not exist would do
-more damage than the missing literature review it was meant to fix.
+**Do not cite a paper you have not opened.** This was written when five
+candidate references sat in planning notes with none of them verified. The
+twelve now in `related_work.md` have each been checked against Crossref or the
+arXiv API, so Variant A can cite from that file. The rule itself does not
+expire: anything not in that file has not been checked, and a citation to a
+paper that does not exist as described would do more damage than a missing one.
 
 ## What a reply is worth
 

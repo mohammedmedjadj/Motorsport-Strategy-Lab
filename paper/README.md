@@ -83,23 +83,27 @@ one, and it is the single easiest thing for a reviewer to catch.
 
 ## Publication route
 
-**Zenodo first**, because it needs nothing from anybody: a real DOI, dated and
-citable, and it forecloses neither arXiv nor a journal submission. The
-repository is already prepared for it:
+**Zenodo is done.** v1.0.0 is released, archived, and carried onward into
+Software Heritage and OpenAIRE from commit `6b2fc77`.
 
-1. Sign in to [zenodo.org](https://zenodo.org) with GitHub, and enable this
-   repository in *Settings → GitHub*.
-2. Tag and publish a release on GitHub (`v1.0.0`). Zenodo archives the tarball
-   automatically and mints a DOI.
-3. It reads [`../.zenodo.json`](../.zenodo.json) for the title, abstract,
-   licence, keywords and the two related-work DOIs, so nothing needs retyping
-   in their web form.
-4. Put the DOI badge in the README and the DOI itself in
-   [`../CITATION.cff`](../CITATION.cff), which is what makes GitHub's own
-   *Cite this repository* button produce the right citation.
+| | |
+|---|---|
+| Concept DOI | [`10.5281/zenodo.22726130`](https://doi.org/10.5281/zenodo.22726130) — resolves to the newest version |
+| v1.0.0 DOI | [`10.5281/zenodo.22726131`](https://doi.org/10.5281/zenodo.22726131) — frozen |
+| Record | <https://zenodo.org/records/22726131> |
 
-Do step 1 **before** tagging: Zenodo only archives releases published after the
-repository is enabled, so a release tagged first has to be deleted and redone.
+Which one to use is not a matter of taste. Anything pointing at *the project* —
+the README badge, the site footer, the outreach pack, this paper's title
+footnote — takes the concept DOI, so it keeps working after v1.1.0 exists. The
+version DOI belongs in a formal citation of v1.0.0, which is what
+[`../CITATION.cff`](../CITATION.cff) carries and what GitHub's *Cite this
+repository* button renders. `tests/test_citation_metadata.py` fails if that
+distinction slips.
+
+For the next release: Zenodo mints a new version DOI automatically from the tag,
+and the concept DOI follows it. Bump `version` and `date-released` in
+`CITATION.cff` and put the new version DOI in its `doi` field and `identifiers`
+list. Nothing else changes, because nothing else names a version.
 
 arXiv needs an endorsement in the relevant category. A serious reply from any of
 the authors above is the realistic route to one, which is what

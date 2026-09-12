@@ -87,8 +87,10 @@
     <div class="links">
       <a class="btn primary" href="https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab">Repository</a>
       <a class="btn" href="https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab/blob/main/paper/main.tex">The paper</a>
-      <a class="btn" href="https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab/tree/main/reports">94 reports</a>
+      <a class="btn" href="https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab/tree/main/reports">98 reports</a>
+      <a class="btn" href="https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab/blob/main/reports/cross_series/related_work.md">Related work</a>
       <a class="btn" href="https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab/tree/main/outreach">Three open questions</a>
+      <a class="btn" href="https://doi.org/10.5281/zenodo.22726130">DOI</a>
     </div>
   </div>
 </header>
@@ -195,9 +197,14 @@
 <section>
   <div class="wrap">
     <h2>And a rule of thumb beats it, in five of the seven classes</h2>
-    <p class="lede">Three baselines, scored on the same decisions, from the same
-      artifacts, on the same metric. Written to win if they could — a straw man
-      would prove nothing.</p>
+    <p class="lede">Three baselines, scored on 1,263 of the audit's 1,280
+      decisions, from the same artifacts, on the same metric. Written to win if
+      they could — a straw man would prove nothing. The 17 that are not scored
+      sit at four IMSA race-seasons with no fitted multi-stop plan, so there is
+      no pit loss or net slope for a rule to read. Separately, a rule that
+      cannot fire on a decision returns no lap and is not credited with one:
+      coverage is reported beside every error, because answering a fifth of the
+      decisions accurately is not the same as answering all of them.</p>
     <div class="scroll">
       <table>
         <thead><tr>
@@ -253,9 +260,14 @@
           manuscript is a macro generated from the committed artifacts, so it
           cannot drift from the data — regenerate and it is correct, or CI
           fails.</p>
-        <p><strong>470 tests</strong>, including a file whose only job is to
+        <p><strong>486 tests</strong>, including a file whose only job is to
           recompute each published headline from its artifact and assert the
           result appears in the document that publishes it.</p>
+        <p><strong>The weakest numbers are named here, not left to be
+          found.</strong> Three claims rest on very little, and
+          <a href="https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab/blob/main/reports/cross_series/thin_evidence.md">thin_evidence.md</a>
+          walks the artifact behind each headline and counts what actually sits
+          underneath it.</p>
       </div>
     </div>
     <figure style="margin-top:10px">
@@ -274,6 +286,11 @@
     <p>Code and data:
       <a href="https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab">github.com/mohammedmedjadj/Motorsport-Strategy-Lab</a>
       · CC BY-NC-SA 4.0</p>
+    <p>Archived on Zenodo, and through it in Software Heritage and OpenAIRE.
+      To cite the project: <a href="https://doi.org/10.5281/zenodo.22726130">10.5281/zenodo.22726130</a>,
+      which resolves to the newest version. To cite the exact state a result
+      came from: <a href="https://doi.org/10.5281/zenodo.22726131">10.5281/zenodo.22726131</a>, frozen at
+      v1.0.0.</p>
   </div>
 </footer>
 

@@ -37,3 +37,15 @@ Thumbs.db
 .env
 .env.*
 .hypothesis/
+
+# Local exports for uploading the manuscript to Overleaf. These are copies, and
+# a copy that nothing refreshes goes stale: overleaf-flat/main.tex was already
+# 19 lines behind paper/main.tex when this line was written. paper/ is the
+# source. They are ignored rather than committed so the drift workflow, which
+# treats any untracked file as a signal, does not read a scratch export as one.
+overleaf/
+overleaf-flat/
+overleaf*.zip
+
+# VS Code workspace file, personal to whoever opened the repo.
+*.code-workspace

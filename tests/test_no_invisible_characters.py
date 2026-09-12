@@ -22,6 +22,7 @@ version of this file used literals and failed on itself, which was fair.
 
 from __future__ import annotations
 
+import subprocess
 from pathlib import Path
 
 import pytest
@@ -75,12 +76,38 @@ SKIP_DIRECTORIES = frozenset({
 })
 
 
+def _tracked() -> set[Path] | None:
+    """What git tracks, or None if this is not a working clone."""
+    try:
+        listing = subprocess.run(
+            ["git", "ls-files", "-z"],
+            cwd=REPO, capture_output=True, check=True, text=True,
+        )
+    except (OSError, subprocess.CalledProcessError):
+        return None
+    return {
+        (REPO / name).resolve()
+        for name in listing.stdout.split("\0") if name
+    }
+
+
 def _text_files() -> list[Path]:
+    """Every text file in the repository.
+
+    Tracked files only. An uncommitted scratch copy in the working directory is
+    not part of what anyone receives, and one of them -- a local export of the
+    manuscript carrying a UTF-8 byte-order mark -- used to fail this scan for a
+    reason that had nothing to do with what the repository publishes. When git
+    is unavailable the walk falls back to the filesystem, which is stricter and
+    never less safe.
+    """
+    tracked = _tracked()
     return [
         path for path in REPO.rglob("*")
         if path.is_file()
         and path.suffix in TEXT_SUFFIXES
         and not SKIP_DIRECTORIES.intersection(path.parts)
+        and (tracked is None or path.resolve() in tracked)
     ]
 
 

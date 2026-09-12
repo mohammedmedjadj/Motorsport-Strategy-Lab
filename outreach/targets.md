@@ -84,8 +84,9 @@ engineering and motorsport-engineering degree programmes also have alumni in
 these roles who answer student mail more readily than serving engineers at a
 works team.
 
-**Approach them after the DOI exists**, not before — a link to a citable
-deposited paper changes how the message reads.
+**The DOI exists** — [10.5281/zenodo.22726130](https://doi.org/10.5281/zenodo.22726130) — so this category
+is open. A link to a citable, archived deposit changes how the message reads
+to someone who gets a lot of student mail.
 
 ---
 
@@ -95,8 +96,10 @@ deposited paper changes how the message reads.
    related-work section is written, so these are unblocked. A methods answer is
    only useful before the methods are finalised, which is the position you are
    in today.
-2. **Category 3 after the Zenodo DOI.** A link to a citable deposit changes how
-   the message reads to someone on a pit wall.
+2. **Category 3, also now.** The Zenodo deposit this was waiting on is live at
+   [10.5281/zenodo.22726130](https://doi.org/10.5281/zenodo.22726130), archived onward into Software
+   Heritage and OpenAIRE. A link to a citable deposit changes how the message
+   reads to someone on a pit wall.
 
 ## Rules
 
