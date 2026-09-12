@@ -218,10 +218,12 @@
     </div>
     <p style="font-size:14px;color:var(--muted);margin-top:-6px">Median absolute
       lap error against the real stop. Reported per class, because IMSA runs
-      three at the same rounds with median pit losses of 57, 24 and 40 seconds —
-      one IMSA row would average three strategy regimes into a number describing
-      none of them. B1 wins four of these and uses <em>no fitted quantity at
-      all</em>. B3 is undefined in Formula 1, which has not refuelled since 2010,
+      three at the same rounds with median pit losses of 57 s (GTP), 24 s (GTD)
+      and 40 s (GTD PRO) — one IMSA row would average three strategy regimes
+      into a number describing none of them. A rule sits closer than the
+      optimiser in 5 of the 7 classes; in three of those the winning rule is B1,
+      which uses <em>no fitted quantity at all</em>, and in the two others it
+      ties the optimiser rather than losing to it. B3 is undefined in Formula 1, which has not refuelled since 2010,
       and is reported as undefined rather than substituted with the race
       end.</p>
     <div class="note"><strong>Closer to what teams did is not the same as
@@ -251,7 +253,7 @@
           manuscript is a macro generated from the committed artifacts, so it
           cannot drift from the data — regenerate and it is correct, or CI
           fails.</p>
-        <p><strong>461 tests</strong>, including a file whose only job is to
+        <p><strong>470 tests</strong>, including a file whose only job is to
           recompute each published headline from its artifact and assert the
           result appears in the document that publishes it.</p>
       </div>

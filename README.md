@@ -10,7 +10,7 @@
   <a href="https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab/actions/workflows/tests.yml"><img src="https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab/actions/workflows/tests.yml/badge.svg" alt="Test suite status"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-CC%20BY--NC--SA%204.0-E10600" alt="License: CC BY-NC-SA 4.0"></a>
   <img src="https://img.shields.io/badge/python-3.11%2B-00D9FF" alt="Python 3.11+">
-  <img src="https://img.shields.io/badge/tests-461%20passing-2ea44f" alt="461 tests passing">
+  <img src="https://img.shields.io/badge/tests-470%20passing-2ea44f" alt="470 tests passing">
   <img src="https://img.shields.io/badge/series-F1%20%C2%B7%20WEC%20%C2%B7%20IMSA%20%C2%B7%20ELMS-FFB800" alt="Series: F1, WEC, IMSA, ELMS">
 </p>
 
@@ -63,8 +63,9 @@ failed.
 | ELMS LMP2 Pro/Am | 3 | **2** | 45 | 4 |
 
 Median absolute lap error against the real stop, on 1,263 of the audit's 1,280
-decisions. B1 wins four of these and uses no fitted quantity at all, only the
-race length and the number of stops the tank forces.
+decisions. B1 is the winning rule in three of those five and uses no fitted quantity at
+all, only the race length and the number of stops the tank forces. In the two
+classes it does not win it ties the optimiser rather than losing to it.
 
 Closer to what teams did is not the same as better. Everything here scores
 agreement with practice, never which plan was faster. What it settles is
@@ -111,7 +112,7 @@ weeks of silent drift. The paper contains no numbers of its own: every quantity
 is a macro generated from the artifacts, so the manuscript cannot drift from the
 data.
 
-461 tests, including one file whose only job is to recompute each published
+470 tests, including one file whose only job is to recompute each published
 headline and assert the result appears in the document publishing it.
 
 ## Where the evidence is thin

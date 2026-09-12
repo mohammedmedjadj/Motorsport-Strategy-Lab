@@ -77,7 +77,7 @@ in a position to give.
 **A retrospective audit against real decisions at scale.** 1,280 replayed first
 stops, four championships, one criterion. The finding that an exact optimiser
 sits systematically later than the pit wall, and that three rules of thumb sit
-closer than it does in three championships out of four, is not a result any of
+closer than it does in 5 of the 7 classes, is not a result any of
 these papers could produce, because none of them asks that question.
 
 Both are cheap to state and neither requires the modelling to be sophisticated.

@@ -104,12 +104,18 @@ def main() -> int:
     ]
 
     # --- 2. An interval on the pit-loss correlation -------------------------
-    correlation = correlation_over_units(pit_loss_groups(), _class_summary)
+    groups = pit_loss_groups()
+    correlation = correlation_over_units(groups, _class_summary)
     rows.append({
         "result": "pit loss vs tyre-limited share (r)",
         "estimate": correlation.estimate, "ci_low": correlation.low,
         "ci_high": correlation.high, "unit": correlation.unit,
-        "n": correlation.draws, "p_value": "",
+        # `n` is the number of resampling units on every row. The replicate
+        # count is a property of the bootstrap, not of the evidence, and it
+        # goes in its own column -- one of these once read as the other and a
+        # figure published "10,000 races" for 205 race-seasons.
+        "n": sum(len(group) for group in groups), "p_value": "",
+        "draws": correlation.draws,
     })
 
     # --- 3. How well located is the cheap-stop edge? ------------------------

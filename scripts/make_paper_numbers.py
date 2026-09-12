@@ -18,6 +18,8 @@ Usage (offline, from the repo root)::
 
 from __future__ import annotations
 
+import inspect
+import pathlib
 import sys
 from pathlib import Path
 
@@ -25,6 +27,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 import pandas as pd  # noqa: E402
 
+from src.reporting.names import circuit as circuit_name  # noqa: E402
+from src.reporting.names import circuit_class as circuit_class_name  # noqa: E402
 from src.ingestion.config import (  # noqa: E402
     DERIVED_DIR,
     ENDURANCE_DERIVED_DIR,
@@ -80,6 +84,73 @@ def _macros() -> dict[str, str]:
         len(pd.read_csv(F1_DERIVED_DIR / "degradation_coefficients.csv"))
     )
 
+    # --- scope, per series, for the methods table ------------------------
+    import glob
+    import re as _re
+
+    f1_files = sorted(glob.glob(str(F1_DERIVED_DIR / "laps_*.csv")))
+    f1_years = sorted({
+        int(_re.search(r"laps_(\d{4})_", pathlib.Path(f).name).group(1))
+        for f in f1_files
+    })
+    out["NRacesFone"] = str(len(f1_files))
+    out["SeasonsFone"] = f"{f1_years[0]}--{f1_years[-1]}"
+    out["NDecisionsFoneScope"] = f"{len(f1_audit):,}"
+
+    for series, group in plans.groupby("series"):
+        name = _tex_name(series)
+        out[f"NRaces{name}"] = str(len(group))
+        out[f"Seasons{name}"] = f"{group['year'].min()}--{group['year'].max()}"
+        out[f"NClasses{name}"] = str(group["car_class"].nunique())
+        out[f"NCircuits{name}"] = str(group["circuit_canonical"].nunique())
+        decisions = end_audit[end_audit["series"] == series]
+        out[f"NDecisions{name}"] = f"{len(decisions):,}"
+
+    # --- protocol constants, read from the code that uses them -----------
+    from src.audit.systematic import (
+        LOOKBACK as F1_LOOKBACK,
+        MIN_FIRST_STOP_LAP as F1_MIN_STOP,
+        N_FINISHERS,
+        N_RIVALS,
+    )
+    from src.audit.systematic_endurance import (
+        LOOKBACK as END_LOOKBACK,
+        MIN_FIRST_STOP_LAP as END_MIN_STOP,
+        N_CARS,
+    )
+    from src.simulator.engine import simulate as _simulate
+
+    out["NFinishers"] = str(N_FINISHERS)
+    out["NCars"] = str(N_CARS)
+    out["LookbackFone"] = str(F1_LOOKBACK)
+    out["LookbackEnd"] = str(END_LOOKBACK)
+    out["MinFirstStopFone"] = str(F1_MIN_STOP)
+    out["MinFirstStopEnd"] = str(END_MIN_STOP)
+    out["NRivals"] = str(N_RIVALS)
+    out["NDraws"] = f"{inspect.signature(_simulate).parameters['n_draws'].default:,}"
+    out["MinFinalStint"] = str(
+        inspect.signature(_simulate).parameters["min_final_stint"].default
+    )
+
+    # --- how well resolved the Formula 1 degradation fit actually is -------
+    # The paper shows this figure and would be dishonest to show it without
+    # saying how much of it is indistinguishable from zero.
+    coefs = pd.read_csv(F1_DERIVED_DIR / "degradation_coefficients.csv")
+    crosses = (coefs["deg_p1_ci_low"] <= 0) & (coefs["deg_p1_ci_high"] >= 0)
+    out["NCoefCrossingZero"] = str(int(crosses.sum()))
+    out["PctCoefCrossingZero"] = f"{100 * crosses.mean():.0f}"
+
+    overlapping = total = 0
+    for _, group in coefs.groupby("circuit"):
+        rows = list(group.itertuples())
+        for index, first in enumerate(rows):
+            for second in rows[index + 1:]:
+                total += 1
+                if (first.deg_p1_ci_low <= second.deg_p1_ci_high
+                        and second.deg_p1_ci_low <= first.deg_p1_ci_high):
+                    overlapping += 1
+    out["PctCompoundOverlap"] = f"{100 * overlapping / total:.0f}"
+
     # --- R1: transfer -------------------------------------------------------
     best = mean_loro.nlargest(1, "r2_within").iloc[0]
     out["BestTransfer"] = f"{best['r2_within']:+.3f}"
@@ -105,6 +176,34 @@ def _macros() -> dict[str, str]:
     out["TransferDiffCI"] = f"[{diff['ci_low']:+.3f}, {diff['ci_high']:+.3f}]"
     out["TransferP"] = f"{float(diff['p_value']):.4f}"
 
+    # --- the thinnest transfer score, the one a reviewer goes for first ----
+    loro = pd.read_csv(ENDURANCE_DERIVED_DIR / "endurance_degradation_loro.csv")
+    held = loro["held_out_season"].astype(str)
+    folds = loro[held != "MEAN"].dropna(subset=["r2_within"])
+    key = ["series", "event", "car_class"]
+    spread = folds.groupby(key)["r2_within"].agg(["min", "max", "size"])
+    published = (
+        loro[held == "MEAN"].dropna(subset=["r2_within"])
+        .nlargest(2, "r2_within")
+    )
+    # The runner-up, because the headline circuit-class is the stable one and
+    # the one below it is the thin one. That contrast is the point.
+    headline = published.iloc[0]
+    best = spread.loc[(headline.series, headline.event, headline.car_class)]
+    out["BestTransferFolds"] = str(int(best["size"]))
+    out["BestTransferSpread"] = f"{best['max'] - best['min']:.3f}"
+
+    runner_up = published.iloc[-1]
+    thin = spread.loc[(runner_up.series, runner_up.event, runner_up.car_class)]
+    out["ThinTransfer"] = f"{runner_up.r2_within:+.3f}"
+    out["ThinTransferWhere"] = circuit_class_name(
+        str(runner_up.event), str(runner_up.car_class)
+    )
+    out["ThinTransferFolds"] = str(int(thin["size"]))
+    out["ThinTransferLow"] = f"{thin['min']:+.3f}"
+    out["ThinTransferHigh"] = f"{thin['max']:+.3f}"
+    out["ThinTransferSpread"] = f"{thin['max'] - thin['min']:.3f}"
+
     # --- R2: the pit-loss rule ---------------------------------------------
     by_class = plans.groupby(["series", "car_class"]).agg(
         pit_loss=("pit_loss_s", "median"), share=("tyre_limited", "mean")
@@ -125,6 +224,10 @@ def _macros() -> dict[str, str]:
     out["EdgeDropPct"] = f"{100 * (edge - second) / edge:.0f}"
 
     # --- R3: the audit ------------------------------------------------------
+    # Two medians, because they answer different questions and the paper uses
+    # both: over every decision (comparable with the endurance rows below) and
+    # over the late ones only (the size of the gap when there is one).
+    out["FoneMedian"] = f"{f1_audit['delta_laps'].median():+.0f}"
     late = f1_audit[f1_audit["delta_laps"] > 1]
     out["FoneLateShare"] = f"{100 * len(late) / len(f1_audit):.0f}"
     out["FoneLateMedian"] = f"{late['delta_laps'].median():.0f}"
@@ -148,7 +251,7 @@ def _macros() -> dict[str, str]:
     scored["car_class"] = scored["car_class"].fillna("")
     out["NScored"] = f"{len(scored):,}"
 
-    beaten = tied = held = 0
+    beaten = tied = held = by_b1 = 0
     for (series, car_class), group in scored.groupby(["series", "car_class"]):
         name = (_tex_name(series) if series == "f1"
                 else _tex_name(series) + _CLASS_TEX.get(str(car_class), ""))
@@ -166,12 +269,17 @@ def _macros() -> dict[str, str]:
         best = min(rules)
         if best < errors["Model"]:
             beaten += 1
+            # Which rule wins matters: B1 uses no fitted quantity at all, so a
+            # class it wins says something the others do not.
+            if errors["Bone"] == best:
+                by_b1 += 1
         elif best == errors["Model"]:
             tied += 1
         else:
             held += 1
 
     out["NClassesRuleWins"] = str(beaten)
+    out["NClassesBoneWins"] = str(by_b1)
     out["NClassesRuleTies"] = str(tied)
     out["NClassesOptimiserWins"] = str(held)
     out["NClassesScored"] = str(beaten + tied + held)
@@ -181,6 +289,41 @@ def _macros() -> dict[str, str]:
     for (series, car_class), group in plans.groupby(["series", "car_class"]):
         name = _tex_name(series) + _CLASS_TEX.get(str(car_class), "")
         out[f"{name}PitLoss"] = f"{group['pit_loss_s'].median():.0f}"
+
+    # --- the track-position primitive the rejected explanation consumes ----
+    # The range is quoted in the paper and it is one of the three claims
+    # `thin_evidence.md` flags as thin, so the spread *within* a circuit is
+    # generated alongside it. A range means nothing without it.
+    swaps = pd.read_csv(F1_DERIVED_DIR / "overtaking_difficulty.csv")
+    swaps = swaps.sort_values("adj_swap_rate")
+    lowest, highest = swaps.iloc[0], swaps.iloc[-1]
+    out["TrackPositionRange"] = f"{highest.adj_swap_rate / lowest.adj_swap_rate:.0f}"
+    out["NCircuitsSwap"] = str(len(swaps))
+    out["SwapLowestCircuit"] = circuit_name(str(lowest.circuit))
+    out["SwapHighestCircuit"] = circuit_name(str(highest.circuit))
+    out["SwapLowest"] = f"{lowest.adj_swap_rate:.4f}"
+    out["SwapLowestSd"] = f"{lowest.sd_across_races:.4f}"
+    out["SwapLowestRaces"] = str(int(lowest.n_races))
+    out["SwapHighestRaces"] = str(int(highest.n_races))
+    out["SwapRunnerUpRatio"] = (
+        f"{swaps['adj_swap_rate'].iloc[1] / lowest.adj_swap_rate:.1f}"
+    )
+    out["SwapBetweenSd"] = f"{swaps['adj_swap_rate'].std():.4f}"
+    out["SwapWithinSd"] = f"{swaps['sd_across_races'].median():.4f}"
+
+    # --- what the cover-aware engine actually did, per circuit -------------
+    # The paper says the mechanism moves the recommendation away from the real
+    # stop. That is true of the calendar median, and it is not true everywhere,
+    # so the exception is generated here rather than glossed over.
+    undercut = pd.read_csv(F1_DERIVED_DIR / "undercut_hypothesis.csv")
+    out["UndercutClosedMedian"] = f"{undercut['closed'].median():+.0f}"
+    out["UndercutShareImproving"] = f"{100 * (undercut['closed'] > 0).mean():.0f}"
+    out["UndercutSpearman"] = (
+        f"{undercut['swap_rate'].corr(undercut['closed'], method='spearman'):+.2f}"
+    )
+    hardest = undercut[undercut["swap_rate"] == undercut["swap_rate"].min()]
+    out["SwapLowestClosedMedian"] = f"{hardest['closed'].median():+.1f}"
+    out["SwapLowestDecisions"] = str(len(hardest))
 
     # --- the cross-source check --------------------------------------------
     slope = pd.read_csv(F1_DERIVED_DIR / "slope_bias_check.csv")

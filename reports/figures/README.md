@@ -30,7 +30,7 @@ turned up something the old version had been hiding.
 | `r1_transfer` | **complies** | Transfer is a property of the *model*, not the car. A GT3 car is not better than a prototype because its fitted slope predicts a held-out season; it means the slope is stable. Classes are distinguished by colour, which is what the rule asks. |
 | `r2_pit_loss_rule` | **complies, and this is worth arguing** | See below. |
 | `r3_audit_bias` | **broke the rule; fixed** | Four series on one axis is the allowed category — this is audit accuracy. But it pooled IMSA's three classes into one row, and the rule says the classes must be distinguished even there. Now split into seven class rows. |
-| `s1_neutralisation_regimes` | **complies** | Share of races seeing a Safety Car is a property of a championship's race control, not of any car. Nothing about performance. |
+| `s1_neutralisation_regimes` | **complies; corrected** | How often a championship neutralises is a property of its race control, not of any car, so nothing here is a performance comparison. It did have a different defect: it plotted the Safety Car column alone, which put IMSA at 0% next to a paper reporting 53% of IMSA first stops taken under caution. IMSA neutralises by Full Course Yellow, which the code computed and discarded. Both kinds are now plotted, like against like, with the Virtual Safety Car as Formula 1's equivalent of the FCY. |
 | `s2_pit_loss_spectrum` | **complies, same argument as r2** | See below. |
 | `s3_f1_degradation` | **complies** | Formula 1 only, per circuit and compound. Like with like throughout. |
 | `s4_track_position` | **complies** | Formula 1 only, per circuit. Same. |

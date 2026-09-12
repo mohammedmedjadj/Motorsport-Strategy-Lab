@@ -69,13 +69,24 @@ def _frame(ax: plt.Axes, xgrid: bool = True) -> None:
     ax.grid(axis="x" if xgrid else "y", alpha=0.25, linewidth=0.6)
 
 
-def _caption(ax: plt.Axes, text: str) -> None:
-    ax.text(0.0, 1.012, text, transform=ax.transAxes, fontsize=9,
+def _caption(ax: plt.Axes, text: str, y: float = 1.012) -> None:
+    """Subtitle under the title. Raise `y` to leave room for a legend below it."""
+    ax.text(0.0, y, text, transform=ax.transAxes, fontsize=9,
             color="#555555", va="bottom")
 
 
 def s1_neutralisation_regimes() -> str:
-    """Three series, three regimes, and no average that describes any of them."""
+    """Four championships, four neutralisation regimes, no average for any.
+
+    Two categories, because one is not enough to describe this. A Safety Car
+    bunches the field; a Full Course Yellow (a Virtual Safety Car in Formula 1)
+    imposes a speed limit without bunching it. They discount the cost of a pit
+    stop by very different amounts, and championships reach for them in very
+    different proportions -- IMSA never deployed a Safety Car in any scoped
+    race and neutralises constantly by the other route. An earlier version of
+    this figure plotted the Safety Car column alone, which put IMSA at zero and
+    contradicted every other statement in this project about IMSA cautions.
+    """
     # Reuse the project's own definition rather than re-deriving one. The first
     # version of this figure asked "did any row carry an SF flag", which fires
     # when a single car shows it on a single lap -- and disagreed with five
@@ -96,37 +107,58 @@ def s1_neutralisation_regimes() -> str:
     endurance = pd.DataFrame(rows)
 
     sc_model = pd.read_csv(F1_DERIVED_DIR / "sc_model.csv")
-    f1_editions = int(sc_model["n_editions"].sum())
-    f1_sc = int(sc_model["sc_races_with_event"].sum())
-
-    bars = [("F1", f1_sc, f1_editions)]
+    bars = [(
+        "Formula 1",
+        int(sc_model["sc_races_with_event"].sum()),
+        int(sc_model["vsc_races_with_event"].sum()),
+        int(sc_model["n_editions"].sum()),
+    )]
     for series, group in endurance.groupby("series"):
-        bars.append((series, int(group["safety_car"].sum()), len(group)))
-    bars.sort(key=lambda b: b[1] / b[2])
+        bars.append((
+            str(series),
+            int(group["safety_car"].sum()),
+            int(group["full_course_yellow"].sum()),
+            len(group),
+        ))
+    # Order by how much of the race calendar is neutralised at all, so the
+    # spread the text talks about reads top to bottom.
+    bars.sort(key=lambda b: max(b[1], b[2]) / b[3])
 
-    fig, ax = plt.subplots(figsize=(9.5, 4.6))
-    labels = [b[0] for b in bars]
-    shares = [100 * b[1] / b[2] for b in bars]
-    colours = ["#2b2d42" if label == "F1" else "#00798c" for label in labels]
-    ax.barh(labels, shares, color=colours, height=0.55, zorder=3)
-    for position, (label, hits, total) in enumerate(bars):
-        share = 100 * hits / total
-        ax.annotate(f"  {hits} of {total} races  ({share:.0f}%)",
-                    (share, position), va="center", fontsize=10, color=INK)
+    categories = [
+        (1, "Safety Car — field bunched", "#2b2d42"),
+        (2, "FCY / VSC — speed limit, no bunching", "#00798c"),
+    ]
 
-    ax.set_xlim(0, 100)
-    ax.set_xlabel("share of races seeing at least one Safety Car (%)")
-    ax.set_title("Three neutralisation regimes, and no average describes any",
-                 fontsize=13, pad=16, loc="left")
-    _caption(ax, "a pooled model would sit between these and be wrong "
-                 "everywhere — every stop taken under caution is discounted "
-                 "by this rate")
+    fig, ax = plt.subplots(figsize=(10, 5.4))
+    height = 0.34
+    for index, (column, label, colour) in enumerate(categories):
+        positions = [row + (0.5 - index) * height for row in range(len(bars))]
+        shares = [100 * bar[column] / bar[3] for bar in bars]
+        ax.barh(positions, shares, height=height * 0.88, color=colour,
+                label=label, zorder=3)
+        for position, (bar, share) in enumerate(zip(bars, shares)):
+            ax.annotate(f"  {bar[column]} of {bar[3]}  ({share:.0f}%)",
+                        (share, positions[position]), va="center",
+                        fontsize=9, color=INK)
+
+    ax.set_yticks(range(len(bars)))
+    ax.set_yticklabels([bar[0] for bar in bars], fontsize=10.5)
+    ax.set_ylim(-0.6, len(bars) - 0.4)
+    ax.set_xlim(0, 118)
+    ax.set_xlabel("share of races seeing at least one of that kind (%)")
+    ax.set_title("Four championships, four neutralisation regimes",
+                 fontsize=13, pad=72, loc="left")
+    _caption(ax, "a pooled model would sit between these and describe none of "
+                 "them\nevery stop taken under caution is discounted at the "
+                 "rate of its own championship", y=1.10)
+    ax.legend(frameon=False, fontsize=9, ncol=2, loc="lower left",
+              bbox_to_anchor=(0.0, 1.005), borderaxespad=0.0)
     _frame(ax)
     path = FIGURES / "s1_neutralisation_regimes.png"
     fig.tight_layout()
     fig.savefig(path, dpi=170)
     plt.close(fig)
-    return f"{path}  ({len(bars)} series)"
+    return f"{path}  ({len(bars)} championships, 2 neutralisation kinds)"
 
 
 def s2_pit_loss_spectrum() -> str:
@@ -379,17 +411,45 @@ def s5_baselines() -> str:
     ax.set_ylim(-0.6, len(units) - 0.4)
     ax.set_xlabel("median |Δ| laps against the real stop  →  further from practice")
     ax.set_title("A rule of thumb beats the exact optimiser in most classes",
-                 fontsize=13, pad=30, loc="left")
+                 fontsize=13, pad=76, loc="left")
     _caption(ax, f"{len(scored):,} decisions, same artifacts, same metric.\n"
                  "B3 is undefined in Formula 1, which has not refuelled since "
-                 "2010, and is reported as undefined rather than substituted.")
-    ax.legend(frameon=False, fontsize=9, ncol=4, loc="lower right")
+                 "2010, and is reported as undefined, not substituted.",
+             y=1.10)
+    # Above the axes, in the space the title pad already reserves. Inside the
+    # axes it sat on top of the shortest class's bars.
+    ax.legend(frameon=False, fontsize=9, ncol=4, loc="lower left",
+              bbox_to_anchor=(0.0, 1.005), borderaxespad=0.0)
     _frame(ax)
     path = FIGURES / "s5_baselines.png"
     fig.tight_layout()
     fig.savefig(path, dpi=170)
     plt.close(fig)
     return f"{path}  ({len(scored)} decisions across {len(units)} classes)"
+
+
+#: The artifact stores terse keys. A figure is read by people who have not
+#: opened the CSV, and "LORO" is not a word.
+_INTERVAL_LABELS = {
+    "GT3 mean LORO R2": "GT3 classes,\nmean leave-one-race-out R\u00b2",
+    "prototype mean LORO R2": "Prototype classes,\nmean leave-one-race-out R\u00b2",
+    "GT3 minus prototype": "GT3 minus prototype",
+    "pit loss vs tyre-limited share (r)": "Median pit loss against\ntyre-limited share",
+}
+
+
+#: Plural forms. Naive pluralisation gives "race within classs".
+_UNIT_PLURALS = {
+    "circuit-class": "circuit-classes",
+    "race within class": "races, within class",
+}
+
+
+def _interval_label(row) -> str:
+    """Row label plus what was resampled, which is the figure's whole point."""
+    name = _INTERVAL_LABELS.get(str(row.result), str(row.result))
+    unit = _UNIT_PLURALS.get(str(row.unit), str(row.unit))
+    return f"{name}\n{row.n:,} {unit} resampled"
 
 
 def s6_intervals() -> str:
@@ -439,7 +499,9 @@ def s6_intervals() -> str:
             )
         ax.axvline(0, color="#444444", linewidth=1.1, zorder=2)
         ax.set_yticks(range(len(frame)))
-        ax.set_yticklabels(frame["result"], fontsize=9.5)
+        ax.set_yticklabels(
+            [_interval_label(row) for row in frame.itertuples()], fontsize=9.5
+        )
         ax.set_ylim(-0.7, len(frame) - 0.3)
         ax.set_xlim(*limits)
         ax.set_title(heading, fontsize=10.5, loc="left", color=MUTED, pad=6)

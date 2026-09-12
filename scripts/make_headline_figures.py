@@ -84,7 +84,7 @@ def r1_transfer() -> str:
     for car_class, group in mean.groupby("car_class"):
         ax.scatter(
             group["r2_within"], group.index,
-            s=46, alpha=0.9, label=car_class,
+            s=46, alpha=0.9, label=class_name(str(car_class)),
             color=CLASS_COLOURS.get(str(car_class), "#888888"),
             edgecolor="white", linewidth=0.6, zorder=3,
         )
@@ -95,7 +95,7 @@ def r1_transfer() -> str:
     for row in mean.itertuples():
         if row.r2_within > 0.2:
             ax.annotate(
-                f"  {row.event} {row.car_class}",
+                f"  {row.event} {class_name(str(row.car_class))}",
                 (row.r2_within, row.Index), fontsize=8.5,
                 va="center", color="#222222",
             )
@@ -110,30 +110,33 @@ def r1_transfer() -> str:
     ax.set_xlim(floor, mean["r2_within"].max() + 0.30)
     if not off_scale.empty:
         named = ", ".join(
-            f"{row.event} {row.car_class} {row.r2_within:+.2f}"
+            f"{row.event} {class_name(str(row.car_class))} {row.r2_within:+.2f}"
             for row in off_scale.itertuples()
         )
-        ax.annotate(
-            f"off scale, worse: {named}",
-            (floor, 0), fontsize=8.5, color="#8a4b52",
-            xytext=(8, 2), textcoords="offset points", va="bottom",
-        )
+        # Under the axis, not inside it. At the floor it printed on top of
+        # the worst point still in view, which is the one a reader most wants
+        # to see.
+        fig.text(0.012, 0.012,
+                 f"off scale, worse than the axis shows: {named}",
+                 fontsize=8.5, color="#8a4b52")
 
     ax.set_yticks([])
-    ax.set_xlabel("leave-one-race-out mean within-stint R2   ->   transfers better")
+    ax.set_xlabel(
+        "leave-one-race-out mean within-stint R\u00b2   \u2192   transfers better"
+    )
     ax.set_title(
         "A degradation slope transfers by circuit-class, not by championship",
-        fontsize=13, pad=16, loc="left",
+        fontsize=13, pad=24, loc="left",
     )
     clear = int((mean["r2_within"] > 0.2).sum())
     ax.text(
         0.0, 1.01,
-        f"{len(mean)} circuit-classes across IMSA, WEC and ELMS - only {clear} "
-        "clear R2 = 0.2 - one protocol, applied identically everywhere",
+        f"{len(mean)} circuit-classes across IMSA, WEC and ELMS \u2014 only {clear} "
+        "clear a within-stint R\u00b2 of 0.2 \u2014 one protocol, applied identically everywhere",
         transform=ax.transAxes, fontsize=9, color="#555555", va="bottom",
     )
     ax.legend(frameon=False, fontsize=9, loc="lower right", title="class",
-              title_fontsize=9)
+              title_fontsize=9, bbox_to_anchor=(0.985, 0.02))
     _style(ax)
 
     path = FIGURES / "r1_transfer.png"
@@ -158,23 +161,44 @@ def r2_pit_loss_rule() -> str:
     fig, (left, right) = plt.subplots(1, 2, figsize=(12.5, 5.6))
 
     # Left: the class-level rule, which is the headline.
-    for row in by_class.itertuples():
+    #
+    # Two classes sit at zero within a few seconds of each other, and their
+    # labels overprinted. Walk left to right and drop a label below its marker
+    # whenever the one before it was close enough to collide.
+    span = by_class["pit_loss"].max() - by_class["pit_loss"].min()
+    placed: list[tuple[float, float, int]] = []
+    for row in by_class.sort_values("pit_loss").itertuples():
         left.scatter(
             row.pit_loss, row.share, s=40 + row.n * 3.2,
             color=CLASS_COLOURS.get(str(row.car_class), "#888888"),
             alpha=0.9, edgecolor="white", linewidth=1.0, zorder=3,
         )
-        left.annotate(
-            f"{row.series.upper()} {row.car_class}",
-            (row.pit_loss, row.share), fontsize=8.5,
-            xytext=(7, 6), textcoords="offset points", color="#333333",
+        collides = any(
+            abs(row.pit_loss - x) < 0.22 * span
+            and abs(row.share - y) < 2.0
+            and offset > 0
+            for x, y, offset in placed
         )
+        offset = -14 if collides else 6
+        left.annotate(
+            f"{row.series.upper()} {class_name(str(row.car_class))}",
+            (row.pit_loss, row.share), fontsize=8.5,
+            xytext=(7, offset), textcoords="offset points", color="#333333",
+        )
+        placed.append((row.pit_loss, row.share, offset))
+
+    # Labels sit to the right of their markers, so the rightmost one needs
+    # room or it prints into the frame.
+    left.set_xlim(by_class["pit_loss"].min() - 0.06 * span,
+                  by_class["pit_loss"].max() + 0.42 * span)
+    left.set_ylim(-2.5, by_class["share"].max() + 3.0)
+
     correlation = by_class["pit_loss"].corr(by_class["share"])
     left.set_xlabel("median pit loss (s)")
     left.set_ylabel("share of race-seasons that are tyre-limited (%)")
     left.set_title(
         f"Per class: r = {correlation:+.3f}, monotonic, no inversion",
-        fontsize=11, loc="left", pad=12,
+        fontsize=11, loc="left", pad=26,
     )
     left.text(0.0, 1.02, "marker area proportional to race-seasons in the class",
               transform=left.transAxes, fontsize=8.5, color="#666666")
@@ -203,7 +227,7 @@ def r2_pit_loss_rule() -> str:
     right.set_xlabel("pit loss (s), log scale")
     right.set_ylabel("net degradation slope (s/lap)")
     right.set_title(f"Every race-season ({len(plans)}): the edge is hard",
-                    fontsize=11, loc="left", pad=12)
+                    fontsize=11, loc="left", pad=26)
     right.legend(frameon=False, fontsize=9, loc="upper right")
     _style(right)
     right.grid(axis="y", alpha=0.25, linewidth=0.6)
@@ -310,6 +334,14 @@ def main() -> int:
     FIGURES.mkdir(parents=True, exist_ok=True)
     for build in (r1_transfer, r2_pit_loss_rule, r3_audit_bias):
         print("wrote", build())
+    # The website serves its own copy under docs/, and a copy nothing
+    # refreshes is the stale-duplicate problem this project has had before.
+    # Running this script alone used to leave the site showing the previous
+    # figures; the only thing that noticed was a site test failing minutes
+    # later without saying which script had skipped the step.
+    from make_supporting_figures import sync_site_figures  # noqa: PLC0415
+
+    print("synced", sync_site_figures())
     return 0
 
 

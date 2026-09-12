@@ -61,7 +61,7 @@ on the same decisions beat it in \NClassesRuleWins{} of
 
 We report the third result as measured and unexplained. Two estimators built for
 this work were validated on synthetic data and then withdrawn when they failed
-on real fields; those withdrawals are described rather than omitted.
+on real fields, and both withdrawals are written up here.
 \end{abstract}
 
 \section{Introduction}
@@ -143,31 +143,191 @@ the three results that come back are negative.
 
 \section{Data and protocol}
 
+\subsection{Sources and scope}
+
 Formula~1 lap timing, tyre compound and per-lap track status come from the
-FastF1 API, covering \NCircuitsFone{} circuits. WEC, IMSA and ELMS timing comes
-from a community-maintained endurance dataset which carries lap times, stint
-structure and flag state but \emph{not} tyre compound; the endurance models are
-therefore net-slope models rather than per-compound ones, and this asymmetry is
-stated wherever the two are compared.
+FastF1 API. WEC, IMSA and ELMS timing comes from a community-maintained
+endurance dataset carrying lap times, stint structure and flag state but
+\emph{not} tyre compound. The endurance degradation models are therefore
+net-slope models where the Formula~1 one is per compound, and that asymmetry is
+restated wherever the two are compared. Table~\ref{tab:scope} gives the scope.
 
-The degradation model is a fixed-effects regression of lap time on tyre age
-within stints, with driver-race fixed effects absorbing pace differences, and a
-lap term acting as a fuel-burn proxy where refuelling is prohibited. Standard
-errors are cluster-robust with a $t(G-1)$ reference distribution
-\citep{cameron2015}, clustering on the driver-race. For Formula~1 this yields
-\NCoefficientsFone{} coefficients across \NCircuitsFone{} circuits and three dry
-compounds.
+\begin{table}[htbp]
+\centering
+\caption{Scope. A race-season is one class at one circuit in one season, which
+is the unit everything here is fitted and reported on.}
+\label{tab:scope}
+\begin{tabular}{lrrrrl}
+\toprule
+& Classes & Circuits & Race-seasons & Replayed decisions & Seasons \\
+\midrule
+Formula~1 & 1 & \NCircuitsFone{} & \NRacesFone{} & \NDecisionsFone{} & \SeasonsFone{} \\
+IMSA      & \NClassesImsa{} & \NCircuitsImsa{} & \NRacesImsa{} & \NDecisionsImsa{} & \SeasonsImsa{} \\
+ELMS      & \NClassesElms{} & \NCircuitsElms{} & \NRacesElms{} & \NDecisionsElms{} & \SeasonsElms{} \\
+WEC       & \NClassesWec{} & \NCircuitsWec{} & \NRacesWec{} & \NDecisionsWec{} & \SeasonsWec{} \\
+\bottomrule
+\end{tabular}
+\end{table}
 
-Transfer is measured by leave-one-race-out: fit on every season of a
-circuit-class but one, predict the held-out season, and score the within-stint
-demeaned residual. Demeaning within stint is what makes the score a test of the
-\emph{shape} of degradation rather than of pace, which fixed effects have
-already absorbed.
+Nothing is imputed. Where a source lacks a quantity the affected layer is not
+fitted, and the gap goes on the record as a gap.
 
-Nothing is imputed. Where a source lacks a quantity, that is recorded as a
-limitation and the affected layer is not fitted.
+\subsection{Degradation}
+
+For driver--race $i$ and lap $\ell$ within stint $s$, with tyre age $a$ and
+compound $c$,
+%
+\begin{equation}
+y_{i\ell} \;=\; \alpha_i \;+\; \phi\,\ell \;+\; \sum_{k=1}^{d}\beta_{c,k}\,a_{i\ell}^{\,k} \;+\; \varepsilon_{i\ell},
+\label{eq:degradation}
+\end{equation}
+%
+where $y$ is lap time, $\alpha_i$ is a driver--race fixed effect absorbing car
+pace, driver pace and track conditions, and $\phi\ell$ is a fuel-burn proxy that
+is identified only where refuelling is prohibited. In endurance, where cars
+refuel, $\ell$ is replaced by laps since the last refuelling stop and the
+compound index drops out, leaving a single net slope $\beta_1$.
+
+Equation~\ref{eq:degradation} is estimated by ordinary least squares through
+a Moore--Penrose pseudoinverse,
+which handles the rank-deficient cases --- a driver--race seen on one compound
+only. The polynomial degree $d \in \{1,2\}$ is chosen per circuit by
+leave-one-race-out cross-validation.
+
+Standard errors are cluster-robust (CR1) on the driver--race and referred to
+$t(G-1)$ rather than the normal \citep{cameron2015}. The clustering is not
+decorative: lap-to-lap errors within one driver's race are strongly dependent,
+and a coverage simulation on synthetic races with realistic between-unit slope
+variation puts the classical 95\% interval at roughly 75\% coverage against 95\%
+for the robust one.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.82\textwidth]{../reports/figures/s3_f1_degradation.png}
+\caption{The fitted object itself: linear tyre-degradation coefficients for
+Formula~1, by circuit and compound, with cluster-robust intervals.
+\NCoefficientsFone{} coefficients across \NCircuitsFone{} circuits. Points
+outside the plotted range are clipped and then named under the axis, because a
+handful of extremes otherwise compresses every other circuit into a tenth of
+the width. Dropping them silently would be the same defect as any other
+silent narrowing here.}
+\label{fig:degradation}
+\end{figure}
+
+Figure~\ref{fig:degradation} is worth reading before the results, because two
+features of it constrain everything after. \NCoefCrossingZero{} of the
+\NCoefficientsFone{} fitted slopes, \PctCoefCrossingZero{}\%, have a
+cluster-robust interval containing zero: on those circuit--compound pairs we
+cannot distinguish tyre degradation from none. And within a circuit,
+\PctCompoundOverlap{}\% of compound pairs have overlapping intervals, so the
+compound distinction the Formula~1 model carries is largely unresolved by the
+data behind it. Both are reported, and neither is screened out. A slope that
+cannot
+be distinguished from flat is still the measurement we have, and dropping the
+ones that disappoint is how a transfer result gets manufactured.
+Section~\ref{sec:threats} returns to what this costs.
+
+\subsection{Transfer}
+
+Fit on every season of a circuit-class but one, predict the held-out season, and
+score the within-stint demeaned residual:
+%
+\begin{equation}
+R^{2}_{\text{within}} \;=\; 1 - \frac{\sum_{s}\sum_{\ell \in s}\bigl(\tilde{y}_{\ell} - \tilde{\hat{y}}_{\ell}\bigr)^{2}}{\sum_{s}\sum_{\ell \in s}\tilde{y}_{\ell}^{\,2}},
+\qquad
+\tilde{x}_{\ell} = x_{\ell} - \overline{x}_{s}.
+\label{eq:transfer}
+\end{equation}
+%
+The demeaning in Equation~\ref{eq:transfer} is what makes this a test of the
+\emph{shape} of
+degradation rather than of pace. A driver--race intercept fitted on training
+data cannot be observed on a held-out race, so comparing raw lap times would
+leak information through $\alpha_i$.
+
+\subsection{The multi-stop dynamic program}
+
+For an endurance race of $L$ laps with green pace $p$, net slope $\beta$, pit
+loss $\pi$ and fuel range $F$, a plan is a partition of $L$ into stints
+$(n_1,\dots,n_{m+1})$ with $m$ stops. Total time under the fitted model is
+%
+\begin{equation}
+T(n_1,\dots,n_{m+1}) \;=\; m\pi \;+\; \sum_{j}\left(n_j p + \beta\,\frac{n_j(n_j+1)}{2}\right),
+\label{eq:dp}
+\end{equation}
+%
+subject to $n_j \le F$ for every stint. The triangular sum is the accumulated
+tyre loss over a stint of $n_j$ laps. We use it exactly, not as the
+$\beta n_j^{2}/2$ integral --- they differ by $\beta n_j / 2$, which is about a
+second over a forty-lap stint and is the only quantity the stop decision
+compares against $\pi$.
+
+Because $T$ in Equation~\ref{eq:dp} is separable across stints given $m$, the minimum over plans is a
+one-dimensional dynamic program in remaining laps, solved exactly for each $m$
+from the fuel minimum $\lceil L/F \rceil - 1$ upward. A race is called
+\emph{tyre-limited} when the time-optimal $m$ exceeds that fuel minimum.
+
+\subsection{The Monte Carlo engine and the decision audit}
+
+The single-next-stop engine evaluates every candidate pit lap over
+\NDraws{} shared realisations. Each draw resamples the degradation and fuel
+coefficients from their cluster-robust posteriors ($t(G-1)$ scaled by the
+estimated standard errors), the neutralisation hazard from its Gamma posterior,
+and lap noise at the cross-validated residual scale. Candidates share the same
+draws, so a comparison between two pit laps carries no unrelated sampling
+noise. Plans leaving fewer than \MinFinalStint{} laps after the stop are
+excluded.
+
+The audit replays real decisions; it does not forecast them. For every race
+with a fitted model, the top \NFinishers{} classified finishers in Formula~1
+(\NCars{} cars in endurance) who made at least one stop are replayed at their
+\emph{first} stop. The model is asked \LookbackFone{} laps before that stop in
+Formula~1 and \LookbackEnd{} in endurance, given the state as it was, and its
+recommended lap is compared to the team's. Stops earlier than lap
+\MinFirstStopFone{} (\MinFirstStopEnd{} in endurance) are excluded as incidents
+rather than strategy. Rivals keep their real, historically observed plans: the
+decision under study is one car's, the rest of the world is as it happened.
+
+This is what makes the comparison possible and also what stops it being a
+prediction claim. The decision point is defined relative to a stop that already
+happened.
+
+\subsection{The three baselines}
+
+Scored on the same decisions, from the same artifacts, on absolute lap error
+against the team's stop.
+
+\textbf{B1, fixed interval.} Divide the race into equal stints:
+$\ell^{\star} = \operatorname{round}\!\left(kL/(m+1)\right)$ for the $k$th of
+$m$ stops. Uses no fitted quantity at all.
+
+\textbf{B2, threshold.} Stop on the first lap at which the stint's accumulated
+tyre loss exceeds the pit loss,
+%
+\begin{equation}
+\beta\,\frac{a(a+1)}{2} \;>\; \pi,
+\qquad\text{firing at}\qquad
+a^{\star} = \frac{-1 + \sqrt{1 + 8\pi/\beta}}{2}.
+\label{eq:threshold}
+\end{equation}
+%
+Equation~\ref{eq:threshold} uses the fitted slope and the measured pit loss,
+and nothing else --- no fuel
+term, no neutralisation hazard, no distribution over outcomes. The gap between
+B2 and the full engine is precisely what the Monte Carlo buys.
+
+\textbf{B3, fuel deadline.} Run the tank out. Undefined in Formula~1, where
+refuelling has been prohibited since 2010, and reported as undefined rather than
+substituted with the race end.
+
+Where a rule cannot fire --- B2 on a tyre that never accumulates enough loss
+before the flag --- no lap is returned and that decision is not scored for that
+rule. Coverage is reported alongside every error, because a rule answering a
+fifth of the decisions and landing close on those has not beaten one that
+answers all of them.
 
 \section{Result 1: transfer is a property of the circuit-class}
+\label{sec:transfer}
 
 \begin{figure}[htbp]
 \centering
@@ -195,8 +355,8 @@ would roughly quadruple the apparent sample.
 The obvious explanation for instability is heterogeneous, performance-balanced
 machinery. We can rule it out. ELMS LMP2 is a near-specification class --- one
 chassis, one engine, no Balance of Performance --- and its slopes fail to
-transfer exactly as the balanced GT3 fields do. \textbf{The instability is not
-the hardware.} Where transfer does occur it tracks short circuits with cheap
+transfer exactly as the balanced GT3 fields do. The instability is not the
+hardware. Where transfer does occur it tracks short circuits with cheap
 stops, which is the same axis Result~2 turns on.
 
 \section{Result 2: the cost of the stop sets the strategy regime}
@@ -210,7 +370,8 @@ race-season, with the empirical edge marked.}
 \label{fig:pitloss}
 \end{figure}
 
-An exact dynamic program plans each endurance race under a hard fuel constraint
+Figure~\ref{fig:pitloss} plots the rule. An exact dynamic program plans each
+endurance race under a hard fuel constraint
 and reports whether the tyre-optimal plan requires more stops than the fuel
 minimum. Across \NRaceSeasons{} race-seasons, \NTyreLimited{} are tyre-limited.
 
@@ -233,6 +394,37 @@ on the boundary of its own support, so the bootstrap distribution is degenerate
 above it and understates uncertainty below. Quote the rule; treat the number as
 an order of magnitude.
 
+\section{Inference}
+
+Each interval above is a percentile bootstrap resampled at the level its data
+varies at, and those levels differ: circuit-classes for the transfer
+comparison, races for the pit-loss correlation. The choice is not cosmetic.
+Resampling transfer folds instead of circuit-classes would treat
+\NCircuitClasses{} clusters as roughly four times that many independent
+observations, and the interval would narrow for no reason connected to the
+data. Figure~\ref{fig:intervals} collects every result that carries one.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.92\textwidth]{../reports/figures/s6_intervals.png}
+\caption{Every result carrying a bootstrap interval. The two panels are
+separate because a within-stint $R^2$ difference and a correlation are not
+measured on the same scale, and a forest plot works by letting the reader
+compare bar lengths. An earlier single-axis version made the correlation's long
+bar read as the strongest result when it is a different measurement. The
+cheap-stop edge is absent by design: it is a maximum, and a leave-one-out
+sensitivity is reported for it instead of an interval it cannot support.}
+\label{fig:intervals}
+\end{figure}
+
+The audit's central finding carries no interval, and that is deliberate rather
+than an omission. It is a median over decisions that are not independent:
+several drivers in one race share a track, a Safety Car and one tyre
+allocation. A bootstrap over decisions would understate its width, in the
+direction that flatters the result, and a bootstrap over races needs a
+clustering the audit table does not carry. Saying so is more useful than
+publishing an interval known to be too narrow.
+
 \section{Result 3: an exact optimiser stops later than teams do}
 
 \begin{figure}[htbp]
@@ -243,19 +435,44 @@ quartiles; the cloud behind it is the sample.}
 \label{fig:audit}
 \end{figure}
 
-Every real first stop with a fitted model is replayed. The model is asked five
+Figure~\ref{fig:audit} shows the whole distribution. Every real first stop
+with a fitted model is replayed. The model is asked five
 laps before the stop, given the state as it was, and its recommended lap
 compared to the team's. This is a replay, not a forecast: the decision point is
 defined relative to a stop that already happened, which is what makes the
 comparison possible and also what stops it being a prediction claim.
 
 In Formula~1 the optimiser stops later on \FoneLateShare{}\% of decisions, by a
-median of \FoneLateMedian{} laps. In endurance the gap tracks the caution rate:
+median of \FoneLateMedian{} laps on those; over every decision, late or not, the
+median is \FoneMedian{} laps. The endurance figures below are medians over every
+decision, so \FoneMedian{} is the comparable one. In endurance the gap tracks the caution rate:
 WEC \WecMedian{} laps at \WecCautionShare{}\% of first stops taken under
 caution, ELMS \ElmsMedian{} at \ElmsCautionShare{}\%, IMSA \ImsaMedian{} at
 \ImsaCautionShare{}\%.
 
-\subsection{Two explanations, both tested, both failed}
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.9\textwidth]{../reports/figures/s1_neutralisation_regimes.png}
+\caption{How often each championship neutralises a race, split by kind. A
+Safety Car bunches the field; a Full Course Yellow --- a Virtual Safety Car in
+Formula~1 --- imposes a field-wide speed limit without bunching it, and the two
+discount the cost of a stop by very different amounts. IMSA deployed no Safety
+Car in any scoped race and neutralises almost every race by the other route, so
+a figure showing only the first column would put IMSA at zero and contradict
+its caution share above. The unit is the race, not the car: the flag is the
+modal per-lap flag across the field, never one car's timing row. Classes are
+not separated because every class in a race shares the same neutralisation.}
+\label{fig:neutralisation}
+\end{figure}
+
+Figure~\ref{fig:neutralisation} gives the neutralisation rates behind that
+ladder. A stop taken under caution costs a fraction of a green-flag stop, so a
+championship that neutralises often gives teams a reason to stop early that the
+optimiser, which prices the stop at its green-flag cost, does not see. That
+ordering is consistent with the gap, and it is not a test of it: three
+championships is three points, and we do not fit a line through them.
+
+\subsection{Testing the two candidate explanations}
 
 We proposed two mechanisms and then attacked them.
 
@@ -266,26 +483,68 @@ cover-aware Stackelberg engine consuming each circuit's measured overtaking
 difficulty moves the recommendation \emph{away} from the real stop, not toward
 it. \textbf{Rejected.}
 
+Across the calendar the cover-aware recommendation lands a median of
+\UndercutClosedMedian{} lap further from the real stop than the single-car one,
+and only \UndercutShareImproving{}\% of decisions improve at all. Two things
+are worth saying about that before it is read as a clean refutation.
+
+The first is that the covariate is thinner than its headline suggests.
+Figure~\ref{fig:trackposition} shows a \TrackPositionRange{}-fold range across
+\NCircuitsSwap{} circuits, which sounds decisive and is carried by its two
+ends. \SwapLowestCircuit{} sits at \SwapLowest{} swaps per lap, a factor of
+\SwapRunnerUpRatio{} below the next circuit, with a spread across its
+\SwapLowestRaces{} races of only \SwapLowestSd{} --- the one entry that is
+genuinely separated. The top of the range rests on \SwapHighestRaces{} races at
+a circuit first run in 2023 and is the noisiest row in the table. In between,
+the standard deviation across circuits (\SwapBetweenSd{}) is about the same as
+the median standard deviation across races within a circuit
+(\SwapWithinSd{}), so the twenty circuits in the middle are not separable from
+one another on this measure.
+
+The second is that the mechanism is not uniformly wrong. At
+\SwapLowestCircuit{}, where overtaking is hardest and the covariate resolves
+cleanly, the cover-aware engine does move toward the real stop, by a median of
+\SwapLowestClosedMedian{} laps over \SwapLowestDecisions{} decisions, and the
+rank correlation between swap rate and improvement is \UndercutSpearman{}
+across the calendar. Both point the way the mechanism predicts. Neither is
+remotely large enough: half a lap against a median discrepancy of
+\FoneMedian{} laps is the right sign at the wrong order of magnitude.
+Track position is doing something. It is not doing this.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.78\textwidth]{../reports/figures/s4_track_position.png}
+\caption{Adjacent-car swap rate per lap, by circuit. This is the primitive the
+cover-aware engine consumes, shown so that the rejection above can be read
+against the spread of the input, and not assumed to come from a flat one.}
+\label{fig:trackposition}
+\end{figure}
+
 \textbf{Slopes biased toward durability.} A tyre that looks flatter than it is
 makes staying out look cheaper. Measured against an independent source that
 separates tyre wear from fuel burn by a different method on different data, the
 median paired difference is negligible --- an error of that size moves a stop by
 several race distances, not by ten laps. \textbf{Not detected.} We note that
-comparing the two \emph{medians} rather than the median of paired differences
+comparing the two \emph{medians} instead of the median of paired differences
 produces a small apparent bias that is an artefact of comparing summaries rather
 than pairs; an earlier version of this work nearly reported it.
 
-\subsection{Three baselines, and the optimiser loses to them}
+\subsection{Comparison against three baselines}
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.92\textwidth]{../reports/figures/s5_baselines.png}
-\caption{Median absolute lap error against the real stop, per championship.}
+\caption{Median absolute lap error against the real stop, one row per
+class rather than per championship. IMSA's three classes run the same rounds
+under pit losses of \ImsaGtpPitLoss{}, \ImsaGtdPitLoss{} and
+\ImsaGtdproPitLoss{} seconds, so B3 --- run the tank out --- means a different
+thing in each and one IMSA row would describe none of them.}
 \label{fig:baselines}
 \end{figure}
 
 Three rules were scored on \NScored{} of the same decisions, from the same
-artifacts, on the same metric (Table~\ref{tab:baselines}). B1 divides the race
+artifacts, on the same metric (Figure~\ref{fig:baselines} and
+Table~\ref{tab:baselines}). B1 divides the race
 into equal stints and uses no fitted quantity at all. B2 stops once the tyre's
 accumulated loss exceeds the pit loss, using the fitted slope and the measured
 pit loss and nothing else. B3 runs the fuel load out, and is undefined in
@@ -321,9 +580,11 @@ ELMS LMP2 Pro/Am & \ElmsLmptwoProAmModelError{} & \textbf{\ElmsLmptwoProAmBoneEr
 
 A rule of thumb sits closer to practice than the exact optimiser in
 \NClassesRuleWins{} of \NClassesScored{} classes, ties it in
-\NClassesRuleTies{} and loses in \NClassesOptimiserWins{}. In four of those
-classes the rule that wins is B1, which uses no fitted quantity whatsoever ---
-only the race length and the number of stops the tank forces.
+\NClassesRuleTies{} and loses in \NClassesOptimiserWins{}. In
+\NClassesBoneWins{} of those classes the winning rule is B1, which uses no
+fitted quantity whatsoever --- only the race length and the number of stops
+the tank forces. In the two it does not win, it ties the optimiser rather
+than losing to it.
 
 Two things this does not establish. \emph{Closer to what teams did} is not
 \emph{better}: every number here scores agreement with practice, never which
@@ -332,6 +593,7 @@ explanation for it, since the gap cannot come from the simpler methods lacking
 information the optimiser has. They have less, and land nearer.
 
 \section{Threats to validity}
+\label{sec:threats}
 
 \paragraph{Two withdrawn estimators.} A piecewise race-time basis intended to
 absorb track evolution was validated on synthetic races and then withdrawn twice
@@ -349,6 +611,36 @@ two-compound rule the engine does not represent. We cannot rule out that the
 disagreement is an artefact of asking a question no team is answering. Testing
 that means constraining the candidate set to what was actually available, which
 changes the audit rather than the model.
+
+\paragraph{A fifth of the fitted slopes are not resolved.} Of the
+\NCoefficientsFone{} Formula~1 degradation coefficients,
+\NCoefCrossingZero{} have a cluster-robust interval containing zero, and
+\PctCompoundOverlap{}\% of compound pairs within a circuit have intervals that
+overlap each other. Every one of them is carried forward regardless. Screening
+on the resolved ones would select on the dependent variable --- circuit-classes
+with tight slopes are exactly the ones likeliest to transfer --- and the
+transfer result would then be partly an artefact of the screen. The cost is
+that the weak transfer reported in Section~\ref{sec:transfer} is a mixture of
+genuine instability and of parameters the data never pinned down, and this work
+does not separate the two.
+
+\paragraph{Three constants rest on very little.} The cheap-stop edge of
+\CheapStopEdge{}\,s is a maximum set by one race; drop it and the edge falls to
+\EdgeWithoutDefining{}\,s, \EdgeDropPct{}\%. The second-best transfer score,
+\ThinTransfer{} at \ThinTransferWhere{}, is a mean over \ThinTransferFolds{}
+folds running from \ThinTransferLow{} to \ThinTransferHigh{} --- a spread of
+\ThinTransferSpread{}, wider than most circuit-classes' entire score, and it
+should not be read beside \BestTransferWhere{}'s \BestTransfer{}, which
+averages \BestTransferFolds{} folds spanning \BestTransferSpread{}. Same
+circuit, same protocol, an order of magnitude more stable --- which is itself
+worth knowing, since it says the instability is not a property of the circuit
+alone. And the top of
+the track-position range rests on \SwapHighestRaces{} races at a circuit first
+run in 2023. The rules these support are not thin --- \NAboveEdge{}
+race-seasons sit above the edge with \NTyreLimitedAboveEdge{} tyre-limited
+among them --- but the constants are, and they are quoted here as orders of
+magnitude. A full accounting is generated into
+\texttt{reports/cross\_series/thin\_evidence.md}.
 
 \paragraph{Compound is unavailable in endurance.} The endurance degradation
 models are net-slope models. Comparisons between the Formula~1 per-compound

@@ -28,6 +28,15 @@ installed: every macro used must be defined, no bare number may appear in a
 claim, every included figure must exist, every citation must resolve, and no
 bibliography entry may go uncited.
 
+`tests/test_paper_compiles_structurally.py` covers a different gap. There is no
+TeX distribution on the machine this was written on, so the manuscript has
+never been compiled here — Overleaf will be the first thing to try it. That
+test catches the mechanical reasons a compile fails or a PDF comes out wrong:
+an environment opened and not closed, a `\ref` to a label that does not exist,
+a label defined twice, a label nothing points at, odd `$` delimiters, and a
+figure path that does not resolve from `paper/`. It does not prove the document
+compiles, and nothing here does. Compile it before sending it anywhere.
+
 ## Building it
 
 There is no LaTeX toolchain in this repository. Compile on
@@ -59,14 +68,18 @@ the actual publication record.** Two anchors:
   differences as not statistically distinct, which independently echoes the
   instability this paper measures at scale.
 
-Further work exists that is relevant and **not yet cited because it is not yet
-verified**: discrete-event race simulation in *JORS*, a dynamic-programming
-treatment in *Central European Journal of Operations Research* 31(1):239–268,
-learning-based and multi-agent strategy formulations on arXiv, and explainable
-tyre-energy prediction from team-internal telemetry (ACM SAC 2025,
-arXiv:2501.04067). Each needs its authors and venue confirmed against the
-publication record before it goes into the bibliography. A citation to a paper
-that does not exist as described would do more damage than the missing citation.
+That verification has since been done for the rest. Twelve papers were checked
+against Crossref or the arXiv API — title, authors, venue, volume, pages, DOI —
+and the ones the argument actually needs are now cited: Bekker and Lotz's
+discrete-event simulation, Heilmeier's three papers, Carrasco Heine and
+Thraves's dynamic program, van Kampen on endurance stint and energy planning,
+and the 2025 learning-based wave. The full catalogue, with what each paper does
+that this work does not and the reverse, is in
+[`../reports/cross_series/related_work.md`](../reports/cross_series/related_work.md).
+
+The rule has not changed: nothing enters the bibliography on memory. A citation
+to a paper that does not exist as described would do more damage than a missing
+one, and it is the single easiest thing for a reviewer to catch.
 
 ## Publication route
 
