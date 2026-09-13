@@ -166,8 +166,9 @@ Detail on any of it: [`docs/full-readme.md`](docs/full-readme.md).
 ## Data and licence
 
 Formula 1 timing from [FastF1](https://github.com/theOehrly/Fast-F1). Endurance
-timing from [`tobil/imsa`](https://huggingface.co/datasets/tobil/imsa) on
-Hugging Face, which is MIT. Weather from Open-Meteo. Two further layers read a
+timing from [`tobil/imsa`](https://huggingface.co/datasets/tobil/imsa), MIT,
+curated by the IMSA Data Scraper Project from IMSA WeatherTech official
+results. Weather from Open-Meteo. Two further layers read a
 Kaggle export this repository does not redistribute and whose licence is not
 yet recorded, described in
 [`data/external/README.md`](data/external/README.md).

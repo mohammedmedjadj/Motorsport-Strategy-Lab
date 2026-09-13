@@ -4,12 +4,17 @@ This repository redistributes data derived from sources that are not its own.
 `LICENSE` covers this project's code, models and derived output; it cannot and
 does not relicense anything below.
 
-The point of this file is the MIT permission notice. MIT grants redistribution
-freely and asks one thing in return: *"The above copyright notice and this
-permission notice shall be included in all copies or substantial portions of
-the Software."* Naming the licence is attribution; reproducing the notice is the
-condition. This repository, the Zenodo deposit and the Kaggle dataset all carry
-substantial derived portions of an MIT-licensed source, so all three need it.
+MIT grants redistribution freely and asks one thing in return: *"The above
+copyright notice and this permission notice shall be included in all copies or
+substantial portions of the Software."* Naming the licence is attribution;
+reproducing the notice is the condition.
+
+The largest source here is MIT and ships no notice to reproduce — checked, and
+recorded below rather than assumed. So what this file actually carries is the
+attribution that remains: who made what, where it came from before that, and
+which link in each chain the licence covers. This repository, the Zenodo
+deposit and the Kaggle dataset all redistribute the same derived files, so all
+three point at it.
 
 ---
 
@@ -17,36 +22,61 @@ substantial derived portions of an MIT-licensed source, so all three need it.
 
 **Licence: MIT.** Confirmed against the Hugging Face API: `cardData.license` is
 `mit` and the repository carries the `license:mit` tag. MIT permits
-redistribution, including of modified versions, provided the notice below
-travels with it.
+redistribution, including of modified versions.
 
-- Source: `hf://datasets/tobil/imsa/imsa.duckdb`, maintained by "tobil"
+- Source: `hf://datasets/tobil/imsa/imsa.duckdb`, published on Hugging Face by
+  `tobil` and curated by the IMSA Data Scraper Project
 - Read by: [`src/data/endurance_loader.py`](src/data/endurance_loader.py)
 - What this repository redistributes from it: the per-lap and per-race tables
   under `data/derived/imsa/`, `data/derived/wec/` and `data/derived/elms/` —
   reshaped, joined to weather, and annotated with stint and tyre-age columns
   this project computes, but carrying the upstream lap and sector times
   throughout. That is about 97 MB, roughly four fifths of `data/derived/` by
-  volume, which is why the notice matters rather than being a formality.
+  volume, which is why the attribution below is load-bearing rather than a
+  courtesy.
 
-### The notice itself is not yet reproduced here
+### There is no notice to reproduce, and that was checked
 
-> **Paste the upstream `LICENSE` verbatim in this block.** It is deliberately
-> empty. MIT's copyright line names a holder and a year, and neither the
-> `license: mit` tag nor the API field carries that text — they record which
-> licence applies, not the notice it obliges you to reproduce. A copyright line
-> written from memory attributes someone's work to the wrong name or year,
-> which is worse than the gap it fills.
->
-> Open the dataset's file listing on Hugging Face and look for `LICENSE`:
->
-> - **If it is there**, copy it in full into this block. That discharges the
->   condition for the repository. Then add the same text to the Kaggle
->   dataset's description and to the Zenodo deposit, which carry the same data.
-> - **If there is no `LICENSE` file**, say so here instead. A dataset tagged
->   MIT with no notice shipped has no notice to reproduce, and recording that
->   you checked is the honest end state. Attribution by name and link, which
->   this file already gives, is then what there is.
+Verified on 13 September 2026. The dataset holds five files —
+`.gitattributes`, `README.md`, `drivers.csv`, `imsa.duckdb` and `laps.csv` —
+and **no `LICENSE`**. Its README carries no copyright line, no named holder and
+no year.
+
+So MIT's reproduction condition has nothing to attach to here. A dataset tagged
+MIT that ships no notice leaves attribution by name and link as what there is,
+and that is what this file gives. This paragraph is the record that the check
+happened, so the next person does not have to repeat it or guess.
+
+### Who to attribute, and to what
+
+The dataset's own README is more specific than "a community-maintained
+dataset", which is how this project described it for months:
+
+| | |
+|---|---|
+| Curated by | IMSA Data Scraper Project |
+| Source code | <https://github.com/tobi/imsa_data> |
+| Upstream data | IMSA WeatherTech official results, <https://imsa.results.alkamelcloud.com/Results/> |
+
+The chain is therefore **IMSA / Alkamel → the scraper → Hugging Face → here**,
+and it matters that MIT sits at only one link of it. The MIT tag covers the
+scraper project's own work. Whether it reaches the underlying timing data,
+which originates with IMSA's results service and not with the scraper, is a
+question this file does not answer and should not pretend to. Recorded as the
+chain, not as a conclusion.
+
+Note also the handles. The Hugging Face account is **`tobil`** and the GitHub
+one is **`tobi`**, without the `l`. `hf://datasets/tobil/imsa/imsa.duckdb` in
+`src/data/endurance_loader.py` is correct as written, and "correcting" it to
+`tobi` breaks every endurance load.
+
+### What the upstream asks that this file should carry
+
+The dataset's README lists, under *Out-of-Scope Use*, commercial use without
+proper attribution to IMSA and to the data sources. This project is
+non-commercial and attributes both, so nothing here conflicts with it. It is
+recorded because a reader taking this project's derived output onward inherits
+that expectation, and they will not find it by reading `LICENSE`.
 
 ### This project's own licence does not reach it
 
