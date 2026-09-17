@@ -36,10 +36,9 @@ message goes out improvised.
 is a detail that must be verified first, and the ones referring to someone's own
 work are the whole reason the message gets a reply.
 
-**Do not cite a paper you have not opened.** This was written when five
-candidate references sat in planning notes with none of them verified. The
-twelve now in `related_work.md` have each been checked against Crossref or the
-arXiv API, so Variant A can cite from that file. The rule itself does not
+**No citation to a paper that has not been opened.** The twelve papers in
+`related_work.md` have each been checked against Crossref or the arXiv API,
+so Variant A can cite from that file. The rule itself does not
 expire: anything not in that file has not been checked, and a citation to a
 paper that does not exist as described would do more damage than a missing one.
 

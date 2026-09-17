@@ -1,9 +1,8 @@
 """What a LaTeX compiler would reject, checked without a LaTeX compiler.
 
-No TeX distribution is installed on the machine this project is developed on,
-so `paper/main.tex` has never been run through pdfLaTeX here. Overleaf is the
-first thing that will compile it, and by then the author is reading an error
-log instead of a paper.
+No TeX distribution is installed on the machine I develop this on, so
+`paper/main.tex` is compiled on Overleaf rather than here, and an error found
+there is found late: an error log where a paper should be.
 
 These tests do not prove the document compiles. They cover the failure modes
 that are both common and mechanical: an environment opened and not closed, a

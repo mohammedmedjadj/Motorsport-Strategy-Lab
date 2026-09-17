@@ -183,7 +183,7 @@ def test_no_report_sits_at_the_root_of_reports() -> None:
     """Every report belongs to a series, a class, or the cross-series set.
 
     ``reports/`` holds one file — its own README, the map. Anything else at
-    that level is a document with no stated owner, which is how the layout got
+    that level is a document with no stated home, which is how the layout got
     hard to read in the first place: eight cross-series documents sat beside
     four series directories with nothing saying which was which.
 
@@ -196,12 +196,10 @@ def test_no_report_sits_at_the_root_of_reports() -> None:
     stray = sorted(
         path.name
         for path in (REPO / "reports").glob("*.md")
-        # PROVENANCE.md is about the repository as a whole -- who decided
-        # what -- so it has no series or class to live under.
-        if path.name not in {"README.md", "PROVENANCE.md"}
+        if path.name != "README.md"
     )
     assert not stray, (
-        f"reports/ should hold only README.md and PROVENANCE.md; found {stray}. Either move the "
+        f"reports/ should hold only README.md; found {stray}. Either move the "
         "document into the series, class or cross_series directory it belongs "
         "to, or fix the generator that wrote it there."
     )

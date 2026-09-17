@@ -1,6 +1,6 @@
 """Run the Phase 3 SC/VSC probability modelling.
 
-Extends the event-history window to 2018-2025 (validated with Mohammed):
+Extends the event-history window to 2018-2025, deliberately:
 SC causes are dominated by circuit geometry, which is far more stable
 across seasons than car/tyre behaviour. Editions that were not held
 (COVID cancellations) or fail to load are listed explicitly in the report

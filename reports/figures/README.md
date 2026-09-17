@@ -8,7 +8,8 @@ a sentence that does, and it is harder to notice.
 
 ## The comparison rule
 
-Set by the project owner, and it is methodological rather than cosmetic:
+It is a methodological rule, not a cosmetic one, and every figure here is
+held to it:
 
 > Do not compare series or classes against each other on **performance**.
 > Compare like with like — GTP against GTP, GTD against GTD — and within that,
@@ -39,9 +40,9 @@ turned up something the old version had been hiding.
 
 ## Why the pit-loss figures stand
 
-The owner flagged `s2_pit_loss_spectrum` as the case to argue rather than
-obey, since it puts seven classes from four championships on one axis. The
-distinction holds, and here is the reasoning.
+`s2_pit_loss_spectrum` is the hard case, since it puts seven classes from
+four championships on one axis. I kept it, and here is why the rule allows
+it.
 
 Pit loss is **procedural**, not competitive. It measures how long a car is
 stationary and travelling at pit-lane speed — a function of the pit lane's

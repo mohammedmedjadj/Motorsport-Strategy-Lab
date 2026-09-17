@@ -1,7 +1,7 @@
 """The Phase 5 audit cases: five real decision moments, states rebuilt
 from data at runtime.
 
-Case selection rationale (validated with Mohammed at the Phase 5 gate):
+Case selection rationale, fixed at the Phase 5 review:
 
 - A/B: both sides of the Barcelona 2024 first-stop battle — the leader's
   covering stop that worked and the chaser's extended stint that did not.

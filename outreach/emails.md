@@ -3,15 +3,15 @@
 Short on purpose. A cold email that runs past twelve lines gets skimmed and
 archived; the one-pager and the questions do the work once someone replies.
 
-**Every `[…]` is a placeholder you must fill with something you have actually
-verified.** A cold email that gets a detail wrong about the recipient's own work
-is worse than no email. Do not send a variant with a placeholder still in it,
-and do not let me or anyone else write the specific detail for you — the whole
-value of that sentence is that it proves you read the thing.
+**Every `[…]` gets filled with something verified before sending.** A cold
+email that gets a detail wrong about the recipient's own work is worse than no
+email. No variant goes out with a placeholder still in it, and the specific
+detail about the recipient's paper is written from having read it — the whole
+value of that sentence is that it proves the reading happened.
 
 ---
 
-## Variant A — a researcher whose paper you have read
+## Variant A — a researcher whose paper I have read
 
 > **Subject:** Question on cross-championship transfer of tyre-degradation models
 >
@@ -94,13 +94,13 @@ value of that sentence is that it proves you read the thing.
 
 ---
 
-## Before you send anything
+## Before sending anything
 
 - [ ] Every `[…]` replaced with something verified.
 - [ ] `outreach/one_pager.md` exported to PDF and attached — do not paste it
       into the body.
 - [ ] The repository link works from a signed-out browser.
-- [ ] The paper you cite in Variant A: title, authors and venue checked against
+- [ ] The paper cited in Variant A: title, authors and venue checked against
       the actual publication, not from memory or from a summary.
 - [ ] Send one variant per person. Sending the same mail to a list is visible
       and it ends the conversation before it starts.

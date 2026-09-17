@@ -1,7 +1,7 @@
 """Replay every real first pit stop on the calendar through the simulator.
 
 The F1 decision audit was five races, chosen by hand for how much they had been
-argued about. That was the right shape for a Phase 5 gate on a four-circuit
+argued about. That was the right shape for a Phase 5 review on a four-circuit
 scope, and it stopped being enough the moment the scope reached twenty-six: the
 endurance side audits 209 races on a mechanical criterion, and F1 audited five
 on a narrative one. A model's agreement with real strategy at Barcelona 2024 is

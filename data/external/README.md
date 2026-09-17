@@ -1,12 +1,11 @@
 # External data — what does *not* come with the clone
 
 > **Scope.** This file is about two Kaggle exports and nothing else. It is
-> *not* about the endurance DuckDB (`hf://datasets/tobil/imsa`), which is MIT,
-> is confirmed as such, and is covered in
+> *not* about the endurance DuckDB (`hf://datasets/tobil/imsa`), which is MIT
+> and is covered in
 > [`../../THIRD_PARTY_NOTICES.md`](../../THIRD_PARTY_NOTICES.md). The two are
-> easy to conflate — both are third-party, both feed committed outputs — and
-> conflating them once already produced an attempt to mark the caveat below
-> resolved using a finding about the other source. The licences described here
+> easy to conflate — both are third-party, both feed committed outputs — but a
+> finding about one says nothing about the other. The licences described here
 > remain unrecorded.
 
 Three layers of this project read from `data/external/`, which is **gitignored**.
@@ -58,10 +57,10 @@ Identifying columns the code depends on: `lap_times` needs
 `BREADTH_CIRCUIT_ALIASES` in `src/ingestion/config.py` maps onto this project's
 circuit slugs.
 
-> **Fill in the exact dataset URL here once you have opened it and checked its
-> licence.** It is deliberately blank: the schema above identifies the dataset
+> **The exact dataset URL and its licence are recorded here once the dataset
+> has been opened and checked.** It is deliberately blank: the schema above identifies the dataset
 > unambiguously, and a link written from memory that turns out to point
-> somewhere else is worse than no link. Record the licence too — whether it
+> somewhere else is worse than no link. The licence matters as much — whether it
 > permits redistribution decides whether this whole file can be replaced by
 > committing the four files that matter.
 

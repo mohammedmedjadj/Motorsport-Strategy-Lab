@@ -8,8 +8,8 @@ regenerate the macros, and the manuscript is either correct or CI fails.
 
 It also creates one new failure mode, and it is a bad one: a macro used in the
 manuscript but never defined does not produce a wrong number, it produces a
-LaTeX error, and if the author is not the one compiling it that error surfaces
-at the worst possible moment. These guards run without LaTeX installed.
+LaTeX error, and if the manuscript is compiled somewhere else that error
+surfaces at the worst possible moment. These guards run without LaTeX installed.
 """
 
 from __future__ import annotations

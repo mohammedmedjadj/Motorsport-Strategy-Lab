@@ -2,8 +2,8 @@
 of ``src/audit/cases.py``, replaying real stop-timing decisions through
 ``src.simulator.endurance.simulate`` instead of the F1 engine.
 
-Case selection rationale (the endurance equivalent of the note validated with
-Mohammed at the F1 Phase 5 gate): F1's five cases draw on public, well-known
+Case selection rationale (the endurance equivalent of the F1 note fixed at the
+Phase 5 review): F1's five cases draw on public, well-known
 strategy narratives — Verstappen's Barcelona cover, Sainz's Singapore SC stop
 — that make "was this a good decision" a question with an independently known
 answer to check the model against. Neither WEC HYPERCAR nor IMSA GTP racing

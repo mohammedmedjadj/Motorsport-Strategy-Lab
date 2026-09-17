@@ -40,7 +40,7 @@ consequences we will carry into later phases:
    intervals), and we should consider extending the SC-history window to
    older seasons (SC causes are mostly circuit-geometry driven, less
    regulation-dependent than tyre behaviour). Decision deferred to Phase 3
-   scoping with Mohammed.
+   scoping.
 
 4. **Monaco 2023 was a mixed-conditions race** (INTERMEDIATE and WET
    compounds present). Wet-weather laps will be segregated in Phase 1;

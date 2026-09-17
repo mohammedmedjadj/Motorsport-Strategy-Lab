@@ -1,9 +1,8 @@
 """No invisible characters anywhere in the repository.
 
-There is no watermark in text written by an AI assistant — no hidden marker
-exists to find. But "trust me" is not evidence, and a reviewer who wondered
-would have no way to check without doing this themselves. So the repository
-checks itself, on every run.
+Zero-width and bidirectional characters are invisible in an editor and in a
+rendered page, and a reviewer has no way to see them without scanning for
+them. So the repository scans itself, on every run.
 
 What this catches is real regardless of where the text came from. Zero-width
 characters and bidirectional overrides get into files through copied web pages,

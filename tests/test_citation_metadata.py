@@ -6,9 +6,9 @@ a footer, an email or a paper footnote pointing at the version DOI still works
 after v1.1.0 ships -- it just quietly sends every reader to a superseded
 archive, and nothing fails to tell anyone.
 
-So the rule the project owner set is enforced here rather than only written
-down: a general pointer to the project uses the concept DOI, and the version DOI
-appears only where a formal citation of one release belongs.
+So the rule is enforced here rather than only written down: a general
+pointer to the project uses the concept DOI, and the version DOI appears only
+where a formal citation of one release belongs.
 """
 
 from __future__ import annotations

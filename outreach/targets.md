@@ -1,11 +1,9 @@
 # Who to contact
 
-**No names are listed here on purpose.** I can describe categories and how to
-identify the right person in each, but I will not invent an individual's name,
-role or email — a cold email addressed to someone who does not hold the job you
-think they hold is worse than sending nothing, and it is the one error in this
-whole plan that cannot be undone. Fill this in yourself from sources you can
-see, and write the verified name straight into the table.
+**No names are listed until they are verified.** A cold email addressed to
+someone who does not hold the job I think they hold is worse than sending
+nothing, and it is the one error in this whole plan that cannot be undone. A
+name goes into the table only once I have seen it on a source I can point to.
 
 | # | Category | Who exactly | Variant | Verified name | Sent | Reply |
 |---|---|---|---|---|---|---|
@@ -20,10 +18,11 @@ see, and write the verified name straight into the table.
 
 ---
 
-## Category 1 — authors of the papers you cite
+## Category 1 — authors of the papers I cite
 
-The highest-response category by a wide margin. You are asking someone a precise
-question about their own work, which is the one email academics reliably answer.
+The highest-response category by a wide margin. The email asks someone a
+precise question about their own work, which is the one email academics
+reliably answer.
 
 **The literature review is done.** Twelve papers, each verified against a real
 publication record, are in
@@ -61,8 +60,8 @@ Everyone above is reachable by the address on their paper.
 
 ## Category 2 — academics in sports analytics and operations research
 
-French universities are worth trying first: you can write in French, the
-geographic connection is real, and a student email from your own country gets
+French universities are worth trying first: I can write in French, the
+geographic connection is real, and a student email from the same country gets
 read. Look for research groups in operations research, decision science or
 sports analytics, and for anyone publishing on scheduling or stochastic
 optimisation who might find the audit interesting on methodological grounds even
@@ -94,8 +93,8 @@ to someone who gets a lot of student mail.
 
 1. **Categories 1 and 2 now.** The literature review is done and the paper's
    related-work section is written, so these are unblocked. A methods answer is
-   only useful before the methods are finalised, which is the position you are
-   in today.
+   only useful before the methods are finalised, which is where the project is
+   today.
 2. **Category 3, also now.** The Zenodo deposit this was waiting on is live at
    [10.5281/zenodo.22726130](https://doi.org/10.5281/zenodo.22726130), archived onward into Software
    Heritage and OpenAIRE. A link to a citable deposit changes how the message
@@ -106,7 +105,7 @@ to someone who gets a lot of student mail.
 - One variant per person, personalised. A visible mass mailing ends it.
 - One follow-up after two weeks, then stop.
 - Log every send and every reply in the table above. A record of ten serious
-  attempts with two replies is itself a real thing you did.
+  attempts with two replies is itself a real piece of work.
 - Never overstate what this is. "A secondary-school student who built this on
   public data and would like a methods opinion" is accurate, and it is a far
   better hook than any inflated title.
