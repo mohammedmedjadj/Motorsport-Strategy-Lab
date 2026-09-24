@@ -20,7 +20,7 @@ session load through FastF1 (laps + track status + weather, no telemetry).
 ## Observations from the verified data (Phase 0 findings)
 
 These are facts read directly from the table above, with modelling
-consequences we will carry into later phases:
+consequences that carry into later phases:
 
 1. **All 12 candidate sessions load with complete lap, compound, pit-stop,
    track-status and weather data.** The MVP scope (Monaco, Singapore,
@@ -37,7 +37,7 @@ consequences we will carry into later phases:
    this window (no SC in 2024 nor 2025). Consequence: with ~3 races per
    circuit, frequentist SC rates are nearly uninformative — the Phase 3 model
    must treat uncertainty explicitly (e.g. Beta-Binomial with credible
-   intervals), and we should consider extending the SC-history window to
+   intervals), and extending the SC-history window is worth considering to
    older seasons (SC causes are mostly circuit-geometry driven, less
    regulation-dependent than tyre behaviour). Decision deferred to Phase 3
    scoping.

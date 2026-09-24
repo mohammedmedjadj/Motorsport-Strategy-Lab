@@ -4,7 +4,7 @@ anywhere the timing source ships no weather).
 
 Open-Meteo's archive API is public and needs no key. Given a circuit's
 latitude/longitude and the race date, it returns hourly reanalysis weather, from
-which we derive a race-day summary and, above all, a **wet flag**: the single
+which a race-day summary is derived and, above all, a **wet flag**: the single
 most strategically important weather fact, because wet laps must not pollute a
 dry-tyre degradation fit. Nothing is invented — a circuit with no measured
 weather gets *real* reanalysis data, not an imputed constant.

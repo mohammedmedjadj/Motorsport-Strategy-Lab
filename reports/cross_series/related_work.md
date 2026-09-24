@@ -1,9 +1,17 @@
 # Related work
 
-Twelve papers, each checked against a real publication record rather than
+Sixteen papers, each checked against a real publication record rather than
 against memory — Crossref for the journal articles, the arXiv API for the
 preprints. Author lists, venues, volumes and DOIs below are what those records
 return.
+
+The first version of this table had eleven of its twelve entries in Formula 1,
+which is an odd shape for a review supporting a project whose whole claim is
+that it works across four championships. Rows 13–16 are a second pass aimed at
+endurance and GT, and the shape of what came back is itself a finding: endurance
+strategy research is almost entirely about *electric* endurance racing, where
+the binding constraint is charge rather than fuel, and one group at Eindhoven
+accounts for most of it. GT racing has essentially one paper.
 
 This matters more than it sounds. Earlier notes for this project carried five
 candidate references presented as established fact, and only two of them
@@ -23,9 +31,12 @@ Two things are rare across all of it.
 The first is **out-of-sample validation of the fitted parameters**. A tyre model
 gets fitted, and its fit quality is reported on the data it was fitted to. Very
 little of this literature asks whether a slope fitted on past races predicts a
-race it has not seen. Cappello and Hoegh come closest and say so explicitly:
-their evaluation is one race, and generalisation is named as future work with no
-empirical evidence offered.
+race it has not seen. Cappello and Hoegh do ask it, and are the only ones who
+do: their journal version holds out 19 race sessions of the 2025 season by
+rolling-origin cross-validation. What separates that from this project is the
+axis the held-out data varies along — one season, one driver, one championship,
+held out forward in time, against whole seasons of a circuit-class held out
+across four championships.
 
 The second is **comparison against what teams actually did**. Optimisers are
 compared to other optimisers, to baselines the authors construct, or to the
@@ -54,8 +65,13 @@ real decisions, and that two of its three results are negative.
 | 8 | **Todd, Jiang, Russo, Winkler, Sale, McMillan & Rago (2025)**, arXiv:2501.04067 | Deep learning and XGBoost on Mercedes-AMG PETRONAS team telemetry to forecast tyre energy, with feature-importance and counterfactual explanations. Uses data no public project can obtain. | Public timing only, which is a limitation on accuracy and an advantage on reproducibility — anybody can rerun this. And transfer across seasons, which telemetry-fitted models are not tested on here. |
 | 9 | **Thomas, Jiang, Kori, Russo, Winkler, Sale, McMillan, Belardinelli & Rago (2025)**, arXiv:2501.04068 | Reinforcement learning over compound choice and stop timing, with explainability, tested on the 2023 Bahrain Grand Prix and extendable to multiple tracks. | Learns nothing; fits and measures. The RL agent optimises inside a simulator, so its quality is bounded by parameters whose stability nobody has measured — which is exactly what this project measures. |
 | 10 | **Fieni, Wüthrich, Neumann, Moradi & Onder (2025)**, arXiv:2512.21570 | Mixed-integer program and an RL agent that jointly optimise energy deployment, tyre wear and pit timing, benchmarked against the optimum. Handles energy management this project ignores entirely. | Cross-championship scope and a confrontation with real decisions. Their benchmark is the optimal solution under their model; this one's benchmark is what happened. |
-| 11 | **Cappello & Hoegh (2025)**, arXiv:2512.00640 | Bayesian state-space tyre degradation from FastF1: lap time as fuel mass plus a latent tyre-pace state, pit stops as resets, skewed-t observations. Statistically more careful per race than the fixed-effects model here. | **Their evaluation is one race — Hamilton at the 2025 Austrian Grand Prix — and they state that generalising across races or circuits is future work with no evidence offered. That sentence is this project's entire premise.** They also find compound-specific degradation differences not statistically distinct, which independently echoes the instability found here at scale. |
+| 11 | **Cappello & Hoegh (2026)**, *Journal of Sports Analytics* 12. [10.1177/22150218261446170](https://doi.org/10.1177/22150218261446170) (preprint arXiv:2512.00640) | Bayesian state-space tyre degradation from FastF1: lap time as fuel mass plus a latent tyre-pace state, pit stops as resets, skewed-t observations. Statistically more careful per race than the fixed-effects model here, and **the only paper in this table that validates its tyre model out of sample** — 19 race sessions of the 2025 season, rolling-origin cross-validation, against an AR(1) benchmark. | The axis the held-out data varies along. Their 19 sessions are one season, one driver and one championship, held out forward in time; this project holds out a whole season of a circuit-class and asks whether a slope fitted on its other seasons predicts it, across 51 circuit-classes and four championships. Both are out-of-sample. Only one changes season, circuit and class. They also find compound-specific degradation differences not statistically distinct, which independently echoes the instability found here at scale. |
 | 12 | **Santillana (2026)**, arXiv:2607.06495 | A calibrated real-time Monte Carlo engine feeding trilingual natural-language strategy briefings, calibrated on 126 races (2018–2024), validated on held-out seasons and deployed live at two Grands Prix. Operationally far ahead of anything here. | Multi-championship transfer, and the audit. A live-deployed engine is validated on whether its briefings are faithful to its own model state, which is a different question from whether the model's parameters generalise. |
+
+| 13 | **Boettinger & Klotz (2023)**, arXiv:2306.16088 | The only study in this table on **GT racing rather than single-seaters**: a Nordschleife race simulation wrapped in an OpenAI Gym environment, with an RL agent learning stop timing from fuel mass and race position, validated on 2020 Nürburgring Langstrecken Serie data. | Transfer, and real decisions. Their policy is learned and evaluated inside their own simulator; nothing measures whether its inputs hold on a season it never saw. |
+| 14 | **van Kampen, Moriggi, Braghin & Salazar (2024)**, arXiv:2403.06885 | Model predictive control for electric endurance cars that prices a competitor's likely response probabilistically, over pit stops, charge duration and driving tactics. A 21 s gain over a fixed-overtake tactic in a simulated one-hour race at Zandvoort. | The same gap as the rest of this group: a control law validated in simulation, not a fitted parameter validated on a held-out season, and no confrontation with real decisions. |
+| 15 | **de Vries, van den Eshof, van Kampen & Salazar (2026)**, arXiv:2603.28286, accepted at IEEE ITSC 2026 | The closest existing work to this project's adversarial component, and it is endurance rather than F1: a bi-level framework pairing a multi-agent game-theoretic optimal control problem per lap with RL agents allocating energy and scheduling stops over a 45-lap race. Finds that exploiting aerodynamic interaction decides the race, and that position-seeking strategies differ fundamentally from minimum-time ones. | Real races. Their two agents are simulated; this project's rivals are the plans teams actually ran. Their finding that competitive play departs from the single-car optimum is, however, the nearest published thing to this project's own late-stop gap. |
+| 16 | **Fieni, Wüthrich, Neumann & Onder (2026)**, arXiv:2602.23056 | Extends row 10 to multi-agent self-play: an interaction module on top of a pre-trained single-agent policy, with agents ranked on relative performance and adapting pit timing, tyre choice and energy allocation to opponents. | Cross-championship scope and the audit. Self-play produces agents that beat each other; it does not say whether the tyre model underneath transfers to a season it was not fitted on. |
 
 ## Where this leaves the positioning
 

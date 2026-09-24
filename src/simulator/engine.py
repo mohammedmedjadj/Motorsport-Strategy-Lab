@@ -155,7 +155,7 @@ def _sample_smooth_qmc(
 ) -> tuple[np.ndarray, dict[str, tuple[np.ndarray, ...]], np.ndarray, dict[str, np.ndarray]]:
     """Sobol' (scrambled) draws of the whole *smooth* input subspace, mapped to
     their Normal marginals by inverse-CDF: the shared coefficients (fuel +
-    degradation) **and** every per-lap noise vector (our car + each rival).
+    degradation) **and** every per-lap noise vector (the subject car + each rival).
 
     These are exactly the dimensions on which QMC pays off — the integrand is
     linear/smooth in them. The status timeline (discrete SC/VSC jumps) and its
@@ -174,7 +174,7 @@ def _sample_smooth_qmc(
     engine = qmc.Sobol(d=d, scramble=True, seed=seed)
     with warnings.catch_warnings():
         # Non-power-of-2 sample sizes lose Sobol's balance guarantee but stay a
-        # valid RQMC point set; we accept arbitrary n_draws deliberately.
+        # valid RQMC point set; arbitrary n_draws is accepted deliberately.
         warnings.simplefilter("ignore")
         u = engine.random(n_draws)  # (n_draws, d) in (0, 1)
 

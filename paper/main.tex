@@ -106,12 +106,22 @@ time. \citet{carrasco2022} give an exact dynamic program over stop laps and
 compound choice, extended to a stochastic version, and \citet{aguad2024}
 formulate the problem as a zero-sum feedback Stackelberg game between two
 drivers, finding that a strategic competitor gains over 15\% in winning odds.
-Outside Formula~1, \citet{vankampen2022} solve endurance stint planning and
-powertrain operation jointly for an electric car under thermal limits. Recent
-work adds learning: \citet{thomas2025} apply explainable reinforcement learning
-to compound and stop timing, \citet{fieni2025} combine a mixed-integer program
-with an RL agent over energy, tyre wear and pit timing, and \citet{todd2025}
-forecast tyre energy from team-internal telemetry. \citet{santillana2026}
+Outside Formula~1 the same machinery has been built for endurance racing, and
+almost entirely for electric cars, where the binding constraint is charge rather
+than fuel. \citet{vankampen2022} solve endurance stint planning and powertrain
+operation jointly under thermal limits; \citet{vankampen2024} extend that to
+model predictive control that prices a competitor's likely response; and
+\citet{devries2026} pose the whole problem as a two-agent game, solving a
+game-theoretic optimal control problem per lap and training reinforcement
+learning agents to allocate energy and schedule stops over a race.
+\citet{boettinger2023} is the rare treatment of GT racing rather than
+single-seaters, simulating the Nordschleife and learning a stop policy from fuel
+mass and race position. Recent Formula~1 work adds learning: \citet{thomas2025}
+apply explainable reinforcement learning to compound and stop timing,
+\citet{fieni2025} combine a mixed-integer program with an RL agent over energy,
+tyre wear and pit timing, \citet{fieni2026} extend that to self-play among
+competing agents, and \citet{todd2025} forecast tyre energy from team-internal
+telemetry. \citet{santillana2026}
 deploys a calibrated real-time Monte Carlo engine live, generating
 natural-language briefings faithful to its own probabilistic state.
 
@@ -119,14 +129,21 @@ Two things are rare across all of it, and together they define what this paper
 adds.
 
 The first is out-of-sample validation of the fitted parameters. A tyre model is
-fitted and its quality reported on the data it was fitted to. \citet{cappello2025}
+fitted and its quality reported on the data it was fitted to. \citet{cappello2026}
 come closest, building a Bayesian state-space model of degradation from the same
 public timing source used here, with lap time as fuel mass plus a latent tyre
-state and pit stops as resets. Their evaluation is one race, and they state
-explicitly that generalising across races or circuits is future work for which
-they offer no empirical evidence. They also report compound-specific degradation
-differences as not statistically distinct --- an observation consistent with the
-instability we measure at scale.
+state and pit stops as resets. They also validate out of sample, and are the
+only work here that does: \citet{cappello2026} evaluate predictive robustness
+on 19 race sessions of the 2025 season, by rolling-origin
+cross-validation against an AR(1) benchmark. What separates that from this
+paper is the axis along which the held-out data varies. Their held-out sessions
+are one season, one driver and one
+championship, held out forward in time; the protocol here holds out a whole
+season of a circuit-class and asks whether the remaining seasons predict it,
+over \NCircuitClasses{} circuit-classes and four championships. Both are
+out-of-sample. Only one changes season, circuit and class at once. They also
+report compound-specific degradation differences as not statistically distinct
+--- an observation consistent with the instability we measure at scale.
 
 The second is comparison against what teams actually did. Optimisers get
 compared to other optimisers, to author-constructed baselines, or to the optimum
@@ -723,11 +740,18 @@ A.~Colin Cameron and Douglas~L. Miller.
 \newblock A practitioner's guide to cluster-robust inference.
 \newblock \emph{Journal of Human Resources}, 50(2):317--372, 2015.
 
-\bibitem[Cappello and Hoegh(2025)]{cappello2025}
+\bibitem[Cappello and Hoegh(2026)]{cappello2026}
 Cole Cappello and Andrew Hoegh.
 \newblock A state-space approach to modeling tire degradation in Formula 1
   racing.
-\newblock \emph{arXiv preprint arXiv:2512.00640}, 2025.
+\newblock \emph{Journal of Sports Analytics}, 12, 2026.
+\newblock \doi{10.1177/22150218261446170}.
+
+\bibitem[Boettinger and Klotz(2023)]{boettinger2023}
+Max Boettinger and David Klotz.
+\newblock Mastering Nordschleife --- a comprehensive race simulation for AI
+  strategy decision-making in motorsports.
+\newblock \emph{arXiv preprint arXiv:2306.16088}, 2023.
 
 \bibitem[Carrasco Heine and Thraves(2022)]{carrasco2022}
 Oscar~F. Carrasco Heine and Charles Thraves.
@@ -736,11 +760,23 @@ Oscar~F. Carrasco Heine and Charles Thraves.
   31(1):239--268, 2022.
 \newblock \doi{10.1007/s10100-022-00806-4}.
 
+\bibitem[de~Vries et~al.(2026)]{devries2026}
+Wytze de~Vries, Erik van~den Eshof, Jorn van~Kampen, and Mauro Salazar.
+\newblock Competitor-aware race management for electric endurance racing.
+\newblock \emph{arXiv preprint arXiv:2603.28286}, 2026.
+\newblock Accepted for presentation at IEEE ITSC 2026.
+
 \bibitem[Fieni et~al.(2025)]{fieni2025}
 Giona Fieni, Joschua W\"uthrich, Marc-Philippe Neumann, Mohammad~M. Moradi, and
   Christopher~H. Onder.
 \newblock Towards learning-based Formula 1 race strategies.
 \newblock \emph{arXiv preprint arXiv:2512.21570}, 2025.
+
+\bibitem[Fieni et~al.(2026)]{fieni2026}
+Giona Fieni, Joschua W\"uthrich, Marc-Philippe Neumann, and Christopher~H.
+  Onder.
+\newblock Learning-based multi-agent race strategies in Formula 1.
+\newblock \emph{arXiv preprint arXiv:2602.23056}, 2026.
 
 \bibitem[Heilmeier et~al.(2018)]{heilmeier2018}
 Alexander Heilmeier, Michael Graf, and Markus Lienkamp.
@@ -781,6 +817,12 @@ Jamie Todd, Junqi Jiang, Aaron Russo, Steffen Winkler, Stuart Sale, Joseph
 \newblock Explainable time series prediction of tyre energy in Formula One race
   strategy.
 \newblock \emph{arXiv preprint arXiv:2501.04067}, 2025.
+
+\bibitem[van Kampen et~al.(2024)]{vankampen2024}
+Jorn van Kampen, Mauro Moriggi, Francesco Braghin, and Mauro Salazar.
+\newblock Model predictive control strategies for electric endurance race
+  cars accounting for competitors interactions.
+\newblock \emph{arXiv preprint arXiv:2403.06885}, 2024.
 
 \bibitem[van Kampen et~al.(2022)]{vankampen2022}
 Jorn van Kampen, Thomas Herrmann, and Mauro Salazar.

@@ -20,7 +20,7 @@ import pytest
 
 from src.degradation.robust import cluster_robust_se, critical_value
 
-TRUE_SLOPE = 0.05  # s per lap of tyre age, the order of magnitude we fit
+TRUE_SLOPE = 0.05  # s per lap of tyre age, the order of magnitude fitted here
 
 
 def _panel(

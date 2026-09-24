@@ -20,7 +20,7 @@ and also what stops it being a prediction claim. The question it answers is
 "could it have called the race".
 
 Rivals keep their real, historically observed plans — the standard audit
-convention: the decision under study is ours, the rest of the world is as it
+convention: the decision under study is the subject car's, the rest of the world is as it
 was.
 """
 
@@ -113,7 +113,7 @@ def _rivals(
     A rival on a compound the model does not carry is dropped rather than
     guessed at. The degradation model is fitted on dry compounds only, so a
     rival running INTERMEDIATE in a wet race has no curve — and the engine
-    would raise on it. Dropping the rival keeps the replay honest: our own
+    would raise on it. Dropping the rival keeps the replay honest: the subject
     decision is still replayable, and the head-to-head probability against that
     particular car simply is not reported.
     """

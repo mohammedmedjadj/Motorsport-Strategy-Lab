@@ -81,7 +81,7 @@ def test_qmc_cuts_variance_on_a_smooth_integrand() -> None:
     noise subspace, so scrambled-Sobol QMC must estimate the per-candidate mean
     lap-time far more precisely than plain MC at the same draw count. (When real
     safety-car jumps dominate the variance this gain is masked — documented in
-    the Phase 4 report; here we isolate the regime where QMC provably helps.)"""
+    the Phase 4 report; this isolates the regime where QMC provably helps.)"""
     from dataclasses import replace
 
     from src.simulator.artifacts import HazardPosterior

@@ -11,7 +11,7 @@ The trap is lapping: a prototype and the GT it is lapping are nose-to-tail on
 the road while a lap apart on the count, so a cumulative-time *rank* is not the
 on-track order. The fix is to compare **start/finish crossing times**: a GT that
 crosses the line just before a prototype is right ahead of it on the road,
-whatever lap either is on. So for each prototype green, non-pit lap we count the
+whatever lap either is on. So for each prototype green, non-pit lap it counts the
 other-class cars that crossed the line in the ``window_s`` seconds before it —
 the traffic it is about to deal with — and measure how much slower that lap is
 than the prototype's own clean pace.

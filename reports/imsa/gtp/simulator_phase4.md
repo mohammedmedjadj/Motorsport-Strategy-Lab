@@ -98,7 +98,7 @@ IMSA GTP prototypes share the track with **four** slower classes (GTD, GTDPRO,
 LMP2, LMP3), so lapping traffic is relentless, and each car fought past costs
 time. On-track order across classes is recovered from start/finish crossing
 times (a slower car crossing the line just before a GTP is right ahead of it,
-whatever lap either is on), and for each GTP green lap we count the other-class
+whatever lap either is on), and for each GTP green lap it counts the other-class
 cars within 12 s ahead, then measure the pace lost versus the car's own clean
 median. Every in-scope season is now measured, so the figure is a **mean across
 seasons with its spread** (`endurance_traffic_cost.csv` per race,

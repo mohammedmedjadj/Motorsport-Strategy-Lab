@@ -1,4 +1,4 @@
-# Calibration — do our per-circuit neutralisation odds actually predict?
+# Calibration — do the per-circuit neutralisation odds actually predict?
 
 The strategy simulator prices every lap with a per-circuit probability of a
 Full Course Yellow or Safety Car. This report holds those numbers to the only

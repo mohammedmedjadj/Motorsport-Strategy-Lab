@@ -32,7 +32,7 @@ def event_matches_request(
     actual_location: str | None = None,
     circuit: str | None = None,
 ) -> bool:
-    """True iff FastF1's fuzzy matching returned the race we asked for.
+    """True iff FastF1's fuzzy matching returned the race that was requested.
 
     FastF1 silently fuzzy-matches event names, and when the requested event does
     not exist in a season it **returns an unrelated one with only a warning**.

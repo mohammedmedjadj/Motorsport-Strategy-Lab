@@ -5,7 +5,7 @@ The strategy layer's biggest missing piece of racecraft: how much is being
 If you emerge from the pits just ahead of a rival, do you keep the place, or
 does the circuit let them straight back past?
 
-We measure this directly, no assumptions: the **adjacent-pair swap rate** — the
+Measured directly, with no assumptions: the **adjacent-pair swap rate** — the
 fraction of nose-to-tail (rank-adjacent) car pairs whose on-track order flips
 between two consecutive green racing laps, averaged over the race. Restricting
 to cars that are *both* green-racing on both laps makes it immune to pit-cycle

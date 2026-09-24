@@ -262,7 +262,7 @@ def breadth_key(circuit: str) -> str:
 
 #: Every ``Location`` string FastF1 has reported for each circuit.
 #:
-#: This exists to make the "did FastF1 give us the race we asked for?" check
+#: This exists to make the "did FastF1 return the race that was requested?" check
 #: correct rather than merely strict. FastF1 fuzzy-matches event names and, when
 #: the requested event does not exist in a season, **returns an unrelated one
 #: with only a warning**: asking for the 2018 Miami Grand Prix returns the

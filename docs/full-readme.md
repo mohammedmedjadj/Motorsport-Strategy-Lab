@@ -45,7 +45,7 @@ There is a real literature here, going back at least to Bekker and Lotz in 2009
 and running through a decade of work from Heilmeier's group at TUM, dynamic
 programming treatments by Carrasco Heine and Thraves, a Stackelberg game
 formulation by Aguad and Thraves, and a recent wave of learning-based
-approaches. Twelve papers, verified against their publication records, are
+approaches. Sixteen papers, verified against their publication records, are
 catalogued in [`reports/cross_series/related_work.md`](reports/cross_series/related_work.md).
 
 Measured against that, the modelling here is not especially advanced. It is
@@ -57,12 +57,14 @@ Hoegh's state-space model.
 What the literature does not do is validate. Two gaps run through nearly all of
 it:
 
-1. **Nobody tests whether the fitted parameters transfer.** A degradation model
-   is fitted, and its quality is reported on the data it was fitted to. Cappello
-   and Hoegh come closest and say so plainly — their evaluation is one race, and
-   they name generalisation across races and circuits as future work with no
-   evidence offered. This project measures it on 51 circuit-classes under one
-   protocol, and the answer is that transfer is rare.
+1. **Almost nobody tests whether the fitted parameters transfer.** A
+   degradation model is fitted, and its quality is reported on the data it was
+   fitted to. Cappello and Hoegh are the exception: their journal version holds
+   out 19 race sessions of the 2025 season by rolling-origin cross-validation.
+   That is one season, one driver and one championship, held out forward in
+   time. This project holds out a whole season of a circuit-class and asks
+   whether the other seasons predict it, on 51 circuit-classes under one
+   protocol across four championships, and the answer is that transfer is rare.
 2. **Nobody confronts the optimiser with what teams actually did**, at scale.
    Optimisers get compared to other optimisers, or to the optimum under their
    own assumptions. Here, 1,280 real first stops are replayed on one criterion,
@@ -1435,7 +1437,7 @@ Motorsport-Strategy-Lab/
                         #   are the intervals); make_headline_figures.py +
                         #   make_supporting_figures.py + make_paper_numbers.py;
                         #   demo_extensions.py; generate_banner.py
-  tests/                # pytest, across four series and seven classes, 507
+  tests/                # pytest, across four series and seven classes, 511
                         #   tests -- incl. the demo, driven headlessly by
                         #   test_demo_app.py, and the report-staleness guards
                         #   that check prose still matches the artifacts

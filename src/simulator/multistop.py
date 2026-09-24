@@ -23,7 +23,7 @@ variance, not a bias*. The engine's green pace is the observed pace, so the
 average cost of lapping traffic is already baked into it; adding a positive
 per-lap tax would double-count. What the multi-class field measurement adds that
 green pace cannot is how much a race's traffic *varies* — the cross-season SD
-per circuit (`endurance_traffic_stability.csv`). We inject that as a zero-mean
+per circuit (`endurance_traffic_stability.csv`), injected as a zero-mean
 per-race random effect, widening the P10-P90 band at a traffic-volatile circuit
 (Spa, ±0.29 s/lap) more than a stable one (Fuji, ±0.05), without shifting the
 median. Because it is zero-mean and strategy-independent, it does not bias which

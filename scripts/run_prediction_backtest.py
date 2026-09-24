@@ -95,7 +95,7 @@ def _report(summary: pd.DataFrame) -> str:
                 f"| {r['brier']:.3f} | {r['brier_climatology']:.3f} | {r['skill']:+.3f} | {verdict} |")
 
     lines = [
-        "# Calibration — do our per-circuit neutralisation odds actually predict?",
+        "# Calibration — do the per-circuit neutralisation odds actually predict?",
         "",
         "The strategy simulator prices every lap with a per-circuit probability of a",
         "Full Course Yellow or Safety Car. This report holds those numbers to the only",

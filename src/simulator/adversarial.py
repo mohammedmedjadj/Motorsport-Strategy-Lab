@@ -8,7 +8,7 @@ and theirs on what you do. It is a game, and this module solves it.
 
 ## The construction (all on measured primitives, nothing fabricated)
 
-For a grid of ``(your pit lap, rival pit lap)`` pairs we run the Monte Carlo
+For a grid of ``(your pit lap, rival pit lap)`` pairs this runs the Monte Carlo
 engine head-to-head — both cars under the **same** resampled realisation
 (degradation and fuel coefficients, neutralisation timeline, common random
 numbers), each with its own lap noise — computing every car's time **lap by

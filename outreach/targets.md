@@ -24,7 +24,7 @@ The highest-response category by a wide margin. The email asks someone a
 precise question about their own work, which is the one email academics
 reliably answer.
 
-**The literature review is done.** Twelve papers, each verified against a real
+**The literature review is done.** Sixteen papers, each verified against a real
 publication record, are in
 [`../reports/cross_series/related_work.md`](../reports/cross_series/related_work.md),
 and thirteen entries are in the paper's bibliography. Nothing blocks these
@@ -32,12 +32,15 @@ emails any more.
 
 The four worth writing to first, and why:
 
-**Cole Cappello and Andrew Hoegh** (arXiv:2512.00640) are the closest to this
-work on both data and method — Bayesian state-space tyre degradation from
-FastF1. Their evaluation is one race and they say generalising across races is
-future work with no evidence offered. That sentence is your premise. Ask them
-question 1, on whether a cluster bootstrap resampling circuit-classes is the
-right test.
+**Cole Cappello and Andrew Hoegh** (*Journal of Sports Analytics* 12, 2026;
+preprint arXiv:2512.00640) are the closest to this work on both data and method
+— Bayesian state-space tyre degradation from FastF1. Cite the journal version,
+not the preprint: the preprint evaluates one race, the published paper holds out
+19 sessions of the 2025 season by rolling-origin cross-validation, and getting
+that wrong in the first paragraph would end the exchange. They are the only
+authors in the review who validate a tyre model out of sample, which makes them
+the right people to ask question 1 — whether a cluster bootstrap resampling
+circuit-classes is the right test.
 
 **Felipe Aguad and Charles Thraves** (EJOR 319(3):908–919) wrote the Stackelberg
 dynamic-programming treatment your adversarial component reuses. Thraves also

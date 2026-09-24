@@ -82,7 +82,7 @@ for season in range(2018, 2026):
 produces a dataset where some rows are the wrong circuit entirely, and nothing
 downstream can tell.
 
-Our own sweep is 2018–2025 across 26 circuits: **180 requested editions, of
+My own sweep is 2018–2025 across 26 circuits: **180 requested editions, of
 which 26 did not run that season — and all 26 came back as some other race.**
 That is 14% of the requests, and the substitutes are not a single fallback but
 ten different Grands Prix:
@@ -95,9 +95,9 @@ ten different Grands Prix:
 | Australian, German, Chinese, Russian, Spanish | 2 each |
 | Belgian, Turkish | 1 each |
 
-Every one of those would have entered the dataset as the circuit we asked for.
-We only know the count because we added a guard; before that, the same sweep
-reported a clean run.
+Every one of those would have entered the dataset as the circuit that was
+requested. The count is only knowable because of a guard added downstream;
+before that, the same sweep reported a clean run.
 
 ### What makes this hard to guard against downstream
 
@@ -108,7 +108,7 @@ City Grand Prix" from 2021; Brazil as the "Brazilian Grand Prix" then "São
 Paulo". A name check rejects those correct matches.
 
 The property that separates the two cases is the **location**: a rename keeps
-it, a substitution changes it. That is what we ended up checking, and it works —
+it, a substitution changes it. That is what I ended up checking, and it works —
 but it needs a per-circuit location table that every consumer has to build
 independently.
 
@@ -124,7 +124,7 @@ independently.
    caller can set its own threshold, rather than each rebuilding the check.
 
 Happy to open a PR for whichever of these fits the project's direction — (1) is
-the smallest and we have the test cases from our own guard.
+the smallest, and I have the test cases from the guard already written.
 
 ### Environment
 

@@ -169,7 +169,7 @@ def main() -> int:
         "# Track-position value (overtaking difficulty)",
         "",
         "How hard is it to overtake at each circuit, measured from real timing?",
-        "For every pair of consecutive green racing laps we take the cars that are",
+        "For every pair of consecutive green racing laps, take the cars that are",
         "green-racing on both (so pit-cycle position shuffling is excluded) and",
         "count the **rank-adjacent** pairs whose on-track order flips — the",
         "operational question *\"can the car right behind me get past\"*. This is",

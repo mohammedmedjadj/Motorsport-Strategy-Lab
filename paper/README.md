@@ -58,17 +58,23 @@ the actual publication record.** Two anchors:
 
 - **Aguad & Thraves (2024)**, *EJOR* 319(3):908–919 — the Stackelberg
   dynamic-programming treatment of the F1 pit stop. The closest existing work to
-  this project's adversarial component, and the framing we reuse rather than
+  this project's adversarial component, and the framing reused here rather than
   reinvent.
-- **Cappello & Hoegh (2025)**, arXiv:2512.00640 — Bayesian state-space tyre
-  degradation from FastF1. The closest work on data and method, and the one that
-  defines the gap: their evaluation is **a single race**, and they state
-  explicitly that generalising across races or circuits is future work with no
-  empirical evidence offered. They also report compound-specific degradation
-  differences as not statistically distinct, which independently echoes the
-  instability this paper measures at scale.
+- **Cappello & Hoegh (2026)**, *Journal of Sports Analytics* 12,
+  [10.1177/22150218261446170](https://doi.org/10.1177/22150218261446170) —
+  Bayesian state-space tyre degradation from FastF1, and the closest work on
+  both data and method. Cite the journal version. The arXiv preprint
+  (2512.00640) evaluates one race and names generalisation as future work; the
+  published paper holds out **19 race sessions of the 2025 season** by
+  rolling-origin cross-validation against an AR(1) benchmark. The gap this
+  project fills is therefore narrower and more precise than the preprint
+  suggested: their held-out data varies within one season, one driver and one
+  championship, while this protocol varies season, circuit and class. They also
+  report compound-specific degradation differences as not statistically
+  distinct, which independently echoes the instability this paper measures at
+  scale.
 
-That verification has since been done for the rest. Twelve papers were checked
+That verification has since been done for the rest. Sixteen papers were checked
 against Crossref or the arXiv API — title, authors, venue, volume, pages, DOI —
 and the ones the argument actually needs are now cited: Bekker and Lotz's
 discrete-event simulation, Heilmeier's three papers, Carrasco Heine and

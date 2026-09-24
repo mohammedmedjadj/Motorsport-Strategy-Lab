@@ -19,7 +19,7 @@ message goes out improvised.
    else. A maintainer's response on a public tracker is third-party validation
    that no amount of internal testing substitutes for, and the reproduction is
    already written.
-2. ~~Do the literature review.~~ **Done.** Twelve papers, each checked against
+2. ~~Do the literature review.~~ **Done.** Sixteen papers, each checked against
    Crossref or the arXiv API, are catalogued in
    [`../reports/cross_series/related_work.md`](../reports/cross_series/related_work.md)
    and the paper's related-work section is written from it. Variant A is
@@ -36,7 +36,7 @@ message goes out improvised.
 is a detail that must be verified first, and the ones referring to someone's own
 work are the whole reason the message gets a reply.
 
-**No citation to a paper that has not been opened.** The twelve papers in
+**No citation to a paper that has not been opened.** The sixteen papers in
 `related_work.md` have each been checked against Crossref or the arXiv API,
 so Variant A can cite from that file. The rule itself does not
 expire: anything not in that file has not been checked, and a citation to a

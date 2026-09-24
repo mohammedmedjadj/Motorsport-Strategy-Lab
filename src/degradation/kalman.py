@@ -12,7 +12,7 @@ This is a textbook local-linear-trend state-space model:
                                              slope = per-lap degradation (s/lap)
     x_{t+1} = F x_t + w,   F = [[1, 1],      (level advances by the slope each lap)
                                 [0, 1]]
-    z_t     = H x_t + v,   H = [1, 0]        (we observe the pace offset, noisily)
+    z_t     = H x_t + v,   H = [1, 0]        (the pace offset is observed, noisily)
 
 with process noise ``Q`` (mostly on the slope, letting it drift so the filter can
 track a changing degradation rate) and measurement noise ``R`` (the Phase 2

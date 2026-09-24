@@ -78,7 +78,7 @@ def leave_one_race_out_pit_loss_endurance(
 
         # trimmed, not raw: a genuine repair/driver-change stop in the
         # held-out season would otherwise dominate the squared error and
-        # measure "did we predict a rare outlier" rather than "did we
+        # measure "was a rare outlier predicted" rather than "was
         # predict the routine stop cost", which is what estimate_pit_loss
         # actually models everywhere else in this project.
         test_events = trimmed_pit_loss_events(test)

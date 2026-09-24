@@ -15,7 +15,7 @@ and virtual-safety-car (VSC) probability model on 2018-2025 history; and
 (3) a Monte Carlo simulator that propagates the uncertainty of both layers
 — coefficients resampled from their intervals, hazards from their
 posteriors — into full outcome distributions for every candidate pit lap.
-We then replay five real strategy decisions from the 2023-2024 seasons
+I then replay five real strategy decisions from the 2023-2024 seasons
 through the simulator and compare its recommendations with what the
 strategists actually did. The audit yields three findings: median race
 time alone mis-ranks real decisions (Verstappen's Barcelona 2024 covering
@@ -37,7 +37,7 @@ Public F1 data projects overwhelmingly stop at fitting a tyre-degradation
 curve or predicting a pit lap as a single number. Tyre-degradation
 notebooks built on FastF1 exist in large numbers, and professional
 strategy tools (teams' internal simulators, broadcast strategy graphics)
-solve a far richer version of this problem with private data. We do not
+solve a far richer version of this problem with private data. This does not
 claim novelty for any individual layer. The contribution of this project
 is the combination, on public data, of:
 
@@ -56,7 +56,7 @@ Aguad & Thraves (2024, *European Journal of Operational Research*) formulate
 pit-stop strategy as a zero-sum feedback Stackelberg game solved by dynamic
 programming — the race leader decides first, the follower reacts — and find
 that ignoring the opponent's reaction costs a driver roughly 15% of their
-win probability. Our own simulator carries a directly comparable
+win probability. This simulator carries a directly comparable
 reaction-aware component (`src/simulator/adversarial.py::duel`): a rival
 that observes the ego car's stop and chooses its own best-response cover or
 overcut, with `cost_of_ignoring_the_cover` quantifying the same kind of loss
@@ -151,7 +151,7 @@ proven on synthetic data with known slopes before touching real data.
 
 ### 3.2 SC/VSC probability (per circuit)
 
-From the `TrackStatus` change log we extract every SC/VSC/red-flag period
+From the `TrackStatus` change log the pipeline extracts every SC/VSC/red-flag period
 and map it to race laps via the leader's lap boundaries. Two quantities
 are estimated with Jeffreys priors and 95% equal-tailed credible
 intervals: P(≥1 event per race) (Beta-Binomial) and the per-green-lap

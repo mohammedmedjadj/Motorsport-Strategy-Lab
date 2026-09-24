@@ -50,7 +50,7 @@ def load_circuit_laps(circuit: str, seasons: tuple[int, ...] = SEASONS) -> pd.Da
     has been ingestible from GitHub's hosted runners, see the KNOWN ISSUE
     note in ``.github/workflows/post-race-refresh.yml``). Such seasons are
     skipped with a warning rather than raising, so this step degrades to
-    "the seasons we actually have" instead of crashing the moment the
+    "the seasons actually present" instead of crashing the moment the
     calendar rolls over. A season that is explicitly requested and still
     missing is exactly the kind of silent gap this project does not paper
     over elsewhere, hence the warning rather than a silent skip.

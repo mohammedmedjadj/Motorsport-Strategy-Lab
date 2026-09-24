@@ -10,7 +10,7 @@ Why this reduces to a clean 1-D problem. The cross-validation scores the
 *within-stint shape*: both actual and predicted lap times are demeaned per
 stint before scoring (see ``validation.py``). Within one stint tyre age and lap
 number advance together, so the demeaned OLS prediction collapses to a single
-slope in tyre age (fuel + degradation combined). We therefore fit the GP to the
+slope in tyre age (fuel + degradation combined). The GP is therefore fitted to the
 same demeaned quantity — lap-time deviation from the stint mean as a function of
 tyre age, per compound — and score it identically. Demeaning per stint in
 training also strips the per-stint fuel level, so what remains is the shared

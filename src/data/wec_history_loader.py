@@ -55,7 +55,7 @@ def _season_end_year(label: str) -> int:
     """Normalise the mixed ``season`` column to a single integer.
 
     The file carries both plain years (``2014``) and WEC "super-season" labels
-    that straddle a winter (``2018-2019``, ``2019-2020``). We key on the season's
+    that straddle a winter (``2018-2019``, ``2019-2020``). Keyed on the season's
     *ending* year, so a super-season sorts and groups with the calendar year it
     concludes in — the convention WEC itself uses for its championship.
     """

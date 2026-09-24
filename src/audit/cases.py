@@ -13,7 +13,7 @@ Case selection rationale, fixed at the Phase 5 review:
   model's blind spot instead of hiding it.
 
 Rivals follow their real, historically observed plans (standard audit
-convention: the decision under study is ours, the rest of the world is
+convention: the decision under study is the subject car's, the rest of the world is
 as it was).
 """
 

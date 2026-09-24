@@ -188,13 +188,21 @@ def main() -> int:
         "",
         "# Where the evidence is thin",
         "",
-        "A reviewer goes for the weakest number first. This finds them before "
-        "that happens, by walking the artifacts behind each headline claim and "
-        "counting what actually sits underneath.",
+        "This is the Limitations section, generated rather than written: it "
+        "walks the artifact behind every headline claim and counts what "
+        "actually sits underneath it.",
         "",
-        "None of this says a result is wrong. Some of these are perfectly "
-        "sound and the report says which. What it will not do is let a number "
-        "with three races behind it read the same as one with sixty.",
+        "Published numbers do not all rest on the same weight of evidence, and "
+        "nothing in a results table shows which is which. A correlation across "
+        "205 race-seasons and a threshold set by one race print identically. "
+        "The point of this report is to let a reader judge each number on its "
+        "own evidence instead of trusting all of them or discounting all of "
+        "them.",
+        "",
+        "So none of what follows says a result is wrong. Several of these "
+        "claims are well supported and the report says so where they are; what "
+        "it refuses to do is let a number with three races behind it read the "
+        "same as one with sixty.",
         "",
     ]
     for index, (heading, body) in enumerate(sections, 1):

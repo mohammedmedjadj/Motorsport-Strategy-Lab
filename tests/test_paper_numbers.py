@@ -52,7 +52,7 @@ def _used() -> set[str]:
 def test_every_macro_the_paper_uses_is_defined() -> None:
     """An undefined macro is a compile error, not a wrong number."""
     generated = _defined()
-    # Only macros that look like ours: our generator emits CamelCase names, and
+    # Only macros from this project: the generator emits CamelCase names, and
     # LaTeX's own commands are overwhelmingly lowercase.
     ours = {name for name in _used() if name[:1].isupper()}
     missing = sorted(ours - generated)
@@ -75,8 +75,28 @@ def test_the_paper_contains_no_bare_numbers_in_its_claims() -> None:
     if not MAIN.exists():
         pytest.skip("paper/main.tex not present")
     offenders = []
+    lines = MAIN.read_text(encoding="utf-8").splitlines()
+
+    # Attribution belongs to the sentence, not to the line it wrapped onto. A
+    # number credited to a cited paper is exempt, so the citation is looked for
+    # in the whole sentence the number sits in -- otherwise whether a figure
+    # passes depends on where the paragraph happens to break, and the fix is to
+    # reflow prose around a regex.
+    def sentence_around(index: int) -> str:
+        start = index
+        while start > 0 and lines[start - 1].strip():
+            start -= 1
+        end = index
+        while end + 1 < len(lines) and lines[end].strip():
+            end += 1
+        paragraph = " ".join(line.strip() for line in lines[start:end + 1])
+        pieces = re.split(r"(?<=[.;:])\s+", paragraph)
+        target = lines[index].strip()
+        return next((p for p in pieces if target[:40] and target[:40] in p),
+                    paragraph)
+
     inside_bibliography = False
-    for number, line in enumerate(MAIN.read_text(encoding="utf-8").splitlines(), 1):
+    for number, line in enumerate(lines, 1):
         stripped = line.strip()
         if stripped.startswith(r"\begin{thebibliography}"):
             inside_bibliography = True
@@ -87,7 +107,7 @@ def test_the_paper_contains_no_bare_numbers_in_its_claims() -> None:
         # A decimal, or a run of 2+ digits that is not a year. Two exemptions,
         # both narrow. A confidence level written "95\%" is a convention label
         # whose interval is already a macro, and a figure attributed to a cited
-        # paper is that paper's result rather than ours — forcing either into a
+        # paper is that paper's result rather than this project's — forcing either into a
         # generated macro would be theatre, not rigour.
         for match in re.finditer(r"(?<![\w\\])(\d+\.\d+|\d{2,})(?![\w])", stripped):
             value = match.group(1)
@@ -95,7 +115,8 @@ def test_the_paper_contains_no_bare_numbers_in_its_claims() -> None:
                 continue
             if stripped[match.end():].lstrip().startswith(r"\%"):
                 continue
-            if r"\citet" in stripped or r"\citep" in stripped:
+            context = sentence_around(number - 1)
+            if r"\citet" in context or r"\citep" in context:
                 continue
             offenders.append(f"line {number}: {value!r} in {stripped[:80]!r}")
     assert not offenders, (

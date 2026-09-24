@@ -97,7 +97,7 @@ and each one it fights past costs time. No single-class F1 project models this;
 here it is measurable. On-track order across classes is recovered from
 start/finish crossing times (a GT that crosses the line just before a prototype
 is right ahead of it, whatever lap either is on — the lapping problem solved
-without positions), and for each prototype green lap we count the GT cars that
+without positions), and for each prototype green lap it counts the GT cars that
 crossed within 12 s ahead, then measure how much slower that lap runs than the
 car's own clean pace. Every in-scope season is now measured, not one, so the
 figure below is a **mean across seasons with its season-to-season spread**

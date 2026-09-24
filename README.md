@@ -11,7 +11,7 @@
   <a href="https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab/actions/workflows/tests.yml"><img src="https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab/actions/workflows/tests.yml/badge.svg" alt="Test suite status"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-CC%20BY--NC--SA%204.0-E10600" alt="License: CC BY-NC-SA 4.0"></a>
   <img src="https://img.shields.io/badge/python-3.11%2B-00D9FF" alt="Python 3.11+">
-  <img src="https://img.shields.io/badge/tests-507%20passing-2ea44f" alt="507 tests passing">
+  <img src="https://img.shields.io/badge/tests-511%20passing-2ea44f" alt="511 tests passing">
   <img src="https://img.shields.io/badge/series-F1%20%C2%B7%20WEC%20%C2%B7%20IMSA%20%C2%B7%20ELMS-FFB800" alt="Series: F1, WEC, IMSA, ELMS">
 </p>
 
@@ -115,12 +115,16 @@ weeks of silent drift. The paper contains no numbers of its own: every quantity
 is a macro generated from the artifacts, so the manuscript cannot drift from the
 data.
 
-507 tests, including one file whose only job is to recompute each published
+511 tests, including one file whose only job is to recompute each published
 headline and assert the result appears in the document publishing it.
 
 ## Where the evidence is thin
 
-Stated here rather than left for a reviewer to find. The full list is in
+The Limitations section, and it is generated rather than written: a script
+walks the artifact behind each headline claim and counts what sits under it.
+Published numbers do not all rest on the same weight of evidence and a results
+table cannot show which is which, so this is what lets a reader weigh them one
+at a time. Full report in
 [`reports/cross_series/thin_evidence.md`](reports/cross_series/thin_evidence.md).
 
 The 22.5 s cheap-stop threshold is a maximum set by a single race; drop that race
@@ -138,7 +142,7 @@ model, and it is the first of the
 There is a real body of work here, from Bekker and Lotz in 2009 through
 Heilmeier's group at TUM, dynamic-programming treatments by Carrasco Heine and
 Thraves, a Stackelberg formulation by Aguad and Thraves, and a recent wave of
-learning-based approaches. Twelve papers, verified against their publication
+learning-based approaches. Sixteen papers, verified against their publication
 records, are catalogued in
 [`reports/cross_series/related_work.md`](reports/cross_series/related_work.md).
 
