@@ -11,7 +11,7 @@
   <a href="https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab/actions/workflows/tests.yml"><img src="https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab/actions/workflows/tests.yml/badge.svg" alt="Test suite status"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-CC%20BY--NC--SA%204.0-E10600" alt="License: CC BY-NC-SA 4.0"></a>
   <img src="https://img.shields.io/badge/python-3.11%2B-00D9FF" alt="Python 3.11+">
-  <img src="https://img.shields.io/badge/tests-511%20passing-2ea44f" alt="511 tests passing">
+  <img src="https://img.shields.io/badge/tests-517%20passing-2ea44f" alt="517 tests passing">
   <img src="https://img.shields.io/badge/series-F1%20%C2%B7%20WEC%20%C2%B7%20IMSA%20%C2%B7%20ELMS-FFB800" alt="Series: F1, WEC, IMSA, ELMS">
 </p>
 
@@ -115,7 +115,7 @@ weeks of silent drift. The paper contains no numbers of its own: every quantity
 is a macro generated from the artifacts, so the manuscript cannot drift from the
 data.
 
-511 tests, including one file whose only job is to recompute each published
+517 tests, including one file whose only job is to recompute each published
 headline and assert the result appears in the document publishing it.
 
 ## Where the evidence is thin

@@ -83,6 +83,12 @@ EXCLUDED: dict[str, str] = {
         "Same, for the WEC entry list.",
     "run_f1_weather.py":
         "Joins the gitignored external weather export onto the derived laps.",
+    "make_outreach_brief.py":
+        "Writes outreach/pit_loss_rule_brief.pdf, which is a document sent to a "
+        "named person rather than an artifact any model reads. A schedule is "
+        "also the weaker guard here: tests/test_outreach_brief.py regenerates it "
+        "on every CI run and fails if the committed PDF differs by a byte, so it "
+        "cannot go stale unnoticed between refreshes.",
 }
 
 

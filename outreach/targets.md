@@ -7,8 +7,8 @@ name goes into the table only once I have seen it on a source I can point to.
 
 | # | Category | Who exactly | Variant | Verified name | Sent | Reply |
 |---|---|---|---|---|---|---|
-| 1 | Paper author | | A | | | |
-| 2 | Paper author | | A | | | |
+| 1 | Paper author | TU Eindhoven, electric endurance strategy | A | Jorn van Kampen | | **replied 25 Sep 2026** |
+| 2 | Paper author | TU Eindhoven, competitor-aware endurance (arXiv:2603.28286) | A | Wytze de Vries | | **replied 25 Sep 2026** — asked for a page on the pit-loss correlation with the data behind it |
 | 3 | Paper author | | A | | | |
 | 4 | Academic, sports analytics | | C | | | |
 | 5 | Academic, operations research | | C | | | |
@@ -102,6 +102,25 @@ to someone who gets a lot of student mail.
    [10.5281/zenodo.22726130](https://doi.org/10.5281/zenodo.22726130), archived onward into Software
    Heritage and OpenAIRE. A link to a citable deposit changes how the message
    reads to someone on a pit wall.
+
+## Open thread — de Vries, 25 September
+
+He asked for one page on Result 2 with the correlation data, not the project
+one-pager. [`pit_loss_rule_brief.pdf`](pit_loss_rule_brief.pdf) is that page:
+the question, how pit loss and tyre-limited status are measured in enough
+detail to be judged, the class table with the interval, the figure, and the two
+places the evidence is thin. It ends on the question I want answered — whether
+a correlation over six class summaries is the right statistic, or whether this
+should be a per-race model with pit loss as a covariate.
+
+Regenerate it with `python scripts/make_outreach_brief.py` before sending if
+any artifact has moved. Every number on the page is read from the artifacts at
+build time, so a stale copy cannot survive a rebuild.
+
+His own paper is the closest published work to the adversarial component here,
+and it is endurance rather than Formula 1. Row 15 of
+[`../reports/cross_series/related_work.md`](../reports/cross_series/related_work.md)
+says what it does and what it does not.
 
 ## Rules
 

@@ -1437,7 +1437,7 @@ Motorsport-Strategy-Lab/
                         #   are the intervals); make_headline_figures.py +
                         #   make_supporting_figures.py + make_paper_numbers.py;
                         #   demo_extensions.py; generate_banner.py
-  tests/                # pytest, across four series and seven classes, 511
+  tests/                # pytest, across four series and seven classes, 517
                         #   tests -- incl. the demo, driven headlessly by
                         #   test_demo_app.py, and the report-staleness guards
                         #   that check prose still matches the artifacts
