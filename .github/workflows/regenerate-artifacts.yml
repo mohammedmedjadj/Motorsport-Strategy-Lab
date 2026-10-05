@@ -136,6 +136,10 @@ jobs:
         run: python scripts/run_formal_tests.py
       - name: Where the evidence is thin
         run: python scripts/run_thin_evidence.py
+      # Reads every green-flag stop behind the per-race pit-loss medians, so it
+      # runs after the multi-stop plans it classifies against.
+      - name: Pit-loss measurement checks
+        run: python scripts/run_pit_loss_checks.py
       # Last, because the figures read the artifacts every step above writes.
       # A figure that disagrees with its own data is the same defect as a
       # sentence that does, and it is harder to notice.
