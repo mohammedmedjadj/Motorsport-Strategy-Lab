@@ -13,7 +13,7 @@ This tests it. The same decisions are re-run through `src/simulator/adversarial.
 | single-car (the audit's) | +10 | 10 |
 | cover-aware (adversarial) | +11 | 11 |
 
-The cover-aware model is closer to the real stop in **69** decisions, further in **195**, and identical in 93. Median laps of error closed: **-1.0**.
+The cover-aware model is closer to the real stop in **63** decisions, further in **200**, and identical in 94. Median laps of error closed: **-1.0**.
 
 ## Verdict: the hypothesis is **not supported**
 
@@ -42,17 +42,45 @@ Track position matters most where places are hard to regain, so if the mechanism
 | imola | 0.0304 | 10 | -0.5 |
 | silverstone | 0.0315 | 5 | +0.0 |
 | suzuka | 0.0321 | 10 | -0.5 |
-| mexico_city | 0.0329 | 20 | +0.0 |
+| mexico_city | 0.0329 | 20 | -1.0 |
 | monza | 0.0330 | 20 | -0.5 |
 | bahrain | 0.0334 | 20 | -1.0 |
 | miami | 0.0339 | 15 | +0.0 |
 | interlagos | 0.0342 | 8 | -1.5 |
-| shanghai | 0.0353 | 10 | -5.0 |
+| shanghai | 0.0353 | 10 | -4.5 |
 | barcelona | 0.0366 | 19 | -2.0 |
 | jeddah | 0.0383 | 15 | +1.0 |
 | austin | 0.0426 | 20 | -2.0 |
-| spa | 0.0427 | 14 | -2.0 |
+| spa | 0.0427 | 14 | -3.0 |
 | yas_marina | 0.0479 | 20 | -1.0 |
 | las_vegas | 0.0638 | 13 | -1.0 |
 
-Correlation between a circuit's swap rate and the laps the cover-aware model closes: **-0.325**. A negative correlation would be the signature of the mechanism — more effect where position is stickier.
+Correlation between a circuit's swap rate and the laps the cover-aware model closes: **-0.358**. A negative correlation would be the signature of the mechanism — more effect where position is stickier.
+
+
+## Stratified by which car commits first
+
+This section exists because **Charles Thraves** (Universidad de Chile), whose zero-sum feedback Stackelberg treatment of the Formula 1 pit stop is the closest published work to the engine used above, asked how the rival is selected. `_nearest_rival` takes the car closest in classified position by *absolute* distance, so it is the car ahead on some decisions and the car behind on others — while the order of commitment is fixed, since the audited car always moves first. Two different games were therefore pooled, and the track-position leader is not the Stackelberg leader. Everything above is left as published.
+
+### The rival was chosen arbitrarily on most decisions
+
+Before the split is worth reading, the selection rule has to be described honestly. For any car that is not leading the race, the cars one position ahead and one position behind are **both exactly one position away**, so minimising the absolute distance has no unique answer and `nsmallest` returns whichever row comes first. That is the normal case, not an edge case: **271 of 357 decisions** are ties. Only the 86 decisions taken by the race leader, which has no car ahead of it, have an unambiguous nearest rival.
+
+That is a real weakness in the measurement and it was not visible until someone asked. It also raises the stake of the table below: if the two roles disagreed, three quarters of this sample would have been assigned to one game or the other by DataFrame row order.
+
+### The two games, by the role the rival actually played
+
+| stratum | decisions | median single-car error | median cover-aware error | closer | further | unchanged | median laps closed |
+|---|---|---|---|---|---|---|---|
+| rival ahead — the audited car is the chaser, and it commits first | 177 | +10 | +12 | 41 | 94 | 42 | -1.0 |
+| rival behind — the audited car is the leader, and it commits first | 180 | +9 | +11 | 22 | 106 | 52 | -1.0 |
+
+Errors are signed, and positive means the model stops later than the team did. *Closer* and *further* compare absolute errors, so a positive median laps closed would mean the cover-aware model moved toward the real stop.
+
+**Both roles point the same way, and by the same amount.** Covering moves the recommendation *away* from the real stop whether the audited car is the chaser or the leader. The pooled result was not hiding two opposed effects, so separating them does not rescue the undercut hypothesis — it buries it. This is a stronger refutation than the pooled number alone, because it survives the obvious objection to how the rival was chosen.
+
+It also means the arbitrary tie-break above, uncomfortable as it is, did not bias the published result: the two roles it was choosing between give the same answer, so which one it picked could not have changed the verdict.
+
+### What this does not settle
+
+Position adjacency is the wrong unit for an undercut. Whether one is available is decided by the gap in **seconds** against the pit loss: a car more than a pit loss ahead cannot be undercut, and one more than a pit loss behind cannot undercut you. A rival one position away may be half a second up the road or twenty-five seconds up it, and this selection rule treats those identically. Re-running with the rival defined as the nearest car *within* the circuit's measured pit-loss window — separately for the car ahead and the car behind — would both fix the ambiguity and make the empty case meaningful, since a decision with no reachable rival has no undercut to model and belongs to the single-car case. That is the next experiment, not this one.
