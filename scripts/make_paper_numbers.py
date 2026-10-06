@@ -140,6 +140,24 @@ def _macros() -> dict[str, str]:
     out["NCoefCrossingZero"] = str(int(crosses.sum()))
     out["PctCoefCrossingZero"] = f"{100 * crosses.mean():.0f}"
 
+    # --- the same accounting for the endurance fits -------------------------
+    # The Formula 1 figure above has carried this caveat since it was first
+    # shown; the endurance figure has not, and its numbers are worse. Each
+    # championship gets its own macros. There is deliberately no pooled
+    # endurance figure: WEC, IMSA and ELMS run different calendars and
+    # different classes, and an average over the three describes none of them.
+    fits = pd.read_csv(ENDURANCE_DERIVED_DIR / "endurance_degradation_fits.csv")
+    fits["crosses_zero"] = (fits["ci_low"] <= 0) & (fits["ci_high"] >= 0)
+    for series, suffix in (("wec", "Wec"), ("imsa", "Imsa"), ("elms", "Elms")):
+        part = fits[fits["series"] == series]
+        out[f"NFits{suffix}"] = str(len(part))
+        out[f"NSlopeZero{suffix}"] = str(int(part["crosses_zero"].sum()))
+        out[f"PctSlopeZero{suffix}"] = f"{100 * part['crosses_zero'].mean():.0f}"
+        out[f"NSlopeNegative{suffix}"] = str(int((part["net_slope"] < 0).sum()))
+        out[f"PctSlopeNegative{suffix}"] = f"{100 * (part['net_slope'] < 0).mean():.0f}"
+        out[f"NSeparable{suffix}"] = str(int(part["separable"].sum()))
+        out[f"MedFuelDegCorr{suffix}"] = f"{part['fuel_deg_corr'].median():.3f}"
+
     overlapping = total = 0
     for _, group in coefs.groupby("circuit"):
         rows = list(group.itertuples())

@@ -47,6 +47,8 @@ class:
   what it carries, and the two verification traps it hides
 - [`methodology.md`](methodology.md) — the full write-up
 - [`packaging_phase7.md`](packaging_phase7.md) — reproduction from a fresh clone
+- [`slope_resolution.md`](slope_resolution.md) — how much of the
+  degradation fit is resolved, and how much is indistinguishable from zero
 
 Everything else lives under the class it describes. The phase reports were
 written against GTP and now sit in [`gtp/`](gtp/) rather than at series level,

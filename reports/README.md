@@ -73,6 +73,11 @@ of the crew.
   [`cross_series/when_tyres_beat_fuel.md`](cross_series/when_tyres_beat_fuel.md).
 - **A defect this project has not fixed, written up as such** —
   [`cross_series/track_evolution_omitted_variable.md`](cross_series/track_evolution_omitted_variable.md).
+- **How much of each degradation fit the data actually resolves**, one per
+  championship because an average over the three describes none of them:
+  [WEC](wec/slope_resolution.md) ·
+  [IMSA](imsa/slope_resolution.md) ·
+  [ELMS](elms/slope_resolution.md).
 - **The full write-ups**, one per series, never merged:
   [F1](f1/methodology.md) ·
   [WEC](wec/methodology.md) ·

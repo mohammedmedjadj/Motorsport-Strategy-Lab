@@ -142,9 +142,10 @@ model, and it is the first of the
 There is a real body of work here, from Bekker and Lotz in 2009 through
 Heilmeier's group at TUM, dynamic-programming treatments by Carrasco Heine and
 Thraves, a Stackelberg formulation by Aguad and Thraves, and a recent wave of
-learning-based approaches. Sixteen papers, verified against their publication
+learning-based approaches. Seventeen papers, verified against their publication
 records, are catalogued in
 [`reports/cross_series/related_work.md`](reports/cross_series/related_work.md).
+One of them is an unreviewed preprint and the table says so in its row.
 
 The modelling here is simpler than most of them. What that literature does not
 do is validate: almost nobody tests whether the fitted parameters predict a

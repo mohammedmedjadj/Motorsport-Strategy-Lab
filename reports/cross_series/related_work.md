@@ -1,9 +1,13 @@
 # Related work
 
-Sixteen papers, each checked against a real publication record rather than
+Seventeen papers, each checked against a real publication record rather than
 against memory — Crossref for the journal articles, the arXiv API for the
-preprints. Author lists, venues, volumes and DOIs below are what those records
-return.
+preprints, the Zenodo API for the one entry deposited there. Author lists,
+venues, volumes and DOIs below are what those records return.
+
+One of the seventeen has not been peer-reviewed by anyone, and its row says so.
+It is included because it is directly relevant, not because it carries the same
+weight as the rest.
 
 The first version of this table had eleven of its twelve entries in Formula 1,
 which is an odd shape for a review supporting a project whose whole claim is
@@ -45,6 +49,20 @@ races; Aguad and Thraves compare strategic against non-strategic agents inside
 their own game. Nobody, as far as I have found, replays a large sample of real
 pit-stop decisions and reports where the optimiser and the pit wall part company.
 
+One paper does offer an explanation for this project's own late-stop gap, and
+it deserves stating before the table rather than after it. Salminen's
+equilibrium stop is not the time-optimal one. A driver stops at the earliest lap
+on which the opponent can no longer answer, which lands *before* the fastest
+clean-air strategy, because waiting for the time optimum hands the opponent a
+window. In his one worked example the equilibrium stop is lap 16 against a
+time-optimal lap 20, on a 40-lap race: a fifth of the distance early. The
+calendar-wide audit here finds the simulator stays out a median of 12 laps
+longer than Formula 1 teams did, which on these race lengths is a comparable
+fraction. The direction matches. That is all it is: one worked example is not a
+distribution, the two quantities are not computed the same way, and the
+comparison has not been run on the 357 decisions. What makes it hard to run is
+covered in the row itself.
+
 That is the gap this project sits in, and it is worth being precise about how
 narrow it is. The modelling here is not more sophisticated than Heilmeier's or
 Aguad's — in places it is deliberately simpler. What is different is that it is
@@ -72,6 +90,7 @@ real decisions, and that two of its three results are negative.
 | 14 | **van Kampen, Moriggi, Braghin & Salazar (2024)**, arXiv:2403.06885 | Model predictive control for electric endurance cars that prices a competitor's likely response probabilistically, over pit stops, charge duration and driving tactics. A 21 s gain over a fixed-overtake tactic in a simulated one-hour race at Zandvoort. | The same gap as the rest of this group: a control law validated in simulation, not a fitted parameter validated on a held-out season, and no confrontation with real decisions. |
 | 15 | **de Vries, van den Eshof, van Kampen & Salazar (2026)**, arXiv:2603.28286, accepted at IEEE ITSC 2026 | The closest existing work to this project's adversarial component, and it is endurance rather than F1: a bi-level framework pairing a multi-agent game-theoretic optimal control problem per lap with RL agents allocating energy and scheduling stops over a 45-lap race. Finds that exploiting aerodynamic interaction decides the race, and that position-seeking strategies differ fundamentally from minimum-time ones. | Real races. Their two agents are simulated; this project's rivals are the plans teams actually ran. Their finding that competitive play departs from the single-car optimum is, however, the nearest published thing to this project's own late-stop gap. |
 | 16 | **Fieni, Wüthrich, Neumann & Onder (2026)**, arXiv:2602.23056 | Extends row 10 to multi-agent self-play: an interaction module on top of a pre-trained single-agent policy, with agents ranked on relative performance and adapting pit timing, tyre choice and energy allocation to opponents. | Cross-championship scope and the audit. Self-play produces agents that beat each other; it does not say whether the tyre model underneath transfers to a season it was not fitted on. |
+| 17 | **Salminen (2026)**, *Game-Theoretic Framework for Pit Stop Strategy Optimisation in Circuit Auto Racing*. Zenodo preprint, deposited 11 July 2026, CC BY 4.0. [10.5281/zenodo.21306419](https://doi.org/10.5281/zenodo.21306419). **Single author, not peer-reviewed, not submitted to a venue that the record names.** | Solves the two-car one-stop game analytically instead of numerically, and gets further on *why* a strategy wins than any simulation does. Defines the earliest undefendable undercut — the first lap on which an opponent has neither a position-keeping defence nor a tyre-advantage one — and proves it is a subgame-perfect Nash equilibrium of that model. It positions itself explicitly against row 7, which it names as the only prior exact game-theoretic solution. | Measured parameters. Every quantity in that model is a free parameter there and a fitted one here, except the overtaking threshold in seconds, which this project does not hold in any form. Its predictions are also untested against a real race: the paper carries one worked numeric example and no data. |
 
 ## Where this leaves the positioning
 

@@ -93,6 +93,12 @@ jobs:
 
       - name: Fits, quality, transfer, traffic
         run: python scripts/run_endurance_models.py
+      # Straight after the fits, because it is the accounting of what those
+      # fits resolve: how many intervals contain zero, how many slopes come
+      # out negative, and whether fuel and tyre age separate at all. One
+      # report per championship, never a pooled endurance figure.
+      - name: How much of each fit is resolved
+        run: python scripts/run_endurance_resolution.py
       - name: Full-race stop plans
         run: python scripts/run_multistop.py
       - name: Per-class tables, all six classes

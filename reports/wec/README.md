@@ -39,8 +39,9 @@ Phase reports, all Hypercar-scoped:
 [phase 4](simulator_phase4.md) ·
 [phase 7](packaging_phase7.md)
 
-Plus [`audit_cases.md`](audit_cases.md), [`reliability.md`](reliability.md) and
-the full write-up, [`methodology.md`](methodology.md).
+Plus [`audit_cases.md`](audit_cases.md), [`reliability.md`](reliability.md),
+[`slope_resolution.md`](slope_resolution.md) — how much of the degradation fit
+is resolved — and the full write-up, [`methodology.md`](methodology.md).
 
 ## The complete tables
 

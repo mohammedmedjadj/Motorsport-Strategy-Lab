@@ -57,6 +57,8 @@ series whose whole point is the comparison between its two classes:
   [`packaging_phase7.md`](packaging_phase7.md)
 - [`results.md`](results.md) · [`crew_rating_findings.md`](crew_rating_findings.md)
   · [`audit_cases.md`](audit_cases.md) · [`methodology.md`](methodology.md)
+- [`slope_resolution.md`](slope_resolution.md) — how much of the degradation
+  fit is resolved, and how much of it is indistinguishable from zero
 
 ## The complete tables
 
