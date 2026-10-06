@@ -38,6 +38,21 @@ import numpy as np
 DEFAULT_DRAWS = 10_000
 DEFAULT_SEED = 20260904
 
+#: Relabellings for a permutation test. Far above DEFAULT_DRAWS on purpose. A
+#: bootstrap interval at 10,000 draws is quoted to three decimals and its
+#: resampling error is well below that. A permutation p-value near 1e-3 is a
+#: count of tail events, and at 10,000 draws that count is single digits -- the
+#: published p = 0.0009 rested on eight of them, with a Monte Carlo error about
+#: a third of the estimate. Whether such a p-value survives a
+#: multiple-comparison correction is decided inside that error, so the
+#: resolution has to be better than the margin being argued over.
+DEFAULT_PERMUTATIONS = 1_000_000
+
+#: Rows per vectorised permutation block. A million relabellings of 51 values
+#: in one array would be fine; the block keeps the memory flat if either number
+#: grows.
+PERMUTATION_BLOCK = 200_000
+
 
 @dataclass(frozen=True)
 class Interval:
@@ -111,7 +126,7 @@ def compare_groups(
     group_a: np.ndarray,
     group_b: np.ndarray,
     draws: int = DEFAULT_DRAWS,
-    permutations: int = DEFAULT_DRAWS,
+    permutations: int = DEFAULT_PERMUTATIONS,
     seed: int = DEFAULT_SEED,
     unit: str = "circuit-class",
 ) -> GroupComparison:
@@ -142,15 +157,26 @@ def compare_groups(
         level=0.95, draws=draws, unit=unit,
     )
 
+    # The permutation stage draws from its own generator, so raising the
+    # relabelling count cannot move the bootstrap interval computed above.
+    # Vectorised, because a million Python-level shuffles of 51 values would
+    # cost minutes for a number this function is asked for on every refresh.
+    # Only the first group's sum is needed: the total is fixed under
+    # relabelling, so the second group's mean follows from it.
     pooled = np.concatenate([a, b])
+    total, n, n_a = pooled.sum(), len(pooled), len(a)
+    perm_rng = np.random.default_rng(seed + 1)
     extreme = 0
-    for _ in range(permutations):
-        shuffled = rng.permutation(pooled)
-        difference = shuffled[:len(a)].mean() - shuffled[len(a):].mean()
-        if abs(difference) >= abs(observed):
-            extreme += 1
-    # Add-one correction: a permutation test can never report p = 0, and
-    # printing one would claim more than 10,000 permutations can support.
+    done = 0
+    while done < permutations:
+        size = min(PERMUTATION_BLOCK, permutations - done)
+        picked = np.argsort(perm_rng.random((size, n)), axis=1)[:, :n_a]
+        sums = pooled[picked].sum(axis=1)
+        difference = sums / n_a - (total - sums) / (n - n_a)
+        extreme += int((np.abs(difference) >= abs(observed)).sum())
+        done += size
+    # Add-one correction: a permutation test can never report p = 0, and the
+    # smallest value it can honestly report is 1/(permutations + 1).
     p_value = (extreme + 1) / (permutations + 1)
 
     return GroupComparison(interval, p_value, len(a), len(b), permutations)

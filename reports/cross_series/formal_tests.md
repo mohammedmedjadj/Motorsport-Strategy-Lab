@@ -14,11 +14,25 @@ One value per circuit-class — **24 GT3, 27 prototype** — never one per fold.
 | prototype (GTP, Hypercar, LMP2) | -0.0601 | [-0.1992, +0.0211] |
 | **difference** | **+0.1639** | [+0.0593, +0.3120] |
 
-Permutation test on the group labels, 10,000 relabellings: **p = 0.0009**.
+Permutation test on the group labels, 1,000,000 relabellings: **p = 0.0011**.
 
 The interval excludes zero and the permutation test agrees, so **the difference survives being tested** rather than merely being visible in a table.
 
 Both are reported because they fail differently. The bootstrap assumes the clusters resemble the population they were drawn from; the permutation assumes only that the labels are exchangeable under the null. Agreement between two tests with different assumptions, at 24 and 27 clusters, is worth more than either alone.
+
+## 1b. What family is that p-value competing against?
+
+A p-value is only as strong as the number of chances it had. This project reports **5 inferential results** in the manuscript — three bootstrap intervals on the transfer comparison, one on the pit-loss correlation, and the single permutation p-value above. The car-type split was not picked by searching for the partition that separated best, but that is a claim about process and a reviewer cannot check it, so the correction below is computed against the worst family that could be argued for: every way of cutting the 6 endurance car classes into two non-empty groups, which is 31 partitions.
+
+| family | tests | Bonferroni-adjusted p | clears 0.05 |
+|---|---:|---:|---|
+| the manuscript's own reported inferential results | 5 | 0.0055 | yes |
+| one test per car class against the rest | 6 | 0.0066 | yes |
+| every binary partition of the car classes | 31 | 0.0339 | yes |
+
+It clears the threshold under all of them. The breakeven is **46 tests**, which is far more than this project runs under any reading. So the correction is a sentence in the manuscript rather than a reanalysis.
+
+Two things this does not claim. Bonferroni controls the family-wise error rate and nothing else; it says the difference is unlikely to be an artefact of having looked in several places, not that it is large or that it generalises. And the interval [+0.0593, +0.3120] still rests on 24 clusters in the smaller group, which no multiplicity correction improves.
 
 ## 2. An interval on the pit-loss correlation
 

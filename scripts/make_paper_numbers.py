@@ -194,6 +194,18 @@ def _macros() -> dict[str, str]:
     out["TransferDiffCI"] = f"[{diff['ci_low']:+.3f}, {diff['ci_high']:+.3f}]"
     out["TransferP"] = f"{float(diff['p_value']):.4f}"
 
+    # --- what family that p-value was selected from -------------------------
+    # The first thing a reviewer asks about a p-value. Counted against the
+    # most adversarial family that can be argued for: every binary partition
+    # of the endurance car classes, as though the car-type split had been
+    # found by searching them. See reports/cross_series/formal_tests.md.
+    p_value = float(diff["p_value"])
+    n_partitions = (2 ** (int(out["NClasses"]) - 1) - 2) // 2
+    out["NReportedTests"] = "5"
+    out["NClassPartitions"] = str(n_partitions)
+    out["TransferPBonferroni"] = f"{p_value * n_partitions:.3f}"
+    out["BonferroniBreakeven"] = f"{0.05 / p_value:.0f}"
+
     # --- the thinnest transfer score, the one a reviewer goes for first ----
     loro = pd.read_csv(ENDURANCE_DERIVED_DIR / "endurance_degradation_loro.csv")
     held = loro["held_out_season"].astype(str)

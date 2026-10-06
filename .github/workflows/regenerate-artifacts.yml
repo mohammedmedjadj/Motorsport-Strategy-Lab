@@ -74,6 +74,11 @@ jobs:
         run: python scripts/run_undercut_hypothesis.py
       - name: Slope-bias check
         run: python scripts/run_slope_bias_check.py
+      # Reads the fitted tyre slopes, so it runs after the degradation model.
+      # Measures what Salminen's overcut inequality asks for at those rates:
+      # the inequality is his, the slopes are measured here.
+      - name: Overcut feasibility on measured slopes
+        run: python scripts/run_overcut_feasibility.py
 
       - name: Report drift
         run: .github/scripts/report_drift.sh "F1"

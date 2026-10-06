@@ -49,6 +49,8 @@ chosen because the model *cannot* see what happened (a red-flag tyre change).
 [adversarial_rival.md](adversarial_rival.md) — the pit stop as a two-player
 game, where the rival covers ·
 [track_position.md](track_position.md) — overtaking difficulty per circuit ·
+[overcut_feasibility.md](overcut_feasibility.md) — how much tyre advantage an
+overcut needs at the measured slopes, and where it is unreachable ·
 [reliability.md](reliability.md) · [weather.md](weather.md)
 
 **The breadth layer** — 35 circuits back to 2011 from a public per-lap history,

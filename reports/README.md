@@ -73,6 +73,8 @@ of the crew.
   [`cross_series/when_tyres_beat_fuel.md`](cross_series/when_tyres_beat_fuel.md).
 - **A defect this project has not fixed, written up as such** —
   [`cross_series/track_evolution_omitted_variable.md`](cross_series/track_evolution_omitted_variable.md).
+- **What a published model's assumptions ask for at measured parameter
+  values** — [`f1/overcut_feasibility.md`](f1/overcut_feasibility.md).
 - **How much of each degradation fit the data actually resolves**, one per
   championship because an average over the three describes none of them:
   [WEC](wec/slope_resolution.md) ·

@@ -47,7 +47,7 @@ failed.
 <td width="33%"><img src="reports/figures/r3_audit_bias.png" alt="Model lap minus team lap, per class"></td>
 </tr>
 <tr>
-<td valign="top"><b>Transfer belongs to the circuit-class, not the championship.</b> 51 circuit-classes, one protocol. GT3 at Lime Rock reaches R² <b>+0.573</b>; only 5 clear 0.2. Difference GT3 − prototype <b>+0.164</b> [+0.059, +0.312], permutation p = 0.0009. The near-spec control (ELMS LMP2 — one chassis, one engine, no BoP) fails too, so the instability is not the hardware.</td>
+<td valign="top"><b>Transfer belongs to the circuit-class, not the championship.</b> 51 circuit-classes, one protocol. GT3 at Lime Rock reaches R² <b>+0.573</b>; only 5 clear 0.2. Difference GT3 − prototype <b>+0.164</b> [+0.059, +0.312], permutation p = 0.0011. The near-spec control (ELMS LMP2 — one chassis, one engine, no BoP) fails too, so the instability is not the hardware.</td>
 <td valign="top"><b>The cost of the stop sets the strategy regime, not the car.</b> Across 205 race-seasons: <b>r = −0.982</b> [−0.986, −0.745], monotonic, no inversion. 150 race-seasons above a 22.5 s pit loss contain no tyre-limited race at all. That edge is a maximum set by one race, so quote the rule and treat the number as an order of magnitude.</td>
 <td valign="top"><b>An exact optimiser stops later than teams do, and nobody knows why.</b> 1,280 replayed first stops, seven classes, one criterion. Median +12 laps in IMSA GTD, +10 in F1. Track position: tested, rejected. Slope bias: tested, not detected.</td>
 </tr>
