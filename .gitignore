@@ -38,11 +38,13 @@ Thumbs.db
 .env.*
 .hypothesis/
 
-# Local exports for uploading the manuscript to Overleaf. These are copies, and
-# a copy that nothing refreshes goes stale: overleaf-flat/main.tex was already
-# 19 lines behind paper/main.tex when this line was written. paper/ is the
-# source. They are ignored rather than committed so the drift workflow, which
-# treats any untracked file as a signal, does not read a scratch export as one.
+# Local exports for uploading the manuscript to Overleaf. A copy that nothing
+# refreshes goes stale: overleaf-flat/main.tex was already 19 lines behind
+# paper/main.tex when this line was written. paper/ is the source, and
+# scripts/make_overleaf_bundle.py now rebuilds paper/overleaf.zip from it in one
+# command, byte-for-byte reproducibly, so the copy cannot drift unnoticed.
+# Still ignored rather than committed: it is 890 KB of regenerable binary, and
+# the drift workflow treats any untracked file as a signal.
 overleaf/
 overleaf-flat/
 overleaf*.zip

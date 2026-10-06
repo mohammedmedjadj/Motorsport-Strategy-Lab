@@ -89,15 +89,32 @@ def test_inline_maths_delimiters_are_balanced() -> None:
     )
 
 
+def _graphics_roots(text: str, base) -> list:
+    """The directories \\includegraphics searches, in the order TeX tries them.
+
+    The manuscript declares them rather than spelling a path into every
+    inclusion, because it has to compile both from `paper/` in a clone and from
+    the root of an Overleaf project, which refuses any path containing "..".
+    A guard that assumed one layout would fail on a document that is correct in
+    the other.
+    """
+    roots = []
+    match = re.search(r"\\graphicspath\{(.+?)\}\s*$", text, re.M)
+    if match:
+        roots = [base / part for part in re.findall(r"\{([^{}]*)\}", match.group(1))]
+    return roots + [base]
+
+
 def test_every_included_graphic_resolves_from_the_paper_directory() -> None:
     text = _source()
     included = re.findall(r"\\includegraphics\[[^\]]*\]\{([^}]+)\}", text)
     assert included, "the paper includes no figures, which is not expected"
+    roots = _graphics_roots(text, MAIN.parent)
     missing = [
         path for path in included
-        if not (MAIN.parent / path).resolve().exists()
+        if not any((root / path).resolve().exists() for root in roots)
     ]
     assert not missing, (
-        "figures the paper includes do not exist at the path it gives, "
-        f"relative to paper/: {missing}"
+        "figures the paper includes do not exist under any root the paper "
+        f"declares ({[str(root) for root in roots]}): {missing}"
     )

@@ -39,17 +39,35 @@ compiles, and nothing here does. Compile it before sending it anywhere.
 
 ## Building it
 
-There is no LaTeX toolchain in this repository. Compile on
-[Overleaf](https://overleaf.com) or locally:
+There is no LaTeX toolchain in this repository. Locally:
 
 ```bash
 python scripts/make_paper_numbers.py     # refresh numbers.tex first
 cd paper && pdflatex main.tex && pdflatex main.tex
 ```
 
-Two passes, because of the cross-references. Figures are read from
-`../reports/figures/`, so keep the directory structure when uploading — or
-run `pdflatex` from this directory rather than copying files elsewhere.
+Two passes, because of the cross-references.
+
+For [Overleaf](https://overleaf.com), build the upload instead of assembling it
+by hand:
+
+```bash
+python scripts/make_paper_numbers.py
+python scripts/make_overleaf_bundle.py   # writes paper/overleaf.zip
+```
+
+Then *New Project → Upload Project*, and compile with pdfLaTeX.
+
+The bundle exists because uploading `paper/` on its own fails in a way the
+error message does not explain. Overleaf refuses any path containing `..`, so
+`../reports/figures/x.png` resolves to nothing and every figure comes back as a
+missing-file box. The bundle flattens the layout to `main.tex`, `numbers.tex`
+and `figures/`, and `\graphicspath` in the manuscript lists both roots, so the
+same `main.tex` compiles from either place with no edit.
+
+The zip is reproducible byte for byte and is not committed. An earlier attempt
+kept a hand-made `overleaf-flat/` copy in the working tree, and it was 19 lines
+behind `main.tex` before anyone noticed. Rebuild it rather than keeping one.
 
 ## The bibliography is short on purpose
 
@@ -74,9 +92,12 @@ the actual publication record.** Two anchors:
   distinct, which independently echoes the instability this paper measures at
   scale.
 
-That verification has since been done for the rest. Sixteen papers were checked
-against Crossref or the arXiv API — title, authors, venue, volume, pages, DOI —
-and the ones the argument actually needs are now cited: Bekker and Lotz's
+That verification has since been done for the rest. Seventeen papers were
+checked against Crossref, the arXiv API or — for the single Zenodo deposit —
+the Zenodo API, covering title, authors, venue, volume, pages and DOI. One of
+the seventeen is an unreviewed preprint, and the catalogue says so in its row
+rather than letting it pass as a published paper. The ones the argument
+actually needs are now cited: Bekker and Lotz's
 discrete-event simulation, Heilmeier's three papers, Carrasco Heine and
 Thraves's dynamic program, van Kampen on endurance stint and energy planning,
 and the 2025 learning-based wave. The full catalogue, with what each paper does

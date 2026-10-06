@@ -11,6 +11,12 @@
 \usepackage{amsmath,amssymb}
 \usepackage{booktabs}
 \usepackage{graphicx}
+% Figures are included by bare filename so the manuscript compiles from two
+% places without editing: from paper/ in a clone, where they live in
+% ../reports/figures/, and from the root of an Overleaf project, which
+% refuses any path containing ".." and so needs them sitting in figures/.
+% scripts/make_overleaf_bundle.py builds the second layout.
+\graphicspath{{../reports/figures/}{figures/}}
 \usepackage{caption}
 \usepackage[hidelinks]{hyperref}
 \usepackage{natbib}
@@ -222,7 +228,7 @@ for the robust one.
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.82\textwidth]{../reports/figures/s3_f1_degradation.png}
+\includegraphics[width=0.82\textwidth]{s3_f1_degradation.png}
 \caption{The fitted object itself: linear tyre-degradation coefficients for
 Formula~1, by circuit and compound, with cluster-robust intervals.
 \NCoefficientsFone{} coefficients across \NCircuitsFone{} circuits. Points
@@ -350,7 +356,7 @@ answers all of them.
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.86\textwidth]{../reports/figures/r1_transfer.png}
+\includegraphics[width=0.86\textwidth]{r1_transfer.png}
 \caption{Leave-one-race-out mean within-stint $R^2$, one point per
 circuit-class. Of \NCircuitClasses{} measured, \NTransferAboveTwo{} clear
 $\TransferThreshold{}$.}
@@ -382,7 +388,7 @@ stops, which is the same axis Result~2 turns on.
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=\textwidth]{../reports/figures/r2_pit_loss_rule.png}
+\includegraphics[width=\textwidth]{r2_pit_loss_rule.png}
 \caption{Left: class-level median pit loss against the share of race-seasons
 where the tyre-optimal plan needs more stops than the fuel minimum. Right: every
 race-season, with the empirical edge marked.}
@@ -425,7 +431,7 @@ data. Figure~\ref{fig:intervals} collects every result that carries one.
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.92\textwidth]{../reports/figures/s6_intervals.png}
+\includegraphics[width=0.92\textwidth]{s6_intervals.png}
 \caption{Every result carrying a bootstrap interval. The two panels are
 separate because a within-stint $R^2$ difference and a correlation are not
 measured on the same scale, and a forest plot works by letting the reader
@@ -448,7 +454,7 @@ publishing an interval known to be too narrow.
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=\textwidth]{../reports/figures/r3_audit_bias.png}
+\includegraphics[width=\textwidth]{r3_audit_bias.png}
 \caption{Model lap minus team lap, \NDecisions{} replayed first stops. Box shows
 quartiles; the cloud behind it is the sample.}
 \label{fig:audit}
@@ -471,7 +477,7 @@ caution, ELMS \ElmsMedian{} at \ElmsCautionShare{}\%, IMSA \ImsaMedian{} at
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.9\textwidth]{../reports/figures/s1_neutralisation_regimes.png}
+\includegraphics[width=0.9\textwidth]{s1_neutralisation_regimes.png}
 \caption{How often each championship neutralises a race, split by kind. A
 Safety Car bunches the field; a Full Course Yellow --- a Virtual Safety Car in
 Formula~1 --- imposes a field-wide speed limit without bunching it, and the two
@@ -532,7 +538,7 @@ Track position is doing something. It is not doing this.
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.78\textwidth]{../reports/figures/s4_track_position.png}
+\includegraphics[width=0.78\textwidth]{s4_track_position.png}
 \caption{Adjacent-car swap rate per lap, by circuit. This is the primitive the
 cover-aware engine consumes, shown so that the rejection above can be read
 against the spread of the input, and not assumed to come from a flat one.}
@@ -552,7 +558,7 @@ than pairs; an earlier version of this work nearly reported it.
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.92\textwidth]{../reports/figures/s5_baselines.png}
+\includegraphics[width=0.92\textwidth]{s5_baselines.png}
 \caption{Median absolute lap error against the real stop, one row per
 class rather than per championship. IMSA's three classes run the same rounds
 under pit losses of \ImsaGtpPitLoss{}, \ImsaGtdPitLoss{} and
