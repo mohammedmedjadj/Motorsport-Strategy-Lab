@@ -74,7 +74,10 @@ of the crew.
 - **A defect this project has not fixed, written up as such** —
   [`cross_series/track_evolution_omitted_variable.md`](cross_series/track_evolution_omitted_variable.md).
 - **What a published model's assumptions ask for at measured parameter
-  values** — [`f1/overcut_feasibility.md`](f1/overcut_feasibility.md).
+  values** — [`f1/overcut_feasibility.md`](f1/overcut_feasibility.md), and
+  what happens when its equilibrium is tested against real decisions —
+  [`f1/d1_defence.md`](f1/d1_defence.md). The third explanation offered for
+  this project's late-stop gap, and the third to fail.
 - **How much of each degradation fit the data actually resolves**, one per
   championship because an average over the three describes none of them:
   [WEC](wec/slope_resolution.md) ·

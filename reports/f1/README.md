@@ -51,6 +51,8 @@ game, where the rival covers ·
 [track_position.md](track_position.md) — overtaking difficulty per circuit ·
 [overcut_feasibility.md](overcut_feasibility.md) — how much tyre advantage an
 overcut needs at the measured slopes, and where it is unreachable ·
+[d1_defence.md](d1_defence.md) — the position-keeping defence tested on 357
+real decisions, and why it predicts worse than the optimiser ·
 [reliability.md](reliability.md) · [weather.md](weather.md)
 
 **The breadth layer** — 35 circuits back to 2011 from a public per-lap history,

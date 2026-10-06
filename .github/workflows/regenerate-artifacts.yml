@@ -72,6 +72,11 @@ jobs:
         run: python scripts/run_systematic_audit.py
       - name: Undercut hypothesis test
         run: python scripts/run_undercut_hypothesis.py
+      # Reads that script's decision table and the fitted slopes, so it runs
+      # after both. Tests Salminen's position-keeping defence on the same 357
+      # decisions; the published replay above is not touched.
+      - name: Position-keeping defence against real decisions
+        run: python scripts/run_d1_defence.py
       - name: Slope-bias check
         run: python scripts/run_slope_bias_check.py
       # Reads the fitted tyre slopes, so it runs after the degradation model.
