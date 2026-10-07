@@ -277,6 +277,43 @@ def _macros() -> dict[str, str]:
     matched = int(chasers["circuit"].map(slug_delta).notna().sum())
     out["DOneStaleDropped"] = str(len(chasers) - matched)
 
+    # --- which car the adversarial model should treat as the rival --------
+    # Four selection rules on the same decisions. The two halves of the answer
+    # are kept apart here because they point opposite ways: the rules disagree
+    # about which car to model on most decisions, and none of them moves the
+    # headline.
+    rival = pd.read_csv(F1_DERIVED_DIR / "rival_selection.csv")
+    scored = rival.dropna(subset=["adversarial_lap"])
+    out["NRivalRules"] = str(scored["method"].nunique())
+    for method, suffix in (("position", "Position"), ("thraves", "Thraves"),
+                           ("pi_window", "PiWindow"), ("d1", "DOne")):
+        part = scored[scored["method"] == method]
+        out[f"Rival{suffix}Scored"] = str(len(part))
+        out[f"Rival{suffix}Adv"] = f"{part['adversarial_error'].median():+.0f}"
+        out[f"Rival{suffix}Closed"] = f"{part['closed'].median():+.0f}"
+        out[f"Rival{suffix}MeanClosed"] = f"{part['closed'].mean():+.2f}"
+        out[f"Rival{suffix}Better"] = str(int((part["closed"] > 0).sum()))
+        out[f"Rival{suffix}Worse"] = str(int((part["closed"] < 0).sum()))
+
+    wide = rival.pivot_table(
+        index=["season", "circuit", "driver"], columns="method",
+        values="rival", aggfunc="first",
+    ).dropna()
+    out["NRivalAllApply"] = str(len(wide))
+    out["NRivalAllAgree"] = str(int((wide.nunique(axis=1) == 1).sum()))
+    out["PctRivalThravesAgrees"] = (
+        f"{100 * (wide['thraves'] == wide['position']).mean():.0f}"
+    )
+    thraves_gap = scored[
+        (scored["method"] == "thraves") & scored["standalone_delta_s"].notna()
+    ]["standalone_delta_s"]
+    out["RivalStandaloneGap"] = f"{thraves_gap.median():.1f}"
+
+    # How many of the published replay's decisions had their rival chosen by
+    # row order rather than by racing, which is the defect Thraves named.
+    undercut = pd.read_csv(F1_DERIVED_DIR / "undercut_hypothesis.csv")
+    out["NTiedDecisions"] = str(int((undercut["relation"] == "tie").sum()))
+
     # --- the literature catalogue, counted rather than remembered ----------
     # The framing claim is about how many papers were catalogued and how many
     # of them validate out of sample. Counting the table means the claim

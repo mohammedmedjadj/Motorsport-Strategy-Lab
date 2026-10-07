@@ -9,7 +9,7 @@ name goes into the table only once I have seen it on a source I can point to.
 |---|---|---|---|---|---|---|
 | 1 | Paper author | TU Eindhoven, electric endurance strategy | A | Jorn van Kampen | | **replied 25 Sep 2026** |
 | 2 | Paper author | TU Eindhoven, competitor-aware endurance (arXiv:2603.28286) | A | Wytze de Vries | | **replied 25 Sep 2026** — asked for a page on the pit-loss correlation with the data behind it |
-| 3 | Paper author | | A | | | |
+| 3 | Paper author | Universidad de Chile, Stackelberg pit-stop DP (EJOR 319(3):908-919) | A | Charles Thraves | | **replied three times** — rival-selection defect, then a selection criterion, then its own endogeneity |
 | 4 | Academic, sports analytics | | C | | | |
 | 5 | Academic, operations research | | C | | | |
 | 6 | Race engineer / strategist | | B | | | |
@@ -121,6 +121,35 @@ His own paper is the closest published work to the adversarial component here,
 and it is endurance rather than Formula 1. Row 15 of
 [`../reports/cross_series/related_work.md`](../reports/cross_series/related_work.md)
 says what it does and what it does not.
+
+## Open thread — Thraves, three replies
+
+The most productive correspondence on this project so far, and the only one
+that has reached the paper's method rather than its presentation.
+
+**First reply: a defect.** `_nearest_rival` in
+`scripts/run_undercut_hypothesis.py` picks the rival by minimising absolute
+classified-position distance, so it chooses the car ahead on some decisions and
+the car behind on others while the audited car always commits first. Those are
+different games. With equidistant neighbours the choice falls to row order, and
+271 of 357 decisions turned out to be exactly that. The replay was stratified
+rather than rewritten, and the published result was left alone; see the added
+section in [`../reports/f1/undercut_hypothesis.md`](../reports/f1/undercut_hypothesis.md).
+
+**Second reply: the second-order effect.** He confirmed that lap-time
+differences from compound and tyre age are enough to move the relative timing,
+so a selection rule cannot work on raw pace alone.
+
+**Third reply: a criterion, and its limit.** Estimate for each car the total
+race time it would set under its own optimal strategy with no competition, and
+take as rival the car whose estimated time is closest. Implemented in
+`scripts/run_rival_selection.py` and compared against three other rules in
+[`../reports/f1/rival_selection.md`](../reports/f1/rival_selection.md).
+
+He named the limit himself: at the extreme the choice of rival is endogenous,
+since each car's strategy depends on the others. That is written into the
+paper as a declared limitation rather than left out, because it is the kind of
+reservation that disappears quietly when it is inconvenient.
 
 ## Rules
 

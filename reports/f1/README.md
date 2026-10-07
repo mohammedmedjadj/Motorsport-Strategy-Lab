@@ -53,6 +53,8 @@ game, where the rival covers ·
 overcut needs at the measured slopes, and where it is unreachable ·
 [d1_defence.md](d1_defence.md) — the position-keeping defence tested on 357
 real decisions, and why it predicts worse than the optimiser ·
+[rival_selection.md](rival_selection.md) — four readings of the word "rival"
+on the same decisions, and whether the choice moves the result ·
 [reliability.md](reliability.md) · [weather.md](weather.md)
 
 **The breadth layer** — 35 circuits back to 2011 from a public per-lap history,

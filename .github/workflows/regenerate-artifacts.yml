@@ -88,6 +88,30 @@ jobs:
       - name: Report drift
         run: .github/scripts/report_drift.sh "F1"
 
+  # Its own job because of the runtime: four Monte Carlo duels per decision at
+  # 1,500 draws is roughly ninety minutes, which would not fit beside the rest
+  # of the F1 layers inside one budget. Splitting it is better than excusing it
+  # from the schedule, since an artifact that only regenerates when someone
+  # remembers is an artifact that goes stale without anyone noticing.
+  rival_selection:
+    name: Rival-selection comparison
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Four rival-selection rules on the same decisions
+        run: python scripts/run_rival_selection.py
+
+      - name: Report drift
+        run: .github/scripts/report_drift.sh "rival selection"
+
   endurance:
     name: Endurance layers
     runs-on: ubuntu-latest

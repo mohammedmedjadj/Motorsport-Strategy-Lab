@@ -75,6 +75,9 @@ of the crew.
   [`cross_series/regime_decomposition.md`](cross_series/regime_decomposition.md).
 - **A defect this project has not fixed, written up as such** —
   [`cross_series/track_evolution_omitted_variable.md`](cross_series/track_evolution_omitted_variable.md).
+- **Whether a modelling choice a reviewer objected to changes the answer** —
+  [`f1/rival_selection.md`](f1/rival_selection.md). Four selection rules, and
+  an objection that is correct without being the cause.
 - **What a published model's assumptions ask for at measured parameter
   values** — [`f1/overcut_feasibility.md`](f1/overcut_feasibility.md), and
   what happens when its equilibrium is tested against real decisions —

@@ -105,12 +105,11 @@ Both questions need breadth to answer, and breadth is what this work supplies:
 one protocol, four championships, \NClasses{} car classes, every quantity
 measured from published timing or absent.
 
-It is worth being plain about where that puts the contribution. The protocol is
-the object of this paper and the findings are what it returned, which is why two
-of them coming back negative does not make the work thinner. A protocol that
-only ever confirmed things would be worth less. The cost is in the other
-direction. Our modelling is simpler than much of the work we cite, we ignore
-energy management entirely, and nothing here makes an existing optimiser better.
+The protocol is the object of this paper and the findings are what it
+returned. Two of them came back negative, which is a property of the answers
+rather than of the apparatus. The cost falls in the other direction: our
+modelling is simpler than much of the work we cite, we ignore energy management
+entirely, and nothing here makes an existing optimiser better.
 
 \section{Related work}
 
@@ -149,8 +148,7 @@ telemetry. \citet{santillana2026}
 deploys a calibrated real-time Monte Carlo engine live, generating
 natural-language briefings faithful to its own probabilistic state.
 
-Two things are rare across all of it, and together they define what this paper
-adds.
+Two things are rare across all of it.
 
 The first is out-of-sample validation of the fitted parameters. A tyre model is
 fitted and its quality reported on the data it was fitted to. \citet{cappello2026}
@@ -166,8 +164,8 @@ championship, held out forward in time; the protocol here holds out a whole
 season of a circuit-class and asks whether the remaining seasons predict it,
 over \NCircuitClasses{} circuit-classes and four championships. Both are
 out-of-sample. Only one changes season, circuit and class at once. They also
-report compound-specific degradation differences as not statistically distinct
---- an observation consistent with the instability we measure at scale.
+report compound-specific degradation differences as not statistically distinct.
+That is consistent with the instability we measure at scale.
 
 The second is comparison against what teams actually did. Optimisers get
 compared to other optimisers, to author-constructed baselines, or to the optimum
@@ -190,14 +188,14 @@ explanation for our own Result~3, so we implement it, test it on the same
 \NDecisionsFone{} Formula~1 decisions, and report in
 Section~\ref{sec:thirdexplanation} that it fails.
 
-We should be clear about how narrow the contribution is. The modelling here is
-not more sophisticated than \citet{heilmeier2020mc} or \citet{aguad2024}; in
-places it is deliberately simpler, and it ignores energy management entirely.
+The modelling here is not more sophisticated than \citet{heilmeier2020mc} or
+\citet{aguad2024}; in places it is deliberately simpler, and it ignores energy
+management entirely.
 What is different is the protocol: of the \NCatalogued{} papers catalogued for
 this review, \citet{cappello2026} is the only one that validates its fitted
 parameters on data it did not fit, and none applies a single protocol to more
-than one championship. We make no claim to being first at anything --- the
-literature is large and a catalogue is not a census --- only that these
+than one championship. We claim no priority. The literature is large and a
+catalogue is not a census; the claim is only that these
 \NCatalogued{} papers, each checked against a publication record, do not
 contain the comparison this paper reports. Two of the three findings that come
 back from it are negative.
@@ -275,8 +273,8 @@ silent narrowing here.}
 \label{fig:degradation}
 \end{figure}
 
-Figure~\ref{fig:degradation} is worth reading before the results, because two
-features of it constrain everything after. \NCoefCrossingZero{} of the
+Two features of Figure~\ref{fig:degradation} constrain everything after it.
+\NCoefCrossingZero{} of the
 \NCoefficientsFone{} fitted slopes, \PctCoefCrossingZero{}\%, have a
 cluster-robust interval containing zero: on those circuit--compound pairs we
 cannot distinguish tyre degradation from none. And within a circuit,
@@ -319,7 +317,7 @@ T(n_1,\dots,n_{m+1}) \;=\; m\pi \;+\; \sum_{j}\left(n_j p + \beta\,\frac{n_j(n_j
 %
 subject to $n_j \le F$ for every stint. The triangular sum is the accumulated
 tyre loss over a stint of $n_j$ laps. We use it exactly, not as the
-$\beta n_j^{2}/2$ integral --- they differ by $\beta n_j / 2$, which is about a
+$\beta n_j^{2}/2$ integral; they differ by $\beta n_j / 2$, which is about a
 second over a forty-lap stint and is the only quantity the stop decision
 compares against $\pi$.
 
@@ -409,7 +407,7 @@ against \ProtoMean{} (\ProtoCI{}) for prototypes. The difference is
 a permutation test on the group labels gives $p = \TransferP{}$. Both are
 reported because they fail differently: the bootstrap assumes the clusters
 resemble their population, the permutation assumes only exchangeability under
-the null. Resampling is at the circuit-class, never the fold --- folds inside a
+the null. Resampling is at the circuit-class, never the fold: folds inside a
 circuit-class share a pooled fitted slope, and treating them as independent
 would roughly quadruple the apparent sample.
 
@@ -582,8 +580,8 @@ it. \textbf{Rejected.}
 
 Across the calendar the cover-aware recommendation lands a median of
 \UndercutClosedMedian{} lap further from the real stop than the single-car one,
-and only \UndercutShareImproving{}\% of decisions improve at all. Two things
-are worth saying about that before it is read as a clean refutation.
+and only \UndercutShareImproving{}\% of decisions improve at all. Two
+qualifications stand between that and a clean refutation.
 
 The first is that the covariate is thinner than its headline suggests.
 Figure~\ref{fig:trackposition} shows a \TrackPositionRange{}-fold range across
@@ -678,7 +676,87 @@ end of its life, and a linear slope has no term for that. Measuring it directly
 is a different estimator and we have not attempted it. We state this as a
 hypothesis because that is what it is.
 
-\paragraph{Two measurements that hold whatever the verdict.} Of the
+\subsection{Which car counts as the rival}
+\label{sec:rivalchoice}
+
+The replay above pairs each
+audited car with its nearest neighbour on classified position, which Thraves
+objected chooses the car ahead on some decisions and the car behind on others
+while the decision order is fixed, and which leaves
+\NTiedDecisions{} of \NDecisionsFone{} decisions as ties between an equidistant
+neighbour in front and one behind. He proposed a criterion in its place:
+estimate for each car the total race time it would set under its own optimal
+strategy in the absence of competition, and take as rival the car whose
+estimated time is closest.
+
+We implement it with the same exact dynamic program the audit already uses,
+scoring each car from its own median green lap, the circuit-compound
+degradation posterior for the tyre it is running, and the circuit's measured
+pit loss. The compound term matters for the reason he gave: two cars at
+identical raw pace reach their optima on different laps if one is on a
+faster-wearing tyre. Formula~1 has not refuelled since 2010, so the fuel cap is
+the race distance and never binds, and what the program trades off is
+degradation against stop cost. The median gap in estimated standalone race time
+between an audited car and the rival this picks is \RivalStandaloneGap{}\,s
+over a full race.
+
+Table~\ref{tab:rivalrules} runs \NRivalRules{} rules against the same decisions.
+
+\begin{table}[htbp]
+\centering
+\caption{Rival-selection rules on the same Formula~1 decisions. Errors are
+signed in laps, positive meaning later than the team stopped. \emph{Closed} is
+the single-car absolute error minus the cover-aware one, so a positive value
+would mean modelling the rival moved the recommendation toward the team's
+choice. The position-ahead rule scores fewer decisions because a race leader
+has no car ahead of it.}
+\label{tab:rivalrules}
+\begin{tabular}{lrrrrr}
+\toprule
+rule & scored & cover-aware & closed (median) & closed (mean) & improved \\
+\midrule
+nearest on position & \RivalPositionScored{} & \RivalPositionAdv{} & \RivalPositionClosed{} & \RivalPositionMeanClosed{} & \RivalPositionBetter{} \\
+within one pit loss & \RivalPiWindowScored{} & \RivalPiWindowAdv{} & \RivalPiWindowClosed{} & \RivalPiWindowMeanClosed{} & \RivalPiWindowBetter{} \\
+car ahead on the clock & \RivalDOneScored{} & \RivalDOneAdv{} & \RivalDOneClosed{} & \RivalDOneMeanClosed{} & \RivalDOneBetter{} \\
+nearest standalone time & \RivalThravesScored{} & \RivalThravesAdv{} & \RivalThravesClosed{} & \RivalThravesMeanClosed{} & \RivalThravesBetter{} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Two things come out of it and they point opposite ways.
+
+The choice of rival is consequential. His rule and the published one name the
+same car on \PctRivalThravesAgrees{}\% of decisions, and all
+\NRivalRules{} rules agree on \NRivalAllAgree{} of the \NRivalAllApply{}
+decisions where all of them apply. Four defensible readings of the word
+``rival'' disagree about which car to model four times out of five.
+
+It does not move Result~3. The cover-aware recommendation stays later than the
+real stop under every rule, by a median of \RivalThravesAdv{} laps at best
+against \FoneLateMedian{} for the single-car model it is meant to improve on.
+What his rule does change is the penalty: under the published selection the
+cover-aware model sits a median \RivalPositionClosed{} lap further from the
+real stop than the single-car one, and under his it is level at
+\RivalThravesClosed{}, improving \RivalThravesBetter{} decisions against
+\RivalPositionBetter{}. The defect he identified is therefore real, and
+correcting it does not produce the agreement the adversarial model was built
+to find.
+
+He also named the limit of his own proposal, and we state it as he put it: at
+the extreme the choice of rival becomes endogenous, since each car's strategy
+depends on the others. The standalone time this heuristic sorts on is computed
+with no competition in it, which is what makes it computable and equally what
+makes it an approximation. We do not resolve this. A selection rule that
+accounted for the interaction would have to solve the joint problem the
+selection is a step toward, and nothing here does that.
+
+A second approximation is ours rather than his. The standalone time is the
+whole race from the start rather than the remaining race from the decision lap,
+so it pairs cars by capability instead of by where they have got to. His
+formulation is the former and it is what we implement; the latter would answer
+a different question.
+
+\paragraph{What holds whatever the verdict.} Of the
 \DOneDecisions{} decisions, \DOneNoRival{} belong to a car with nobody ahead of
 it on the clock within one lap. The race leader has no undercut to perform, so
 roughly a quarter of the audited set carries no prediction under any two-car
@@ -689,7 +767,7 @@ smaller than the circuit's measured pit loss. Whether the position is reachable
 by stopping first is therefore not the binding constraint, which is the opposite
 of what we expected to find.
 
-\paragraph{Three defects found while building this.} All three inflated the
+\paragraph{Defects found while building this.} All three inflated the
 defence's window, so all three made this negative result look stronger than it
 is, and we report them for that reason. Comparing cumulative race time with no
 bound found rivals a full lap away; the nearest car ahead is now capped at one
@@ -760,14 +838,14 @@ than losing to it.
 
 Two things this does not establish. \emph{Closer to what teams did} is not
 \emph{better}: every number here scores agreement with practice, never which
-plan was faster. And it does not rescue the finding --- it removes one more
+plan was faster. And it does not rescue the finding; it removes one more
 explanation for it, since the gap cannot come from the simpler methods lacking
 information the optimiser has. They have less, and land nearer.
 
 \section{Threats to validity}
 \label{sec:threats}
 
-\paragraph{Two withdrawn estimators.} A piecewise race-time basis intended to
+\paragraph{Estimators built here and withdrawn.} A piecewise race-time basis intended to
 absorb track evolution was validated on synthetic races and then withdrawn twice
 on real ones: real fields sit close to the degenerate boundary where tyre age
 and race time share most of their variance after fixed effects. Formula~1's
@@ -784,7 +862,7 @@ disagreement is an artefact of asking a question no team is answering. Testing
 that means constraining the candidate set to what was actually available, which
 changes the audit rather than the model.
 
-\paragraph{A fifth of the fitted slopes are not resolved.} Of the
+\paragraph{Unresolved slopes, carried forward anyway.} Of the
 \NCoefficientsFone{} Formula~1 degradation coefficients,
 \NCoefCrossingZero{} have a cluster-robust interval containing zero, and
 \PctCompoundOverlap{}\% of compound pairs within a circuit have intervals that
@@ -796,7 +874,7 @@ that the weak transfer reported in Section~\ref{sec:transfer} is a mixture of
 genuine instability and of parameters the data never pinned down, and this work
 does not separate the two.
 
-\paragraph{Three constants rest on very little.} The cheap-stop edge of
+\paragraph{Constants resting on very little.} The cheap-stop edge of
 \CheapStopEdge{}\,s is a maximum set by one race; drop it and the edge falls to
 \EdgeWithoutDefining{}\,s, \EdgeDropPct{}\%. The second-best transfer score,
 \ThinTransfer{} at \ThinTransferWhere{}, is a mean over \ThinTransferFolds{}
@@ -804,9 +882,8 @@ folds running from \ThinTransferLow{} to \ThinTransferHigh{} --- a spread of
 \ThinTransferSpread{}, wider than most circuit-classes' entire score, and it
 should not be read beside \BestTransferWhere{}'s \BestTransfer{}, which
 averages \BestTransferFolds{} folds spanning \BestTransferSpread{}. Same
-circuit, same protocol, an order of magnitude more stable --- which is itself
-worth knowing, since it says the instability is not a property of the circuit
-alone. And the top of
+circuit, same protocol, an order of magnitude more stable. The instability is
+therefore not a property of the circuit alone. And the top of
 the track-position range rests on \SwapHighestRaces{} races at a circuit first
 run in 2023. The rules these support are not thin --- \NAboveEdge{}
 race-seasons sit above the edge with \NTyreLimitedAboveEdge{} tyre-limited
@@ -825,17 +902,20 @@ are Safety-Car championships at very different rates. Any pooled endurance
 neutralisation model would sit between these and describe none of them, so they
 are never merged.
 
-\paragraph{Three layers cannot be regenerated from the repository.} The
+\paragraph{Some layers cannot be rebuilt from a clone.} The
 breadth-degradation and reliability layers read a third-party export that is not
 redistributed here. Their outputs are committed, so every downstream consumer
 and every test runs offline; what is blocked is rebuilding them from source.
+Section~\ref{sec:reproducibility} names them, and names the one whose blockage
+reaches a published result.
 
 \section{Reproducibility}
+\label{sec:reproducibility}
 
 Every artifact derived from committed data is regenerated by continuous
 integration, which fails on any difference between the working tree and the
-repository --- including files a generator wrote that were never committed, a
-blind spot that produced three weeks of silent drift before it was closed.
+repository. That includes files a generator wrote and nobody committed, a
+blind spot which produced three weeks of silent drift before it was closed.
 
 The state these results were computed from is archived on Zenodo and,
 through it, in Software Heritage and OpenAIRE. The concept identifier
@@ -845,7 +925,7 @@ this paper carries its own frozen identifier, recorded in the repository's
 \texttt{CITATION.cff}, for anyone who needs the exact state a figure came from
 rather than the current one.
 
-\paragraph{What a fresh clone cannot rebuild.} \NBlockedLayers{} layers read
+\paragraph{The blocked layers, named.} \NBlockedLayers{} layers read
 third-party exports this repository does not redistribute, so those layers
 cannot be regenerated from a clone: the Formula~1 breadth layer and the
 Formula~1 and WEC reliability tables. Their outputs are committed, so
@@ -853,9 +933,8 @@ everything downstream of them runs offline, and the rest of the project ---
 Formula~1 core, WEC, IMSA, ELMS, the simulator, the audits and every
 cross-series layer --- reproduces from a clone with no external download.
 
-One of those three is load-bearing rather than peripheral, and we would rather
-say so than have it found. The cross-source slope check that rejected one of
-the two candidate explanations for the gap in Result~3 rests on the breadth
+One of the three is load-bearing. The cross-source slope check that rejected
+one of the candidate explanations for the gap in Result~3 rests on the breadth
 layer, whose input a reader cannot obtain from this repository. Reproducing that
 rejection requires the external source, which is named in the repository along
 with what each blocked layer reads and writes.
@@ -881,8 +960,36 @@ the quantity it depends on by a factor of \DOneThetaRatio{}. Simpler rules using
 strictly less information land closer to what teams actually did in
 \NClassesRuleWins{} of \NClassesScored{} classes.
 
-We regard the last of these as the most useful thing here, precisely because it
-is unresolved.
+The last of these is unresolved, and it is the result we would most like
+someone else to explain.
+
+\section*{Acknowledgements}
+
+Several researchers replied to cold emails about this work. Three of those
+replies changed what the repository contains, and what they changed is set out
+here rather than thanked in general terms.
+
+Charles Thraves (Universidad de Chile) identified the rival-selection defect in
+the adversarial replay: minimising absolute classified-position distance picks
+the car ahead on some decisions and the car behind on others, and with
+equidistant neighbours the choice is incidental. He then proposed the
+standalone-optimal-time heuristic tested in
+Section~\ref{sec:rivalchoice}, confirmed that
+compound and tyre-age differences in lap time are enough to move the relative
+timing, and named the endogeneity that bounds his own proposal.
+
+Wytze de Vries (TU Eindhoven) raised two measurement objections to Result~2:
+that a class-level median pit loss pools two-tyre stops with full service
+including a driver change, and that part of the correlation may run backwards,
+since tyre-limited races carry less fuel and so stop faster. Both were tested;
+the first holds and does not disturb the class ordering, and the second has the
+sign he predicted at a magnitude too small to account for the result.
+
+Jorn van Kampen (TU Eindhoven) confirmed from electric endurance racing that
+the structure reported here is not an artefact of the combustion setting.
+
+None of them has seen this manuscript, and none is responsible for what it
+says.
 
 \bibliographystyle{plainnat}
 \begin{thebibliography}{99}
