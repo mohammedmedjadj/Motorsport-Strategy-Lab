@@ -43,11 +43,16 @@ Archived and citable at
 Race-strategy models are typically fitted and validated within one
 championship, often within one race. Two questions that follow are rarely
 asked: does a fitted model predict a season it has never seen, and does its
-recommendation resemble what a professional team actually did? We answer both
-on \NClasses{} car classes across four championships --- Formula~1, WEC, IMSA
-and ELMS --- using one protocol applied identically to all of them.
+recommendation resemble what a professional team actually did?
 
-Three results. First, tyre-degradation slopes transfer as a property of the
+We build one protocol to ask both and apply it identically to \NClasses{} car
+classes across four championships --- Formula~1, WEC, IMSA and ELMS. Of the
+\NCatalogued{} papers we catalogue, one validates its fitted parameters out of
+sample, and none applies a single protocol to more than one championship. The
+protocol is what this paper offers. It improves on no existing optimiser, and
+two of the three findings it returns are negative.
+
+First, tyre-degradation slopes transfer as a property of the
 \emph{circuit-class}, not of the championship: of \NCircuitClasses{}
 circuit-classes measured by leave-one-race-out, only \NTransferAboveTwo{} reach
 a within-stint $R^2$ of $\TransferThreshold{}$, with a maximum of \BestTransfer{} at
@@ -60,6 +65,12 @@ stop rather than by the car: across \NRaceSeasons{} race-seasons the class-level
 correlation between median pit loss and the share of tyre-limited races is
 $\PitLossR{}$ (95\% CI \PitLossRCI{}), and \NAboveEdge{} race-seasons above a
 \CheapStopEdge{}\,s pit loss contain \NTyreLimitedAboveEdge{} tyre-limited race.
+Because the optimiser decides by comparing the stop cost against the tyre, that
+result invites a charge of circularity, so we decompose it: ranking race-seasons
+by pit loss alone separates the two regimes at an AUC of \RegimeAucPitLoss{}
+(\RegimeAucPitLossCI{}) and by degradation slope alone at \RegimeAucSlope{}
+(\RegimeAucSlopeCI{}). Both terms carry information; the stop cost carries most
+of it.
 Third, replaying \NDecisions{} real first pit stops through an exact optimiser
 shows it stopping later than teams did on \FoneLateShare{}\% of Formula~1
 decisions, by a median of \FoneLateMedian{} laps. Both explanations we proposed
@@ -93,6 +104,13 @@ wall part company, and by how much.
 Both questions need breadth to answer, and breadth is what this work supplies:
 one protocol, four championships, \NClasses{} car classes, every quantity
 measured from published timing or absent.
+
+It is worth being plain about where that puts the contribution. The protocol is
+the object of this paper and the findings are what it returned, which is why two
+of them coming back negative does not make the work thinner. A protocol that
+only ever confirmed things would be worth less. The cost is in the other
+direction. Our modelling is simpler than much of the work we cite, we ignore
+energy management entirely, and nothing here makes an existing optimiser better.
 
 \section{Related work}
 
@@ -158,13 +176,30 @@ under the model's own assumptions. \citet{bekker2009} compare to real races, and
 own game, but we are not aware of work that replays a large sample of real
 pit-stop decisions and reports where the optimiser and the pit wall diverge.
 
+A third gap is narrower and sits between the two. A model's assumptions can be
+tested against measured parameter values without testing the model itself.
+\citet{salminen2026} solves the two-car one-stop game analytically and derives
+the earliest lap on which an undercut cannot be answered, which is the only
+mechanism we have found that predicts stopping \emph{before} the time optimum
+--- the direction of our third result. His overcut defence requires a tyre
+advantage of $(o + \varepsilon)/\theta$ laps. At the degradation rates fitted
+here it is unreachable on a substantial share of circuit-compounds, and his
+position-keeping defence, tested on the same \NDecisionsFone{} Formula~1
+decisions, predicts a stop far later than teams made. Both are reported in the
+repository rather than here, because they test a model that is not ours; we
+note them because the third explanation for our own result also failed.
+
 We should be clear about how narrow the contribution is. The modelling here is
 not more sophisticated than \citet{heilmeier2020mc} or \citet{aguad2024}; in
 places it is deliberately simpler, and it ignores energy management entirely.
-What is different is that one protocol is applied across four championships,
-that the resulting parameters are tested on seasons they were not fitted to, and
-that the optimiser is then confronted with \NDecisions{} real decisions. Two of
-the three results that come back are negative.
+What is different is the protocol: of the \NCatalogued{} papers catalogued for
+this review, \citet{cappello2026} is the only one that validates its fitted
+parameters on data it did not fit, and none applies a single protocol to more
+than one championship. We make no claim to being first at anything --- the
+literature is large and a catalogue is not a census --- only that these
+\NCatalogued{} papers, each checked against a publication record, do not
+contain the comparison this paper reports. Two of the three findings that come
+back from it are negative.
 
 \section{Data and protocol}
 
@@ -410,6 +445,42 @@ is not a source of variation that exists.
 At race level, \NAboveEdge{} of \NRaceSeasons{} race-seasons have a pit loss
 above \CheapStopEdge{}\,s and \NTyreLimitedAboveEdge{} of them is tyre-limited,
 across every class.
+
+\paragraph{Is this circular?} The optimiser decides the regime by comparing
+what an extra stop costs against what the tyre gives back, so pit loss
+predicting the regime is pit loss predicting one side of its own criterion. The
+objection is fair and the answer has to be a measurement. If the stop cost were
+doing all the work, the degradation slope would carry no information about the
+regime once the stop cost is known. It carries some. Ranking the
+\NRaceSeasons{} race-seasons by pit loss alone orders the \RegimeNTyreLimited{}
+tyre-limited against the \RegimeNFuelLimited{} fuel-limited ones at an AUC of
+\RegimeAucPitLoss{} (95\% CI \RegimeAucPitLossCI{}); by net degradation slope
+alone, \RegimeAucSlope{} (\RegimeAucSlopeCI{}). Both are well clear of a coin
+toss and the ordering between them is not close.
+
+This does not establish that pit loss \emph{causes} the regime, and we do not
+claim it: the two are related by construction. What it establishes is that the
+comparison is asymmetric in practice. Knowing the cost of a stop tells you
+nearly the whole answer across four championships; knowing how fast the tyre
+wears tells you considerably less. The case that pit loss is exogenous to the
+race outcome is made separately, from the fact that it varies far more between
+circuits than between seasons of the same circuit.
+
+\paragraph{What the median pit loss is a median of.} It is taken over every
+green-flag stop in the race-season, which in endurance racing includes stops
+that change driver as well as stops that do not. A driver change is slower in
+every class measured, so the class medians are not a measure of tyre-service
+time alone. The class \emph{ordering} is unchanged whether the median is taken
+over all stops, only those without a driver change, or only those with one,
+which is what the correlation above depends on.
+
+\paragraph{The condition behind it.} A linear slope $\beta$ over a stint of $n$
+laps accumulates $\beta n(n+1)/2$ seconds of degradation, so an extra stop
+repays its $\pi$ seconds when that sum exceeds $\pi$. We state it because it is
+the readable form of the mechanism, and we do not use it: the dynamic program
+above is exact under the fuel cap and the stop count is read from its solution.
+The closed form is an approximation to that, checked against it rather than
+substituted for it.
 
 \paragraph{The rule is robust; the constant is not.} The edge sits at
 \CheapStopEdge{}\,s because a single race puts it there; the next tyre-limited
@@ -698,6 +769,21 @@ this paper carries its own frozen identifier, recorded in the repository's
 \texttt{CITATION.cff}, for anyone who needs the exact state a figure came from
 rather than the current one.
 
+\paragraph{What a fresh clone cannot rebuild.} \NBlockedLayers{} layers read
+third-party exports this repository does not redistribute, so those layers
+cannot be regenerated from a clone: the Formula~1 breadth layer and the
+Formula~1 and WEC reliability tables. Their outputs are committed, so
+everything downstream of them runs offline, and the rest of the project ---
+Formula~1 core, WEC, IMSA, ELMS, the simulator, the audits and every
+cross-series layer --- reproduces from a clone with no external download.
+
+One of those three is load-bearing rather than peripheral, and we would rather
+say so than have it found. The cross-source slope check that rejected one of
+the two candidate explanations for the gap in Result~3 rests on the breadth
+layer, whose input a reader cannot obtain from this repository. Reproducing that
+rejection requires the external source, which is named in the repository along
+with what each blocked layer reads and writes.
+
 Every number in this manuscript is a macro generated by
 \texttt{scripts/make\_paper\_numbers.py} from the committed artifacts; the
 source of this paper contains no digits. A separate test recomputes each
@@ -706,9 +792,12 @@ the document that publishes it, which is stricter than recomputing alone.
 
 \section{Conclusion}
 
-Degradation slopes rarely transfer, and where they do it is a property of the
+What this paper offers is a protocol and what came back from it. Degradation
+slopes rarely transfer, and where they do it is a property of the
 circuit-class rather than of the championship or the machinery. Whether an extra
-stop can ever pay is decided by the cost of the stop. And an exact optimiser
+stop can ever pay is decided by the cost of the stop, which separates the two
+regimes at an AUC of \RegimeAucPitLoss{} against \RegimeAucSlope{} for the
+tyre. And an exact optimiser
 disagrees with professional practice in a consistent direction that we have not
 been able to explain --- having proposed two explanations, tested both, and lost
 both, and having found that simpler rules using strictly less information land
@@ -722,9 +811,11 @@ is unresolved.
 \begin{thebibliography}{99}
 
 % Every entry below was checked against a publication record -- Crossref for the
-% journal articles, the arXiv API for the preprints -- rather than recalled from
-% memory. Two candidate references carried in earlier notes could not be
-% confirmed and are deliberately absent. See reports/cross_series/related_work.md.
+% journal articles, the arXiv API for the preprints, the Zenodo API for the one
+% deposited there -- rather than recalled from memory. Two candidate references
+% carried in earlier notes could not be confirmed and are deliberately absent.
+% One entry has not been peer reviewed by anyone and its own line says so, which
+% is the only honest way to cite it. See reports/cross_series/related_work.md.
 
 \bibitem[Aguad and Thraves(2024)]{aguad2024}
 Felipe Aguad and Charles Thraves.
@@ -804,6 +895,13 @@ Alexander Heilmeier, Andr\'e Thomaser, Michael Graf, and Johannes Betz.
   race strategy decisions in circuit motorsport.
 \newblock \emph{Applied Sciences}, 10(21):7805, 2020.
 \newblock \doi{10.3390/app10217805}.
+
+\bibitem[Salminen(2026)]{salminen2026}
+Tomi Salminen.
+\newblock Game-theoretic framework for pit stop strategy optimisation in circuit
+  auto racing.
+\newblock \emph{Zenodo preprint}, 2026.
+  \doi{10.5281/zenodo.21306419}. Single author, not peer reviewed.
 
 \bibitem[Santillana(2026)]{santillana2026}
 Juan~S. Santillana.

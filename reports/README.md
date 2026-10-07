@@ -70,7 +70,9 @@ of the crew.
 - **What more than one championship says that one cannot** —
   [`cross_series/synthesis.md`](cross_series/synthesis.md).
 - **The rule that overturned this project's own conclusion twice** —
-  [`cross_series/when_tyres_beat_fuel.md`](cross_series/when_tyres_beat_fuel.md).
+  [`cross_series/when_tyres_beat_fuel.md`](cross_series/when_tyres_beat_fuel.md),
+  and whether it is circular —
+  [`cross_series/regime_decomposition.md`](cross_series/regime_decomposition.md).
 - **A defect this project has not fixed, written up as such** —
   [`cross_series/track_evolution_omitted_variable.md`](cross_series/track_evolution_omitted_variable.md).
 - **What a published model's assumptions ask for at measured parameter

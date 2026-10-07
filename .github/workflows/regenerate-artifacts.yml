@@ -152,6 +152,11 @@ jobs:
         run: python scripts/run_formal_tests.py
       - name: Where the evidence is thin
         run: python scripts/run_thin_evidence.py
+      # Reads the multi-stop plans, so it runs after them. Answers the
+      # circularity objection to Result 2 by measuring which term of the
+      # optimiser's comparison actually orders the two regimes.
+      - name: Which term decides the strategy regime
+        run: python scripts/run_regime_decomposition.py
       # Reads every green-flag stop behind the per-race pit-loss medians, so it
       # runs after the multi-stop plans it classifies against.
       - name: Pit-loss measurement checks

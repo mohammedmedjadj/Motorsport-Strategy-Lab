@@ -39,12 +39,21 @@ BLOCKED_SCRIPTS = frozenset({
 #: makes no reproduction claim and belongs in neither set.
 INSPECTION_ONLY = frozenset({"inspect_external.py"})
 
+#: `data/external/README.md` is tracked and ships with the clone; the
+#: gitignored inputs are the `f1/` and `wec/` subdirectories beneath it. A
+#: script that reads the README depends on nothing a cloner lacks, so matching
+#: it would report a blocked layer that is not one -- which is how this guard
+#: first flagged make_paper_numbers.py for counting the blocked layers out of
+#: the very document that lists them.
+COMMITTED_UNDER_EXTERNAL = re.compile(r"data[/\\]external[/\\]README\.md")
+
 
 def _scripts_reading_external() -> set[str]:
-    """Every script under scripts/ that touches data/external/."""
+    """Every script under scripts/ that touches the gitignored external data."""
     found = set()
     for script in (REPO / "scripts").glob("*.py"):
         text = script.read_text(encoding="utf-8", errors="replace")
+        text = COMMITTED_UNDER_EXTERNAL.sub("", text)
         if re.search(r"data/external|external[/\\](f1|wec)", text):
             found.add(script.name)
     return found - INSPECTION_ONLY

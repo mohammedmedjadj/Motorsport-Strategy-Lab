@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import inspect
 import pathlib
+import re
 import sys
 from pathlib import Path
 
@@ -34,6 +35,7 @@ from src.ingestion.config import (  # noqa: E402
     ENDURANCE_DERIVED_DIR,
     F1_DERIVED_DIR,
     REPO_ROOT,
+    REPORTS_DIR,
 )
 
 PAPER = REPO_ROOT / "paper"
@@ -205,6 +207,48 @@ def _macros() -> dict[str, str]:
     out["NClassPartitions"] = str(n_partitions)
     out["TransferPBonferroni"] = f"{p_value * n_partitions:.3f}"
     out["BonferroniBreakeven"] = f"{0.05 / p_value:.0f}"
+
+    # --- R2: which term of the comparison actually decides the regime ------
+    # The answer to the circularity objection, and it has to be a measurement
+    # rather than an argument. See reports/cross_series/regime_decomposition.md,
+    # including the third candidate that was thrown out for scoring 1.000 by
+    # construction.
+    regime = pd.read_csv(DERIVED_DIR / "cross_series" / "regime_decomposition.csv")
+    labels = {"pit loss": "PitLoss", "net degradation slope": "Slope"}
+    # `row` is a function in this scope; shadowing it cost a debugging pass
+    # here once already.
+    for _, discriminator in regime.iterrows():
+        suffix = labels[discriminator["quantity"]]
+        out[f"RegimeAuc{suffix}"] = f"{discriminator['auc']:.3f}"
+        out[f"RegimeAuc{suffix}CI"] = (
+            f"[{discriminator['ci_low']:.3f}, {discriminator['ci_high']:.3f}]"
+        )
+    out["RegimeNTyreLimited"] = str(int(regime["n_tyre_limited"].iloc[0]))
+    out["RegimeNFuelLimited"] = str(int(regime["n_fuel_limited"].iloc[0]))
+
+    # --- the literature catalogue, counted rather than remembered ----------
+    # The framing claim is about how many papers were catalogued and how many
+    # of them validate out of sample. Counting the table means the claim
+    # cannot drift away from the catalogue it describes.
+    catalogue = (REPORTS_DIR / "cross_series" / "related_work.md").read_text(
+        encoding="utf-8"
+    )
+    entries = re.findall(r"^\| (\d+) \| \*\*", catalogue, re.M)
+    out["NCatalogued"] = str(len(entries))
+    if len(entries) != int(entries[-1]):
+        raise ValueError(
+            f"related_work.md has {len(entries)} rows numbered up to "
+            f"{entries[-1]}; the numbering and the count disagree"
+        )
+
+    # --- what a fresh clone cannot rebuild ---------------------------------
+    # Counted from the table in data/external/README.md, so the paper cannot
+    # claim a smaller number than that file documents.
+    external = (REPO_ROOT / "data" / "external" / "README.md").read_text(
+        encoding="utf-8"
+    )
+    blocked = re.findall(r"^\| `scripts/(\w+\.py)` \|", external, re.M)
+    out["NBlockedLayers"] = str(len(blocked))
 
     # --- the thinnest transfer score, the one a reviewer goes for first ----
     loro = pd.read_csv(ENDURANCE_DERIVED_DIR / "endurance_degradation_loro.csv")
