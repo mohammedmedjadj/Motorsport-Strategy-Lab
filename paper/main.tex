@@ -69,6 +69,11 @@ Two estimators built for this work were withdrawn when they failed on
 real fields; both withdrawals are reported.
 \end{abstract}
 
+\vspace{0.6em}
+\noindent\textbf{Keywords:} race strategy; tyre degradation; out-of-sample
+validation; motorsport analytics; Formula~1; endurance racing; pit stop
+optimisation; retrospective audit
+
 \doublespacing
 
 \section{Introduction}
@@ -848,10 +853,22 @@ a different question.
 
 \paragraph{What this does and does not claim.} How far four rules disagree
 depends on how different they are, and four near-restatements of one criterion
-would of course agree. These four are not that. Two are taken from published
-work --- the leader/chaser pairing \citet{salminen2026} defines his defences
-on, and the standalone-time criterion Thraves proposed --- and two are ours.
-The disagreement is also bounded: no decision produces four distinct cars, and
+would of course agree. The obvious objection is therefore that the rules were
+chosen to diverge. They were not, and the provenance of two of them is what
+answers it.
+
+The car-ahead rule is not a reading we selected. It is the pairing
+\citet{salminen2026} defines his defences on: his leader and chaser are
+whichever two cars are adjacent on the clock, so testing his model at all
+forces that rule and no other. The standalone-time rule was proposed to us by
+Charles Thraves, in correspondence, as a criterion he thought the audit should
+use instead of ours; he is an author of the Stackelberg treatment
+(\citealp{aguad2024}; \citealp{carrasco2022}) whose framing this project's
+adversarial component reuses. Neither rule was constructed here, neither was
+constructed against the other, and neither was introduced because it
+disagreed --- the disagreement is what came back.
+
+The disagreement is also bounded. No decision produces four distinct cars, and
 \NRivalTwoCars{} of \NRivalAllApply{} produce exactly two. The claim is that a
 rival is not determined by the timing data together with a defensible
 criterion, which is weaker than saying it is undefined and strong enough to
