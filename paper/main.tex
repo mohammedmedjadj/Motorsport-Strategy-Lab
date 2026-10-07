@@ -21,6 +21,11 @@
 \usepackage[hidelinks]{hyperref}
 \usepackage{natbib}
 \usepackage{microtype}
+% The Wharton Sports Analytics Journal asks for double-spaced body text,
+% continuous line numbers and page numbers, no footnotes and a single
+% column. Both packages ship with any standard TeX distribution.
+\usepackage{setspace}
+\usepackage{lineno}
 
 \input{numbers}
 
@@ -28,60 +33,43 @@
 \large Cross-championship evidence and a retrospective audit of
 \NDecisions{} real pit-stop decisions}
 
-\author{Mohammed Reda Medjadj\thanks{Independent.
-Code, data and every figure in this paper:
-\url{https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab}.
-Archived and citable at
-\url{https://doi.org/10.5281/zenodo.22726130}.}}
+\author{Mohammed Reda Medjadj \\ Independent}
 
 \date{\today}
 
 \begin{document}
 \maketitle
+\linenumbers
 
 \begin{abstract}
 Race-strategy models are typically fitted and validated within one
-championship, often within one race. Two questions that follow are rarely
-asked: does a fitted model predict a season it has never seen, and does its
-recommendation resemble what a professional team actually did?
+championship, often one race. Two questions follow and are rarely asked: does a fitted model predict a season it has never seen, and does its
+recommendation resemble what a professional team actually did? We apply one protocol to both,
+identically across \NClasses{} car classes and four championships: Formula~1,
+WEC, IMSA and ELMS. Of the \NCatalogued{} papers we
+catalogue, none applies a single protocol to more than one championship.
 
-We build one protocol to ask both and apply it identically to \NClasses{} car
-classes across four championships --- Formula~1, WEC, IMSA and ELMS. Of the
-\NCatalogued{} papers we catalogue, one validates its fitted parameters out of
-sample, and none applies a single protocol to more than one championship. The
-protocol is what this paper offers. It improves on no existing optimiser, and
-two of the three findings it returns are negative.
+Four findings, three of them negative. Tyre-degradation slopes transfer as a
+property of the \emph{circuit-class} rather than the championship: of
+\NCircuitClasses{} measured by leave-one-race-out, \NTransferAboveTwo{} reach a
+within-stint $R^2$ of $\TransferThreshold{}$, and a near-specification control
+field fails as the balanced fields do. Whether
+an extra stop can pay is set by the cost of the stop: across \NRaceSeasons{}
+race-seasons the class-level correlation between median pit loss and
+tyre-limited share is $\PitLossR{}$ (95\% CI \PitLossRCI{}), and ranking
+race-seasons by pit loss alone separates the two regimes at an AUC of
+\RegimeAucPitLoss{} against \RegimeAucSlope{} for degradation. Replaying \NDecisions{} real first pit stops, an exact optimiser
+stops later than teams did on \FoneLateShare{}\% of Formula~1 decisions, by a
+median of \FoneLateMedian{} laps; three explanations were tested and all three
+failed. And the rival such a model should respond to is under-determined:
+\NRivalRules{} defensible selection rules name the same car on
+\NRivalAllAgree{} of \NRivalAllApply{} decisions.
 
-First, tyre-degradation slopes transfer as a property of the
-\emph{circuit-class}, not of the championship: of \NCircuitClasses{}
-circuit-classes measured by leave-one-race-out, only \NTransferAboveTwo{} reach
-a within-stint $R^2$ of $\TransferThreshold{}$, with a maximum of \BestTransfer{} at
-\BestTransferWhere{}. GT3 classes transfer measurably better than prototype
-classes (difference \TransferDiff{}, 95\% CI \TransferDiffCI{}, permutation
-$p = \TransferP{}$), but a near-specification control field fails exactly as the
-Balance-of-Performance-adjusted fields do, ruling out heterogeneous machinery as
-the cause. Second, whether an extra stop can ever pay is set by the cost of the
-stop rather than by the car: across \NRaceSeasons{} race-seasons the class-level
-correlation between median pit loss and the share of tyre-limited races is
-$\PitLossR{}$ (95\% CI \PitLossRCI{}), and \NAboveEdge{} race-seasons above a
-\CheapStopEdge{}\,s pit loss contain \NTyreLimitedAboveEdge{} tyre-limited race.
-Because the optimiser decides by comparing the stop cost against the tyre, that
-result invites a charge of circularity, so we decompose it: ranking race-seasons
-by pit loss alone separates the two regimes at an AUC of \RegimeAucPitLoss{}
-(\RegimeAucPitLossCI{}) and by degradation slope alone at \RegimeAucSlope{}
-(\RegimeAucSlopeCI{}). Both terms carry information; the stop cost carries most
-of it.
-Third, replaying \NDecisions{} real first pit stops through an exact optimiser
-shows it stopping later than teams did on \FoneLateShare{}\% of Formula~1
-decisions, by a median of \FoneLateMedian{} laps. Both explanations we proposed
-for this were tested and both failed, and three rule-of-thumb baselines scored
-on the same decisions beat it in \NClassesRuleWins{} of
-\NClassesScored{} classes.
-
-We report the third result as measured and unexplained. Two estimators built for
-this work were validated on synthetic data and then withdrawn when they failed
-on real fields, and both withdrawals are written up here.
+Two estimators built for this work were withdrawn when they failed on
+real fields; both withdrawals are reported.
 \end{abstract}
+
+\doublespacing
 
 \section{Introduction}
 
@@ -580,8 +568,24 @@ it. \textbf{Rejected.}
 
 Across the calendar the cover-aware recommendation lands a median of
 \UndercutClosedMedian{} lap further from the real stop than the single-car one,
-and only \UndercutShareImproving{}\% of decisions improve at all. Two
-qualifications stand between that and a clean refutation.
+and only \UndercutShareImproving{}\% of decisions improve at all.
+
+Two separate things follow and they should not be read together. The first is
+about the hypothesis: modelling the cover does not move the recommendation
+toward what teams did, so an unmodelled undercut does not account for the gap.
+That holds under every rival-selection rule in Section~\ref{sec:rivalchoice},
+including the one that fits the engine best. The second is about the test
+rather than the hypothesis: part of the \emph{further} in that sentence was
+an artefact of how the rival was chosen. Under the published selection the
+cover-aware model is a median \RivalPositionClosed{} lap worse than the
+single-car one, which reads as an engine that damages its own input; under the
+standalone-time selection it is level at \RivalThravesClosed{} and improves
+\RivalThravesBetter{} decisions against \RivalPositionBetter{}. The hypothesis
+dies either way. It dies cleanly under the better selection, and the earlier
+appearance of a model actively making things worse was in part a measurement
+defect we have since fixed.
+
+Two qualifications stand between the first of those and a clean refutation.
 
 The first is that the covariate is thinner than its headline suggests.
 Figure~\ref{fig:trackposition} shows a \TrackPositionRange{}-fold range across
@@ -676,86 +680,6 @@ end of its life, and a linear slope has no term for that. Measuring it directly
 is a different estimator and we have not attempted it. We state this as a
 hypothesis because that is what it is.
 
-\subsection{Which car counts as the rival}
-\label{sec:rivalchoice}
-
-The replay above pairs each
-audited car with its nearest neighbour on classified position, which Thraves
-objected chooses the car ahead on some decisions and the car behind on others
-while the decision order is fixed, and which leaves
-\NTiedDecisions{} of \NDecisionsFone{} decisions as ties between an equidistant
-neighbour in front and one behind. He proposed a criterion in its place:
-estimate for each car the total race time it would set under its own optimal
-strategy in the absence of competition, and take as rival the car whose
-estimated time is closest.
-
-We implement it with the same exact dynamic program the audit already uses,
-scoring each car from its own median green lap, the circuit-compound
-degradation posterior for the tyre it is running, and the circuit's measured
-pit loss. The compound term matters for the reason he gave: two cars at
-identical raw pace reach their optima on different laps if one is on a
-faster-wearing tyre. Formula~1 has not refuelled since 2010, so the fuel cap is
-the race distance and never binds, and what the program trades off is
-degradation against stop cost. The median gap in estimated standalone race time
-between an audited car and the rival this picks is \RivalStandaloneGap{}\,s
-over a full race.
-
-Table~\ref{tab:rivalrules} runs \NRivalRules{} rules against the same decisions.
-
-\begin{table}[htbp]
-\centering
-\caption{Rival-selection rules on the same Formula~1 decisions. Errors are
-signed in laps, positive meaning later than the team stopped. \emph{Closed} is
-the single-car absolute error minus the cover-aware one, so a positive value
-would mean modelling the rival moved the recommendation toward the team's
-choice. The position-ahead rule scores fewer decisions because a race leader
-has no car ahead of it.}
-\label{tab:rivalrules}
-\begin{tabular}{lrrrrr}
-\toprule
-rule & scored & cover-aware & closed (median) & closed (mean) & improved \\
-\midrule
-nearest on position & \RivalPositionScored{} & \RivalPositionAdv{} & \RivalPositionClosed{} & \RivalPositionMeanClosed{} & \RivalPositionBetter{} \\
-within one pit loss & \RivalPiWindowScored{} & \RivalPiWindowAdv{} & \RivalPiWindowClosed{} & \RivalPiWindowMeanClosed{} & \RivalPiWindowBetter{} \\
-car ahead on the clock & \RivalDOneScored{} & \RivalDOneAdv{} & \RivalDOneClosed{} & \RivalDOneMeanClosed{} & \RivalDOneBetter{} \\
-nearest standalone time & \RivalThravesScored{} & \RivalThravesAdv{} & \RivalThravesClosed{} & \RivalThravesMeanClosed{} & \RivalThravesBetter{} \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-Two things come out of it and they point opposite ways.
-
-The choice of rival is consequential. His rule and the published one name the
-same car on \PctRivalThravesAgrees{}\% of decisions, and all
-\NRivalRules{} rules agree on \NRivalAllAgree{} of the \NRivalAllApply{}
-decisions where all of them apply. Four defensible readings of the word
-``rival'' disagree about which car to model four times out of five.
-
-It does not move Result~3. The cover-aware recommendation stays later than the
-real stop under every rule, by a median of \RivalThravesAdv{} laps at best
-against \FoneLateMedian{} for the single-car model it is meant to improve on.
-What his rule does change is the penalty: under the published selection the
-cover-aware model sits a median \RivalPositionClosed{} lap further from the
-real stop than the single-car one, and under his it is level at
-\RivalThravesClosed{}, improving \RivalThravesBetter{} decisions against
-\RivalPositionBetter{}. The defect he identified is therefore real, and
-correcting it does not produce the agreement the adversarial model was built
-to find.
-
-He also named the limit of his own proposal, and we state it as he put it: at
-the extreme the choice of rival becomes endogenous, since each car's strategy
-depends on the others. The standalone time this heuristic sorts on is computed
-with no competition in it, which is what makes it computable and equally what
-makes it an approximation. We do not resolve this. A selection rule that
-accounted for the interaction would have to solve the joint problem the
-selection is a step toward, and nothing here does that.
-
-A second approximation is ours rather than his. The standalone time is the
-whole race from the start rather than the remaining race from the decision lap,
-so it pairs cars by capability instead of by where they have got to. His
-formulation is the former and it is what we implement; the latter would answer
-a different question.
-
 \paragraph{What holds whatever the verdict.} Of the
 \DOneDecisions{} decisions, \DOneNoRival{} belong to a car with nobody ahead of
 it on the clock within one lap. The race leader has no undercut to perform, so
@@ -841,6 +765,105 @@ Two things this does not establish. \emph{Closer to what teams did} is not
 plan was faster. And it does not rescue the finding; it removes one more
 explanation for it, since the gap cannot come from the simpler methods lacking
 information the optimiser has. They have less, and land nearer.
+
+\section{Result 4: which car counts as the rival is under-determined}
+\label{sec:rivalchoice}
+
+The replay above pairs each
+audited car with its nearest neighbour on classified position, which Thraves
+objected chooses the car ahead on some decisions and the car behind on others
+while the decision order is fixed, and which leaves
+\NTiedDecisions{} of \NDecisionsFone{} decisions as ties between an equidistant
+neighbour in front and one behind. He proposed a criterion in its place:
+estimate for each car the total race time it would set under its own optimal
+strategy in the absence of competition, and take as rival the car whose
+estimated time is closest.
+
+We implement it with the same exact dynamic program the audit already uses,
+scoring each car from its own median green lap, the circuit-compound
+degradation posterior for the tyre it is running, and the circuit's measured
+pit loss. The compound term matters for the reason he gave: two cars at
+identical raw pace reach their optima on different laps if one is on a
+faster-wearing tyre. Formula~1 has not refuelled since 2010, so the fuel cap is
+the race distance and never binds, and what the program trades off is
+degradation against stop cost. The median gap in estimated standalone race time
+between an audited car and the rival this picks is \RivalStandaloneGap{}\,s
+over a full race.
+
+Table~\ref{tab:rivalrules} runs \NRivalRules{} rules against the same decisions.
+
+\begin{table}[htbp]
+\centering
+\caption{Rival-selection rules on the same Formula~1 decisions. Errors are
+signed in laps, positive meaning later than the team stopped. \emph{Closed} is
+the single-car absolute error minus the cover-aware one, so a positive value
+would mean modelling the rival moved the recommendation toward the team's
+choice. The position-ahead rule scores fewer decisions because a race leader
+has no car ahead of it.}
+\label{tab:rivalrules}
+\begin{tabular}{lrrrrr}
+\toprule
+rule & scored & cover-aware & closed (median) & closed (mean) & improved \\
+\midrule
+nearest on position & \RivalPositionScored{} & \RivalPositionAdv{} & \RivalPositionClosed{} & \RivalPositionMeanClosed{} & \RivalPositionBetter{} \\
+within one pit loss & \RivalPiWindowScored{} & \RivalPiWindowAdv{} & \RivalPiWindowClosed{} & \RivalPiWindowMeanClosed{} & \RivalPiWindowBetter{} \\
+car ahead on the clock & \RivalDOneScored{} & \RivalDOneAdv{} & \RivalDOneClosed{} & \RivalDOneMeanClosed{} & \RivalDOneBetter{} \\
+nearest standalone time & \RivalThravesScored{} & \RivalThravesAdv{} & \RivalThravesClosed{} & \RivalThravesMeanClosed{} & \RivalThravesBetter{} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Two things come out of it and they point opposite ways.
+
+The choice of rival is consequential. His rule and the published one name the
+same car on \PctRivalThravesAgrees{}\% of decisions, and all
+\NRivalRules{} rules agree on \NRivalAllAgree{} of the \NRivalAllApply{}
+decisions where all of them apply. Four defensible readings of the word
+``rival'' disagree about which car to model four times out of five.
+
+It does not move Result~3. The cover-aware recommendation stays later than the
+real stop under every rule, by a median of \RivalThravesAdv{} laps at best
+against \FoneLateMedian{} for the single-car model it is meant to improve on.
+What his rule does change is the penalty: under the published selection the
+cover-aware model sits a median \RivalPositionClosed{} lap further from the
+real stop than the single-car one, and under his it is level at
+\RivalThravesClosed{}, improving \RivalThravesBetter{} decisions against
+\RivalPositionBetter{}. The defect he identified is therefore real, and
+correcting it does not produce the agreement the adversarial model was built
+to find.
+
+He also named the limit of his own proposal, and we state it as he put it: at
+the extreme the choice of rival becomes endogenous, since each car's strategy
+depends on the others. The standalone time this heuristic sorts on is computed
+with no competition in it, which is what makes it computable and equally what
+makes it an approximation. We do not resolve this. A selection rule that
+accounted for the interaction would have to solve the joint problem the
+selection is a step toward, and nothing here does that.
+
+A second approximation is ours rather than his. The standalone time is the
+whole race from the start rather than the remaining race from the decision lap,
+so it pairs cars by capability instead of by where they have got to. His
+formulation is the former and it is what we implement; the latter would answer
+a different question.
+
+\paragraph{What this does and does not claim.} How far four rules disagree
+depends on how different they are, and four near-restatements of one criterion
+would of course agree. These four are not that. Two are taken from published
+work --- the leader/chaser pairing \citet{salminen2026} defines his defences
+on, and the standalone-time criterion Thraves proposed --- and two are ours.
+The disagreement is also bounded: no decision produces four distinct cars, and
+\NRivalTwoCars{} of \NRivalAllApply{} produce exactly two. The claim is that a
+rival is not determined by the timing data together with a defensible
+criterion, which is weaker than saying it is undefined and strong enough to
+matter for any model that assumes one.
+
+The game-theoretic branch of this literature is built on a two-car abstraction.
+\citet{aguad2024} solve a Stackelberg game between two drivers,
+\citet{devries2026} pose a two-agent problem per lap, and
+\citet{salminen2026} derives his equilibrium for a leader and a chaser. Each is
+internally consistent and none of them has occasion to say which two cars those
+are in a real race, because the question does not arise inside the abstraction.
+Measured against real decisions, the identification is the part that gives way.
 
 \section{Threats to validity}
 \label{sec:threats}
@@ -963,6 +986,15 @@ strictly less information land closer to what teams actually did in
 The last of these is unresolved, and it is the result we would most like
 someone else to explain.
 
+\section*{Data and code availability}
+
+Every quantity in this paper is derived from committed artifacts by
+scripts in a public repository, which also contains the data, the
+figures and the tests:
+\url{https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab}. The
+state the results were computed from is archived and citable at
+\url{https://doi.org/10.5281/zenodo.22726130}.
+
 \section*{Acknowledgements}
 
 Several researchers replied to cold emails about this work. Three of those
@@ -988,136 +1020,127 @@ sign he predicted at a magnitude too small to account for the result.
 Jorn van Kampen (TU Eindhoven) confirmed from electric endurance racing that
 the structure reported here is not an artefact of the combustion setting.
 
+I thank Giona Fieni (ETH Z\"urich) for correspondence on the accuracy
+trade-off in season-wide fitting.
+
 None of them has seen this manuscript, and none is responsible for what it
 says.
+
+\singlespacing
+\nolinenumbers
 
 \bibliographystyle{plainnat}
 \begin{thebibliography}{99}
 
-% Every entry below was checked against a publication record -- Crossref for the
-% journal articles, the arXiv API for the preprints, the Zenodo API for the one
-% deposited there -- rather than recalled from memory. Two candidate references
-% carried in earlier notes could not be confirmed and are deliberately absent.
-% One entry has not been peer reviewed by anyone and its own line says so, which
-% is the only honest way to cite it. See reports/cross_series/related_work.md.
+% APA 7th, which the journal's submission guidelines require. Every entry was
+% checked against a publication record -- Crossref for the journal articles,
+% the arXiv API for the preprints, the Zenodo API for the one deposited there
+% -- rather than recalled from memory. Two candidate references carried in
+% earlier notes could not be confirmed and are deliberately absent. One entry
+% has not been peer reviewed by anyone and its own line says so, which is the
+% only honest way to cite it. See reports/cross_series/related_work.md.
 
 \bibitem[Aguad and Thraves(2024)]{aguad2024}
-Felipe Aguad and Charles Thraves.
-\newblock Optimizing pit stop strategies in Formula 1 with dynamic programming
-  and game theory.
-\newblock \emph{European Journal of Operational Research}, 319(3):908--919,
-  2024.
-\newblock \doi{10.1016/j.ejor.2024.07.011}.
+Aguad, F., \& Thraves, C. (2024). Optimizing pit stop strategies in Formula 1
+with dynamic programming and game theory. \emph{European Journal of
+Operational Research}, \emph{319}(3), 908--919.
+\url{https://doi.org/10.1016/j.ejor.2024.07.011}
 
 \bibitem[Bekker and Lotz(2009)]{bekker2009}
-James Bekker and Wynand Lotz.
-\newblock Planning Formula One race strategies using discrete-event simulation.
-\newblock \emph{Journal of the Operational Research Society}, 60(7):952--961,
-  2009.
-\newblock \doi{10.1057/palgrave.jors.2602626}.
-
-\bibitem[Cameron and Miller(2015)]{cameron2015}
-A.~Colin Cameron and Douglas~L. Miller.
-\newblock A practitioner's guide to cluster-robust inference.
-\newblock \emph{Journal of Human Resources}, 50(2):317--372, 2015.
-
-\bibitem[Cappello and Hoegh(2026)]{cappello2026}
-Cole Cappello and Andrew Hoegh.
-\newblock A state-space approach to modeling tire degradation in Formula 1
-  racing.
-\newblock \emph{Journal of Sports Analytics}, 12, 2026.
-\newblock \doi{10.1177/22150218261446170}.
+Bekker, J., \& Lotz, W. (2009). Planning Formula One race strategies using
+discrete-event simulation. \emph{Journal of the Operational Research Society},
+\emph{60}(7), 952--961.
+\url{https://doi.org/10.1057/palgrave.jors.2602626}
 
 \bibitem[Boettinger and Klotz(2023)]{boettinger2023}
-Max Boettinger and David Klotz.
-\newblock Mastering Nordschleife --- a comprehensive race simulation for AI
-  strategy decision-making in motorsports.
-\newblock \emph{arXiv preprint arXiv:2306.16088}, 2023.
+Boettinger, M., \& Klotz, D. (2023). \emph{Mastering Nordschleife: A
+comprehensive race simulation for AI strategy decision-making in motorsports}
+(arXiv:2306.16088). arXiv. \url{https://arxiv.org/abs/2306.16088}
+
+\bibitem[Cameron and Miller(2015)]{cameron2015}
+Cameron, A.~C., \& Miller, D.~L. (2015). A practitioner's guide to
+cluster-robust inference. \emph{Journal of Human Resources}, \emph{50}(2),
+317--372.
+
+\bibitem[Cappello and Hoegh(2026)]{cappello2026}
+Cappello, C., \& Hoegh, A. (2026). A state-space approach to modeling tire
+degradation in Formula 1 racing. \emph{Journal of Sports Analytics},
+\emph{12}. \url{https://doi.org/10.1177/22150218261446170}
 
 \bibitem[Carrasco Heine and Thraves(2022)]{carrasco2022}
-Oscar~F. Carrasco Heine and Charles Thraves.
-\newblock On the optimization of pit stop strategies via dynamic programming.
-\newblock \emph{Central European Journal of Operations Research},
-  31(1):239--268, 2022.
-\newblock \doi{10.1007/s10100-022-00806-4}.
+Carrasco Heine, O.~F., \& Thraves, C. (2022). On the optimization of pit stop
+strategies via dynamic programming. \emph{Central European Journal of
+Operations Research}, \emph{31}(1), 239--268.
+\url{https://doi.org/10.1007/s10100-022-00806-4}
 
 \bibitem[de~Vries et~al.(2026)]{devries2026}
-Wytze de~Vries, Erik van~den Eshof, Jorn van~Kampen, and Mauro Salazar.
-\newblock Competitor-aware race management for electric endurance racing.
-\newblock \emph{arXiv preprint arXiv:2603.28286}, 2026.
-\newblock Accepted for presentation at IEEE ITSC 2026.
+de Vries, W., van den Eshof, E., van Kampen, J., \& Salazar, M. (2026).
+\emph{Competitor-aware race management for electric endurance racing}
+(arXiv:2603.28286). arXiv. \url{https://arxiv.org/abs/2603.28286} (Accepted for
+presentation at IEEE ITSC 2026)
 
 \bibitem[Fieni et~al.(2025)]{fieni2025}
-Giona Fieni, Joschua W\"uthrich, Marc-Philippe Neumann, Mohammad~M. Moradi, and
-  Christopher~H. Onder.
-\newblock Towards learning-based Formula 1 race strategies.
-\newblock \emph{arXiv preprint arXiv:2512.21570}, 2025.
+Fieni, G., W\"uthrich, J., Neumann, M.-P., Moradi, M.~M., \& Onder, C.~H.
+(2025). \emph{Towards learning-based Formula 1 race strategies}
+(arXiv:2512.21570). arXiv. \url{https://arxiv.org/abs/2512.21570}
 
 \bibitem[Fieni et~al.(2026)]{fieni2026}
-Giona Fieni, Joschua W\"uthrich, Marc-Philippe Neumann, and Christopher~H.
-  Onder.
-\newblock Learning-based multi-agent race strategies in Formula 1.
-\newblock \emph{arXiv preprint arXiv:2602.23056}, 2026.
+Fieni, G., W\"uthrich, J., Neumann, M.-P., \& Onder, C.~H. (2026).
+\emph{Learning-based multi-agent race strategies in Formula 1}
+(arXiv:2602.23056). arXiv. \url{https://arxiv.org/abs/2602.23056}
 
 \bibitem[Heilmeier et~al.(2018)]{heilmeier2018}
-Alexander Heilmeier, Michael Graf, and Markus Lienkamp.
-\newblock A race simulation for strategy decisions in circuit motorsports.
-\newblock In \emph{2018 21st International Conference on Intelligent
-  Transportation Systems (ITSC)}, pages 2986--2993, 2018.
-\newblock \doi{10.1109/ITSC.2018.8570012}.
+Heilmeier, A., Graf, M., \& Lienkamp, M. (2018). A race simulation for strategy
+decisions in circuit motorsports. In \emph{2018 21st International Conference
+on Intelligent Transportation Systems (ITSC)} (pp. 2986--2993).
+\url{https://doi.org/10.1109/ITSC.2018.8570012}
 
 \bibitem[Heilmeier et~al.(2020a)]{heilmeier2020mc}
-Alexander Heilmeier, Michael Graf, Johannes Betz, and Markus Lienkamp.
-\newblock Application of Monte Carlo methods to consider probabilistic effects
-  in a race simulation for circuit motorsport.
-\newblock \emph{Applied Sciences}, 10(12):4229, 2020.
-\newblock \doi{10.3390/app10124229}.
+Heilmeier, A., Graf, M., Betz, J., \& Lienkamp, M. (2020). Application of Monte
+Carlo methods to consider probabilistic effects in a race simulation for
+circuit motorsport. \emph{Applied Sciences}, \emph{10}(12), 4229.
+\url{https://doi.org/10.3390/app10124229}
 
 \bibitem[Heilmeier et~al.(2020b)]{heilmeier2020nn}
-Alexander Heilmeier, Andr\'e Thomaser, Michael Graf, and Johannes Betz.
-\newblock Virtual strategy engineer: using artificial neural networks for making
-  race strategy decisions in circuit motorsport.
-\newblock \emph{Applied Sciences}, 10(21):7805, 2020.
-\newblock \doi{10.3390/app10217805}.
+Heilmeier, A., Thomaser, A., Graf, M., \& Betz, J. (2020). Virtual strategy
+engineer: Using artificial neural networks for making race strategy decisions
+in circuit motorsport. \emph{Applied Sciences}, \emph{10}(21), 7805.
+\url{https://doi.org/10.3390/app10217805}
 
 \bibitem[Salminen(2026)]{salminen2026}
-Tomi Salminen.
-\newblock Game-theoretic framework for pit stop strategy optimisation in circuit
-  auto racing.
-\newblock \emph{Zenodo preprint}, 2026.
-  \doi{10.5281/zenodo.21306419}. Single author, not peer reviewed.
+Salminen, T. (2026). \emph{Game-theoretic framework for pit stop strategy
+optimisation in circuit auto racing}. Zenodo.
+\url{https://doi.org/10.5281/zenodo.21306419} (Preprint, single author, not
+peer reviewed)
 
 \bibitem[Santillana(2026)]{santillana2026}
-Juan~S. Santillana.
-\newblock Pitwall: faithful natural-language race-strategy briefings from a
-  calibrated real-time Monte Carlo engine.
-\newblock \emph{arXiv preprint arXiv:2607.06495}, 2026.
+Santillana, J.~S. (2026). \emph{Pitwall: Faithful natural-language
+race-strategy briefings from a calibrated real-time Monte Carlo engine}
+(arXiv:2607.06495). arXiv. \url{https://arxiv.org/abs/2607.06495}
 
 \bibitem[Thomas et~al.(2025)]{thomas2025}
-Devin Thomas, Junqi Jiang, Avinash Kori, Aaron Russo, Steffen Winkler, Stuart
-  Sale, Joseph McMillan, Francesco Belardinelli, and Antonio Rago.
-\newblock Explainable reinforcement learning for Formula One race strategy.
-\newblock \emph{arXiv preprint arXiv:2501.04068}, 2025.
+Thomas, D., Jiang, J., Kori, A., Russo, A., Winkler, S., Sale, S., McMillan,
+J., Belardinelli, F., \& Rago, A. (2025). \emph{Explainable reinforcement
+learning for Formula One race strategy} (arXiv:2501.04068). arXiv.
+\url{https://arxiv.org/abs/2501.04068}
 
 \bibitem[Todd et~al.(2025)]{todd2025}
-Jamie Todd, Junqi Jiang, Aaron Russo, Steffen Winkler, Stuart Sale, Joseph
-  McMillan, and Antonio Rago.
-\newblock Explainable time series prediction of tyre energy in Formula One race
-  strategy.
-\newblock \emph{arXiv preprint arXiv:2501.04067}, 2025.
-
-\bibitem[van Kampen et~al.(2024)]{vankampen2024}
-Jorn van Kampen, Mauro Moriggi, Francesco Braghin, and Mauro Salazar.
-\newblock Model predictive control strategies for electric endurance race
-  cars accounting for competitors interactions.
-\newblock \emph{arXiv preprint arXiv:2403.06885}, 2024.
+Todd, J., Jiang, J., Russo, A., Winkler, S., Sale, S., McMillan, J., \& Rago,
+A. (2025). \emph{Explainable time series prediction of tyre energy in Formula
+One race strategy} (arXiv:2501.04067). arXiv.
+\url{https://arxiv.org/abs/2501.04067}
 
 \bibitem[van Kampen et~al.(2022)]{vankampen2022}
-Jorn van Kampen, Thomas Herrmann, and Mauro Salazar.
-\newblock Maximum-distance race strategies for a fully electric endurance race
-  car.
-\newblock \emph{European Journal of Control}, 68:100679, 2022.
-\newblock \doi{10.1016/j.ejcon.2022.100679}.
+van Kampen, J., Herrmann, T., \& Salazar, M. (2022). Maximum-distance race
+strategies for a fully electric endurance race car. \emph{European Journal of
+Control}, \emph{68}, 100679.
+\url{https://doi.org/10.1016/j.ejcon.2022.100679}
+
+\bibitem[van Kampen et~al.(2024)]{vankampen2024}
+van Kampen, J., Moriggi, M., Braghin, F., \& Salazar, M. (2024). \emph{Model
+predictive control strategies for electric endurance race cars accounting for
+competitors interactions} (arXiv:2403.06885). arXiv.
+\url{https://arxiv.org/abs/2403.06885}
 
 \end{thebibliography}
 

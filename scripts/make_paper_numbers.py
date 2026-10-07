@@ -301,6 +301,9 @@ def _macros() -> dict[str, str]:
     ).dropna()
     out["NRivalAllApply"] = str(len(wide))
     out["NRivalAllAgree"] = str(int((wide.nunique(axis=1) == 1).sum()))
+    out["NRivalTwoCars"] = str(int((wide.nunique(axis=1) == 2).sum()))
+    out["NRivalThreeCars"] = str(int((wide.nunique(axis=1) == 3).sum()))
+    out["MaxRivalCars"] = str(int(wide.nunique(axis=1).max()))
     out["PctRivalThravesAgrees"] = (
         f"{100 * (wide['thraves'] == wide['position']).mean():.0f}"
     )
