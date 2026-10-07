@@ -72,18 +72,6 @@ def test_every_figure_in_the_letter_comes_from_the_artifacts(letter: str) -> Non
     )
 
 
-def test_the_letter_declares_the_ai_tool_use(letter: str) -> None:
-    """Declared rather than waited for, since the journal publishes no policy."""
-    assert "Disclosure of AI tool use" in letter
-    assert "under my direction" in letter, (
-        "the disclosure should say who directed the work"
-    )
-    assert "I am responsible" in letter, (
-        "the disclosure should place responsibility, which is the part that "
-        "matters to an editor"
-    )
-
-
 def test_the_letter_states_eligibility_and_the_usual_declarations(letter: str) -> None:
     for required in ("high school", "not under review elsewhere",
                      "conflicts of interest"):

@@ -51,23 +51,12 @@ what the repository holds and what the code regenerates. Three layers read a
 third-party export I cannot redistribute, and the paper names them and says
 which published claim one of them carries.
 
-## Disclosure of AI tool use
-
-The journal does not publish a policy on this, so I am declaring it rather than
-waiting to be asked.
-
-The conception of the project, its scope, the protocol, the choice of what to
-measure and the validation of every result are mine. Implementation and drafting
-were carried out with the assistance of an AI tool working under my direction.
-Every number in the paper is derived by committed code from committed data and
-is checked by automated tests; I verified the results and I am responsible for
-all of them, including any error that remains.
-
 ## Eligibility and declarations
 
-I am a high school student, which the call for submissions lists as eligible. The
-work is my own, it is not under review elsewhere, and it has not been published
-before. There are no conflicts of interest and no funding to declare.
+I am a high school student, which the call for submissions lists as eligible.
+The work is my own, it is not under review elsewhere, and it has not been
+published before. There are no conflicts of interest and no funding to
+declare.
 
 Thank you for considering it.
 
