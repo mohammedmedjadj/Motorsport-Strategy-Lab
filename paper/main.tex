@@ -183,11 +183,12 @@ the earliest lap on which an undercut cannot be answered, which is the only
 mechanism we have found that predicts stopping \emph{before} the time optimum
 --- the direction of our third result. His overcut defence requires a tyre
 advantage of $(o + \varepsilon)/\theta$ laps. At the degradation rates fitted
-here it is unreachable on a substantial share of circuit-compounds, and his
-position-keeping defence, tested on the same \NDecisionsFone{} Formula~1
-decisions, predicts a stop far later than teams made. Both are reported in the
-repository rather than here, because they test a model that is not ours; we
-note them because the third explanation for our own result also failed.
+here it is unreachable on a substantial share of circuit-compounds, which we
+report in the repository because it tests a model that is not ours. His
+position-keeping defence is a different matter: it is the third candidate
+explanation for our own Result~3, so we implement it, test it on the same
+\NDecisionsFone{} Formula~1 decisions, and report in
+Section~\ref{sec:thirdexplanation} that it fails.
 
 We should be clear about how narrow the contribution is. The modelling here is
 not more sophisticated than \citet{heilmeier2020mc} or \citet{aguad2024}; in
@@ -625,6 +626,81 @@ comparing the two \emph{medians} instead of the median of paired differences
 produces a small apparent bias that is an artefact of comparing summaries rather
 than pairs; an earlier version of this work nearly reported it.
 
+\subsection{A third explanation, from published work}
+\label{sec:thirdexplanation}
+
+The two explanations tested above were ours. A third comes from
+\citet{salminen2026}, who solves the two-car one-stop problem as a
+perfect-information sequential game and derives the earliest lap on which an
+undercut cannot be answered. It is the only mechanism we have found that
+predicts stopping \emph{before} the time-optimal lap, which is the direction of
+the disagreement reported here: a chaser stops when the leader's answer expires,
+and waiting for the time optimum hands the leader a window.
+
+The leader has two answers in that model. The overcut needs a tyre advantage of
+$(o + \varepsilon)/\theta$ laps, where $o$ is an overtaking threshold in
+seconds. We hold no such quantity --- what this project measures per circuit is
+an adjacent-pair swap probability per lap, a different object that does not
+convert into one --- so we implement only the position-keeping defence, which is
+efficient while $\theta l_u + \varepsilon < g$ and therefore expires at a tyre
+age of $(g - \varepsilon)/\theta$. Where the overcut is unavailable, the
+earliest undefendable undercut is the lap after that. We set $\varepsilon = 0$
+throughout: estimating it would mean reading a chaser's pace while it sits in
+dirty air, which inflates it, and a larger $\varepsilon$ expires the defence
+earlier and so moves the prediction toward the real stop.
+
+\paragraph{It fails, and by how much.} Across the \DOnePredicted{} decisions
+carrying a prediction, the earliest undefendable undercut lands a median of
+\DOneMedianError{} laps from the real stop, against \DOneBaselineError{} for the
+single-car optimiser on the same decisions. It is closer on \DOneCloser{} and
+further on \DOneFurther{}. Fed with the gaps and slopes measured here, the
+condition says a Formula~1 leader can defend an undercut for longer than the
+race lasts, so a chaser should never undercut at all.
+
+The failure has a number rather than a story behind it. Setting $l_u$ to the
+tyre age of the stop a team actually made gives the degradation rate at which
+the defence would have expired exactly then,
+$\theta^{*} = (g - \varepsilon)/l_u$. Its median is
+\DOneImpliedTheta{}\,s/lap against a measured \DOneMeasuredTheta{}, a ratio of
+\DOneThetaRatio{} with quartiles \DOneThetaRatioIQR{}, and $\theta^{*}$ exceeds
+the measured rate on \DOnePctThetaAbove{}\% of decisions. A rate of
+\DOneImpliedTheta{}\,s/lap sits at the \DOneThetaPercentile{}th percentile of
+every slope fitted in this work. The gap is therefore not a matter of
+calibration: for the equilibrium to reproduce what teams do, tyres would have to
+degrade at a rate this data almost never shows.
+
+\paragraph{A reading we have not established.} $\theta l_u$ prices the
+defender's loss over a single lap on a tyre $l_u$ laps old. At a measured
+\DOneMeasuredTheta{}\,s/lap and a tyre the age teams stop at, that is under a
+second, which the median \DOneMedianGap{}\,s lead covers easily. What wins a
+real undercut is the advantage of a tyre on its first flying lap over one at the
+end of its life, and a linear slope has no term for that. Measuring it directly
+is a different estimator and we have not attempted it. We state this as a
+hypothesis because that is what it is.
+
+\paragraph{Two measurements that hold whatever the verdict.} Of the
+\DOneDecisions{} decisions, \DOneNoRival{} belong to a car with nobody ahead of
+it on the clock within one lap. The race leader has no undercut to perform, so
+roughly a quarter of the audited set carries no prediction under any two-car
+model, which bounds what this family of explanations could ever account for. For
+the remaining \DOneChasers{}, the gap to the leader is a median
+\DOneMedianGap{}\,s, and on \DOneWithinPitLoss{} of \DOneReachable{} it is
+smaller than the circuit's measured pit loss. Whether the position is reachable
+by stopping first is therefore not the binding constraint, which is the opposite
+of what we expected to find.
+
+\paragraph{Three defects found while building this.} All three inflated the
+defence's window, so all three made this negative result look stronger than it
+is, and we report them for that reason. Comparing cumulative race time with no
+bound found rivals a full lap away; the nearest car ahead is now capped at one
+green lap and the widest retained gap is \DOneMaxGap{}\,s. The expiry is a tyre
+age and was being compared against a lap number, which agree on only
+\DOnePctAgeIsLap{}\% of these decisions. And the breadth layer's pit-loss table
+names circuits differently from the lap files, which still drops
+\DOneStaleDropped{} of \DOneChasers{} values if joined on the slug. Each now has
+a test, as does the conclusion itself: a negative result decays when someone
+later makes it come out positive.
+
 \subsection{Comparison against three baselines}
 
 \begin{figure}[htbp]
@@ -799,10 +875,11 @@ stop can ever pay is decided by the cost of the stop, which separates the two
 regimes at an AUC of \RegimeAucPitLoss{} against \RegimeAucSlope{} for the
 tyre. And an exact optimiser
 disagrees with professional practice in a consistent direction that we have not
-been able to explain --- having proposed two explanations, tested both, and lost
-both, and having found that simpler rules using strictly less information land
-closer to what teams actually did in \NClassesRuleWins{} of
-\NClassesScored{} classes.
+been able to explain. We proposed two explanations, tested both and lost both;
+we then took a third from published work, which has the right sign and fails on
+the quantity it depends on by a factor of \DOneThetaRatio{}. Simpler rules using
+strictly less information land closer to what teams actually did in
+\NClassesRuleWins{} of \NClassesScored{} classes.
 
 We regard the last of these as the most useful thing here, precisely because it
 is unresolved.

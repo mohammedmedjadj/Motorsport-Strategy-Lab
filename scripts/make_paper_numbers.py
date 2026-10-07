@@ -226,6 +226,57 @@ def _macros() -> dict[str, str]:
     out["RegimeNTyreLimited"] = str(int(regime["n_tyre_limited"].iloc[0]))
     out["RegimeNFuelLimited"] = str(int(regime["n_fuel_limited"].iloc[0]))
 
+    # --- R3: the third candidate explanation, and how it failed -----------
+    # Salminen's position-keeping defence, replayed on the same first-stop
+    # decisions. Every figure the subsection quotes is derived here, including
+    # the ones describing the defects found while building it -- a number about
+    # a bug drifts exactly like any other number, and one of these already did.
+    d1 = pd.read_csv(F1_DERIVED_DIR / "d1_defence.csv")
+    chasers = d1[d1["role"] == "chaser"]
+    predicted = chasers[chasers["euu_lap"].notna()]
+    reachable = chasers[chasers["pit_loss_s"].notna()]
+    implied = chasers[
+        chasers["theta_resolved"].astype(bool) & chasers["theta_ratio"].notna()
+    ]
+
+    out["DOneDecisions"] = str(len(d1))
+    out["DOneNoRival"] = str(int((d1["role"] == "race leader").sum()))
+    out["DOneChasers"] = str(len(chasers))
+    out["DOnePredicted"] = str(len(predicted))
+    out["DOneMedianGap"] = f"{chasers['gap_to_leader_s'].median():.1f}"
+    out["DOneWithinPitLoss"] = str(int(reachable["within_pit_loss"].sum()))
+    out["DOneReachable"] = str(len(reachable))
+    out["DOneMedianError"] = f"{predicted['euu_error'].median():+.0f}"
+    out["DOneBaselineError"] = f"{predicted['single_car_error'].median():+.0f}"
+    out["DOneCloser"] = str(int(
+        (predicted["euu_error"].abs() < predicted["single_car_error"].abs()).sum()
+    ))
+    out["DOneFurther"] = str(int(
+        (predicted["euu_error"].abs() > predicted["single_car_error"].abs()).sum()
+    ))
+    out["DOneImpliedTheta"] = f"{implied['implied_theta'].median():.3f}"
+    out["DOneMeasuredTheta"] = f"{implied['theta'].median():.3f}"
+    out["DOneThetaRatio"] = f"{implied['theta_ratio'].median():.1f}"
+    out["DOneThetaRatioIQR"] = (
+        f"{implied['theta_ratio'].quantile(0.25):.1f} to "
+        f"{implied['theta_ratio'].quantile(0.75):.1f}"
+    )
+    out["DOnePctThetaAbove"] = f"{100 * (implied['theta_ratio'] > 1).mean():.0f}"
+    # Where the required rate sits among every slope the project fits, which is
+    # what makes "the data almost never shows this" a measurement.
+    all_slopes = coefs["deg_p1"].dropna()
+    required = float(implied["implied_theta"].median())
+    out["DOneThetaPercentile"] = f"{100 * (all_slopes < required).mean():.0f}"
+    # The defects, each of which inflated the window.
+    out["DOneMaxGap"] = f"{chasers['gap_to_leader_s'].max():.0f}"
+    out["DOnePctAgeIsLap"] = (
+        f"{100 * (chasers['tyre_age'] == chasers['real_pit_lap']).mean():.0f}"
+    )
+    history = pd.read_csv(F1_DERIVED_DIR / "history_pit_loss.csv")
+    slug_delta = history.groupby("circuit")["pit_loss_median_s"].median()
+    matched = int(chasers["circuit"].map(slug_delta).notna().sum())
+    out["DOneStaleDropped"] = str(len(chasers) - matched)
+
     # --- the literature catalogue, counted rather than remembered ----------
     # The framing claim is about how many papers were catalogued and how many
     # of them validate out of sample. Counting the table means the claim
