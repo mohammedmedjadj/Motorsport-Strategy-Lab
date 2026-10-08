@@ -20,11 +20,45 @@ import pytest
 
 REPO = Path(__file__).resolve().parents[1]
 
-#: Resolves to the newest version, forever. This is the default.
+#: Resolves to the newest version, forever. This is the default, and it is the
+#: one identifier here that never changes.
 CONCEPT_DOI = "10.5281/zenodo.22726130"
 
-#: Frozen at v1.0.0. Only for citing that exact state.
-VERSION_DOI = "10.5281/zenodo.22726131"
+ANY_ZENODO_DOI = re.compile(r"10\.5281/zenodo\.(\d+)")
+
+#: Every Zenodo identifier this project has minted, concept and versions. A DOI
+#: outside this set belongs to somebody else's deposit -- the paper cites one --
+#: and is none of this guard's business. Offline there is no way to tell the two
+#: apart except by listing mine, so a release extends this by one line. A
+#: release that forgets is caught by the network check at the bottom of this
+#: file instead.
+OWN_ZENODO_RECORDS = {
+    "22726130",   # concept, resolves to the newest version
+    "22726131",   # v1.0.0, superseded
+    "23220846",   # v1.1.0
+}
+
+
+def _citation() -> dict:
+    """CITATION.cff, which is the repository's single statement of the release."""
+    yaml = pytest.importorskip("yaml")
+    return yaml.safe_load(_read("CITATION.cff"))
+
+
+def version_doi() -> str:
+    """The current version DOI, read rather than hardcoded.
+
+    It used to be a constant in this file, which meant a release bumped the
+    constant and the test then confirmed whatever had been typed into it. The
+    declaration belongs in CITATION.cff; this reads it, so every other file is
+    checked against one authority instead of against a copy.
+    """
+    doi = str(_citation().get("doi", "")).strip()
+    assert ANY_ZENODO_DOI.fullmatch(doi), (
+        f"CITATION.cff declares doi: {doi!r}, which is not a Zenodo DOI. "
+        "Everything else keys off this value."
+    )
+    return doi
 
 #: Everything that sends a reader to the archive. All of these must carry the
 #: concept DOI, because all of them outlive v1.0.0.
@@ -72,21 +106,38 @@ def test_general_pointers_use_the_concept_doi(relative: str) -> None:
 @pytest.mark.parametrize(
     "relative", [f for f in GENERAL_POINTERS if f not in EXPLAINS_BOTH]
 )
-def test_bare_pointers_do_not_use_the_version_doi(relative: str) -> None:
+def test_bare_pointers_do_not_use_any_version_doi(relative: str) -> None:
+    """A general pointer carries the concept DOI and no other Zenodo identifier.
+
+    Checked against the pattern rather than against the current version DOI,
+    because the failure this exists to catch is a *superseded* one left in
+    prose -- and by definition nothing declares that value any more.
+    """
     text = _read(relative)
-    assert VERSION_DOI not in text, (
-        f"{relative} names the v1.0.0 DOI {VERSION_DOI}. That one is frozen, so "
-        "readers of this file will be sent to a superseded archive as soon as "
-        f"there is a v1.1.0. Use the concept DOI {CONCEPT_DOI} instead."
+    concept_number = ANY_ZENODO_DOI.search(CONCEPT_DOI).group(1)
+    strays = {
+        number for number in ANY_ZENODO_DOI.findall(text)
+        if number in OWN_ZENODO_RECORDS and number != concept_number
+    }
+    assert not strays, (
+        f"{relative} names Zenodo DOIs {sorted(strays)} besides the concept "
+        f"DOI. A version DOI is frozen, so a reader following one from here "
+        f"lands on a superseded archive once a new release exists. Use "
+        f"{CONCEPT_DOI}."
     )
 
 
-def test_the_citation_file_carries_the_version_doi() -> None:
-    """A citation names the state a result came from, not a moving target."""
-    text = _read("CITATION.cff")
-    assert re.search(rf"(?m)^doi:\s*{re.escape(VERSION_DOI)}\s*$", text), (
-        "CITATION.cff's top-level `doi` is what GitHub's Cite this repository "
-        f"button renders. It should be the frozen v1.0.0 DOI {VERSION_DOI}."
+def test_the_citation_file_carries_a_version_doi_that_is_not_the_concept_one() -> None:
+    """What GitHub's citation button renders has to name one frozen release."""
+    doi = version_doi()
+    assert doi != CONCEPT_DOI, (
+        "CITATION.cff's `doi` is the concept DOI. That one moves with every "
+        "release, so a citation built from it does not identify the state a "
+        "result came from. It should be the current version DOI."
+    )
+    assert f"value: {doi}" in _read("CITATION.cff"), (
+        f"CITATION.cff declares doi: {doi} but does not repeat it in "
+        "`identifiers`, where the description says which release it freezes."
     )
 
 
@@ -136,4 +187,85 @@ def test_the_release_the_citation_names_matches_the_version_doi() -> None:
         f"CITATION.cff declares version {version!r}, but paper/README.md does "
         "not mention that release. One of the two was updated and the other "
         "was not, and the DOI table is the thing a reader trusts."
+    )
+
+
+@pytest.mark.parametrize("relative", EXPLAINS_BOTH)
+def test_the_explaining_files_name_no_superseded_release(relative: str) -> None:
+    """Exempt from the stray check, not from being current.
+
+    These four files describe the two-DOI distinction, so they are allowed to
+    print a version DOI alongside the concept one. What they may not print is a
+    *superseded* version DOI, and that is exactly what all four did at v1.1.0
+    while the suite stayed green: the exemption covered the files most likely
+    to be wrong, and the ones it did cover could not go wrong in the first
+    place.
+    """
+    text = _read(relative)
+    allowed = {
+        ANY_ZENODO_DOI.search(CONCEPT_DOI).group(1),
+        ANY_ZENODO_DOI.search(version_doi()).group(1),
+    }
+    stale = {
+        number for number in ANY_ZENODO_DOI.findall(text)
+        if number in OWN_ZENODO_RECORDS and number not in allowed
+    }
+    assert not stale, (
+        f"{relative} still names Zenodo DOIs {sorted(stale)}, which belong to "
+        f"superseded releases of this project. CITATION.cff declares "
+        f"{version_doi()}. A reader comes to this file to learn which "
+        "identifier to use, so a stale one here is worse than anywhere else."
+    )
+
+
+def test_every_minted_record_is_accounted_for() -> None:
+    """The declared release has to be in the list the stray check reads.
+
+    Without this, a release that updates CITATION.cff but not the list leaves
+    the stray check unable to recognise the previous DOI as mine, which is the
+    exact failure it exists to catch.
+    """
+    declared = ANY_ZENODO_DOI.search(version_doi()).group(1)
+    assert declared in OWN_ZENODO_RECORDS, (
+        f"CITATION.cff declares version DOI ...{declared}, which is missing "
+        "from OWN_ZENODO_RECORDS. Add it, or the previous version DOI stops "
+        "being recognised as this project's when it is left somewhere."
+    )
+
+
+def test_the_concept_doi_resolves_to_the_release_the_repository_declares() -> None:
+    """The only check that catches a release nobody wrote down.
+
+    Everything else here compares the repository against itself, so it is blind
+    to a release where I updated nothing: there is no inconsistency to
+    find. Zenodo guarantees the concept DOI points at the newest version, so
+    asking it is the one authority outside this repository.
+
+    Skipped when the network is unreachable, because being offline is not an
+    error. A fetch that succeeds and disagrees is.
+    """
+    import json
+    import urllib.error
+    import urllib.request
+
+    concept_number = ANY_ZENODO_DOI.search(CONCEPT_DOI).group(1)
+    url = f"https://zenodo.org/api/records/{concept_number}"
+    try:
+        with urllib.request.urlopen(url, timeout=20) as response:
+            record = json.load(response)
+    except (urllib.error.URLError, TimeoutError, OSError) as exc:
+        pytest.skip(f"Zenodo unreachable ({type(exc).__name__}); nothing to compare")
+
+    newest_doi = str(record.get("doi", ""))
+    newest_version = str(record.get("metadata", {}).get("version", "")).lstrip("v")
+    declared_version = str(_citation().get("version", "")).lstrip("v")
+
+    assert newest_doi == version_doi(), (
+        f"Zenodo's newest version of this deposit is {newest_doi}, and "
+        f"CITATION.cff declares {version_doi()}. A release was published and "
+        "the repository was not updated to match it."
+    )
+    assert newest_version == declared_version, (
+        f"Zenodo says the newest version is {newest_version!r} and "
+        f"CITATION.cff says {declared_version!r}."
     )

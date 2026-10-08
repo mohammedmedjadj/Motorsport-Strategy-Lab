@@ -187,8 +187,8 @@ Archived on Zenodo, and through it in Software Heritage and OpenAIRE. Two DOIs,
 and they are not interchangeable. Cite
 [`10.5281/zenodo.22726130`](https://doi.org/10.5281/zenodo.22726130) to point at the project — it resolves
 to whatever the newest version is. Cite
-[`10.5281/zenodo.22726131`](https://doi.org/10.5281/zenodo.22726131) when you need the exact state a result
-came from: that one is frozen at v1.0.0 and will not move under you.
+[`10.5281/zenodo.23220846`](https://doi.org/10.5281/zenodo.23220846) when you need the exact state a result
+came from: that one is frozen at v1.1.0 and will not move under you.
 
 GitHub's *Cite this repository* button reads [`CITATION.cff`](CITATION.cff) and
-produces the v1.0.0 citation.
+produces the v1.1.0 citation.

@@ -110,19 +110,20 @@ one, and it is the single easiest thing for a reviewer to catch.
 
 ## Publication route
 
-**Zenodo is done.** v1.0.0 is released, archived, and carried onward into
-Software Heritage and OpenAIRE from commit `6b2fc77`.
+**Zenodo is done.** The current release is `v1.1.0`, archived and carried
+onward into Software Heritage and OpenAIRE. `v1.0.0` keeps its own frozen DOI,
+which still resolves; it is simply no longer the one to cite.
 
 | | |
 |---|---|
 | Concept DOI | [`10.5281/zenodo.22726130`](https://doi.org/10.5281/zenodo.22726130) — resolves to the newest version |
-| v1.0.0 DOI | [`10.5281/zenodo.22726131`](https://doi.org/10.5281/zenodo.22726131) — frozen |
-| Record | <https://zenodo.org/records/22726131> |
+| v1.1.0 DOI | [`10.5281/zenodo.23220846`](https://doi.org/10.5281/zenodo.23220846) — frozen |
+| Record | <https://zenodo.org/records/23220846> |
 
 Which one to use is not a matter of taste. Anything pointing at *the project* —
-the README badge, the site footer, the outreach pack, this paper's title
-footnote — takes the concept DOI, so it keeps working after v1.1.0 exists. The
-version DOI belongs in a formal citation of v1.0.0, which is what
+the README badge, the site footer, the outreach pack, the paper's data and code
+availability section — takes the concept DOI, so it survives every release. The
+version DOI belongs in a formal citation of the current release, which is what
 [`../CITATION.cff`](../CITATION.cff) carries and what GitHub's *Cite this
 repository* button renders. `tests/test_citation_metadata.py` fails if that
 distinction slips.
