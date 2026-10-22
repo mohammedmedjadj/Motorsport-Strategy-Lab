@@ -46,24 +46,22 @@ Race-strategy models are typically fitted and validated within one
 championship, often one race. Two questions follow and are rarely asked: does a fitted model predict a season it has never seen, and does its
 recommendation resemble what a professional team actually did? We apply one protocol to both,
 identically across \NClasses{} car classes and four championships: Formula~1,
-WEC, IMSA and ELMS. Of the \NCatalogued{} papers we
-catalogue, none applies a single protocol to more than one championship.
+WEC, IMSA and ELMS. None of the \NCatalogued{} papers we catalogue applies a
+single protocol to more than one championship.
 
-Four findings, three of them negative. Tyre-degradation slopes transfer as a
+Four findings, three of them negative. Degradation slopes transfer as a
 property of the \emph{circuit-class} rather than the championship: of
 \NCircuitClasses{} measured by leave-one-race-out, \NTransferAboveTwo{} reach a
 within-stint $R^2$ of $\TransferThreshold{}$, and a near-specification control
-field fails as the balanced fields do. Whether
-an extra stop can pay is set by the cost of the stop: across \NRaceSeasons{}
-race-seasons the class-level correlation between median pit loss and
-tyre-limited share is $\PitLossR{}$ (95\% CI \PitLossRCI{}), and ranking
-race-seasons by pit loss alone separates the two regimes at an AUC of
-\RegimeAucPitLoss{} against \RegimeAucSlope{} for degradation. Replaying \NDecisions{} real first pit stops, an exact optimiser
-stops later than teams did on \FoneLateShare{}\% of Formula~1 decisions, by a
-median of \FoneLateMedian{} laps; three explanations were tested and all three
-failed. And the rival such a model should respond to is under-determined:
-\NRivalRules{} defensible selection rules name the same car on
-\NRivalAllAgree{} of \NRivalAllApply{} decisions.
+field fails as the balanced fields do. Whether an extra stop can pay is set by
+the cost of the stop: across \NRaceSeasons{} race-seasons, pit loss alone
+separates the two regimes at an AUC of \RegimeAucPitLoss{} against
+\RegimeAucSlope{} for degradation. Replaying \NDecisions{} real first pit
+stops, an exact optimiser stops later than teams did on \FoneLateShare{}\% of
+Formula~1 decisions, by a median of \FoneLateMedian{} laps; three explanations
+were tested and all three failed. And the rival such a model should respond to
+is under-determined: \NRivalRules{} defensible selection rules name the same
+car on \NRivalAllAgree{} of \NRivalAllApply{} decisions.
 
 Two estimators built for this work were withdrawn when they failed on
 real fields; both withdrawals are reported.
@@ -893,6 +891,23 @@ median identifiability is \NIdentifiability{}, well outside the range the basis
 was shown to work in. We report the omitted variable as diagnosed and unfixed
 rather than applying a correction that fails silently.
 
+\paragraph{Result~1 bounds reuse, not refitting.} Giona Fieni (ETH
+Z\"urich) stated the scope limit on this result more sharply than we had. A
+primarily model-based policy treats fitted degradation curves as placeholders
+and retunes them for each car and circuit, so it never depends on a slope
+transferring to a season it has not seen. Result~1 measures the stability of
+reused data-driven parameters. That bounds approaches which carry fitted
+parameters forward, and says nothing against a design that refits as a matter
+of course; on that design's own terms it is an argument for refitting.
+
+The concession stops there. If measured behaviour were stable once the physics
+is fixed, the near-specification control field should have been the one that
+transferred: one chassis, one engine, no Balance of Performance, a single tyre
+supplier. It fails as the performance-balanced fields do. So either lap time
+carries large effects that are not the tyre, or the retuning step is doing more
+than retuning. We read it as the first, and the track evolution withdrawn above
+is our candidate for part of what it is.
+
 \paragraph{The audit may not be a fair comparison, and this is the open
 question.} The model is asked five laps early and offered every remaining lap,
 optimising one car's expected race time. A pit wall is choosing among a handful
@@ -1037,8 +1052,11 @@ sign he predicted at a magnitude too small to account for the result.
 Jorn van Kampen (TU Eindhoven) confirmed from electric endurance racing that
 the structure reported here is not an artefact of the combustion setting.
 
-I thank Giona Fieni (ETH Z\"urich) for correspondence on the accuracy
-trade-off in season-wide fitting.
+Giona Fieni (ETH Z\"urich) drew the line between a result about reused
+data-driven parameters and a result about model-based policy, which is the
+scope limit now stated in Section~\ref{sec:threats}; and held that once the
+physics is known the behaviour follows, which is the position the
+near-specification control field is set against there.
 
 None of them has seen this manuscript, and none is responsible for what it
 says.
