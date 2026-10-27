@@ -20,7 +20,14 @@
 \usepackage{caption}
 \usepackage[hidelinks]{hyperref}
 \usepackage{natbib}
-\usepackage{microtype}
+% expansion=false on purpose. microtype's font expansion needs scalable Type1
+% fonts, and a TeX installation without cm-super dies on this file with
+% "auto expansion is only possible with scalable fonts" and writes no PDF at
+% all. That is not a warning a reader can ignore: the first person outside this
+% project to download the archive and try to build the manuscript hit exactly
+% that and could not read it. Protrusion is kept, since it needs nothing extra
+% and is the half of microtype anyone would notice.
+\usepackage[expansion=false]{microtype}
 % The Wharton Sports Analytics Journal asks for double-spaced body text,
 % continuous line numbers and page numbers, no footnotes and a single
 % column. Both packages ship with any standard TeX distribution.
