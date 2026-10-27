@@ -21,6 +21,8 @@ from pathlib import Path
 
 import pytest
 
+from tests._pdf import content_digest
+
 REPO = Path(__file__).resolve().parents[1]
 BRIEF = REPO / "outreach" / "pit_loss_rule_brief.pdf"
 GENERATOR = REPO / "scripts" / "make_outreach_brief.py"
@@ -94,16 +96,22 @@ def test_the_thin_evidence_the_brief_admits_is_still_the_thin_evidence(
 
 
 def test_the_committed_brief_is_not_stale() -> None:
-    """A regenerated brief must equal the one that would be attached to an email."""
+    """A regenerated brief must say what the one attached to an email says.
+
+    Compared on decompressed content rather than raw bytes, for the reason set
+    out in ``tests/_pdf.py``: identical briefs differ in compressed length
+    across zlib builds, so a byte comparison failed on every CI run here and
+    guarded nothing.
+    """
     if not BRIEF.exists():
         pytest.skip("the brief has not been generated")
-    before = BRIEF.read_bytes()
+    before = content_digest(BRIEF)
     result = subprocess.run(
         [sys.executable, str(GENERATOR)],
         cwd=REPO, capture_output=True, text=True,
     )
     assert result.returncode == 0, f"the generator failed:\n{result.stderr}"
-    assert BRIEF.read_bytes() == before, (
+    assert content_digest(BRIEF) == before, (
         "outreach/pit_loss_rule_brief.pdf is out of date with the artifacts. "
         "Run scripts/make_outreach_brief.py and commit the result before "
         "sending it to anyone."

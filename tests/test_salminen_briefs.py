@@ -20,13 +20,14 @@ produces an unchanged file and a diff means a real change.
 
 from __future__ import annotations
 
-import hashlib
 import re
 import subprocess
 import sys
 from pathlib import Path
 
 import pytest
+
+from tests._pdf import content_digest
 
 REPO = Path(__file__).resolve().parents[1]
 SCRIPT = REPO / "scripts" / "make_salminen_briefs.py"
@@ -42,16 +43,19 @@ def test_both_briefs_are_committed() -> None:
 
 
 def test_regenerating_them_changes_nothing() -> None:
-    """A brief that is not reproducible cannot be diffed, so it cannot be reviewed."""
+    """A brief that is not reproducible cannot be diffed, so it cannot be reviewed.
+
+    On decompressed content rather than raw bytes; ``tests/_pdf.py`` says why.
+    """
     if not SCRIPT.exists():
         pytest.skip("scripts/make_salminen_briefs.py not present")
-    before = {p: hashlib.sha256(p.read_bytes()).hexdigest() for p in BRIEFS}
+    before = {p: content_digest(p) for p in BRIEFS}
     done = subprocess.run(
         [sys.executable, str(SCRIPT)], cwd=REPO, capture_output=True, text=True
     )
     assert done.returncode == 0, done.stdout + done.stderr
     for path, digest in before.items():
-        assert hashlib.sha256(path.read_bytes()).hexdigest() == digest, (
+        assert content_digest(path) == digest, (
             f"{path.name} differs after regeneration from unchanged inputs. "
             "Either an input moved, or something non-deterministic (a "
             "timestamp) is being written into it."
