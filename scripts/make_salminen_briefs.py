@@ -269,6 +269,10 @@ def overcut_brief(facts: dict) -> Path:
             "Author": "Mohammed Reda Medjadj",
             "Subject": "D2 feasibility across Formula 1 degradation slopes",
             "Creator": "scripts/make_salminen_briefs.py",
+            # No CreationDate, for the reason given in
+            # scripts/make_outreach_brief.py: it is the only byte that moves
+            # between runs, and a timestamp is not information about the brief.
+            "CreationDate": None,
         },
     )
 
@@ -352,6 +356,8 @@ def d1_brief(facts: dict) -> Path:
             "Author": "Mohammed Reda Medjadj",
             "Subject": "D1 against 357 real Formula 1 first-stop decisions",
             "Creator": "scripts/make_salminen_briefs.py",
+            # Same reason as the overcut brief above.
+            "CreationDate": None,
         },
     )
 

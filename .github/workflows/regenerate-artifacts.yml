@@ -58,7 +58,13 @@ jobs:
           python-version: "3.11"
           cache: pip
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        # The lock, not requirements.txt. This job exists to prove that the
+        # same data produces byte-identical artifacts, and requirements.txt
+        # pins nothing: a newer matplotlib or fonttools relays out a figure
+        # and re-subsets an embedded font, so the PDFs differ for a reason
+        # that has nothing to do with the data. That is what made the brief
+        # determinism checks fail here while passing locally.
+        run: pip install -r requirements.lock
 
       - name: Track position
         run: python scripts/run_track_position.py
@@ -104,7 +110,13 @@ jobs:
           python-version: "3.11"
           cache: pip
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        # The lock, not requirements.txt. This job exists to prove that the
+        # same data produces byte-identical artifacts, and requirements.txt
+        # pins nothing: a newer matplotlib or fonttools relays out a figure
+        # and re-subsets an embedded font, so the PDFs differ for a reason
+        # that has nothing to do with the data. That is what made the brief
+        # determinism checks fail here while passing locally.
+        run: pip install -r requirements.lock
 
       - name: Four rival-selection rules on the same decisions
         run: python scripts/run_rival_selection.py
@@ -123,7 +135,13 @@ jobs:
           python-version: "3.11"
           cache: pip
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        # The lock, not requirements.txt. This job exists to prove that the
+        # same data produces byte-identical artifacts, and requirements.txt
+        # pins nothing: a newer matplotlib or fonttools relays out a figure
+        # and re-subsets an embedded font, so the PDFs differ for a reason
+        # that has nothing to do with the data. That is what made the brief
+        # determinism checks fail here while passing locally.
+        run: pip install -r requirements.lock
 
       - name: Fits, quality, transfer, traffic
         run: python scripts/run_endurance_models.py
@@ -158,7 +176,13 @@ jobs:
           python-version: "3.11"
           cache: pip
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        # The lock, not requirements.txt. This job exists to prove that the
+        # same data produces byte-identical artifacts, and requirements.txt
+        # pins nothing: a newer matplotlib or fonttools relays out a figure
+        # and re-subsets an embedded font, so the PDFs differ for a reason
+        # that has nothing to do with the data. That is what made the brief
+        # determinism checks fail here while passing locally.
+        run: pip install -r requirements.lock
 
       - name: Neutralisation calibration backtest
         run: python scripts/run_prediction_backtest.py
