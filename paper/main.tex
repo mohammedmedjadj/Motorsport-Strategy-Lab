@@ -42,29 +42,31 @@
 \linenumbers
 
 \begin{abstract}
-Race-strategy models are typically fitted and validated within one
-championship, often one race. Two questions follow and are rarely asked: does a fitted model predict a season it has never seen, and does its
-recommendation resemble what a professional team actually did? We apply one protocol to both,
-identically across \NClasses{} car classes and four championships: Formula~1,
-WEC, IMSA and ELMS. None of the \NCatalogued{} papers we catalogue applies a
-single protocol to more than one championship.
+Race-strategy models are usually fitted and validated inside one championship,
+often one race. Two questions follow: does a fitted model predict a season it
+has never seen, and does its recommendation resemble what a professional team
+actually did? We apply one protocol to both across \NClasses{} car classes and
+four championships --- Formula~1, WEC, IMSA and ELMS --- common rather than
+identical, since endurance sources carry no tyre compound and those models are
+net-slope. Of \NCatalogued{} papers catalogued, none applies one protocol to
+more than one championship.
 
-Four findings, three of them negative. Degradation slopes transfer as a
-property of the \emph{circuit-class} rather than the championship: of
-\NCircuitClasses{} measured by leave-one-race-out, \NTransferAboveTwo{} reach a
-within-stint $R^2$ of $\TransferThreshold{}$, and a near-specification control
-field fails as the balanced fields do. Whether an extra stop can pay is set by
-the cost of the stop: across \NRaceSeasons{} race-seasons, pit loss alone
-separates the two regimes at an AUC of \RegimeAucPitLoss{} against
-\RegimeAucSlope{} for degradation. Replaying \NDecisions{} real first pit
-stops, an exact optimiser stops later than teams did on \FoneLateShare{}\% of
-Formula~1 decisions, by a median of \FoneLateMedian{} laps; three explanations
-were tested and all three failed. And the rival such a model should respond to
-is under-determined: \NRivalRules{} defensible selection rules name the same
-car on \NRivalAllAgree{} of \NRivalAllApply{} decisions.
-
-Two estimators built for this work were withdrawn when they failed on
-real fields; both withdrawals are reported.
+Four findings, three negative. Degradation slopes transfer as a property of the
+\emph{circuit-class}, not the championship, and rarely: of \NCircuitClasses{}
+measured by leave-one-race-out, \NTransferAboveTwo{} reach a within-stint $R^2$
+of $\TransferThreshold{}$. That count overstates instability. With a slope
+stable by construction, \NCeilingBelowThreshold{} of \NCeilingCircuits{}
+Formula~1 circuits cannot clear the threshold against their own lap noise;
+pricing it in leaves \NCeilingUnstable{} unstable and \NCeilingStable{} stable.
+Whether an extra stop pays is set by its cost: over \NRaceSeasons{}
+race-seasons, pit loss alone separates the regimes at an AUC of
+\RegimeAucPitLoss{} against \RegimeAucSlope{} for degradation, and inside each
+class too. Replaying \NDecisions{} real first pit stops, a time-optimal planner
+stops later than teams on \FoneLateShare{}\% of Formula~1 decisions, median
+\FoneLateMedian{} laps; four explanations fail to account for the magnitude.
+And the rival such a model should answer is under-determined:
+\NRivalRules{} defensible rules agree on \NRivalAllAgree{} of
+\NRivalAllApply{} decisions.
 \end{abstract}
 
 \vspace{0.6em}
@@ -221,6 +223,22 @@ WEC       & \NClassesWec{} & \NCircuitsWec{} & \NRacesWec{} & \NDecisionsWec{} &
 
 Nothing is imputed. Where a source lacks a quantity the affected layer is not
 fitted, and the gap goes on the record as a gap.
+
+\paragraph{Which laps are modelled.} Every fit here runs on a filtered frame
+rather than on raw timing, and the filters matter enough to state. A lap enters
+only if it is a green-flag racing lap: in-laps and out-laps are dropped, as are
+laps under any neutralisation, laps the source marks inaccurate or deleted, and
+laps whose time is missing. Wet-compound laps are excluded entirely, so every
+degradation coefficient is a dry-weather quantity. What survives is then trimmed
+against traffic, by dropping laps slower than a fixed multiple of that
+driver--race's own median --- a relative threshold rather than an absolute one,
+because the same gap in seconds means different things at Monaco and at Spa ---
+and a stint is modelled only if enough laps survive the trim to fit a shape to.
+The per-circuit counts at every stage are generated into the degradation
+reports, so the cost of each filter is visible rather than asserted. What this
+frame does \emph{not} remove is lap-level variation the filters cannot see: a
+driver lifting to manage a tyre, an engine mode, a blue flag that cost less than
+the trim threshold. The driver--race intercept absorbs a constant, not those.
 
 \subsection{Degradation}
 
@@ -409,6 +427,51 @@ transfer exactly as the balanced GT3 fields do. The instability is not the
 hardware. Where transfer does occur it tracks short circuits with cheap
 stops, which is the same axis Result~2 turns on.
 
+\subsection{What a stable slope could have scored}
+\label{sec:ceiling}
+
+A low score has two explanations that are indistinguishable from outside the
+measurement. The slope moved between seasons, or there was never enough signal
+in the laps for any slope to be recovered. Counting how few circuit-classes
+clear a threshold cannot separate those, and the separation is the result.
+
+So we measured the second one directly, on Formula~1, where the per-compound
+fit and the lap data are richest. Lap times are rebuilt from each circuit's own
+fit --- its driver--race intercepts, its fuel slope, and \emph{one} degradation
+slope used for every season, so the slope is stable by construction --- plus
+residuals resampled in whole stints, which keeps their within-stint correlation
+rather than handing the model independent draws it would find easier to
+predict. Running the real protocol on that gives the within-stint $R^2$ a
+perfectly stable slope earns against the noise actually present.
+
+The ceiling is far lower than the threshold, and it varies by an order of
+magnitude between circuits: from \CeilingLowest{} at \CeilingLowestWhere{} to
+\CeilingHighest{} at \CeilingHighestWhere{}. At
+\NCeilingBelowThreshold{} of \NCeilingCircuits{} circuits a perfectly stable
+slope could not have cleared $\TransferThreshold{}$. The threshold in
+Figure~\ref{fig:transfer} is therefore reporting how much degradation signal a
+circuit carries at least as much as it reports stability, and the
+circuit-classes that clear it are partly the ones where the quantity is
+measurable at all.
+
+Taking the gap between ceiling and measured score instead --- the shortfall the
+noise does not explain --- the picture is sharper than the count it replaces.
+Of \NCeilingCircuits{} circuits, \NCeilingUnstable{} have slopes that genuinely
+move, \NCeilingStable{} have slopes that are stable once the noise is priced
+in, \NCeilingNoSignal{} carry no recoverable signal either way, and
+\NCeilingBorderline{} sit between. Instability is real and it is the largest
+group; it is not, as the raw scores imply, nearly universal.
+
+\paragraph{The degree is chosen with the held-out season in view.} The folds
+above select the polynomial degree by averaging cross-validated RMSE over every
+fold, including the season then held out, which is a mild leak. Choosing the
+degree inside each fold instead moves the mean score by \LeakageMean{} and at
+most \LeakageMax{}. The leak is real and small. It is also not free to close:
+at one circuit, per-fold selection takes the quadratic and extrapolates it off
+a cliff, which is why the published protocol chooses once.
+\NCeilingExcluded{} circuits are excluded from the counts above as degenerate
+fits and named in the generated report.
+
 \section{Result 2: the cost of the stop sets the strategy regime}
 
 \begin{figure}[htbp]
@@ -456,6 +519,31 @@ wears tells you considerably less. The case that pit loss is exogenous to the
 race outcome is made separately, from the fact that it varies far more between
 circuits than between seasons of the same circuit.
 
+\paragraph{Is the separation a class label, or the spread of one predictor?}
+Two objections sit here and both have measurements rather than arguments.
+
+The first is that pit loss simply varies more than the slope does, so an AUC
+comparison flatters it. It cannot. The statistic above is the Mann--Whitney
+form, computed from ranks, so it is invariant under any strictly increasing
+transformation: standardising pit loss leaves it at
+\RegimeAucStandardised{}, unmoved to three decimals. Rescaling is not available
+as a correction because the objection does not reach a rank statistic.
+
+The second is sharper. Pit loss is nearly constant inside a class, so its AUC
+could be measuring class identity wearing a continuous disguise --- and the
+class-level correlation above rests on one point per class. Ranking race-seasons
+by their class's mean pit loss alone gives \RegimeAucClassLabel{}, well short of
+\RegimeAucPitLoss{} for pit loss itself, so the label does not carry the result.
+Nor is pit loss mostly a class property: \RegimeWithinClassShare{}\% of its
+variance is \emph{within} class rather than between, which is what one would
+expect of a quantity set by the geometry of a pit lane rather than by a car.
+Recomputed inside each class, where class identity is held fixed by
+construction, the cost of the stop still separates the two regimes in all
+\NRegimeWithinClass{} classes where both regimes occur, between
+\RegimeWithinClassMin{} and \RegimeWithinClassMax{}. The remaining
+\NRegimeClassesOneRegime{} classes contain one regime only, so no AUC is
+defined for them and none is reported.
+
 \paragraph{What the median pit loss is a median of.} It is taken over every
 green-flag stop in the race-season, which in endurance racing includes stops
 that change driver as well as stops that do not. A driver change is slower in
@@ -481,6 +569,7 @@ above it and understates uncertainty below. Quote the rule; treat the number as
 an order of magnitude.
 
 \section{Inference}
+\label{sec:inference}
 
 Each interval above is a percentile bootstrap resampled at the level its data
 varies at, and those levels differ: circuit-classes for the transfer
@@ -503,15 +592,41 @@ sensitivity is reported for it instead of an interval it cannot support.}
 \label{fig:intervals}
 \end{figure}
 
-The audit's central finding carries no interval, and that is deliberate rather
-than an omission. It is a median over decisions that are not independent:
-several drivers in one race share a track, a Safety Car and one tyre
-allocation. A bootstrap over decisions would understate its width, in the
-direction that flatters the result, and a bootstrap over races needs a
-clustering the audit table does not carry. Saying so is more useful than
-publishing an interval known to be too narrow.
+The audit's central finding is a median over decisions that are not
+independent: several drivers in one race share a track, a Safety Car and one
+tyre allocation, so a bootstrap over decisions would understate its width in
+the direction that flatters the result. The audit tables carry race
+identifiers, so the race is the unit resampled.
 
-\section{Result 3: an exact optimiser stops later than teams do}
+That interval changes how Result~3 should be read, and it is the reason this
+section reports it per class rather than only for the pooled median. Of the
+\NAuditScopes{} class-level medians, \NAuditContainsZero{} contain zero
+(\AuditZeroClasses{}), and the gap in those two classes is not established.
+Formula~1 is \AuditMedFone{} laps with a race-clustered interval of
+\AuditCiFone{} over \AuditRacesFone{} races; IMSA GTD \AuditMedImsaGtd{}
+\AuditCiImsaGtd{}; IMSA GTD PRO \AuditMedImsaGtdpro{} \AuditCiImsaGtdpro{};
+IMSA GTP \AuditMedImsaGtp{} \AuditCiImsaGtp{}; WEC Hypercar
+\AuditMedWecHypercar{} \AuditCiWecHypercar{}; ELMS LMP2 \AuditMedElmsLmptwo{}
+\AuditCiElmsLmptwo{}; ELMS LMP2 Pro/Am \AuditMedElmsLmptwoProAm{}
+\AuditCiElmsLmptwoProAm{}.
+
+So the ladder reported in Result~3 is not a smooth gradient across the caution
+rate. It is a large and resolved disagreement in Formula~1 and in all three
+IMSA classes, against no established disagreement at all in WEC Hypercar and
+ELMS LMP2. The ordering still tracks the caution rate, but the low end of it
+is a statement about what we cannot resolve rather than about a small gap.
+
+\section{Result 3: a time-optimal planner stops later than teams do}
+\label{sec:audit}
+
+The planner replayed here is exact in a narrow and literal sense: it solves its
+own dynamic program to optimality under the fuel cap. It is not optimal for a
+race. It prices one car's expected race time against a linear degradation slope,
+a measured stop cost and a neutralisation hazard, and it represents neither the
+tyre allocation, nor the two-compound rule, nor traffic, nor energy management,
+nor a championship position worth protecting. ``Exact'' describes the solve and
+nothing beyond it, and every sentence below should be read as a disagreement
+between a model and a practice rather than as evidence about which was faster.
 
 \begin{figure}[htbp]
 \centering
@@ -535,6 +650,11 @@ decision, so \FoneMedian{} is the comparable one. In endurance the gap tracks th
 WEC \WecMedian{} laps at \WecCautionShare{}\% of first stops taken under
 caution, ELMS \ElmsMedian{} at \ElmsCautionShare{}\%, IMSA \ImsaMedian{} at
 \ImsaCautionShare{}\%.
+
+Read that ladder with the race-clustered intervals in Section~\ref{sec:inference}
+beside it. Its two lowest rungs, WEC Hypercar and ELMS LMP2, have intervals
+containing zero: the ordering is real but the small gaps at the bottom of it
+are not established, and only the Formula~1 and IMSA disagreements are.
 
 \begin{figure}[htbp]
 \centering
@@ -705,6 +825,32 @@ names circuits differently from the lap files, which still drops
 \DOneStaleDropped{} of \DOneChasers{} values if joined on the slug. Each now has
 a test, as does the conclusion itself: a negative result decays when someone
 later makes it come out positive.
+
+\subsection{A fourth explanation, and the sign it comes back with}
+\label{sec:freshtyre}
+
+The candidate raised most often against this result is structural rather than
+empirical. A linear slope has no one-off gain at a stop, so an optimiser built
+on it should always recommend stopping later than a pit wall buying an immediate
+jump in pace, and pricing that jump in should close the gap.
+
+The shape a fit misses is visible in its own residuals, so the claim needs no
+new machinery. A fit forces its residuals to average zero overall; what carries
+the answer is the profile against tyre age, where negative means laps faster
+than the model says. Pooled over \NFreshCircuits{} Formula~1 circuits, the
+youngest measured age carries \FreshResid{}\,s and the next \FreshResidNext{}\,s
+--- laps on a new set come in \emph{slower} than the fit expects, and the sign
+only turns over once the set is several laps old. Per circuit, fresh laps are
+faster than modelled at \NFreshFaster{} of \NFreshCircuits{}, median
+\FreshMedianBonus{}\,s. The out-lap is already outside the modelling frame, so
+this is the first flying laps on the new set, which is what a stop buys.
+
+That is tyre warm-up, and it is the opposite of the effect the objection
+predicts. The engine prices a stop as an instant return to the slope's
+intercept, so it is already \emph{over}stating what a stop is worth; correcting
+it would push the recommended lap later still and widen the disagreement rather
+than close it. Four candidate explanations have now been tested here and all
+four have failed, three of them in the direction that makes the gap larger.
 
 \subsection{Comparison against three baselines}
 
@@ -913,9 +1059,15 @@ question.} The model is asked five laps early and offered every remaining lap,
 optimising one car's expected race time. A pit wall is choosing among a handful
 of laps inside a strategy already committed to, under a tyre allocation and a
 two-compound rule the engine does not represent. We cannot rule out that the
-disagreement is an artefact of asking a question no team is answering. Testing
-that means constraining the candidate set to what was actually available, which
-changes the audit rather than the model.
+disagreement is an artefact of asking a question no team is answering --- that
+the gap measures the distance between two objectives rather than an error in
+either. This is the most serious threat to Result~3 and it is not resolved here.
+Section~\ref{sec:audit} states what the planner does and does not price;
+testing the artefact properly means constraining the candidate set to the laps
+a team could actually have taken under its allocation, which changes the audit
+rather than the model, and we have not done it. Until someone does, Result~3
+should be read as a disagreement whose cause is unestablished, and the four
+failed explanations narrow the field without closing it.
 
 \paragraph{Unresolved slopes, carried forward anyway.} Of the
 \NCoefficientsFone{} Formula~1 degradation coefficients,
@@ -926,8 +1078,12 @@ on the resolved ones would select on the dependent variable --- circuit-classes
 with tight slopes are exactly the ones likeliest to transfer --- and the
 transfer result would then be partly an artefact of the screen. The cost is
 that the weak transfer reported in Section~\ref{sec:transfer} is a mixture of
-genuine instability and of parameters the data never pinned down, and this work
-does not separate the two.
+genuine instability and of parameters the data never pinned down.
+Section~\ref{sec:ceiling} separates those two for Formula~1 by measuring what a
+stable slope could have scored against the same noise, and the mixture turns
+out to matter: most circuits cannot clear the quoted threshold even with a
+slope that does not move. The endurance classes are not separated this way,
+and their counts should be read with that in mind.
 
 \paragraph{Constants resting on very little.} The cheap-stop edge of
 \CheapStopEdge{}\,s is a maximum set by one race; drop it and the edge falls to
@@ -1011,7 +1167,9 @@ tyre. And an exact optimiser
 disagrees with professional practice in a consistent direction that we have not
 been able to explain. We proposed two explanations, tested both and lost both;
 we then took a third from published work, which has the right sign and fails on
-the quantity it depends on by a factor of \DOneThetaRatio{}. Simpler rules using
+the quantity it depends on by a factor of \DOneThetaRatio{}; and a fourth, the
+one most often raised against this result, comes back with the wrong sign
+entirely (Section~\ref{sec:freshtyre}). Simpler rules using
 strictly less information land closer to what teams actually did in
 \NClassesRuleWins{} of \NClassesScored{} classes.
 

@@ -50,7 +50,9 @@ jobs:
   f1:
     name: F1 layers
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    # Raised from 90 when the transfer-ceiling sweep joined this job: twenty
+    # stable-slope replicates per circuit is roughly twenty minutes on its own.
+    timeout-minutes: 150
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -85,6 +87,18 @@ jobs:
         run: python scripts/run_d1_defence.py
       - name: Slope-bias check
         run: python scripts/run_slope_bias_check.py
+      # Reads the same frames as the degradation model and re-runs the transfer
+      # protocol against synthetic stable-slope races, so it belongs after it.
+      # The cost of leaving it out of the schedule is the one this workflow was
+      # built to stop: an artifact that only regenerates when someone remembers.
+      - name: What a stable slope could have scored
+        run: python scripts/run_transfer_ceiling.py
+      # Refits each circuit to read its own residuals by tyre age, so it runs
+      # after the degradation model. Tests the fourth candidate explanation for
+      # Result 3 -- that the slope misprices a fresh tyre -- and finds it has
+      # the opposite sign.
+      - name: What the slope misses at low tyre age
+        run: python scripts/run_fresh_tyre.py
       # Reads the fitted tyre slopes, so it runs after the degradation model.
       # Measures what Salminen's overcut inequality asks for at those rates:
       # the inequality is his, the slopes are measured here.
@@ -209,6 +223,12 @@ jobs:
       # runs after the multi-stop plans it classifies against.
       - name: Pit-loss measurement checks
         run: python scripts/run_pit_loss_checks.py
+      # Reads both audit tables, so it belongs beside the baseline comparison
+      # rather than in either single-series job. Publishes the race-clustered
+      # interval the audit median was previously reported without, and recomputes
+      # Result 2's separation inside each class.
+      - name: Race-clustered audit intervals and the within-class regime check
+        run: python scripts/run_audit_intervals.py
       # Last, because the figures read the artifacts every step above writes.
       # A figure that disagrees with its own data is the same defect as a
       # sentence that does, and it is harder to notice.

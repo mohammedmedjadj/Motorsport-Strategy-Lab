@@ -494,6 +494,79 @@ def _macros() -> dict[str, str]:
     slope = pd.read_csv(F1_DERIVED_DIR / "slope_bias_check.csv")
     out["NIdentifiability"] = f"{slope['identifiability'].median():.3f}"
 
+    # --- the audit median's race-clustered intervals ------------------------
+    # These were computed and committed and then not published, while the
+    # manuscript said an interval needed a clustering the audit table did not
+    # carry. It carries it. Two of the seven classes turn out to contain zero,
+    # which is the part that had to reach the paper.
+    ci = pd.read_csv(DERIVED_DIR / "cross_series" / "audit_intervals.csv")
+    ci = ci.set_index("scope")
+    for scope, tex in (
+        ("Formula 1", "Fone"), ("GTD", "ImsaGtd"), ("GTDPRO", "ImsaGtdpro"),
+        ("GTP", "ImsaGtp"), ("HYPERCAR", "WecHypercar"), ("LMP2", "ElmsLmptwo"),
+        ("LMP2 Pro/Am", "ElmsLmptwoProAm"), ("all endurance", "Endurance"),
+    ):
+        if scope not in ci.index:
+            continue
+        row = ci.loc[scope]
+        out[f"AuditCi{tex}"] = f"[{row['ci_low']:+.1f}, {row['ci_high']:+.1f}]"
+        # The median from the same artifact as its interval, so a class median
+        # and its interval cannot be quoted from two different scopes.
+        out[f"AuditMed{tex}"] = f"{row['median_delta_laps']:+.0f}"
+        out[f"AuditRaces{tex}"] = str(int(row["n_races"]))
+    out["NAuditContainsZero"] = str(int(ci["contains_zero"].sum()))
+    out["AuditZeroClasses"] = ", ".join(sorted(ci.index[ci["contains_zero"]]))
+    out["NAuditScopes"] = str(int((ci.index != "all endurance").sum()))
+
+    # --- what a stable slope could have scored ------------------------------
+    # The null Result 1 needed: a low transfer score means either the slope
+    # moved or there was never signal enough to recover it, and the published
+    # number cannot tell those apart.
+    ceil = pd.read_csv(F1_DERIVED_DIR / "transfer_ceiling.csv")
+    sane = ceil[ceil["sane"]]
+    out["NCeilingCircuits"] = str(len(sane))
+    out["NCeilingBelowThreshold"] = str(int((sane["ceiling_mean"] < 0.2).sum()))
+    counts = sane["verdict"].value_counts()
+    out["NCeilingUnstable"] = str(int(counts.get("slope unstable", 0)))
+    out["NCeilingStable"] = str(int(counts.get("slope stable", 0)))
+    out["NCeilingNoSignal"] = str(int(counts.get("no signal to recover", 0)))
+    out["NCeilingBorderline"] = str(int(counts.get("borderline", 0)))
+    lo, hi = sane.loc[sane["ceiling_mean"].idxmin()], sane.loc[sane["ceiling_mean"].idxmax()]
+    out["CeilingLowest"] = f"{lo['ceiling_mean']:+.3f}"
+    out["CeilingLowestWhere"] = str(lo["circuit"]).replace("_", " ").title()
+    out["CeilingHighest"] = f"{hi['ceiling_mean']:+.3f}"
+    out["CeilingHighestWhere"] = str(hi["circuit"]).replace("_", " ").title()
+    leak = (sane["published_r2"] - sane["noleak_r2"]).abs()
+    out["LeakageMean"] = f"{leak.mean():.4f}"
+    out["LeakageMax"] = f"{leak.max():.4f}"
+    out["NCeilingExcluded"] = str(int((~ceil["sane"]).sum()))
+
+    # --- the fourth candidate for Result 3, and its sign --------------------
+    fresh = pd.read_csv(F1_DERIVED_DIR / "fresh_tyre.csv")
+    profile = pd.read_csv(F1_DERIVED_DIR / "fresh_tyre_profile.csv").sort_values("tyre_age")
+    youngest = profile.iloc[0]
+    out["FreshAge"] = str(int(youngest["tyre_age"]))
+    out["FreshResid"] = f"{youngest['mean_resid_s']:+.3f}"
+    out["FreshResidNext"] = f"{profile.iloc[1]['mean_resid_s']:+.3f}"
+    out["FreshAgeNext"] = str(int(profile.iloc[1]["tyre_age"]))
+    out["NFreshCircuits"] = str(int(fresh["bonus_s"].notna().sum()))
+    out["NFreshFaster"] = str(int((fresh["bonus_s"] > 0).sum()))
+    out["FreshMedianBonus"] = f"{fresh['bonus_s'].median():+.3f}"
+
+    # --- is Result 2's separation just a class label? -----------------------
+    wc = pd.read_csv(DERIVED_DIR / "cross_series" / "regime_within_class.csv")
+    flat = wc[wc["car_class"] == "all"].set_index("quantity")["auc"]
+    out["RegimeAucStandardised"] = f"{flat['pit loss, standardised']:.3f}"
+    out["RegimeAucClassLabel"] = f"{flat['class identity alone']:.3f}"
+    out["RegimeWithinClassShare"] = f"{flat['within-class variance share of pit loss']:.0%}".replace("%", "")
+    inside = wc[(wc["quantity"] == "pit loss, within class") & wc["auc"].notna()]
+    out["NRegimeWithinClass"] = str(len(inside))
+    out["NRegimeClassesOneRegime"] = str(
+        int((wc[wc["quantity"] == "pit loss, within class"]["auc"].isna()).sum())
+    )
+    out["RegimeWithinClassMin"] = f"{inside['auc'].min():.3f}"
+    out["RegimeWithinClassMax"] = f"{inside['auc'].max():.3f}"
+
     return out
 
 
