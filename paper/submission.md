@@ -36,25 +36,55 @@ the repository and in the Overleaf bundle.
 ## Why are you submitting your research to the Wharton Sports Analytics Journal?
 
 > I built one protocol to ask two questions the motorsport-strategy literature
-> mostly does not, and applied it identically to seven car classes across four
+> mostly does not, and applied it to seven car classes across four
 > championships — Formula 1, WEC, IMSA and ELMS — using only public timing
 > data. Does a fitted tyre-degradation model predict a season it has never
 > seen? And does its recommendation resemble what a professional team actually
 > did?
 >
-> Four findings came back, three of them negative. Degradation slopes transfer
-> as a property of the circuit-class rather than the championship, and transfer
-> is rare: 5 of 51 circuit-classes reach a within-stint R² of 0.2 under
-> leave-one-race-out. A near-specification control field, where every car is
-> the same chassis and engine with no Balance of Performance, fails exactly as
-> the balanced fields do, which rules out heterogeneous machinery as the cause.
+> Four findings came back, three of them negative. But the part I would most
+> want a reviewer to look at is a result I had to take apart myself. Degradation
+> slopes transfer as a property of the circuit-class rather than the
+> championship, and transfer is rare: 5 of 51 circuit-classes reach a
+> within-stint R² of 0.2 under leave-one-race-out. Two researchers who read a
+> draft pointed out that this count cannot mean what I was using it to mean. A
+> low out-of-sample score has two explanations that are identical from outside:
+> the slope moved between seasons, or it never moved and sits under lap noise
+> too large for any protocol to recover.
+>
+> So I built the null. Lap times are rebuilt from each circuit's own fit with
+> one degradation slope shared by every season — stable by construction — plus
+> residuals resampled in whole stints to keep their within-stint correlation,
+> and the real protocol is run on that. At 18 of 22 Formula 1 circuits a
+> perfectly stable slope could not have cleared the threshold I was quoting; the
+> achievable ceiling runs from +0.005 at Silverstone to +0.420 at Jeddah.
+> Measuring the gap instead of the raw score leaves 8 circuits genuinely
+> unstable, 3 stable once noise is priced in, and 7 carrying no recoverable
+> signal at all. The finding survives in a narrower and more useful form, and
+> the paper now says so where it previously implied that instability was close
+> to universal.
+>
 > Whether an extra pit stop can ever pay is set by the cost of the stop rather
-> than by the car: across 205 race-seasons the class-level correlation between
-> median pit loss and tyre-limited share is −0.982, and ranking race-seasons by
-> pit loss alone separates the two regimes at an AUC of 0.977 against 0.865 for
-> degradation. Replaying 1,280 real first pit stops, an exact optimiser stops
-> later than teams did on 80% of Formula 1 decisions, by a median of 12 laps;
-> three candidate explanations were tested and all three failed.
+> than by the car: across 205 race-seasons, pit loss alone separates the two
+> regimes at an AUC of 0.977 against 0.865 for degradation. That comparison
+> drew two objections and both have measurements rather than arguments.
+> Standardising pit loss leaves the AUC at 0.977 — a Mann-Whitney statistic is
+> computed from ranks, so rescaling cannot reach it. And the separation is not
+> class identity in disguise: class means alone score 0.760, 92% of pit-loss
+> variance is within class rather than between, and the separation holds inside
+> every class where both regimes occur, between 0.963 and 1.000.
+>
+> Replaying 1,280 real first pit stops, a time-optimal planner stops later than
+> teams did on 80% of Formula 1 decisions, by a median of 12 laps, with a
+> race-clustered interval of [+8.0, +11.5]. Two of the seven class medians have
+> intervals containing zero, so the disagreement is established in Formula 1 and
+> all three IMSA classes and not established in WEC Hypercar or ELMS LMP2. Four
+> candidate explanations have been tested and none accounts for the magnitude.
+> The fourth is the one both readers proposed as the answer — that a linear
+> slope misses the immediate gain from a fresh tyre — and it comes back with the
+> wrong sign: residuals at the youngest measured tyre age are +0.187s, so new
+> tyres are slower than the fit expects for the first two laps. That is warm-up,
+> and correcting for it widens the gap rather than closing it.
 >
 > The fourth is the one I would point a reviewer at. The rival that a
 > competition-aware model should respond to turns out to be under-determined:

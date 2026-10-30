@@ -510,6 +510,11 @@ def _macros() -> dict[str, str]:
             continue
         row = ci.loc[scope]
         out[f"AuditCi{tex}"] = f"[{row['ci_low']:+.1f}, {row['ci_high']:+.1f}]"
+        # The bounds on their own as well, because prose outside the manuscript
+        # quotes an interval as two numbers and the packet guard scans numbers,
+        # not formatted intervals.
+        out[f"AuditCiLow{tex}"] = f"{row['ci_low']:+.1f}"
+        out[f"AuditCiHigh{tex}"] = f"{row['ci_high']:+.1f}"
         # The median from the same artifact as its interval, so a class median
         # and its interval cannot be quoted from two different scopes.
         out[f"AuditMed{tex}"] = f"{row['median_delta_laps']:+.0f}"
