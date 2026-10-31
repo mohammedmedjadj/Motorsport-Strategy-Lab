@@ -46,9 +46,8 @@ the repository and in the Overleaf bundle.
 > want a reviewer to look at is a result I had to take apart myself. Degradation
 > slopes transfer as a property of the circuit-class rather than the
 > championship, and transfer is rare: 5 of 51 circuit-classes reach a
-> within-stint R² of 0.2 under leave-one-race-out. Two researchers who read a
-> draft pointed out that this count cannot mean what I was using it to mean. A
-> low out-of-sample score has two explanations that are identical from outside:
+> within-stint R² of 0.2 under leave-one-race-out. That count cannot mean what I
+> was using it to mean, and I had not seen it. A low out-of-sample score has two explanations that are identical from outside:
 > the slope moved between seasons, or it never moved and sits under lap noise
 > too large for any protocol to recover.
 >
@@ -80,7 +79,7 @@ the repository and in the Overleaf bundle.
 > intervals containing zero, so the disagreement is established in Formula 1 and
 > all three IMSA classes and not established in WEC Hypercar or ELMS LMP2. Four
 > candidate explanations have been tested and none accounts for the magnitude.
-> The fourth is the one both readers proposed as the answer — that a linear
+> The fourth is the most natural candidate of all — that a linear
 > slope misses the immediate gain from a fresh tyre — and it comes back with the
 > wrong sign: residuals at the youngest measured tyre age are +0.187s, so new
 > tyres are slower than the fit expects for the first two laps. That is warm-up,
