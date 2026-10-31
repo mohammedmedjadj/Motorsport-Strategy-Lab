@@ -66,7 +66,7 @@ the repository and in the Overleaf bundle.
 > Whether an extra pit stop can ever pay is set by the cost of the stop rather
 > than by the car: across 205 race-seasons, pit loss alone separates the two
 > regimes at an AUC of 0.977 against 0.865 for degradation. That comparison
-> drew two objections and both have measurements rather than arguments.
+> invites two objections, and both are answered by measurement rather than argument.
 > Standardising pit loss leaves the AUC at 0.977 — a Mann-Whitney statistic is
 > computed from ranks, so rescaling cannot reach it. And the separation is not
 > class identity in disguise: class means alone score 0.760, 92% of pit-loss
@@ -85,7 +85,7 @@ the repository and in the Overleaf bundle.
 > tyres are slower than the fit expects for the first two laps. That is warm-up,
 > and correcting for it widens the gap rather than closing it.
 >
-> The fourth is the one I would point a reviewer at. The rival that a
+> The fourth finding reaches past this project. The rival that a
 > competition-aware model should respond to turns out to be under-determined:
 > four defensible selection rules name the same car on 17 of 271 decisions. Two
 > of those rules did not come from me. One is forced by the structure of a
