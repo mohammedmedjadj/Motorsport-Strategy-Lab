@@ -157,7 +157,7 @@
 
 <section>
   <div class="wrap">
-    <h2><span class="n">3</span>An exact optimiser stops later than teams do, and nobody knows why</h2>
+    <h2><span class="n">3</span>A time-optimal planner stops later than teams do, and nobody knows why</h2>
     <p class="lede">Every real first stop is replayed. The model is asked five
       laps early, given the state as it was, and its recommendation compared to
       the lap the team chose.</p>
@@ -167,7 +167,7 @@
     </figure>
     <div class="cols two">
       <div>
-        <p><strong>Two explanations were proposed here, and both were tested here.</strong></p>
+        <p><strong>Four explanations have been tested. None accounts for the magnitude.</strong></p>
         <p><strong>No track position</strong>, so the engine cannot pay for an
           undercut. Re-running all 357 F1 decisions through a cover-aware
           Stackelberg engine moves the recommendation <em>away</em> from the real
@@ -177,10 +177,21 @@
           method, the paired difference is negligible — an error that size moves
           a stop by several race distances, not ten laps.
           <span class="win">Not detected.</span></p>
+        <p><strong>Salminen's position-keeping defence.</strong> The right sign,
+          and it fails on the quantity it depends on by a factor of 3.4.
+          <span class="win">Too small.</span></p>
+        <p><strong>A fresh tyre is worth more than the slope says.</strong> The
+          explanation two outside readers proposed. The residuals say the
+          opposite: at the youngest measured tyre age laps are +0.187&nbsp;s
+          <em>slower</em> than the fit expects. That is warm-up, and pricing it
+          in widens the gap. <span class="win">Wrong sign.</span></p>
       </div>
       <div>
         <div class="note"><strong>The result stands as measured and
-          unexplained.</strong> That is a worse position than having a plausible
+          unexplained</strong> — established in Formula&nbsp;1, +10 laps
+          [+8.0,&nbsp;+11.5] clustered on the race, and in all three IMSA
+          classes; not established in WEC Hypercar or ELMS LMP2, whose intervals
+          contain zero. That is a worse position than having a plausible
           story, and a better one than publishing a story two measurements
           contradict.</div>
         <p>What is left to try is the question itself. The model is offered every
