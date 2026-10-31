@@ -1,0 +1,7 @@
+group,n_decisions,n_races,median_delta,ci_low,ci_high,share_later,committed_median_delta,committed_ci_low,committed_ci_high,committed_contains_zero,committed_share_later,committed_abs_miss,uniform_miss,midpoint_miss,window_laps
+all decisions,352,74,9.5,8.0,11.0,0.7954545454545454,2.0,1.0,4.0,False,0.5596590909090909,4.0,8.333333333333334,7.5,24.0
+one stop,150,39,4.0,2.0,7.0,0.6466666666666666,4.0,2.0,7.0,False,0.6466666666666666,4.0,,,
+two stops,159,46,11.0,10.0,13.0,0.9182389937106918,1.0,1.0,2.0,False,0.49056603773584906,3.0,8.333333333333334,7.5,24.0
+three or more,43,15,17.0,12.0,25.0,0.8604651162790697,2.0,-1.0,4.0,True,0.5116279069767442,3.0,7.869565217391305,7.0,23.0
+two or more,202,54,12.0,11.0,14.0,0.905940594059406,1.0,1.0,2.0,False,0.49504950495049505,3.0,8.333333333333334,7.5,24.0
+"two or more, second stop under green",155,42,12.0,11.0,14.0,0.9354838709677419,2.0,1.0,2.0,False,0.5225806451612903,3.0,8.8,8.0,25.0

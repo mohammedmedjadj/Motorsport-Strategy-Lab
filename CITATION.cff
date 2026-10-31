@@ -19,16 +19,16 @@ abstract: >-
   degradation model predict a season it has never seen, and does its
   recommendation resemble what a professional team actually did.
 
-  Three results. Tyre-degradation slopes transfer as a property of the
+  Tyre-degradation slopes transfer as a property of the
   circuit-class rather than of the championship, and a near-specification
   control field fails exactly as the performance-balanced fields do, ruling out
   heterogeneous machinery as the cause. Whether an extra pit stop can ever pay
-  is set by the cost of the stop rather than by the car. And replaying 1,280
-  real first pit stops shows an exact optimiser stopping consistently later
-  than teams did — a result reported as measured and unexplained, after both
-  proposed explanations were tested here and both failed, and after three
-  rule-of-thumb baselines scored on the same decisions sit closer to real
-  practice in 5 of the 7 classes.
+  is set by the cost of the stop rather than by the car. Replaying 1,280 real
+  first pit stops shows a single-next-stop planner stopping later than teams
+  did; four explanations fail, and the fifth is the audit itself, which ran the
+  planner's second stint to the flag. Holding each team's next stop fixed, the
+  Formula 1 median falls from +10 to +2 laps, every endurance interval contains
+  zero, and +4 laps survives in one-stop races.
 
   Every quantity is measured from published timing or absent; nothing is
   imputed. Two estimators built for this work were validated on synthetic data

@@ -32,9 +32,10 @@ classes. Then 1,280 real pit-stop decisions replayed against all of it, three
 rule-of-thumb baselines scored on the same decisions, and confidence intervals
 on every headline.
 
-Two of the three results are negative. The third is measured and unexplained,
-after both candidate explanations were proposed here and tested here, and both
-failed.
+Two of the three results are negative. The third came apart under its fifth
+test: four explanations for why a planner stops later than real pit walls
+failed, and the fifth showed that most of the gap was the audit asking the
+planner to plan a stint the team never ran.
 
 ---
 
@@ -49,7 +50,7 @@ failed.
 <tr>
 <td valign="top"><b>Transfer belongs to the circuit-class, not the championship.</b> 51 circuit-classes, one protocol. GT3 at Lime Rock reaches R² <b>+0.573</b>; only 5 clear 0.2. Difference GT3 − prototype <b>+0.164</b> [+0.059, +0.312], permutation p = 0.0011. The near-spec control (ELMS LMP2 — one chassis, one engine, no BoP) fails too, so the instability is not the hardware. <b>The count overstates it:</b> rebuilt with a slope stable by construction, 18 of 22 F1 circuits cannot clear 0.2 against their own lap noise. Priced against that ceiling, 8 are genuinely unstable and 3 stable.</td>
 <td valign="top"><b>The cost of the stop sets the strategy regime, not the car.</b> Across 205 race-seasons: <b>r = −0.982</b> [−0.986, −0.745], monotonic, no inversion. 150 race-seasons above a 22.5 s pit loss contain no tyre-limited race at all. That edge is a maximum set by one race, so quote the rule and treat the number as an order of magnitude.</td>
-<td valign="top"><b>A time-optimal planner stops later than teams do, and nobody knows why.</b> 1,280 replayed first stops, seven classes, one criterion. Median +12 laps in IMSA GTD, +10 in F1 [+8.0, +11.5] race-clustered; not established in WEC Hypercar or ELMS LMP2. Four explanations tested, none accounts for the magnitude — the fresh-tyre one comes back with the wrong sign.</td>
+<td valign="top"><b>A planner stops later than teams do — and most of it was the question.</b> 1,280 replayed first stops, seven classes, one criterion. Published median +10 laps in F1 [+8.0, +11.5], +12 in IMSA GTD. Four explanations failed. The fifth: the planner ran its second stint to the flag, while teams that stopped again did not. Holding each team's next stop fixed, F1 falls to <b>+2</b> [+1.0, +4.0] and every endurance interval contains zero. What survives is <b>+4</b> [+2.0, +7.0] in one-stop races.</td>
 </tr>
 </table>
 

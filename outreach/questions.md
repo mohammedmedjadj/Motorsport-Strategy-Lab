@@ -37,7 +37,7 @@ think, or a standard test for this design I have not found.
 **This is the question I most want answered, because a "yes" and a "no" lead to
 completely different papers.**
 
-**The claim.** Replaying 1,280 first stops, an exact optimiser recommends
+**The claim.** Replaying 1,280 first stops, a single-next-stop optimiser recommends
 stopping a median of 12 laps later than the team did, on 80–86% of decisions in
 F1 and IMSA. Two candidate explanations were tested and both failed: modelling
 the undercut through a cover-aware Stackelberg engine moves the recommendation
@@ -51,14 +51,20 @@ inside a strategy committed to earlier, under a tyre allocation and a
 two-compound rule the engine does not represent, with a pit wall that will not
 gamble a points finish on an expected-value argument.
 
-**My position.** The bias is real and measured, and I do not know its cause. I
-would rather publish that than a mechanism two measurements contradict.
+**Partly answered, by measurement.** The answer is mostly no, and it is now
+measured ([`../reports/f1/committed_strategy.md`](../reports/f1/committed_strategy.md)).
+The engine plans one stop and runs the stint after it to the flag; a team that
+stopped again sized its first stop against a stint ending at its second.
+Replayed with each team's own second stop as the end of that stint, the
+Formula 1 median falls from +10 to +2 laps, and no endurance class keeps an
+established gap. What survives is +4 laps in one-stop races, where the engine
+and the team were answering the same question.
 
-**What I am unsure about.** Whether this comparison is meaningful at all — that
-is, whether "the optimiser disagrees with the team" is a finding about
-optimisers, or an artefact of asking a question no team is answering. If the
-latter, the fix is to constrain the model's candidate set to what was actually
-available and re-run, which changes the audit rather than the model.
+**What I am still unsure about.** Whether the one-stop residual is the tyre
+allocation, traffic, or a pit wall that will not gamble a points finish on an
+expected-value argument. Holding the second stop fixed also gives the engine
+the team's plan in hindsight; dropping second stops taken under a Safety Car
+removes the opportunistic part of that, not a plan revised during the race.
 
 **What would change my mind.** Anyone who has sat on a pit wall telling me which
 constraints bind in practice and are missing here.

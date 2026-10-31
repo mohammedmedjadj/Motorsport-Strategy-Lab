@@ -21,15 +21,15 @@ A **replay, not a forecast**: the decision point is defined relative to a stop t
 | 2023 | singapore | LEC | 20 | 59 | +39 | +49.49 s |
 | 2025 | singapore | VER | 19 | 59 | +40 | +47.59 s |
 | 2022 | barcelona | SAI | 10 | 31 | +21 | +43.28 s |
-| 2022 | montreal | HAM | 9 | 67 | +58 | +38.99 s |
 | 2022 | montreal | VER | 9 | 67 | +58 | +38.99 s |
+| 2022 | montreal | HAM | 9 | 67 | +58 | +38.99 s |
 | 2022 | bahrain | MAG | 14 | 29 | +15 | +36.02 s |
 | 2022 | red_bull_ring | RUS | 11 | 39 | +28 | +35.58 s |
 | 2025 | montreal | RUS | 13 | 67 | +54 | +35.43 s |
 | 2025 | imola | PIA | 13 | 49 | +36 | +35.40 s |
 | 2025 | montreal | PIA | 16 | 67 | +51 | +33.79 s |
-| 2023 | montreal | HAM | 12 | 67 | +55 | +33.25 s |
 | 2023 | montreal | ALO | 12 | 67 | +55 | +33.25 s |
+| 2023 | montreal | HAM | 12 | 67 | +55 | +33.25 s |
 
 ## The disagreement is a systematic bias, and it is not the safety cars
 
@@ -51,7 +51,7 @@ The bias is present in **both** groups and barely larger in the neutralised one.
 
 **Both explanations are measured and neither accounts for the finding.** The result stands as measured and unexplained, which is a worse position than having a plausible story and a better one than publishing a story two measurements contradict.
 
-What is left to try is the question itself. The model is asked five laps before the real stop and offers every remaining lap as a candidate; a real team is choosing between a handful of laps inside a strategy already committed to, with a tyre allocation and a two-compound rule the engine does not see. The two may not be answering the same question, and testing that means changing the audit rather than the model.
+**The question itself was the fifth explanation, and it holds.** The engine plans one stop and runs the stint after it to the flag, while a team that stopped again sized its first stop against a stint ending at its second. Replayed with each team's own second stop as the end of that stint, most of the gap above disappears; what survives is in one-stop races. See [`committed_strategy.md`](committed_strategy.md).
 
 
 ## By circuit

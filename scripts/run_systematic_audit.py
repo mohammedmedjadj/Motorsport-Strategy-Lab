@@ -166,13 +166,13 @@ def report(frame: pd.DataFrame) -> str:
         "worse position than having a plausible story and a better one than "
         "publishing a story two measurements contradict.",
         "",
-        "What is left to try is the question itself. The model is asked five "
-        "laps before the real stop and offers every remaining lap as a "
-        "candidate; a real team is choosing between a handful of laps inside a "
-        "strategy already committed to, with a tyre allocation and a two-"
-        "compound rule the engine does not see. The two may not be answering "
-        "the same question, and testing that means changing the audit rather "
-        "than the model.",
+        "**The question itself was the fifth explanation, and it holds.** "
+        "The engine plans one stop and runs the stint after it to the flag, "
+        "while a team that stopped again sized its first stop against a stint "
+        "ending at its second. Replayed with each team's own second stop as "
+        "the end of that stint, most of the gap above disappears; what "
+        "survives is in one-stop races. See "
+        "[`committed_strategy.md`](committed_strategy.md).",
         "",
     ]
 

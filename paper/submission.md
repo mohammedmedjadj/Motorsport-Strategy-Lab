@@ -42,8 +42,8 @@ the repository and in the Overleaf bundle.
 > seen? And does its recommendation resemble what a professional team actually
 > did?
 >
-> Four findings came back, three of them negative. But the part I would most
-> want a reviewer to look at is a result I had to take apart myself. Degradation
+> Four findings came back. The parts I would most want a reviewer to look at
+> are two results I had to take apart myself. The first: degradation
 > slopes transfer as a property of the circuit-class rather than the
 > championship, and transfer is rare: 5 of 51 circuit-classes reach a
 > within-stint R² of 0.2 under leave-one-race-out. That count cannot mean what I
@@ -73,18 +73,22 @@ the repository and in the Overleaf bundle.
 > variance is within class rather than between, and the separation holds inside
 > every class where both regimes occur, between 0.963 and 1.000.
 >
-> Replaying 1,280 real first pit stops, a time-optimal planner stops later than
-> teams did on 80% of Formula 1 decisions, by a median of 12 laps on those.
-> Over every decision the median is +10, with a race-clustered interval of
-> [+8.0, +11.5]. Two of the seven class medians have
-> intervals containing zero, so the disagreement is established in Formula 1 and
-> all three IMSA classes and not established in WEC Hypercar or ELMS LMP2. Four
-> candidate explanations have been tested and none accounts for the magnitude.
-> The fourth is the most natural candidate of all — that a linear
-> slope misses the immediate gain from a fresh tyre — and it comes back with the
-> wrong sign: residuals at the youngest measured tyre age are +0.187s, so new
-> tyres are slower than the fit expects for the first two laps. That is warm-up,
-> and correcting for it widens the gap rather than closing it.
+> Replaying 1,280 real first pit stops, a planner that places the next stop to
+> minimise race time stops later than teams did: over every Formula 1 decision
+> by a median of +10 laps, with a race-clustered interval of [+8.0, +11.5]. I
+> tested four explanations and none accounted for it; the most natural one,
+> that a linear slope misses the gain from a fresh tyre, came back with the
+> wrong sign. The fifth was the audit. The planner runs the stint after its
+> stop to the flag, but a team that stopped again sized its first stop against
+> a stint that ended at its second. Replayed with each team's own second stop as
+> the end of that stint, the Formula 1 median falls to +2 laps [+1.0, +4.0],
+> and no endurance class keeps an established gap. In Formula 1 that is not the
+> window doing the work: the planner chooses from a median of 24 laps and
+> misses the real stop by 3, against 8.3 for a lap picked at random from the
+> same window. What survives is +4 laps [+2.0, +7.0] in one-stop races, where
+> the planner and the team were answering the same question. The largest gap I
+> had been reporting was mostly a defect in my own audit, and the paper now
+> says so.
 >
 > The fourth finding reaches past this project. The rival that a
 > competition-aware model should respond to turns out to be under-determined:

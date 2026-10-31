@@ -26,6 +26,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
+import numpy as np  # noqa: E402
 import pandas as pd  # noqa: E402
 
 from src.reporting.names import circuit as circuit_name  # noqa: E402
@@ -557,6 +558,66 @@ def _macros() -> dict[str, str]:
     out["NFreshCircuits"] = str(int(fresh["bonus_s"].notna().sum()))
     out["NFreshFaster"] = str(int((fresh["bonus_s"] > 0).sum()))
     out["FreshMedianBonus"] = f"{fresh['bonus_s'].median():+.3f}"
+
+    # --- Result 3 with the team's own strategy held fixed --------------------
+    def signed(x: float) -> str:
+        if float(x) == 0:
+            return "0"
+        return f"{x:+.0f}" if float(x).is_integer() else f"{x:+.1f}"
+
+    def interval(r: pd.Series, prefix: str = "") -> str:
+        return f"[{r[prefix + 'ci_low']:+.1f}, {r[prefix + 'ci_high']:+.1f}]"
+
+    commit = pd.read_csv(F1_DERIVED_DIR / "committed_strategy_summary.csv").set_index("group")
+    commit_rows = pd.read_csv(F1_DERIVED_DIR / "committed_strategy.csv")
+    for group, tex in (("all decisions", "All"), ("one stop", "One"),
+                       ("two or more", "Multi"), ("three or more", "Three"),
+                       ("two or more, second stop under green", "Green")):
+        r = commit.loc[group]
+        out[f"Commit{tex}Before"] = signed(r["median_delta"])
+        out[f"Commit{tex}After"] = signed(r["committed_median_delta"])
+        out[f"Commit{tex}Ci"] = interval(r, "committed_")
+        # The bounds alone too: prose outside the manuscript quotes an interval
+        # as two numbers, and the packet guard scans numbers.
+        out[f"Commit{tex}CiLow"] = f"{r['committed_ci_low']:+.1f}"
+        out[f"Commit{tex}CiHigh"] = f"{r['committed_ci_high']:+.1f}"
+        out[f"Commit{tex}BeforeCi"] = interval(r)
+        out[f"NCommit{tex}"] = str(int(r["n_decisions"]))
+    multi = commit.loc["two or more"]
+    out["CommitWindow"] = f"{multi['window_laps']:.0f}"
+    out["CommitEngineMiss"] = f"{multi['committed_abs_miss']:.0f}"
+    out["CommitUniformMiss"] = f"{multi['uniform_miss']:.1f}"
+    out["CommitMidpointMiss"] = f"{multi['midpoint_miss']:.1f}"
+    out["NCommitDropped"] = str(int(commit_rows["committed_delta_laps"].isna().sum()))
+    both = []
+    for _, race in commit_rows.groupby(["season", "circuit"]):
+        one = race[race["n_stops"] == 1]["delta_laps"]
+        more = race[race["n_stops"] >= 2]["delta_laps"]
+        if len(one) and len(more):
+            both.append(float(more.median() - one.median()))
+    out["NCommitWithinRaces"] = str(len(both))
+    out["CommitWithinGap"] = signed(float(np.median(both)))
+
+    end_commit = pd.read_csv(DERIVED_DIR / "endurance" / "committed_strategy_summary.csv")
+    end_labels = {("imsa", "GTD"): "ImsaGtd", ("imsa", "GTDPRO"): "ImsaGtdpro",
+                  ("imsa", "GTP"): "ImsaGtp", ("wec", "HYPERCAR"): "WecHypercar",
+                  ("elms", "LMP2"): "ElmsLmptwo", ("elms", "LMP2 Pro/Am"): "ElmsLmptwoProAm"}
+    informative = 0
+    for r in end_commit.itertuples():
+        tex = end_labels[(r.series, r.car_class)]
+        row = end_commit.loc[r.Index]
+        out[f"EndCommit{tex}Before"] = signed(r.median_delta)
+        out[f"EndCommit{tex}After"] = signed(r.committed_median_delta)
+        out[f"EndCommit{tex}Ci"] = interval(row, "committed_")
+        out[f"EndCommit{tex}Window"] = f"{r.window_laps:.0f}"
+        out[f"EndCommit{tex}Miss"] = f"{r.committed_abs_miss:.0f}"
+        out[f"EndCommit{tex}Uniform"] = f"{r.uniform_miss:.1f}"
+        out[f"EndCommit{tex}Midpoint"] = f"{r.midpoint_miss:.1f}"
+        informative += int(r.committed_abs_miss < min(r.uniform_miss, r.midpoint_miss))
+    out["NEndCommit"] = str(int(end_commit["n_decisions"].sum()))
+    out["NEndCommitClasses"] = str(len(end_commit))
+    out["NEndCommitContainsZero"] = str(int(end_commit["committed_contains_zero"].sum()))
+    out["NEndCommitInformative"] = str(informative)
 
     # --- is Result 2's separation just a class label? -----------------------
     wc = pd.read_csv(DERIVED_DIR / "cross_series" / "regime_within_class.csv")

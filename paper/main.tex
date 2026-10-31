@@ -49,16 +49,14 @@
 \linenumbers
 
 \begin{abstract}
-Race-strategy models are usually fitted and validated inside one championship,
-often one race. Two questions follow: does a fitted model predict a season it
-has never seen, and does its recommendation resemble what a professional team
-actually did? We apply one protocol to both across \NClasses{} car classes and
+Race-strategy models are usually fitted and validated inside one championship.
+Two questions follow: does a fitted model predict a season it
+has never seen, and does its recommendation resemble what a team actually did? We apply one protocol to both across \NClasses{} car classes and
 four championships --- Formula~1, WEC, IMSA and ELMS --- common rather than
 identical, since endurance sources carry no tyre compound and those models are
-net-slope. Of \NCatalogued{} papers catalogued, none applies one protocol to
-more than one championship.
+net-slope.
 
-Four findings, three negative. Degradation slopes transfer as a property of the
+Four findings. Degradation slopes transfer as a property of the
 \emph{circuit-class}, not the championship, and rarely: of \NCircuitClasses{}
 measured by leave-one-race-out, \NTransferAboveTwo{} reach a within-stint $R^2$
 of $\TransferThreshold{}$. That count overstates instability. With a slope
@@ -67,10 +65,12 @@ Formula~1 circuits cannot clear the threshold against their own lap noise;
 pricing it in leaves \NCeilingUnstable{} unstable and \NCeilingStable{} stable.
 Whether an extra stop pays is set by its cost: over \NRaceSeasons{}
 race-seasons, pit loss alone separates the regimes at an AUC of
-\RegimeAucPitLoss{} against \RegimeAucSlope{} for degradation, and inside each
-class too. Replaying \NDecisions{} real first pit stops, a time-optimal planner
-stops later than teams on \FoneLateShare{}\% of Formula~1 decisions, median
-\FoneLateMedian{} laps; four explanations fail to account for the magnitude.
+\RegimeAucPitLoss{} against \RegimeAucSlope{} for degradation. Replaying
+\NDecisions{} real first stops, a single-next-stop planner stops a median of
+\FoneMedian{} laps later than Formula~1 teams. Four explanations fail; the
+fifth is the audit, which ran the planner's second stint to the flag. Holding
+each team's next stop fixed, the gap falls to \CommitAllAfter{} and no endurance
+gap survives; \CommitOneAfter{} remains in one-stop races.
 And the rival such a model should answer is under-determined:
 \NRivalRules{} defensible rules agree on \NRivalAllAgree{} of
 \NRivalAllApply{} decisions.
@@ -343,6 +343,7 @@ from the fuel minimum $\lceil L/F \rceil - 1$ upward. A race is called
 \emph{tyre-limited} when the time-optimal $m$ exceeds that fuel minimum.
 
 \subsection{The Monte Carlo engine and the decision audit}
+\label{sec:method}
 
 The single-next-stop engine evaluates every candidate pit lap over
 \NDraws{} shared realisations. Each draw resamples the degradation and fuel
@@ -351,7 +352,9 @@ estimated standard errors), the neutralisation hazard from its Gamma posterior,
 and lap noise at the cross-validated residual scale. Candidates share the same
 draws, so a comparison between two pit laps carries no unrelated sampling
 noise. Plans leaving fewer than \MinFinalStint{} laps after the stop are
-excluded.
+excluded. After the stop the engine runs to the end of the race; it plans one
+stop, not the stops after it, and Section~\ref{sec:committed} measures what that
+costs the audit.
 
 The audit replays real decisions; it does not forecast them. For every race
 with a fitted model, the top \NFinishers{} classified finishers in Formula~1
@@ -605,7 +608,7 @@ tyre allocation, so a bootstrap over decisions would understate its width in
 the direction that flatters the result. The audit tables carry race
 identifiers, so the race is the unit resampled.
 
-That interval changes how Result~3 should be read, and it is the reason this
+That interval changes how Result~3 (Section~\ref{sec:audit}) should be read, and it is the reason this
 section reports it per class rather than only for the pooled median. Of the
 \NAuditScopes{} class-level medians, \NAuditContainsZero{} contain zero
 (\AuditZeroClasses{}), and the gap in those two classes is not established.
@@ -622,18 +625,26 @@ rate. It is a large and resolved disagreement in Formula~1 and in all three
 IMSA classes, against no established disagreement at all in WEC Hypercar and
 ELMS LMP2. The ordering still tracks the caution rate, but the low end of it
 is a statement about what we cannot resolve rather than about a small gap.
+Section~\ref{sec:committed} then shows that the resolved part is mostly a
+property of the audit rather than of the planner.
 
-\section{Result 3: a time-optimal planner stops later than teams do}
+\section{Result 3: most of the planner--team gap was the question the audit asked}
 \label{sec:audit}
 
-The planner replayed here is exact in a narrow and literal sense: it solves its
-own dynamic program to optimality under the fuel cap. It is not optimal for a
-race. It prices one car's expected race time against a linear degradation slope,
-a measured stop cost and a neutralisation hazard, and it represents neither the
-tyre allocation, nor the two-compound rule, nor traffic, nor energy management,
-nor a championship position worth protecting. ``Exact'' describes the solve and
-nothing beyond it, and every sentence below should be read as a disagreement
-between a model and a practice rather than as evidence about which was faster.
+The planner replayed here is the single-next-stop engine of
+Section~\ref{sec:method}. It chooses the lap of the next stop to minimise one
+car's expected race time against a linear degradation slope, a measured stop
+cost and a neutralisation hazard, and it runs the stint after that stop to the
+flag. It represents neither the tyre allocation, nor traffic, nor energy
+management, nor a championship position worth protecting. Every sentence below
+should be read as a disagreement between a model and a practice rather than as
+evidence about which was faster.
+
+This section first reports the disagreement as the audit originally measured it
+and the four explanations that failed to account for it. It then reports the
+fifth, which does: the audit asked the planner to make one set of tyres last to
+the flag in races where the team was going to stop again
+(Section~\ref{sec:committed}).
 
 \begin{figure}[htbp]
 \centering
@@ -859,6 +870,67 @@ it would push the recommended lap later still and widen the disagreement rather
 than close it. Four candidate explanations have now been tested here and all
 four have failed, three of them in the direction that makes the gap larger.
 
+\subsection{A fifth explanation: the question the audit asked}
+\label{sec:committed}
+
+The four explanations above all look for something the planner misprices. The
+fifth is in the audit. The engine plans one stop and runs the stint after it to
+the flag, so for a car that stopped once it was answering the question the pit
+wall answered. For a car that stopped again, it was not: the team's second stint
+ended at its second stop, and an engine made to stretch one set of tyres to the
+end will place the first stop later for that reason alone.
+
+The published gap splits accordingly. Over the \NCommitOne{} Formula~1 decisions
+by drivers who stopped once, the median is \CommitOneBefore{} laps
+\CommitOneBeforeCi{}; over the \NCommitMulti{} by drivers who stopped again it
+is \CommitMultiBefore{} \CommitMultiBeforeCi{}, and \CommitThreeBefore{} for
+three or more stops. Inside the \NCommitWithinRaces{} races containing both
+kinds of decision the multi-stop median exceeds the one-stop median by
+\CommitWithinGap{} laps, so the split is not only a difference between circuits.
+
+We then replayed every decision whose driver stopped again with the race
+ending, for the engine, at that driver's real second stop. Everything after that
+stop runs on fresh tyres whichever first-stop lap is chosen, so it is common to
+every candidate and drops out: the optimum over the shortened horizon is exactly
+the optimum given the team's own second stop. Nothing else changes; replayed
+with the full horizon, the same code reproduces every published recommendation
+in a random sample of forty. Leaving out the \NCommitDropped{} decisions whose
+real stop falls outside the shortened window, and with the team's strategy held
+fixed, the Formula~1 median falls from \CommitAllBefore{} to \CommitAllAfter{} laps \CommitAllCi{},
+and among multi-stop decisions from \CommitMultiBefore{} to \CommitMultiAfter{}
+\CommitMultiCi{}. In endurance the same replay, with each stint also bounded by
+the fuel range, covers \NEndCommit{} decisions, and the interval contains zero
+in all \NEndCommitContainsZero{} classes: IMSA GTD falls from
+\EndCommitImsaGtdBefore{} to \EndCommitImsaGtdAfter{} \EndCommitImsaGtdCi{},
+IMSA GTD PRO from \EndCommitImsaGtdproBefore{} to \EndCommitImsaGtdproAfter{}
+\EndCommitImsaGtdproCi{}, and IMSA GTP from \EndCommitImsaGtpBefore{} to
+\EndCommitImsaGtpAfter{} \EndCommitImsaGtpCi{}.
+
+Two objections have to be met before that is read as agreement. The first is
+hindsight: a second stop taken under a Safety Car was not planned at the
+decision lap. Keeping only the \NCommitGreen{} decisions whose second stop was
+under green leaves the Formula~1 median at \CommitGreenAfter{}
+\CommitGreenCi{}. The second is that fixing the second stop shrinks the set of
+laps the engine can pick from, and a narrow enough window makes agreement
+automatic. In Formula~1 it does not: the window is a median of
+\CommitWindow{} laps, inside which a lap drawn uniformly would miss the real
+stop by a median of \CommitUniformMiss{} and the window's midpoint by
+\CommitMidpointMiss{}, against \CommitEngineMiss{} for the engine. In
+endurance the engine beats both chance baselines in only
+\NEndCommitInformative{} of \NEndCommitClasses{} classes, the three IMSA ones
+(GTD: window \EndCommitImsaGtdWindow{}, engine \EndCommitImsaGtdMiss{},
+uniform \EndCommitImsaGtdUniform{}, midpoint \EndCommitImsaGtdMidpoint{}). In
+WEC Hypercar and both ELMS classes the fuel range leaves a window of
+\EndCommitWecHypercarWindow{} to \EndCommitElmsLmptwoProAmWindow{} laps, the
+engine does no better than chance, and the replay is uninformative there ---
+which is consistent with those being the classes where the published gap was
+never established.
+
+What survives is the one-stop residual. Where the engine and the team were
+answering the same question, the engine still stops \CommitOneAfter{} laps
+later \CommitOneCi{}. That is the part of Result~3 the audit design does not
+explain.
+
 \subsection{Comparison against three baselines}
 
 \begin{figure}[htbp]
@@ -1061,20 +1133,17 @@ carries large effects that are not the tyre, or the retuning step is doing more
 than retuning. We read it as the first, and the track evolution withdrawn above
 is our candidate for part of what it is.
 
-\paragraph{The audit may not be a fair comparison, and this is the open
-question.} The model is asked five laps early and offered every remaining lap,
-optimising one car's expected race time. A pit wall is choosing among a handful
-of laps inside a strategy already committed to, under a tyre allocation and a
-two-compound rule the engine does not represent. We cannot rule out that the
-disagreement is an artefact of asking a question no team is answering --- that
-the gap measures the distance between two objectives rather than an error in
-either. This is the most serious threat to Result~3 and it is not resolved here.
-Section~\ref{sec:audit} states what the planner does and does not price;
-testing the artefact properly means constraining the candidate set to the laps
-a team could actually have taken under its allocation, which changes the audit
-rather than the model, and we have not done it. Until someone does, Result~3
-should be read as a disagreement whose cause is unestablished, and the four
-failed explanations narrow the field without closing it.
+\paragraph{The audit was not a fair comparison, and most of Result~3 was
+that.} The engine plans one stop and runs to the flag; a pit wall chooses a lap
+inside a strategy it has already committed to. Section~\ref{sec:committed}
+holds the team's next stop fixed and most of the gap disappears. Three limits
+remain. Holding the second stop fixed gives the engine the team's plan in
+hindsight; restricting to green-flag second stops answers the part of that
+objection that concerns opportunistic stops, not the part that concerns a plan
+revised during the race. The engine still represents neither the tyre
+allocation nor traffic, so the one-stop residual of \CommitOneAfter{} laps may
+yet be either. And in WEC Hypercar and ELMS the replay cannot discriminate,
+because the fuel range leaves the engine too few laps to choose from.
 
 \paragraph{Unresolved slopes, carried forward anyway.} Of the
 \NCoefficientsFone{} Formula~1 degradation coefficients,
@@ -1170,18 +1239,23 @@ slopes rarely transfer, and where they do it is a property of the
 circuit-class rather than of the championship or the machinery. Whether an extra
 stop can ever pay is decided by the cost of the stop, which separates the two
 regimes at an AUC of \RegimeAucPitLoss{} against \RegimeAucSlope{} for the
-tyre. And an exact optimiser
-disagrees with professional practice in a consistent direction that we have not
-been able to explain. We proposed two explanations, tested both and lost both;
-we then took a third from published work, which has the right sign and fails on
-the quantity it depends on by a factor of \DOneThetaRatio{}; and a fourth, the
-most natural candidate of all, comes back with the wrong sign
-entirely (Section~\ref{sec:freshtyre}). Simpler rules using
-strictly less information land closer to what teams actually did in
-\NClassesRuleWins{} of \NClassesScored{} classes.
+tyre. And a time-optimal planner appeared to disagree with professional
+practice by a median of \FoneMedian{} laps in Formula~1. We proposed two
+explanations, tested both and lost both; we took a third from published work,
+which has the right sign and fails on the quantity it depends on by a factor of
+\DOneThetaRatio{}; a fourth comes back with the wrong sign
+(Section~\ref{sec:freshtyre}). The fifth was the audit: asked to plan the
+stint the team would actually run, the planner lands \CommitAllAfter{} laps
+from the real stop rather than \CommitAllBefore{}, and no endurance class keeps
+an established gap (Section~\ref{sec:committed}). Simpler rules landed closer
+to practice in \NClassesRuleWins{} of \NClassesScored{} classes; the
+fixed-interval rule among them is given the number of stops the team made,
+which the audited engine was not.
 
-The last of these is unresolved, and it is the result we would most like
-someone else to explain.
+What remains is a gap of \CommitOneAfter{} laps in one-stop races, where the
+planner and the team were answering the same question. It is smaller than the
+one this paper set out to explain, and it is the one we would most like someone
+else to explain.
 
 \section*{Data and code availability}
 

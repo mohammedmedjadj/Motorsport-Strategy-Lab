@@ -19,7 +19,7 @@ everything underneath.
 <tr>
 <td valign="top"><b>Transfer is a property of the circuit-class, not the championship.</b> 51 circuit-classes, one protocol. GT3 at Lime Rock reaches R² <b>+0.573</b>; only 5 clear 0.2. The near-spec control (ELMS LMP2 — one chassis, one engine, no BoP) fails too, so the instability is not the hardware. Difference GT3 − prototype <b>+0.164</b> [+0.059, +0.312], permutation p = 0.0011.</td>
 <td valign="top"><b>The cost of the stop, not the car, sets the strategy regime.</b> Across 205 race-seasons, class median pit loss against tyre-limited share: <b>r = −0.982</b> [−0.986, −0.745], monotonic with no inversion. 150 race-seasons sit above a 22.5 s pit loss and <b>not one</b> is tyre-limited — though that edge is a maximum set by a single race, so quote the rule, not the constant.</td>
-<td valign="top"><b>An exact optimiser stops later than teams do, and nobody knows why.</b> 1,280 replayed first stops, four series, one criterion. Median +12 laps in IMSA, +10 in F1. Track position: <b>tested, rejected</b>. Slope bias: <b>tested, not detected</b>. The finding stands as measured and unexplained.</td>
+<td valign="top"><b>A planner stops later than teams do — and most of it was the question.</b> 1,280 replayed first stops, four series, one criterion. Published median +12 laps in IMSA GTD, +10 in F1. Track position: <b>tested, rejected</b>. Slope bias: <b>tested, not detected</b>. The audit ran the planner's second stint to the flag; holding each team's next stop fixed, F1 falls to +2 and no endurance gap remains established (<a href="../reports/f1/committed_strategy.md">committed_strategy.md</a>). The sections below record the audit as it was first run.</td>
 </tr>
 </table>
 

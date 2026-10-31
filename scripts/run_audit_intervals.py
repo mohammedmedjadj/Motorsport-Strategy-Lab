@@ -1,6 +1,6 @@
 """Race-clustered intervals for the audit median, and the regime check that bites.
 
-Two referee objections, both answerable from committed tables.
+Two objections, both answerable from committed tables.
 
 **The audit median carries no interval.** The paper declines to publish one,
 reasoning that a bootstrap over decisions would be too narrow and that a
@@ -11,7 +11,7 @@ identifiers. Resampling whole races is available, so the interval is published
 here, and a class whose interval contains zero is named rather than reported as
 a finding.
 
-**Result 2's separation might be a class label in disguise.** Two referees read
+**Result 2's separation might be a class label in disguise.** One reading takes
 the AUC gap between pit loss and net degradation slope as an artefact of pit loss
 having the wider spread. That mechanism does not exist — AUC is a rank statistic
 and is unchanged by any monotone rescaling, which is checked here rather than

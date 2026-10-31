@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Motorsport Strategy Lab — does a tyre-degradation model transfer?</title>
-<meta name="description" content="Race strategy across Formula 1, WEC, IMSA and ELMS: one protocol, seven car classes, 1,280 real pit-stop decisions replayed. Two negative results and one that is measured but unexplained.">
+<meta name="description" content="Race strategy across Formula 1, WEC, IMSA and ELMS: one protocol, seven car classes, 1,280 real pit-stop decisions replayed. Two negative results, and a planner-versus-team gap that turned out to be mostly the question the audit asked.">
 <meta property="og:title" content="Motorsport Strategy Lab">
-<meta property="og:description" content="One protocol across four championships. 1,280 real pit-stop decisions replayed. Two of three results are negative, and the third is unexplained.">
+<meta property="og:description" content="One protocol across four championships. 1,280 real pit-stop decisions replayed. Two of three results are negative, and most of the third was the audit's own question.">
 <meta property="og:image" content="https://mohammedmedjadj.github.io/Motorsport-Strategy-Lab/figures/r3_audit_bias.png">
 <meta property="og:url" content="https://mohammedmedjadj.github.io/Motorsport-Strategy-Lab/">
 <meta name="twitter:card" content="summary_large_image">
@@ -82,7 +82,7 @@
     <h1>Does a tyre-degradation model transfer?</h1>
     <p class="sub">One protocol across four championships and seven car classes.
       1,280 real pit-stop decisions replayed against it. Two of the three
-      results are negative, and the third is measured but unexplained.</p>
+      results are negative, and most of the third was the audit's own question.</p>
     <p class="byline">Mohammed Reda Medjadj · Formula&nbsp;1 · WEC · IMSA · ELMS</p>
     <div class="links">
       <a class="btn primary" href="https://motorsport-strategy-lab.streamlit.app/">Try the demo</a>
@@ -157,7 +157,7 @@
 
 <section>
   <div class="wrap">
-    <h2><span class="n">3</span>A time-optimal planner stops later than teams do, and nobody knows why</h2>
+    <h2><span class="n">3</span>A planner stops later than teams do — and most of it was the question</h2>
     <p class="lede">Every real first stop is replayed. The model is asked five
       laps early, given the state as it was, and its recommendation compared to
       the lap the team chose.</p>
@@ -167,7 +167,7 @@
     </figure>
     <div class="cols two">
       <div>
-        <p><strong>Four explanations have been tested. None accounts for the magnitude.</strong></p>
+        <p><strong>Four explanations were tested, and none accounted for the magnitude.</strong></p>
         <p><strong>No track position</strong>, so the engine cannot pay for an
           undercut. Re-running all 357 F1 decisions through a cover-aware
           Stackelberg engine moves the recommendation <em>away</em> from the real
@@ -187,18 +187,21 @@
           in widens the gap. <span class="win">Wrong sign.</span></p>
       </div>
       <div>
-        <div class="note"><strong>The result stands as measured and
-          unexplained</strong> — established in Formula&nbsp;1, +10 laps
-          [+8.0,&nbsp;+11.5] clustered on the race, and in all three IMSA
-          classes; not established in WEC Hypercar or ELMS LMP2, whose intervals
-          contain zero. That is a worse position than having a plausible
-          story, and a better one than publishing a story two measurements
-          contradict.</div>
-        <p>What is left to try is the question itself. The model is offered every
-          remaining lap; a pit wall is choosing among a handful inside a strategy
-          already committed to, under a tyre allocation the engine does not see.
-          Testing that means changing the audit, not the model — and it is the
-          first of the
+        <div class="note"><strong>The fifth explanation was the audit
+          itself.</strong> The planner plans one stop and runs the stint after it
+          to the flag. For a car that really stopped again, that is not the
+          question the pit wall answered. Replayed with each team's own next stop
+          as the end of the stint, the Formula&nbsp;1 gap falls from +10 laps to
+          <strong>+2</strong> [+1.0,&nbsp;+4.0], and no endurance class keeps an
+          established gap.</div>
+        <p>That is agreement the window does not hand out for free: in
+          Formula&nbsp;1 the planner chooses from a median of 24 laps and misses
+          the real stop by 3, where a lap picked at random from the same window
+          would miss by 8.3. In WEC Hypercar and ELMS the fuel range leaves too
+          few laps for the test to discriminate, and it is reported that way.</p>
+        <p><strong>What survives</strong> is +4 laps [+2.0,&nbsp;+7.0] in
+          one-stop races, where the planner and the team were answering the same
+          question. It is the first of the
           <a href="https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab/blob/main/outreach/questions.md">three questions</a>
           this project would most like answered.</p>
       </div>
