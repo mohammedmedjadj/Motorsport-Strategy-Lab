@@ -72,7 +72,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.13"
           cache: pip
 
       # FastF1 downloads hundreds of MB; cache the local store between runs so a
