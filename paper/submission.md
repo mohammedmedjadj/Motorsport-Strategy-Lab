@@ -74,8 +74,9 @@ the repository and in the Overleaf bundle.
 > every class where both regimes occur, between 0.963 and 1.000.
 >
 > Replaying 1,280 real first pit stops, a time-optimal planner stops later than
-> teams did on 80% of Formula 1 decisions, by a median of 12 laps, with a
-> race-clustered interval of [+8.0, +11.5]. Two of the seven class medians have
+> teams did on 80% of Formula 1 decisions, by a median of 12 laps on those.
+> Over every decision the median is +10, with a race-clustered interval of
+> [+8.0, +11.5]. Two of the seven class medians have
 > intervals containing zero, so the disagreement is established in Formula 1 and
 > all three IMSA classes and not established in WEC Hypercar or ELMS LMP2. Four
 > candidate explanations have been tested and none accounts for the magnitude.
