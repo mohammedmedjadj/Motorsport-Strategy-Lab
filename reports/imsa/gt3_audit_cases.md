@@ -22,7 +22,7 @@ Reading guide: the model optimises **expected race time** to the next stop only,
 |---|---|---|---|---|---|
 | 28 <- real | 6202.604 | 6271.175 | 5946.086 | 6719.579 | 0.002 |
 | 39 | 6188.726 | 6257.392 | 5931.062 | 6705.731 | 0.043 |
-| 40 | 6188.271 | 6256.813 | 5930.410 | 6705.207 | 0.882 |
+| 40 | 6188.271 | 6256.813 | 5930.410 | 6705.207 | 0.883 |
 
 ## Case G-B: Laguna Seca 2026 — the GTD PRO winner's first stop (lap 45)
 

@@ -21,15 +21,15 @@ A **replay, not a forecast**: the decision point is defined relative to a stop t
 | 2023 | singapore | LEC | 20 | 59 | +39 | +49.49 s |
 | 2025 | singapore | VER | 19 | 59 | +40 | +47.59 s |
 | 2022 | barcelona | SAI | 10 | 31 | +21 | +43.28 s |
-| 2022 | montreal | VER | 9 | 67 | +58 | +38.99 s |
 | 2022 | montreal | HAM | 9 | 67 | +58 | +38.99 s |
+| 2022 | montreal | VER | 9 | 67 | +58 | +38.99 s |
 | 2022 | bahrain | MAG | 14 | 29 | +15 | +36.02 s |
 | 2022 | red_bull_ring | RUS | 11 | 39 | +28 | +35.58 s |
 | 2025 | montreal | RUS | 13 | 67 | +54 | +35.43 s |
 | 2025 | imola | PIA | 13 | 49 | +36 | +35.40 s |
 | 2025 | montreal | PIA | 16 | 67 | +51 | +33.79 s |
-| 2023 | montreal | ALO | 12 | 67 | +55 | +33.25 s |
 | 2023 | montreal | HAM | 12 | 67 | +55 | +33.25 s |
+| 2023 | montreal | ALO | 12 | 67 | +55 | +33.25 s |
 
 ## The disagreement is a systematic bias, and it is not the safety cars
 

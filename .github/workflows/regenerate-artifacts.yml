@@ -46,6 +46,19 @@ concurrency:
   group: artifact-drift-${{ github.ref }}
   cancel-in-progress: true
 
+# Floating point that does not depend on the runner. GitHub assigns runners
+# with different CPUs, and with the defaults numpy picks AVX-512 or AVX2 kernels
+# and OpenBLAS splits a product across however many cores it finds, so the same
+# fit came out different in the twelfth decimal from one run to the next -- and
+# near-ties in the Monte Carlo argmins then flipped. Pinning one kernel family
+# and one thread makes the arithmetic the same on every x86-64 machine with
+# AVX2, including a developer's. CONTRIBUTING.md gives the same three lines for
+# running a regeneration locally.
+env:
+  OPENBLAS_NUM_THREADS: "1"
+  OPENBLAS_CORETYPE: "Haswell"
+  NPY_DISABLE_CPU_FEATURES: "X86_V4 AVX512_ICL AVX512_SPR"
+
 jobs:
   f1:
     name: F1 layers

@@ -60,6 +60,13 @@ concurrency:
 permissions:
   contents: write # the bot needs this to push the refreshed artifacts
 
+# Same arithmetic as the drift check: one kernel family, one BLAS thread. See
+# regenerate-artifacts.yml for why.
+env:
+  OPENBLAS_NUM_THREADS: "1"
+  OPENBLAS_CORETYPE: "Haswell"
+  NPY_DISABLE_CPU_FEATURES: "X86_V4 AVX512_ICL AVX512_SPR"
+
 jobs:
   refresh:
     runs-on: ubuntu-latest

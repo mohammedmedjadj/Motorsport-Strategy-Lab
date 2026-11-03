@@ -12,7 +12,7 @@ A **replay, not a forecast** — the decision point is defined relative to a sto
 | real stop under green | 300 | +7 | +5.89 s |
 | real stop under a neutralisation | 332 | +15 | +26.90 s |
 
-**The model runs to the fuel deadline in 439 of 632 decisions** (69%). It optimises expected race time from the state it is given, with no track position and no way to foresee a caution, so with a tyre that still has life the tank is the only thing that ever stops it.
+**The model runs to the fuel deadline in 438 of 632 decisions** (69%). It optimises expected race time from the state it is given, with no track position and no way to foresee a caution, so with a tyre that still has life the tank is the only thing that ever stops it.
 
 **53% of the real first stops here were taken under a neutralisation**, and that is what decides how far the model is from them. Under green it sits +7 laps away (+7); the gap opens on the stops taken under caution, which is the one thing a model asked three laps earlier cannot know is coming.
 
@@ -32,7 +32,7 @@ The F1 audit is the useful contrast. There the neutralisation split is small (+9
 
 | class | decisions | median Δ | median cost | at the fuel deadline |
 |---|---|---|---|---|
-| IMSA GTD | 268 | +12 | +15.57 s | 76% |
+| IMSA GTD | 268 | +12 | +15.57 s | 75% |
 | IMSA GTD PRO | 215 | +13 | +20.37 s | 69% |
 | IMSA GTP | 149 | +9 | +10.34 s | 58% |
 
@@ -47,6 +47,6 @@ The F1 audit is the useful contrast. There the neutralisation split is small (+9
 | 2024 | Daytona | GTDPRO | 23 | 20 | 35 | +15 | +275.71 s | yes |
 | 2023 | Road Atlanta | GTP | 24 | 8 | 46 | +38 | +272.02 s | no |
 | 2024 | Daytona | GTP | 40 | 20 | 33 | +13 | +269.36 s | yes |
-| 2024 | Daytona | GTP | 7 | 20 | 33 | +13 | +269.36 s | yes |
-| 2024 | Daytona | GTP | 5 | 20 | 33 | +13 | +269.36 s | yes |
 | 2024 | Daytona | GTP | 31 | 20 | 33 | +13 | +269.36 s | yes |
+| 2024 | Daytona | GTP | 5 | 20 | 33 | +13 | +269.36 s | yes |
+| 2024 | Daytona | GTP | 7 | 20 | 33 | +13 | +269.36 s | yes |

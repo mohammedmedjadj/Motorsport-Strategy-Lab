@@ -48,7 +48,16 @@ README's "Engineering rules" section):
 - Run the full suite (`pytest`) and make sure it's green.
 - If you touch a fitted artifact (anything under `data/derived/`), regenerate
   it with the matching script under `scripts/` rather than hand-editing the
-  CSV, and mention which script in the PR description.
+  CSV, and mention which script in the PR description. Regenerate with
+  `pip install -r requirements.lock` and these three variables set, which are
+  the ones CI uses; without them the fits differ in the twelfth decimal between
+  machines and the drift check fails on arithmetic rather than on a change:
+
+  ```bash
+  export OPENBLAS_NUM_THREADS=1
+  export OPENBLAS_CORETYPE=Haswell
+  export NPY_DISABLE_CPU_FEATURES="X86_V4 AVX512_ICL AVX512_SPR"
+  ```
 - If a change alters a reported number, update the corresponding report under
   `reports/` in the same PR — a stale report is treated as a bug.
 - Keep new tests next to the existing ones in `tests/`, following the

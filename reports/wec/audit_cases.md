@@ -20,8 +20,8 @@ Reading guide: the model optimises **expected race time** to the next stop only,
 
 | pit_lap | median_s | mean_s | p10_s | p90_s | p_best |
 |---|---|---|---|---|---|
-| 216 <- real | 2612.705 | 2656.860 | 2607.569 | 2758.686 | 0.066 |
-| 217 | 2612.654 | 2656.626 | 2607.521 | 2757.011 | 0.840 |
+| 216 <- real | 2612.705 | 2656.860 | 2607.569 | 2758.686 | 0.067 |
+| 217 | 2612.654 | 2656.626 | 2607.521 | 2757.011 | 0.838 |
 | 218 | 2612.705 | 2656.580 | 2607.569 | 2757.335 | 0.006 |
 | 219 | 2612.846 | 2656.615 | 2607.711 | 2756.336 | 0.009 |
 | 220 | 2613.104 | 2656.835 | 2607.958 | 2758.488 | 0.006 |
@@ -69,7 +69,7 @@ Reading guide: the model optimises **expected race time** to the next stop only,
 
 ## Cross-case analysis
 
-**1. Opportunistic caution stops sit inside the model's window at both circuits — including the anomalous-slope one (Cases A, C).** **Bahrain 2025** — real lap 216, inside the window at +0.05 s against the model's lap 217; P(best) 0.066 for the real lap against 0.840 for the model's. **Imola 2024** — real lap 130, inside the window at +0.03 s against the model's lap 131; P(best) 0.836 for the real lap against 0.008 for the model's. The engine prices a caution stop's opportunity cost the same way regardless of the sign of the degradation slope, so the strategists' instinct to box the moment the flag changes holds up even at Imola, where the raw slope is a measured, unexplained anomaly (Phase 2).
+**1. Opportunistic caution stops sit inside the model's window at both circuits — including the anomalous-slope one (Cases A, C).** **Bahrain 2025** — real lap 216, inside the window at +0.05 s against the model's lap 217; P(best) 0.067 for the real lap against 0.838 for the model's. **Imola 2024** — real lap 130, inside the window at +0.03 s against the model's lap 131; P(best) 0.836 for the real lap against 0.008 for the model's. The engine prices a caution stop's opportunity cost the same way regardless of the sign of the degradation slope, so the strategists' instinct to box the moment the flag changes holds up even at Imola, where the raw slope is a measured, unexplained anomaly (Phase 2).
 
 **The two statistics disagree, and that is worth more than either alone.** 1 of these two real stops carries a P(best) above 0.5, yet both are inside the window on median cost. The reason is structural: P(best) is an argmin over draws, so when two candidate laps differ by hundredths of a second in median race time it hands nearly all its mass to whichever wins marginally more often. Reading that as a strong preference would be reading a coin flip as a verdict — and an earlier version of this section did exactly that, quoting the *model's* P(best) as though it were the team's.
 

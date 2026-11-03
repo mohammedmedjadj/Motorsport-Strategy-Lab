@@ -21,8 +21,8 @@ Reading guide: the model optimises **expected race time** to the next stop only,
 | pit_lap | median_s | mean_s | p10_s | p90_s | p_best |
 |---|---|---|---|---|---|
 | 66 <- real | 5243.879 | 5293.877 | 4975.880 | 5717.547 | 0.001 |
-| 83 | 5224.177 | 5264.425 | 4947.699 | 5680.160 | 0.029 |
-| 84 | 5224.022 | 5263.812 | 4947.003 | 5681.150 | 0.876 |
+| 83 | 5224.177 | 5264.425 | 4947.699 | 5680.160 | 0.028 |
+| 84 | 5224.022 | 5263.812 | 4947.003 | 5681.150 | 0.877 |
 
 ## Case E-B: Mugello 2024 — the Pro/Am winner made the same double stop
 

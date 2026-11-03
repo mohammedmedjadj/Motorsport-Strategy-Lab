@@ -14,7 +14,7 @@ F1 is **less degenerate than endurance and still far outside the range the basis
 
 F1 already carries a linear lap term as a fuel proxy, which the endurance model deliberately does not — it uses `laps_since_refuel` instead, because endurance cars refuel. So F1 may already absorb what endurance could not.
 
-Median residual drift: **-0.00026 s/lap**. 46 of 89 races drift negative — a coin flip.
+Median residual drift: **-0.00026 s/lap**. 47 of 89 races drift negative — a coin flip.
 
 **There is no systematic unabsorbed race-time trend in F1.** The handful of races with a large one are wet-to-dry:
 
