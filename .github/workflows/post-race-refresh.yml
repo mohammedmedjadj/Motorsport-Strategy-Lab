@@ -101,6 +101,23 @@ jobs:
         run: |
           set -o pipefail
           if python scripts/run_ingestion.py 2>&1 | tee ingest.log; then
+            # A rate-limited run exits 0 with part of the calendar missing, and
+            # the safety-car fit downstream then refits on that part: on
+            # 2 Nov 2026 it fell from 153 editions to 22 and the test gate
+            # caught it. A partial ingest is not a refresh, so it is treated
+            # like the outage below: nothing downstream runs, nothing commits.
+            if grep -q "RateLimitExceededError" ingest.log; then
+              echo "outage=true" >> "$GITHUB_OUTPUT"
+              {
+                echo "## No refresh: the timing API rate-limited this run"
+                echo
+                echo "FastF1 hit its hourly call limit part-way through the"
+                echo "calendar, so the ingest is partial. Refitting on it would"
+                echo "publish models built on a fraction of the races, so"
+                echo "nothing downstream ran and **nothing was committed**."
+              } >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+            fi
             echo "outage=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
