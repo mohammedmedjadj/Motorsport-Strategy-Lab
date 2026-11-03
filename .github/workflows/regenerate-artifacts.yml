@@ -111,6 +111,18 @@ jobs:
 
       - name: Report drift
         run: .github/scripts/report_drift.sh "F1"
+      # On drift, keep what CI regenerated so it can be inspected and, when
+      # the difference is the runner's floating point rather than the code,
+      # committed as the reference. Without it the only record is a file list.
+      - name: Keep the regenerated files
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: drift-f1
+          path: |
+            data/derived
+            reports
+          retention-days: 14
 
   # Its own job because of the runtime: four Monte Carlo duels per decision at
   # 1,500 draws is roughly ninety minutes, which would not fit beside the rest
@@ -141,6 +153,18 @@ jobs:
 
       - name: Report drift
         run: .github/scripts/report_drift.sh "rival selection"
+      # On drift, keep what CI regenerated so it can be inspected and, when
+      # the difference is the runner's floating point rather than the code,
+      # committed as the reference. Without it the only record is a file list.
+      - name: Keep the regenerated files
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: drift-rival-selection
+          path: |
+            data/derived
+            reports
+          retention-days: 14
 
   endurance:
     name: Endurance layers
@@ -184,6 +208,18 @@ jobs:
 
       - name: Report drift
         run: .github/scripts/report_drift.sh "endurance"
+      # On drift, keep what CI regenerated so it can be inspected and, when
+      # the difference is the runner's floating point rather than the code,
+      # committed as the reference. Without it the only record is a file list.
+      - name: Keep the regenerated files
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: drift-endurance
+          path: |
+            data/derived
+            reports
+          retention-days: 14
 
   cross_series:
     name: Cross-series layers
@@ -249,3 +285,15 @@ jobs:
 
       - name: Report drift
         run: .github/scripts/report_drift.sh "cross-series"
+      # On drift, keep what CI regenerated so it can be inspected and, when
+      # the difference is the runner's floating point rather than the code,
+      # committed as the reference. Without it the only record is a file list.
+      - name: Keep the regenerated files
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: drift-cross-series
+          path: |
+            data/derived
+            reports
+          retention-days: 14
