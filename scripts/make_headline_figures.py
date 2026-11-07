@@ -235,34 +235,47 @@ def r2_pit_loss_rule() -> str:
             f"n={len(plans)})")
 
 
+def _signed(x: float) -> str:
+    """A median for a label: "+2", "-1", and a plain "0" rather than "+0"."""
+    text = f"{x:+.0f}"
+    return "0" if text in ("+0", "-0") else text
+
+
 def r3_audit_bias() -> str:
-    """An optimiser stops later than teams do, in every class measured.
+    """The planner-team gap, as published and with each team's strategy fixed.
 
-    Split by **class**, not by series. IMSA runs GTP, GTD and GTD PRO at the
-    same rounds with pit losses of 57, 24 and 40 seconds; pooling their 632
-    decisions into one IMSA row averages three different strategy regimes into
-    a number describing none of them. The first version of this figure did
-    exactly that, and it is the same mistake the project refuses to make
-    everywhere else — the class is the unit, and a figure is not exempt.
+    Split by **class**, not by series: IMSA runs GTP, GTD and GTD PRO at the
+    same rounds with very different pit losses, and pooling them would average
+    three strategy regimes into a number describing none of them.
 
-    The championship pattern survives the split and is easier to see for it:
-    rows are grouped and coloured by series, so the caution-rate story reads
-    down the axis while each class keeps its own row.
+    Each class gets two rows. The upper, grey one is the audit as first run: a
+    single-next-stop engine that runs the stint after its stop to the flag. The
+    lower, coloured one replays the same decisions with the stint ending at the
+    team's own second stop (scripts/run_committed_strategy*.py). The figure has
+    to show both, because the text now says most of the first was the question
+    the audit asked; a figure showing only the first would contradict it.
     """
     f1 = pd.read_csv(F1_DERIVED_DIR / "systematic_audit.csv")
     endurance = pd.read_csv(ENDURANCE_DERIVED_DIR / "systematic_audit.csv")
+    f1_commit = pd.read_csv(F1_DERIVED_DIR / "committed_strategy.csv")
+    end_commit = pd.read_csv(ENDURANCE_DERIVED_DIR / "committed_strategy.csv")
 
-    groups: list[tuple[str, str, pd.Series]] = [("F1", "Formula 1", f1["delta_laps"])]
+    def committed(frame: pd.DataFrame) -> pd.Series:
+        return frame["committed_delta_laps"].dropna().astype(float)
+
+    groups: list[tuple[str, str, pd.Series, pd.Series]] = [
+        ("F1", "Formula 1", f1["delta_laps"], committed(f1_commit))
+    ]
     for (series, car_class), group in endurance.groupby(["series", "car_class"]):
+        mask = (end_commit["series"] == series) & (end_commit["car_class"] == car_class)
         groups.append((
             str(series).upper(),
             f"{str(series).upper()} {class_name(str(car_class))}",
             group["delta_laps"],
+            committed(end_commit[mask]),
         ))
-    # Within a championship, order by disagreement; championships themselves
-    # by their median, so the caution-rate ordering stays legible.
-    series_median = {}
-    for series, _, deltas in groups:
+    series_median: dict[str, list[float]] = {}
+    for series, _, deltas, _ in groups:
         series_median.setdefault(series, []).append(deltas.median())
     groups.sort(key=lambda g: (
         sum(series_median[g[0]]) / len(series_median[g[0]]), g[2].median()
@@ -270,48 +283,58 @@ def r3_audit_bias() -> str:
 
     series_colour = {"F1": "#2b2d42", "WEC": "#30638e",
                      "ELMS": "#003d5b", "IMSA": "#00798c"}
+    grey = "#b8b8b8"
 
-    fig, ax = plt.subplots(figsize=(10.5, 6.8))
-    ax.set_xlim(-34, 98)
-    rng = np.random.default_rng(20260904)
-    for position, (series, label, deltas) in enumerate(groups):
-        colour = series_colour.get(series, "#666666")
-        ax.scatter(
-            deltas, position + rng.uniform(-0.24, 0.24, len(deltas)),
-            s=11, alpha=0.30, color=colour, linewidth=0, zorder=2,
-        )
+    def box(ax, values, y, colour, median_colour):
         ax.boxplot(
-            [deltas], positions=[position], vert=False, widths=0.5,
-            showfliers=False, medianprops={"color": "#d1495b", "linewidth": 2.4},
-            boxprops={"color": "#333333", "linewidth": 1.1},
-            whiskerprops={"color": "#333333", "linewidth": 1.1},
-            capprops={"color": "#333333", "linewidth": 1.1},
+            [values], positions=[y], vert=False, widths=0.30,
+            showfliers=False,
+            medianprops={"color": median_colour, "linewidth": 2.4},
+            boxprops={"color": colour, "linewidth": 1.1},
+            whiskerprops={"color": colour, "linewidth": 1.1},
+            capprops={"color": colour, "linewidth": 1.1},
             zorder=3,
         )
-        # The audit calls a one-lap disagreement an agreement, so "later" uses
-        # the same bar rather than delta > 0.
-        later = (deltas > 1).mean() * 100
+
+    fig, ax = plt.subplots(figsize=(10.5, 7.4))
+    ax.set_xlim(-34, 104)
+    rng = np.random.default_rng(20260904)
+    for position, (series, label, published, held) in enumerate(groups):
+        colour = series_colour.get(series, "#666666")
+        upper, lower = position + 0.19, position - 0.19
+        ax.scatter(published, upper + rng.uniform(-0.10, 0.10, len(published)),
+                   s=8, alpha=0.22, color=grey, linewidth=0, zorder=2)
+        ax.scatter(held, lower + rng.uniform(-0.10, 0.10, len(held)),
+                   s=8, alpha=0.30, color=colour, linewidth=0, zorder=2)
+        box(ax, published, upper, "#8a8a8a", "#8a8a8a")
+        box(ax, held, lower, "#333333", "#d1495b")
         ax.annotate(
-            f"median {deltas.median():+.0f}    {later:.0f}% later    "
-            f"n = {len(deltas)}",
-            (58, position), fontsize=9, va="center", color=INK,
+            f"{_signed(published.median())}  \u2192  {_signed(held.median())}",
+            (60, position), fontsize=10, va="center", color=INK,
+            fontweight="bold",
+        )
+        ax.annotate(
+            f"n = {len(published)} / {len(held)}",
+            (80, position), fontsize=8.5, va="center", color=MUTED,
         )
 
     ax.axvline(0, color="#444444", linewidth=1.2, zorder=4)
     ax.set_yticks(range(len(groups)))
-    ax.set_yticklabels([label for _, label, _ in groups], fontsize=9.5)
+    ax.set_yticklabels([label for _, label, _, _ in groups], fontsize=9.5)
     ax.set_ylim(-0.7, len(groups) - 0.3)
     ax.set_xticks([-30, -20, -10, 0, 10, 20, 30, 40, 50])
     ax.set_xlabel("model's lap  -  team's lap      (negative = model stops earlier)")
-    total = sum(len(deltas) for _, _, deltas in groups)
+    ax.text(60, len(groups) - 0.45, "median: published \u2192 strategy fixed",
+            fontsize=8.5, color=MUTED, va="center")
+    total = sum(len(p) for _, _, p, _ in groups)
     ax.set_title(
-        "An exact optimiser stops later than real teams, in every class measured",
+        "Most of the planner-team gap was the question the audit asked",
         fontsize=13, pad=30, loc="left",
     )
     _caption(ax,
-             f"{total} replayed first-stop decisions across {len(groups)} "
-             "classes.\nOne criterion everywhere. Two candidate explanations "
-             "tested, both rejected.")
+             f"Grey: {total} first stops as first audited, with the planner's "
+             "second stint run to the flag.\nColour: the same decisions "
+             "replayed with the stint ending at the team's own second stop.")
     _style(ax)
 
     path = FIGURES / "r3_audit_bias.png"

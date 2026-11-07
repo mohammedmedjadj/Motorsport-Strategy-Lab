@@ -23,6 +23,10 @@ set -euo pipefail
 
 layer="${1:-artifacts}"
 
+# A PNG that re-encodes to different bytes with identical pixels is not drift;
+# see the helper for why that happens on some runners and not others.
+python .github/scripts/restore_identical_images.py
+
 changed="$(git status --porcelain)"
 
 if [ -z "${changed}" ]; then
