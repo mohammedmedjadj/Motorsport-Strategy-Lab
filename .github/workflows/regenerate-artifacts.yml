@@ -278,6 +278,10 @@ jobs:
       # runs after the multi-stop plans it classifies against.
       - name: Pit-loss measurement checks
         run: python scripts/run_pit_loss_checks.py
+      # Reads the multi-stop plans and the endurance slope intervals. Asks
+      # whether Result 2's AUC gap is the slope being measured less precisely.
+      - name: Regime separation against slope precision
+        run: python scripts/run_regime_precision.py
       # Reads both audit tables, so it belongs beside the baseline comparison
       # rather than in either single-series job. Publishes the race-clustered
       # interval the audit median was previously reported without, and recomputes

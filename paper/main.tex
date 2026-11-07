@@ -66,11 +66,11 @@ pricing it in leaves \NCeilingUnstable{} unstable and \NCeilingStable{} stable.
 Whether an extra stop pays is set by its cost: over \NRaceSeasons{}
 race-seasons, pit loss alone separates the regimes at an AUC of
 \RegimeAucPitLoss{} against \RegimeAucSlope{} for degradation. Replaying
-\NDecisions{} real first stops, a single-next-stop planner stops a median of
-\FoneMedian{} laps later than Formula~1 teams. Four explanations fail; the
-fifth is the audit, which ran the planner's second stint to the flag. Holding
-each team's next stop fixed, the gap falls to \CommitAllAfter{} and no endurance
-gap survives; \CommitOneAfter{} remains in one-stop races.
+\NDecisions{} real first stops with each team's own next stop held fixed, a
+time-optimal planner lands a median of \CommitAllAfter{} laps from the team in
+Formula~1 and no endurance gap is established; \CommitOneAfter{} remains in
+one-stop races. Run to the flag instead, the same planner is \FoneMedian{}
+late: it must be asked the pit wall's question.
 And the rival such a model should answer is under-determined:
 \NRivalRules{} defensible rules agree on \NRivalAllAgree{} of
 \NRivalAllApply{} decisions.
@@ -197,7 +197,7 @@ parameters on data it did not fit, and none applies a single protocol to more
 than one championship. I claim no priority. The literature is large and a
 catalogue is not a census; the claim is only that these
 \NCatalogued{} papers, each checked against a publication record, do not
-contain the comparison this paper reports. Two of the three findings that come
+contain the comparison this paper reports. Two of the four findings that come
 back from it are negative.
 
 \section{Data and protocol}
@@ -284,8 +284,7 @@ Formula~1, by circuit and compound, with cluster-robust intervals.
 \NCoefficientsFone{} coefficients across \NCircuitsFone{} circuits. Points
 outside the plotted range are clipped and then named under the axis, because a
 handful of extremes otherwise compresses every other circuit into a tenth of
-the width. Dropping them silently would be the same defect as any other
-silent narrowing here.}
+the width.}
 \label{fig:degradation}
 \end{figure}
 
@@ -296,10 +295,8 @@ cluster-robust interval containing zero: on those circuit--compound pairs I
 cannot distinguish tyre degradation from none. And within a circuit,
 \PctCompoundOverlap{}\% of compound pairs have overlapping intervals, so the
 compound distinction the Formula~1 model carries is largely unresolved by the
-data behind it. Both are reported, and neither is screened out. A slope that
-cannot
-be distinguished from flat is still the measurement I have, and dropping the
-ones that disappoint is how a transfer result gets manufactured.
+data behind it. Both are reported, and neither is screened out: a slope that cannot be
+distinguished from flat is still the measurement I have.
 Section~\ref{sec:threats} returns to what this costs.
 
 \subsection{Transfer}
@@ -433,8 +430,11 @@ would roughly quadruple the apparent sample.
 The obvious explanation for instability is heterogeneous, performance-balanced
 machinery. I can rule it out. ELMS LMP2 is a near-specification class --- one
 chassis, one engine, no Balance of Performance --- and its slopes fail to
-transfer exactly as the balanced GT3 fields do. The instability is not the
-hardware. Where transfer does occur it tracks short circuits with cheap
+transfer exactly as the balanced GT3 fields do. Balance of Performance is
+therefore not needed for the instability. That is narrower than saying the car
+plays no part: the GT3--prototype difference above is a car-type effect, and it
+is confounded with circuit, since the circuits where transfer works do not all
+host every class. Where transfer does occur it tracks short circuits with cheap
 stops, which is the same axis Result~2 turns on.
 
 \subsection{What a stable slope could have scored}
@@ -554,6 +554,17 @@ construction, the cost of the stop still separates the two regimes in all
 \NRegimeClassesOneRegime{} classes contain one regime only, so no AUC is
 defined for them and none is reported.
 
+The third objection is precision. Pit loss is measured from stop durations;
+the slope is estimated, and a noisily measured predictor loses AUC even when
+the quantity behind it matters as much. If that were the cause, the slope's
+AUC should rise as the least precise slopes are dropped. It does not. Keeping
+the \NPrecisionHalf{} race-seasons with the narrowest slope intervals gives
+\PrecisionHalfSlopeAuc{} for the slope against \PrecisionHalfPitAuc{} for pit
+loss, and keeping the most precise \NPrecisionThird{} gives
+\PrecisionThirdSlopeAuc{} against \PrecisionThirdPitAuc{}, though with only
+\NPrecisionThirdTyreLimited{} tyre-limited race-seasons left in that subset.
+The gap is not an artefact of how well the slope is measured.
+
 \paragraph{What the median pit loss is a median of.} It is taken over every
 green-flag stop in the race-season, which in endurance racing includes stops
 that change driver as well as stops that do not. A driver change is slower in
@@ -595,9 +606,7 @@ data. Figure~\ref{fig:intervals} collects every result that carries one.
 \caption{Every result carrying a bootstrap interval. The two panels are
 separate because a within-stint $R^2$ difference and a correlation are not
 measured on the same scale, and a forest plot works by letting the reader
-compare bar lengths. An earlier single-axis version made the correlation's long
-bar read as the strongest result when it is a different measurement. The
-cheap-stop edge is absent by design: it is a maximum, and a leave-one-out
+compare bar lengths. The cheap-stop edge is absent by design: it is a maximum, and a leave-one-out
 sensitivity is reported for it instead of an interval it cannot support.}
 \label{fig:intervals}
 \end{figure}
@@ -621,8 +630,8 @@ IMSA GTP \AuditMedImsaGtp{} \AuditCiImsaGtp{}; WEC Hypercar
 \AuditCiElmsLmptwoProAm{}.
 
 So the ladder reported in Result~3 is not a smooth gradient across the caution
-rate. It is a large and resolved disagreement in Formula~1 and in all three
-IMSA classes, against no established disagreement at all in WEC Hypercar and
+rate. As the audit was first run, it is a large and resolved disagreement in
+Formula~1 and in all three IMSA classes, against no established disagreement at all in WEC Hypercar and
 ELMS LMP2. The ordering still tracks the caution rate, but the low end of it
 is a statement about what I cannot resolve rather than about a small gap.
 Section~\ref{sec:committed} then shows that the resolved part is mostly a
@@ -640,11 +649,21 @@ management, nor a championship position worth protecting. Every sentence below
 should be read as a disagreement between a model and a practice rather than as
 evidence about which was faster.
 
-This section first reports the disagreement as the audit originally measured it
-and the four explanations that failed to account for it. It then reports the
-fifth, which does: the audit asked the planner to make one set of tyres last to
-the flag in races where the team was going to stop again
+The result first. With each team's own next stop held fixed, the planner
+lands a median of \CommitAllAfter{} laps from the real stop in Formula~1
+\CommitAllCi{}, and the interval contains zero in every endurance class. What
+survives is \CommitOneAfter{} laps \CommitOneCi{} in one-stop races, where the
+planner and the pit wall were always answering the same question
 (Section~\ref{sec:committed}).
+
+The route there is a methodological finding of its own, and the rest of this
+section follows it. Run as a single-next-stop audit, which lets the planner
+stretch its second stint to the flag, the same planner is \FoneMedian{} laps
+late in Formula~1. Four explanations for that gap were tested and failed
+before the fifth showed that the audit had been asking a different question
+from the one the team answered. A comparison between an optimiser and practice
+has to hold the team's committed strategy fixed, or it measures the difference
+between the two questions.
 
 \begin{figure}[htbp]
 \centering
@@ -677,7 +696,8 @@ caution, ELMS \ElmsMedian{} at \ElmsCautionShare{}\%, IMSA \ImsaMedian{} at
 Read that ladder with the race-clustered intervals in Section~\ref{sec:inference}
 beside it. Its two lowest rungs, WEC Hypercar and ELMS LMP2, have intervals
 containing zero: the ordering is real but the small gaps at the bottom of it
-are not established, and only the Formula~1 and IMSA disagreements are.
+are not established, and only the Formula~1 and IMSA disagreements are --- as
+first measured, before Section~\ref{sec:committed} removes most of them.
 
 \begin{figure}[htbp]
 \centering
@@ -772,7 +792,7 @@ median paired difference is negligible --- an error of that size moves a stop by
 several race distances, not by ten laps. \textbf{Not detected.} I note that
 comparing the two \emph{medians} instead of the median of paired differences
 produces a small apparent bias that is an artefact of comparing summaries rather
-than pairs; an earlier version of this work nearly reported it.
+than pairs.
 
 \subsection{A third explanation, from published work}
 \label{sec:thirdexplanation}
@@ -823,8 +843,7 @@ defender's loss over a single lap on a tyre $l_u$ laps old. At a measured
 second, which the median \DOneMedianGap{}\,s lead covers easily. What wins a
 real undercut is the advantage of a tyre on its first flying lap over one at the
 end of its life, and a linear slope has no term for that. Measuring it directly
-is a different estimator and I have not attempted it. I state this as a
-hypothesis because that is what it is.
+is a different estimator and I have not attempted it.
 
 \paragraph{What holds whatever the verdict.} Of the
 \DOneDecisions{} decisions, \DOneNoRival{} belong to a car with nobody ahead of
@@ -846,8 +865,7 @@ age and was being compared against a lap number, which agree on only
 \DOnePctAgeIsLap{}\% of these decisions. And the breadth layer's pit-loss table
 names circuits differently from the lap files, which still drops
 \DOneStaleDropped{} of \DOneChasers{} values if joined on the slug. Each now has
-a test, as does the conclusion itself: a negative result decays when someone
-later makes it come out positive.
+a test.
 
 \subsection{A fourth explanation, and the sign it comes back with}
 \label{sec:freshtyre}
@@ -905,7 +923,9 @@ fixed, the Formula~1 median falls from \CommitAllBefore{} to \CommitAllAfter{} l
 and among multi-stop decisions from \CommitMultiBefore{} to \CommitMultiAfter{}
 \CommitMultiCi{}. In endurance the same replay, with each stint also bounded by
 the fuel range, covers \NEndCommit{} decisions, and the interval contains zero
-in all \NEndCommitContainsZero{} classes: IMSA GTD falls from
+in all \NEndCommitContainsZero{} classes. The first-run medians below are over
+those replayable decisions only, so they differ slightly from the
+whole-class medians in Figure~\ref{fig:audit}: IMSA GTD falls from
 \EndCommitImsaGtdBefore{} to \EndCommitImsaGtdAfter{} \EndCommitImsaGtdCi{},
 IMSA GTD PRO from \EndCommitImsaGtdproBefore{} to \EndCommitImsaGtdproAfter{}
 \EndCommitImsaGtdproCi{}, and IMSA GTP from \EndCommitImsaGtpBefore{} to
@@ -967,20 +987,23 @@ IMSA class with the dearest stops, has the smallest disagreement of the three.
 \begin{table}[htbp]
 \centering
 \caption{Median absolute lap error against the real stop, per class. Lower is
-closer to what teams did. B3 is undefined in Formula~1, which has not refuelled
-since 2010.}
+closer to what teams did. Bold marks the best of the first four columns. The
+last column is the optimiser with each team's next stop held fixed
+(Section~\ref{sec:committed}), over the decisions that can be replayed; it is
+given the team's second stop, which no rule is. B3 is undefined in Formula~1,
+which has not refuelled since 2010.}
 \label{tab:baselines}
-\begin{tabular}{lrrrr}
+\begin{tabular}{lrrrrr}
 \toprule
-& Optimiser & B1 interval & B2 threshold & B3 fuel \\
+& Optimiser & B1 interval & B2 threshold & B3 fuel & Strategy fixed \\
 \midrule
-Formula~1        & \FoneModelError{}            & \FoneBoneError{}            & \textbf{\FoneBtwoError{}}   & \FoneBthreeError{} \\
-IMSA GTP         & \ImsaGtpModelError{}         & \ImsaGtpBoneError{}         & \ImsaGtpBtwoError{}         & \ImsaGtpBthreeError{} \\
-IMSA GTD         & \ImsaGtdModelError{}         & \textbf{\ImsaGtdBoneError{}}     & \ImsaGtdBtwoError{}    & \ImsaGtdBthreeError{} \\
-IMSA GTD PRO     & \ImsaGtdproModelError{}      & \textbf{\ImsaGtdproBoneError{}}  & \ImsaGtdproBtwoError{} & \ImsaGtdproBthreeError{} \\
-WEC Hypercar     & \WecHypercarModelError{}     & \WecHypercarBoneError{}     & \WecHypercarBtwoError{}     & \textbf{\WecHypercarBthreeError{}} \\
-ELMS LMP2        & \textbf{\ElmsLmptwoModelError{}} & \ElmsLmptwoBoneError{}  & \ElmsLmptwoBtwoError{}      & \ElmsLmptwoBthreeError{} \\
-ELMS LMP2 Pro/Am & \ElmsLmptwoProAmModelError{} & \textbf{\ElmsLmptwoProAmBoneError{}} & \ElmsLmptwoProAmBtwoError{} & \ElmsLmptwoProAmBthreeError{} \\
+Formula~1        & \FoneModelError{}            & \FoneBoneError{}            & \textbf{\FoneBtwoError{}}   & \FoneBthreeError{} & \FoneCommitError{} \\
+IMSA GTP         & \ImsaGtpModelError{}         & \ImsaGtpBoneError{}         & \ImsaGtpBtwoError{}         & \ImsaGtpBthreeError{} & \ImsaGtpCommitError{} \\
+IMSA GTD         & \ImsaGtdModelError{}         & \textbf{\ImsaGtdBoneError{}}     & \ImsaGtdBtwoError{}    & \ImsaGtdBthreeError{} & \ImsaGtdCommitError{} \\
+IMSA GTD PRO     & \ImsaGtdproModelError{}      & \textbf{\ImsaGtdproBoneError{}}  & \ImsaGtdproBtwoError{} & \ImsaGtdproBthreeError{} & \ImsaGtdproCommitError{} \\
+WEC Hypercar     & \WecHypercarModelError{}     & \WecHypercarBoneError{}     & \WecHypercarBtwoError{}     & \textbf{\WecHypercarBthreeError{}} & \WecHypercarCommitError{} \\
+ELMS LMP2        & \textbf{\ElmsLmptwoModelError{}} & \ElmsLmptwoBoneError{}  & \ElmsLmptwoBtwoError{}      & \ElmsLmptwoBthreeError{} & \ElmsLmptwoCommitError{} \\
+ELMS LMP2 Pro/Am & \ElmsLmptwoProAmModelError{} & \textbf{\ElmsLmptwoProAmBoneError{}} & \ElmsLmptwoProAmBtwoError{} & \ElmsLmptwoProAmBthreeError{} & \ElmsLmptwoProAmCommitError{} \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -993,11 +1016,17 @@ fitted quantity whatsoever --- only the race length and the number of stops
 the tank forces. In the two it does not win, it ties the optimiser rather
 than losing to it.
 
-Two things this does not establish. \emph{Closer to what teams did} is not
-\emph{better}: every number here scores agreement with practice, never which
-plan was faster. And it does not rescue the finding; it removes one more
-explanation for it, since the gap cannot come from the simpler methods lacking
-information the optimiser has. They have less, and land nearer.
+That comparison is against the audit as first run. Held to each team's next
+stop, the optimiser is closer than every rule in \NClassesCommitBeatsRules{}
+classes and ties the best rule in \NClassesCommitTiesRules{}, the last column
+of Table~\ref{tab:baselines}. It is not a like-for-like contest: the replay
+knows the team's second stop and the rules do not, and in WEC Hypercar and
+ELMS the replay was shown above to be uninformative. What it does show is that
+the rules' advantage over the first-run optimiser came from the question that
+optimiser was asked, not from information it lacked.
+
+\emph{Closer to what teams did} is not \emph{better}: every number here scores
+agreement with practice, never which plan was faster.
 
 \section{Result 4: which car counts as the rival is under-determined}
 \label{sec:rivalchoice}
@@ -1150,6 +1179,16 @@ allocation nor traffic, so the one-stop residual of \CommitOneAfter{} laps may
 yet be either. And in WEC Hypercar and ELMS the replay cannot discriminate,
 because the fuel range leaves the engine too few laps to choose from.
 
+\paragraph{Drivers manage tyres to the stint they were given.} A driver told
+to make a set last a long stint drives it more gently, so the slope a fit
+measures depends partly on the strategy the team chose. A planner fitted on
+those slopes will tend to find long stints affordable, which pushes in the
+direction of the one-stop residual, and season-to-season changes in how teams
+manage tyres would show up as the instability of Result~1. The cross-source
+check in Section~\ref{sec:audit} separates tyre wear from fuel burn, not this.
+Public timing cannot remove it; it could be bounded by comparing stints of the
+same car with different planned lengths, which I have not done.
+
 \paragraph{Unresolved slopes, carried forward anyway.} Of the
 \NCoefficientsFone{} Formula~1 degradation coefficients,
 \NCoefCrossingZero{} have a cluster-robust interval containing zero, and
@@ -1206,8 +1245,7 @@ reaches a published result.
 
 Every artifact derived from committed data is regenerated by continuous
 integration, which fails on any difference between the working tree and the
-repository. That includes files a generator wrote and nobody committed, a
-blind spot which produced three weeks of silent drift before it was closed.
+repository, including files a generator wrote and nobody committed.
 
 The state these results were computed from is archived on Zenodo and,
 through it, in Software Heritage and OpenAIRE. The concept identifier
@@ -1241,7 +1279,9 @@ the document that publishes it, which is stricter than recomputing alone.
 
 What this paper offers is a protocol and what came back from it. Degradation
 slopes rarely transfer, and where they do it is a property of the
-circuit-class rather than of the championship or the machinery. Whether an extra
+circuit-class rather than of the championship; Balance of Performance is not
+needed for the instability, and the effect of car type cannot be separated
+here from the circuits each type races on. Whether an extra
 stop can ever pay is decided by the cost of the stop, which separates the two
 regimes at an AUC of \RegimeAucPitLoss{} against \RegimeAucSlope{} for the
 tyre. And a time-optimal planner appeared to disagree with professional
@@ -1256,8 +1296,13 @@ an established gap (Section~\ref{sec:committed}). Simpler rules landed closer
 to practice than the first-run audit in \NClassesRuleWins{} of
 \NClassesScored{} classes.
 
-What remains is a gap of \CommitOneAfter{} laps in one-stop races, where the
-planner and the team were answering the same question. It is smaller than the
+And the rival that a competition-aware model should answer is
+under-determined: \NRivalRules{} defensible rules name the same car on
+\NRivalAllAgree{} of \NRivalAllApply{} decisions, which constrains every model
+built on a two-car abstraction.
+
+What remains of the planner--team gap is \CommitOneAfter{} laps in one-stop
+races, where the planner and the team were answering the same question. It is smaller than the
 one this paper set out to explain, and it is the one I would most like someone
 else to explain.
 

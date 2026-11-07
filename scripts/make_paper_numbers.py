@@ -417,6 +417,20 @@ def _macros() -> dict[str, str]:
     scored["car_class"] = scored["car_class"].fillna("")
     out["NScored"] = f"{len(scored):,}"
 
+    # The optimiser again, with each team's next stop held fixed
+    # (run_committed_strategy*.py), so the table compares the rules against
+    # the audit as corrected and not only as first run. Medians are over the
+    # decisions that can be replayed, which in endurance are fewer.
+    committed_abs: dict[tuple[str, str], float] = {}
+    f1_rows = pd.read_csv(F1_DERIVED_DIR / "committed_strategy.csv")
+    committed_abs[("f1", "")] = float(
+        f1_rows["committed_delta_laps"].dropna().abs().median())
+    end_rows = pd.read_csv(DERIVED_DIR / "endurance" / "committed_strategy.csv")
+    for (series, car_class), group in end_rows.groupby(["series", "car_class"]):
+        committed_abs[(series, car_class)] = float(
+            group["committed_delta_laps"].dropna().abs().median())
+    commit_beats = commit_ties = commit_loses = 0
+
     beaten = tied = held = by_b1 = 0
     for (series, car_class), group in scored.groupby(["series", "car_class"]):
         name = (_tex_name(series) if series == "f1"
@@ -433,6 +447,15 @@ def _macros() -> dict[str, str]:
         if errors["Model"] is None or not rules:
             continue
         best = min(rules)
+        fixed = committed_abs.get((series, str(car_class)))
+        out[f"{name}CommitError"] = "--" if fixed is None else f"{fixed:.0f}"
+        if fixed is not None:
+            if fixed < best:
+                commit_beats += 1
+            elif fixed == best:
+                commit_ties += 1
+            else:
+                commit_loses += 1
         if best < errors["Model"]:
             beaten += 1
             # Which rule wins matters: B1 uses no fitted quantity at all, so a
@@ -449,6 +472,21 @@ def _macros() -> dict[str, str]:
     out["NClassesRuleTies"] = str(tied)
     out["NClassesOptimiserWins"] = str(held)
     out["NClassesScored"] = str(beaten + tied + held)
+    out["NClassesCommitBeatsRules"] = str(commit_beats)
+    out["NClassesCommitTiesRules"] = str(commit_ties)
+    out["NClassesCommitLosesRules"] = str(commit_loses)
+
+    # --- Result 2: is the AUC gap a gap in measurement precision? -----------
+    precision = pd.read_csv(DERIVED_DIR / "cross_series" / "regime_precision.csv")
+    half = precision.iloc[(precision["kept_share"] - 0.5).abs().argmin()]
+    third = precision.iloc[(precision["kept_share"] - 1 / 3).abs().argmin()]
+    out["PrecisionHalfSlopeAuc"] = f"{half['auc_slope']:.3f}"
+    out["PrecisionHalfPitAuc"] = f"{half['auc_pit_loss']:.3f}"
+    out["NPrecisionHalf"] = str(int(half["n_race_seasons"]))
+    out["PrecisionThirdSlopeAuc"] = f"{third['auc_slope']:.3f}"
+    out["PrecisionThirdPitAuc"] = f"{third['auc_pit_loss']:.3f}"
+    out["NPrecisionThird"] = str(int(third["n_race_seasons"]))
+    out["NPrecisionThirdTyreLimited"] = str(int(third["n_tyre_limited"]))
 
     # Per-class median pit loss, quoted in the text to explain why the results
     # are grouped by class. Derived, because a guard caught them typed.
