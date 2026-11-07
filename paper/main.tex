@@ -51,7 +51,7 @@
 \begin{abstract}
 Race-strategy models are usually fitted and validated inside one championship.
 Two questions follow: does a fitted model predict a season it
-has never seen, and does its recommendation resemble what a team actually did? We apply one protocol to both across \NClasses{} car classes and
+has never seen, and does its recommendation resemble what a team actually did? I apply one protocol to both across \NClasses{} car classes and
 four championships --- Formula~1, WEC, IMSA and ELMS --- common rather than
 identical, since endurance sources carry no tyre compound and those models are
 net-slope.
@@ -107,8 +107,8 @@ measured from published timing or absent.
 
 The protocol is the object of this paper and the findings are what it
 returned. Two of them came back negative, which is a property of the answers
-rather than of the apparatus. The cost falls in the other direction: our
-modelling is simpler than much of the work we cite, we ignore energy management
+rather than of the apparatus. The cost falls in the other direction: my
+modelling is simpler than much of the work I cite, I ignore energy management
 entirely, and nothing here makes an existing optimiser better.
 
 \section{Related work}
@@ -165,26 +165,26 @@ season of a circuit-class and asks whether the remaining seasons predict it,
 over \NCircuitClasses{} circuit-classes and four championships. Both are
 out-of-sample. Only one changes season, circuit and class at once. They also
 report compound-specific degradation differences as not statistically distinct.
-That is consistent with the instability we measure at scale.
+That is consistent with the instability I measure at scale.
 
 The second is comparison against what teams actually did. Optimisers get
 compared to other optimisers, to author-constructed baselines, or to the optimum
 under the model's own assumptions. \citet{bekker2009} compare to real races, and
 \citet{aguad2024} compare strategic against non-strategic agents inside their
-own game, but we are not aware of work that replays a large sample of real
+own game, but I am not aware of work that replays a large sample of real
 pit-stop decisions and reports where the optimiser and the pit wall diverge.
 
 A third gap is narrower and sits between the two. A model's assumptions can be
 tested against measured parameter values without testing the model itself.
 \citet{salminen2026} solves the two-car one-stop game analytically and derives
 the earliest lap on which an undercut cannot be answered, which is the only
-mechanism we have found that predicts stopping \emph{before} the time optimum
---- the direction of our third result. His overcut defence requires a tyre
+mechanism I have found that predicts stopping \emph{before} the time optimum
+--- the direction of my third result. His overcut defence requires a tyre
 advantage of $(o + \varepsilon)/\theta$ laps. At the degradation rates fitted
-here it is unreachable on a substantial share of circuit-compounds, which we
-report in the repository because it tests a model that is not ours. His
+here it is unreachable on a substantial share of circuit-compounds, which I
+report in the repository because it tests a model that is not mine. His
 position-keeping defence is a different matter: it is the third candidate
-explanation for our own Result~3, so we implement it, test it on the same
+explanation for my own Result~3, so I implement it, test it on the same
 \NDecisionsFone{} Formula~1 decisions, and report in
 Section~\ref{sec:thirdexplanation} that it fails.
 
@@ -194,7 +194,7 @@ management entirely.
 What is different is the protocol: of the \NCatalogued{} papers catalogued for
 this review, \citet{cappello2026} is the only one that validates its fitted
 parameters on data it did not fit, and none applies a single protocol to more
-than one championship. We claim no priority. The literature is large and a
+than one championship. I claim no priority. The literature is large and a
 catalogue is not a census; the claim is only that these
 \NCatalogued{} papers, each checked against a publication record, do not
 contain the comparison this paper reports. Two of the three findings that come
@@ -292,13 +292,13 @@ silent narrowing here.}
 Two features of Figure~\ref{fig:degradation} constrain everything after it.
 \NCoefCrossingZero{} of the
 \NCoefficientsFone{} fitted slopes, \PctCoefCrossingZero{}\%, have a
-cluster-robust interval containing zero: on those circuit--compound pairs we
+cluster-robust interval containing zero: on those circuit--compound pairs I
 cannot distinguish tyre degradation from none. And within a circuit,
 \PctCompoundOverlap{}\% of compound pairs have overlapping intervals, so the
 compound distinction the Formula~1 model carries is largely unresolved by the
 data behind it. Both are reported, and neither is screened out. A slope that
 cannot
-be distinguished from flat is still the measurement we have, and dropping the
+be distinguished from flat is still the measurement I have, and dropping the
 ones that disappoint is how a transfer result gets manufactured.
 Section~\ref{sec:threats} returns to what this costs.
 
@@ -332,7 +332,7 @@ T(n_1,\dots,n_{m+1}) \;=\; m\pi \;+\; \sum_{j}\left(n_j p + \beta\,\frac{n_j(n_j
 \end{equation}
 %
 subject to $n_j \le F$ for every stint. The triangular sum is the accumulated
-tyre loss over a stint of $n_j$ laps. We use it exactly, not as the
+tyre loss over a stint of $n_j$ laps. I use it exactly, not as the
 $\beta n_j^{2}/2$ integral; they differ by $\beta n_j / 2$, which is about a
 second over a forty-lap stint and is the only quantity the stop decision
 compares against $\pi$.
@@ -431,7 +431,7 @@ circuit-class share a pooled fitted slope, and treating them as independent
 would roughly quadruple the apparent sample.
 
 The obvious explanation for instability is heterogeneous, performance-balanced
-machinery. We can rule it out. ELMS LMP2 is a near-specification class --- one
+machinery. I can rule it out. ELMS LMP2 is a near-specification class --- one
 chassis, one engine, no Balance of Performance --- and its slopes fail to
 transfer exactly as the balanced GT3 fields do. The instability is not the
 hardware. Where transfer does occur it tracks short circuits with cheap
@@ -445,7 +445,7 @@ measurement. The slope moved between seasons, or there was never enough signal
 in the laps for any slope to be recovered. Counting how few circuit-classes
 clear a threshold cannot separate those, and the separation is the result.
 
-So we measured the second one directly, on Formula~1, where the per-compound
+So I measured the second one directly, on Formula~1, where the per-compound
 fit and the lap data are richest. Lap times are rebuilt from each circuit's own
 fit --- its driver--race intercepts, its fuel slope, and \emph{one} degradation
 slope used for every season, so the slope is stable by construction --- plus
@@ -521,7 +521,7 @@ tyre-limited against the \RegimeNFuelLimited{} fuel-limited ones at an AUC of
 alone, \RegimeAucSlope{} (\RegimeAucSlopeCI{}). Both are well clear of a coin
 toss and the ordering between them is not close.
 
-This does not establish that pit loss \emph{causes} the regime, and we do not
+This does not establish that pit loss \emph{causes} the regime, and I do not
 claim it: the two are related by construction. What it establishes is that the
 comparison is asymmetric in practice. Knowing the cost of a stop tells you
 nearly the whole answer across four championships; knowing how fast the tyre
@@ -564,15 +564,15 @@ which is what the correlation above depends on.
 
 \paragraph{The condition behind it.} A linear slope $\beta$ over a stint of $n$
 laps accumulates $\beta n(n+1)/2$ seconds of degradation, so an extra stop
-repays its $\pi$ seconds when that sum exceeds $\pi$. We state it because it is
-the readable form of the mechanism, and we do not use it: the dynamic program
+repays its $\pi$ seconds when that sum exceeds $\pi$. I state it because it is
+the readable form of the mechanism, and I do not use it: the dynamic program
 above is exact under the fuel cap and the stop count is read from its solution.
 The closed form is an approximation to that, checked against it rather than
 substituted for it.
 
 \paragraph{The rule is robust; the constant is not.} The edge sits at
 \CheapStopEdge{}\,s because a single race puts it there; the next tyre-limited
-race is at \EdgeWithoutDefining{}\,s, a drop of \EdgeDropPct{}\%. We do not
+race is at \EdgeWithoutDefining{}\,s, a drop of \EdgeDropPct{}\%. I do not
 report a bootstrap interval for it, because the statistic is a maximum: it sits
 on the boundary of its own support, so the bootstrap distribution is degenerate
 above it and understates uncertainty below. Quote the rule; treat the number as
@@ -624,7 +624,7 @@ So the ladder reported in Result~3 is not a smooth gradient across the caution
 rate. It is a large and resolved disagreement in Formula~1 and in all three
 IMSA classes, against no established disagreement at all in WEC Hypercar and
 ELMS LMP2. The ordering still tracks the caution rate, but the low end of it
-is a statement about what we cannot resolve rather than about a small gap.
+is a statement about what I cannot resolve rather than about a small gap.
 Section~\ref{sec:committed} then shows that the resolved part is mostly a
 property of the audit rather than of the planner.
 
@@ -699,11 +699,11 @@ ladder. A stop taken under caution costs a fraction of a green-flag stop, so a
 championship that neutralises often gives teams a reason to stop early that the
 optimiser, which prices the stop at its green-flag cost, does not see. That
 ordering is consistent with the gap, and it is not a test of it: three
-championships is three points, and we do not fit a line through them.
+championships is three points, and I do not fit a line through them.
 
 \subsection{Testing the two candidate explanations}
 
-We proposed two mechanisms and then attacked them.
+I proposed two mechanisms and then attacked them.
 
 \textbf{Absence of track position.} The engine optimises one car's expected race
 time and cannot pay for an undercut, which is exactly why a team stops before it
@@ -729,7 +729,7 @@ standalone-time selection it is level at \RivalThravesClosed{} and improves
 \RivalThravesBetter{} decisions against \RivalPositionBetter{}. The hypothesis
 dies either way. It dies cleanly under the better selection, and the earlier
 appearance of a model actively making things worse was in part a measurement
-defect we have since fixed.
+defect I have since fixed.
 
 Two qualifications stand between the first of those and a clean refutation.
 
@@ -769,7 +769,7 @@ against the spread of the input, and not assumed to come from a flat one.}
 makes staying out look cheaper. Measured against an independent source that
 separates tyre wear from fuel burn by a different method on different data, the
 median paired difference is negligible --- an error of that size moves a stop by
-several race distances, not by ten laps. \textbf{Not detected.} We note that
+several race distances, not by ten laps. \textbf{Not detected.} I note that
 comparing the two \emph{medians} instead of the median of paired differences
 produces a small apparent bias that is an artefact of comparing summaries rather
 than pairs; an earlier version of this work nearly reported it.
@@ -777,22 +777,22 @@ than pairs; an earlier version of this work nearly reported it.
 \subsection{A third explanation, from published work}
 \label{sec:thirdexplanation}
 
-The two explanations tested above were ours. A third comes from
+The two explanations tested above were mine. A third comes from
 \citet{salminen2026}, who solves the two-car one-stop problem as a
 perfect-information sequential game and derives the earliest lap on which an
-undercut cannot be answered. It is the only mechanism we have found that
+undercut cannot be answered. It is the only mechanism I have found that
 predicts stopping \emph{before} the time-optimal lap, which is the direction of
 the disagreement reported here: a chaser stops when the leader's answer expires,
 and waiting for the time optimum hands the leader a window.
 
 The leader has two answers in that model. The overcut needs a tyre advantage of
 $(o + \varepsilon)/\theta$ laps, where $o$ is an overtaking threshold in
-seconds. We hold no such quantity --- what this project measures per circuit is
+seconds. I hold no such quantity --- what this project measures per circuit is
 an adjacent-pair swap probability per lap, a different object that does not
-convert into one --- so we implement only the position-keeping defence, which is
+convert into one --- so I implement only the position-keeping defence, which is
 efficient while $\theta l_u + \varepsilon < g$ and therefore expires at a tyre
 age of $(g - \varepsilon)/\theta$. Where the overcut is unavailable, the
-earliest undefendable undercut is the lap after that. We set $\varepsilon = 0$
+earliest undefendable undercut is the lap after that. I set $\varepsilon = 0$
 throughout: estimating it would mean reading a chaser's pace while it sits in
 dirty air, which inflates it, and a larger $\varepsilon$ expires the defence
 earlier and so moves the prediction toward the real stop.
@@ -817,13 +817,13 @@ every slope fitted in this work. The gap is therefore not a matter of
 calibration: for the equilibrium to reproduce what teams do, tyres would have to
 degrade at a rate this data almost never shows.
 
-\paragraph{A reading we have not established.} $\theta l_u$ prices the
+\paragraph{A reading I have not established.} $\theta l_u$ prices the
 defender's loss over a single lap on a tyre $l_u$ laps old. At a measured
 \DOneMeasuredTheta{}\,s/lap and a tyre the age teams stop at, that is under a
 second, which the median \DOneMedianGap{}\,s lead covers easily. What wins a
 real undercut is the advantage of a tyre on its first flying lap over one at the
 end of its life, and a linear slope has no term for that. Measuring it directly
-is a different estimator and we have not attempted it. We state this as a
+is a different estimator and I have not attempted it. I state this as a
 hypothesis because that is what it is.
 
 \paragraph{What holds whatever the verdict.} Of the
@@ -835,11 +835,11 @@ the remaining \DOneChasers{}, the gap to the leader is a median
 \DOneMedianGap{}\,s, and on \DOneWithinPitLoss{} of \DOneReachable{} it is
 smaller than the circuit's measured pit loss. Whether the position is reachable
 by stopping first is therefore not the binding constraint, which is the opposite
-of what we expected to find.
+of what I expected to find.
 
 \paragraph{Defects found while building this.} All three inflated the
 defence's window, so all three made this negative result look stronger than it
-is, and we report them for that reason. Comparing cumulative race time with no
+is, and I report them for that reason. Comparing cumulative race time with no
 bound found rivals a full lap away; the nearest car ahead is now capped at one
 green lap and the widest retained gap is \DOneMaxGap{}\,s. The expiry is a tyre
 age and was being compared against a lap number, which agree on only
@@ -893,7 +893,7 @@ three or more stops. Inside the \NCommitWithinRaces{} races containing both
 kinds of decision the multi-stop median exceeds the one-stop median by
 \CommitWithinGap{} laps, so the split is not only a difference between circuits.
 
-We then replayed every decision whose driver stopped again with the race
+I then replayed every decision whose driver stopped again with the race
 ending, for the engine, at that driver's real second stop. Everything after that
 stop runs on fresh tyres whichever first-stop lap is chosen, so it is common to
 every candidate and drops out: the optimum over the shortened horizon is exactly
@@ -955,7 +955,7 @@ Table~\ref{tab:baselines}). B1 divides the race
 into equal stints and uses no fitted quantity at all. B2 stops once the tyre's
 accumulated loss exceeds the pit loss, using the fitted slope and the measured
 pit loss and nothing else. B3 runs the fuel load out, and is undefined in
-Formula~1, where refuelling has been prohibited since 2010 --- we report it as
+Formula~1, where refuelling has been prohibited since 2010 --- I report it as
 undefined rather than substituting the race end.
 
 Results are reported per class rather than per championship. IMSA runs GTP, GTD
@@ -1012,7 +1012,7 @@ estimate for each car the total race time it would set under its own optimal
 strategy in the absence of competition, and take as rival the car whose
 estimated time is closest.
 
-We implement it with the same exact dynamic program the audit already uses,
+I implement it with the same exact dynamic program the audit already uses,
 scoring each car from its own median green lap, the circuit-compound
 degradation posterior for the tyre it is running, and the circuit's measured
 pit loss. The compound term matters for the reason he gave: two cars at
@@ -1065,18 +1065,18 @@ real stop than the single-car one, and under his it is level at
 correcting it does not produce the agreement the adversarial model was built
 to find.
 
-He also named the limit of his own proposal, and we state it as he put it: at
+He also named the limit of his own proposal, and I state it as he put it: at
 the extreme the choice of rival becomes endogenous, since each car's strategy
 depends on the others. The standalone time this heuristic sorts on is computed
 with no competition in it, which is what makes it computable and equally what
-makes it an approximation. We do not resolve this. A selection rule that
+makes it an approximation. I do not resolve this. A selection rule that
 accounted for the interaction would have to solve the joint problem the
 selection is a step toward, and nothing here does that.
 
-A second approximation is ours rather than his. The standalone time is the
+A second approximation is mine rather than his. The standalone time is the
 whole race from the start rather than the remaining race from the decision lap,
 so it pairs cars by capability instead of by where they have got to. His
-formulation is the former and it is what we implement; the latter would answer
+formulation is the former and it is what I implement; the latter would answer
 a different question.
 
 \paragraph{What this does and does not claim.} How far four rules disagree
@@ -1085,12 +1085,12 @@ would of course agree. The obvious objection is therefore that the rules were
 chosen to diverge. They were not, and the provenance of two of them is what
 answers it.
 
-The car-ahead rule is not a reading we selected. It is the pairing
+The car-ahead rule is not a reading I selected. It is the pairing
 \citet{salminen2026} defines his defences on: his leader and chaser are
 whichever two cars are adjacent on the clock, so testing his model at all
-forces that rule and no other. The standalone-time rule was proposed to us by
+forces that rule and no other. The standalone-time rule was proposed to me by
 Charles Thraves, in correspondence, as a criterion he thought the audit should
-use instead of ours; he is an author of the Stackelberg treatment
+use instead of mine; he is an author of the Stackelberg treatment
 (\citealp{aguad2024}; \citealp{carrasco2022}) whose framing this project's
 adversarial component reuses. Neither rule was constructed here, neither was
 constructed against the other, and neither was introduced because it
@@ -1118,11 +1118,11 @@ absorb track evolution was validated on synthetic races and then withdrawn twice
 on real ones: real fields sit close to the degenerate boundary where tyre age
 and race time share most of their variance after fixed effects. Formula~1's
 median identifiability is \NIdentifiability{}, well outside the range the basis
-was shown to work in. We report the omitted variable as diagnosed and unfixed
+was shown to work in. I report the omitted variable as diagnosed and unfixed
 rather than applying a correction that fails silently.
 
 \paragraph{Result~1 bounds reuse, not refitting.} Giona Fieni (ETH
-Z\"urich) stated the scope limit on this result more sharply than we had. A
+Z\"urich) stated the scope limit on this result more sharply than I had. A
 primarily model-based policy treats fitted degradation curves as placeholders
 and retunes them for each car and circuit, so it never depends on a slope
 transferring to a season it has not seen. Result~1 measures the stability of
@@ -1135,8 +1135,8 @@ is fixed, the near-specification control field should have been the one that
 transferred: one chassis, one engine, no Balance of Performance, a single tyre
 supplier. It fails as the performance-balanced fields do. So either lap time
 carries large effects that are not the tyre, or the retuning step is doing more
-than retuning. We read it as the first, and the track evolution withdrawn above
-is our candidate for part of what it is.
+than retuning. I read it as the first, and the track evolution withdrawn above
+is my candidate for part of what it is.
 
 \paragraph{The audit was not a fair comparison, and most of Result~3 was
 that.} The engine plans one stop and runs to the flag; a pit wall chooses a lap
@@ -1245,8 +1245,8 @@ circuit-class rather than of the championship or the machinery. Whether an extra
 stop can ever pay is decided by the cost of the stop, which separates the two
 regimes at an AUC of \RegimeAucPitLoss{} against \RegimeAucSlope{} for the
 tyre. And a time-optimal planner appeared to disagree with professional
-practice by a median of \FoneMedian{} laps in Formula~1. We proposed two
-explanations, tested both and lost both; we took a third from published work,
+practice by a median of \FoneMedian{} laps in Formula~1. I proposed two
+explanations, tested both and lost both; I took a third from published work,
 which has the right sign and fails on the quantity it depends on by a factor of
 \DOneThetaRatio{}; a fourth comes back with the wrong sign
 (Section~\ref{sec:freshtyre}). The fifth was the audit: asked to plan the
@@ -1259,7 +1259,7 @@ which the audited engine was not.
 
 What remains is a gap of \CommitOneAfter{} laps in one-stop races, where the
 planner and the team were answering the same question. It is smaller than the
-one this paper set out to explain, and it is the one we would most like someone
+one this paper set out to explain, and it is the one I would most like someone
 else to explain.
 
 \section*{Data and code availability}
