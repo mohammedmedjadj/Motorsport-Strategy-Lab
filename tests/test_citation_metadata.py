@@ -35,7 +35,8 @@ ANY_ZENODO_DOI = re.compile(r"10\.5281/zenodo\.(\d+)")
 OWN_ZENODO_RECORDS = {
     "22726130",   # concept, resolves to the newest version
     "22726131",   # v1.0.0, superseded
-    "23220846",   # v1.1.0
+    "23220846",   # v1.1.0, superseded
+    "23845526",   # v1.2.0
 }
 
 
