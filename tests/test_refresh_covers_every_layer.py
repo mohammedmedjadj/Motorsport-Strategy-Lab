@@ -49,6 +49,10 @@ EXCLUDED: dict[str, str] = {
         "what every pinned count in this repository is pinned to.",
     "run_ingestion_waves.py":
         "The same ingestion, spread across FastF1's hourly rate limit.",
+    "fetch_practice_laps.py":
+        "Downloads the practice laps from the OpenF1 API; network ingestion, so "
+        "same reasoning. Its output is committed and run_practice_long_runs.py, "
+        "which reads it, is scheduled.",
     "run_endurance_flags.py":
         "Pulls race-control flags from the network; same reasoning as ingestion.",
     "run_safety_car.py":

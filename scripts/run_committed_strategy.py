@@ -70,8 +70,9 @@ def _truncate(rival: RivalSpec, horizon: int) -> RivalSpec:
     return rival
 
 
-def committed_lap(row, laps: pd.DataFrame, model, horizon: int) -> int | None:
-    """The engine's first-stop lap when the race ends, for it, at ``horizon``."""
+def committed_lap(row, laps: pd.DataFrame, model, horizon: int) -> tuple[int, float] | None:
+    """The engine's first-stop lap when the race ends, for it, at ``horizon``,
+    and the median time it predicts the team's own lap costs against it."""
     decision = int(row.decision_lap)
     real = int(row.real_pit_lap)
     try:
@@ -99,7 +100,8 @@ def committed_lap(row, laps: pd.DataFrame, model, horizon: int) -> int | None:
         return None
     if real not in set(rec.table["pit_lap"]):
         return None
-    return int(rec.best_lap)
+    medians = rec.table.set_index("pit_lap")["median_s"]
+    return int(rec.best_lap), float(medians[real] - medians[rec.best_lap])
 
 
 def build() -> pd.DataFrame:
@@ -120,9 +122,11 @@ def build() -> pd.DataFrame:
             at = laps[(laps["Driver"] == row.driver) & (laps["LapNumber"] == second)]
             second_neutralised = bool(at["is_non_green"].fillna(False).any())
         committed = int(row.model_pit_lap)
+        cost = float(row.median_cost_s)
         if second is not None:
             print(f"[{i}/{len(audit)}] {slug} {row.driver}", flush=True)
-            committed = committed_lap(row, laps, models[row.circuit], int(second))
+            result = committed_lap(row, laps, models[row.circuit], int(second))
+            committed, cost = result if result is not None else (None, None)
         rows.append({
             "season": row.season,
             "circuit": row.circuit,
@@ -138,6 +142,7 @@ def build() -> pd.DataFrame:
             "committed_delta_laps": (
                 None if committed is None else committed - int(row.real_pit_lap)
             ),
+            "committed_cost_s": None if cost is None else round(cost, 2),
         })
     frame = pd.DataFrame(rows)
     add_chance(frame, lo=frame["decision_lap"] + 1, hi=frame["second_pit_lap"] - 3)

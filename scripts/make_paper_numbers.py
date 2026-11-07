@@ -671,6 +671,70 @@ def _macros() -> dict[str, str]:
     out["RegimeWithinClassMin"] = f"{inside['auc'].min():.3f}"
     out["RegimeWithinClassMax"] = f"{inside['auc'].max():.3f}"
 
+    # --- three repairs a team could try for Result 1 and Result 3 ------------
+    import json
+
+    def load(name: str) -> dict:
+        return json.loads((F1_DERIVED_DIR / f"{name}_summary.json").read_text(encoding="utf-8"))
+
+    alloc = pd.read_csv(REPO_ROOT / "data" / "reference" / "pirelli_compounds.csv")
+    out["NAllocationRaces"] = str(len(alloc))
+    out["NAllocationPirelli"] = str(int(alloc["pirelli_press_url"].notna().sum()))
+    ident = load("compound_identity")
+    changed, linear = ident["changed"], ident["changed_linear"]
+    out["NCompoundCircuits"] = str(ident["n_circuits"])
+    out["NCompoundChanged"] = str(ident["n_changed"])
+    out["CompoundRelative"] = f"{changed['median_relative']:.3f}"
+    out["CompoundReal"] = f"{changed['median_real']:.3f}"
+    out["CompoundDiff"] = f"{changed['median_difference']:+.3f}"
+    out["CompoundDiffCi"] = f"[{changed['ci_low']:+.3f}, {changed['ci_high']:+.3f}]"
+    out["NCompoundBetter"] = str(changed["n_better"])
+    out["NCompoundWorse"] = str(changed["n_worse"])
+    out["CompoundSignP"] = f"{changed['sign_p']:.2f}"
+    out["CompoundMaxGain"] = f"{changed['max_difference']:+.3f}"
+    out["CompoundLinearDiff"] = f"{linear['median_difference']:+.3f}"
+    out["CompoundLinearDiffCi"] = f"[{linear['ci_low']:+.3f}, {linear['ci_high']:+.3f}]"
+    out["NCompoundLinearBetter"] = str(linear["n_better"])
+    out["NCompoundLinearWorse"] = str(linear["n_worse"])
+    out["CompoundUnseenPct"] = f"{100 * ident['unseen_share']:.1f}"
+    out["CompoundUnseenMaxPct"] = f"{100 * ident['unseen_max']:.1f}"
+
+    fri = load("practice_long_runs")
+    out["NFridayRaces"] = str(fri["n_races"])
+    out["NFridayCircuits"] = str(fri["n_circuits"])
+    out["NFridaySprint"] = str(fri["n_fp1"])
+    out["FridayOther"] = f"{fri['r2_other_seasons']:.3f}"
+    out["FridayRaw"] = f"{fri['r2_friday']:.3f}"
+    out["FridayCorrected"] = f"{fri['r2_friday_corrected']:.3f}"
+    out["FridayBoth"] = f"{fri['r2_both']:.3f}"
+    out["FridayOffset"] = f"{fri['offset']:+.3f}"
+    for key, tex in (("friday_minus_other", "Raw"), ("corrected_minus_other", "Corrected"),
+                     ("both_minus_other", "Both")):
+        d = fri[key]
+        out[f"Friday{tex}Diff"] = f"{d['median']:+.3f}"
+        out[f"Friday{tex}DiffCi"] = f"[{d['ci_low']:+.3f}, {d['ci_high']:+.3f}]"
+        out[f"NFriday{tex}Better"] = str(d["n_better"])
+        out[f"NFriday{tex}Worse"] = str(d["n_worse"])
+    out["NFridayOtherAbove"] = str(fri["n_other_above"])
+    out["NFridayRawAbove"] = str(fri["n_friday_above"])
+    out["NFridayBothAbove"] = str(fri["n_both_above"])
+
+    dev = load("deviation_cost")
+    out["NDeviationCars"] = str(dev["n_cars"])
+    out["NDeviationRaces"] = str(dev["n_races"])
+    out["DeviationMedianLaps"] = f"{dev['median_abs_deviation']:.0f}"
+    out["DeviationPredicted"] = f"{dev['median_predicted_s']:.2f}"
+    out["DeviationPlannerPerLap"] = f"{dev['planner_per_lap_s']:.2f}"
+    out["DeviationPerLap"] = f"{dev['abs_deviation']['slope']:.2f}"
+    out["DeviationPerLapCi"] = (
+        f"[{dev['abs_deviation']['ci_low']:+.2f}, {dev['abs_deviation']['ci_high']:+.2f}]"
+    )
+    out["DeviationSlope"] = f"{dev['predicted_cost_s']['slope']:.2f}"
+    out["DeviationSlopeCi"] = (
+        f"[{dev['predicted_cost_s']['ci_low']:+.2f}, {dev['predicted_cost_s']['ci_high']:+.2f}]"
+    )
+    out["DeviationSpread"] = f"{dev['within_race_sd_s']:.1f}"
+
     return out
 
 

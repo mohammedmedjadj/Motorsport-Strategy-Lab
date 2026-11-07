@@ -50,11 +50,10 @@
 
 \begin{abstract}
 Race-strategy models are usually fitted and validated inside one championship.
-Two questions follow: does a fitted model predict a season it
-has never seen, and does its recommendation resemble what a team actually did? I apply one protocol to both across \NClasses{} car classes and
+Does a fitted model predict a season it
+has never seen, and does its recommendation resemble what a team did? I apply one protocol to both across \NClasses{} car classes and
 four championships --- Formula~1, WEC, IMSA and ELMS --- common rather than
-identical, since endurance sources carry no tyre compound and those models are
-net-slope.
+identical, since endurance sources carry no tyre compound.
 
 Four findings. Degradation slopes transfer as a property of the
 \emph{circuit-class}, not the championship, and rarely: of \NCircuitClasses{}
@@ -63,13 +62,14 @@ of $\TransferThreshold{}$. That count overstates instability. With a slope
 stable by construction, \NCeilingBelowThreshold{} of \NCeilingCircuits{}
 Formula~1 circuits cannot clear the threshold against their own lap noise;
 pricing it in leaves \NCeilingUnstable{} unstable and \NCeilingStable{} stable.
+Neither real Pirelli compounds nor Friday long runs improve it.
 Whether an extra stop pays is set by its cost: over \NRaceSeasons{}
 race-seasons, pit loss alone separates the regimes at an AUC of
 \RegimeAucPitLoss{} against \RegimeAucSlope{} for degradation. Replaying
 \NDecisions{} real first stops with each team's own next stop held fixed, a
 time-optimal planner lands a median of \CommitAllAfter{} laps from the team in
 Formula~1 and no endurance gap is established; \CommitOneAfter{} remains in
-one-stop races. Run to the flag instead, the same planner is \FoneMedian{}
+one-stop races, worth tenths of a second a lap. Run to the flag instead, the same planner is \FoneMedian{}
 late: it must be asked the pit wall's question.
 And the rival such a model should answer is under-determined:
 \NRivalRules{} defensible rules agree on \NRivalAllAgree{} of
@@ -209,7 +209,10 @@ FastF1 API. WEC, IMSA and ELMS timing comes from a community-maintained
 endurance dataset carrying lap times, stint structure and flag state but
 \emph{not} tyre compound. The endurance degradation models are therefore
 net-slope models where the Formula~1 one is per compound, and that asymmetry is
-restated wherever the two are compared. Table~\ref{tab:scope} gives the scope.
+restated wherever the two are compared. Two further Formula~1 sources serve
+Section~\ref{sec:repairs} only: the compound Pirelli nominated for each race,
+and second-practice laps from the OpenF1 API, which serves the same timing feed
+from 2023 on. Table~\ref{tab:scope} gives the scope.
 
 \begin{table}[htbp]
 \centering
@@ -481,6 +484,62 @@ at one circuit, per-fold selection takes the quadratic and extrapolates it off
 a cliff, which is why the published protocol chooses once.
 \NCeilingExcluded{} circuits are excluded from the counts above as degenerate
 fits and named in the generated report.
+
+\subsection{Two repairs a team would try first}
+\label{sec:repairs}
+
+If slopes move between seasons, two repairs suggest themselves, and both can be
+tested on Formula~1 with the protocol unchanged.
+
+\paragraph{Code the tyre by what it was.} The Formula~1 model carries one slope
+per compound label, and the labels are relative. Pirelli nominates three
+compounds of its range for each race, and the same circuit can receive a
+different three from one season to the next, so last season's Medium may be
+this season's Hard. I collected the nomination for all \NAllocationRaces{}
+races from 2022 to 2025 from the race articles of Wikipedia, which cite Pirelli,
+and checked it against Pirelli's own press releases, which state it in text for
+\NAllocationPirelli{} of them and agree every time. When Pirelli added a compound
+in 2023 it renamed its hardest one; a 2022 lap on that tyre is coded with the
+name the same rubber carried afterwards, not with its old one. Recoding every
+lap to the real compound and rerunning the leave-one-race-out protocol, both
+codings scored on the same laps, changes nothing where the allocation stayed the
+same. At the \NCompoundChanged{} of \NCompoundCircuits{} circuits where it
+changed, the median score moves from \CompoundRelative{} to \CompoundReal{},
+a median paired difference of \CompoundDiff{} \CompoundDiffCi{}. The real
+compound scores better at \NCompoundBetter{} circuits and worse at
+\NCompoundWorse{}, and its largest gain anywhere is \CompoundMaxGain{}. With
+every circuit forced to the linear model, so that no quadratic can extrapolate
+on a compound seen in one season, the difference is \CompoundLinearDiff{}
+\CompoundLinearDiffCi{}. The recoding also has a cost the relative labels
+hide: on average \CompoundUnseenPct{}\% of a held-out season's laps, and up to
+\CompoundUnseenMaxPct{}\% at one circuit, are on a compound no other season of
+that circuit used, and cannot be predicted at all. Relative labels are not what
+breaks transfer.
+
+\paragraph{Measure it on Friday.} A team need not rely on other seasons at all:
+in second practice every car runs long runs on race fuel, on that weekend's
+tyres and asphalt. A long run here is a practice stint long enough to fit a
+slope to once its out-lap, in-lap and cool-down laps are dropped, and a
+compound's Friday slope is used only when several cars ran one on it; on a
+sprint weekend the only practice session is used, which is the case in
+\NFridaySprint{} of the \NFridayRaces{} races. Inside a stint tyre age and fuel
+burn advance together on Friday as on Sunday, so the Friday slope is the
+quantity the race model predicts inside a stint and needs no fuel correction.
+Scored on the same race laps, it does worse than other seasons: a median
+within-stint $R^2$ of \FridayRaw{} against \FridayOther{}, lower in
+\NFridayRawWorse{} of the \NFridayRaces{} races, with a median paired
+difference of \FridayRawDiff{} \FridayRawDiffCi{} when whole circuits are
+resampled. Part of that is a level difference: Friday long runs degrade faster
+than the same compound does in the race, by a median of \FridayOffset{}\,s a
+lap. Subtracting that gap, learned on every other circuit so that no race
+informs its own correction, still leaves \FridayCorrected{}. Averaging the
+corrected Friday shape with the other-seasons shape gives \FridayBoth{}, worse
+than other seasons alone in \NFridayBothWorse{} of \NFridayRaces{} races
+\FridayBothDiffCi{}. A Friday slope rests on a handful of runs per compound by
+drivers managing fuel, engine modes and traffic in ways the race does not
+repeat. A team reading its own Friday has information this protocol lacks, but
+the timing data alone carry less about Sunday's degradation than other seasons
+do. Neither repair moves Result~1.
 
 \section{Result 2: the cost of the stop sets the strategy regime}
 
@@ -956,6 +1015,42 @@ answering the same question, the engine still stops \CommitOneAfter{} laps
 later \CommitOneCi{}. That is the part of Result~3 the audit design does not
 explain.
 
+\subsection{What the remaining gap costs}
+\label{sec:deviationcost}
+
+A gap in laps is not a gap in time, and the planner's own price for it is a
+model output. The committed replay gives both: for each first stop, the
+planner's lap with the team's next stop fixed, and the median time the planner
+predicts the team's lap cost against its own. Over the same stretch of the real
+race, from the decision lap to the team's next stop or to the flag, I measured
+each car's elapsed time against what its own median green-flag lap predicts for
+that many laps, and compared cars within a race, which share the track, the
+weather and the tyre allocation. A race fixed effect absorbs what is common to
+the field, the window's length is a control, and a window containing a Safety
+Car, a Virtual Safety Car or a red flag for that car is dropped, since a stop
+under neutralisation is cheaper by an amount the planner's cost does not
+describe.
+
+That leaves \NDeviationCars{} first stops in \NDeviationRaces{} races. They sit
+a median of \DeviationMedianLaps{} laps from the planner's lap, a distance the
+planner prices at a median of \DeviationPredicted{}\,s. In the races, each lap
+of distance from the planner's lap goes with \DeviationPerLap{}\,s of extra
+elapsed time \DeviationPerLapCi{}, against \DeviationPlannerPerLap{}\,s by the
+planner's own pricing. Regressed on the planner's predicted cost directly, the
+slope is \DeviationSlope{} \DeviationSlopeCi{}, where one would mean the
+model's costs show up in the clock unchanged. Both intervals contain zero, and
+both contain the planner's price. The races cannot tell them apart because the
+quantity is small: between cars of the same race the excess time has a median
+standard deviation of \DeviationSpread{}\,s, an order of magnitude more than the
+planner says the typical gap costs.
+
+This is association, not an experiment. Teams leave the planner's lap for
+reasons it cannot see --- traffic, a rival's stop, a car problem --- and those
+reasons have costs of their own, in either direction. What it does establish is
+the scale. The residual Result~3 leaves is worth tenths of a second per lap of
+distance, inside the flat part of the optimum where a single race cannot
+distinguish the team's lap from the planner's.
+
 \subsection{Comparison against three baselines}
 
 \begin{figure}[htbp]
@@ -1178,6 +1273,10 @@ revised during the race. The engine still represents neither the tyre
 allocation nor traffic, so the one-stop residual of \CommitOneAfter{} laps may
 yet be either. And in WEC Hypercar and ELMS the replay cannot discriminate,
 because the fuel range leaves the engine too few laps to choose from.
+Section~\ref{sec:deviationcost} prices the residual from the races
+themselves, and the price is small; pricing it does not explain it, and that
+measurement is an association between cars, open to every reason a team had
+for its lap.
 
 \paragraph{Drivers manage tyres to the stint they were given.} A driver told
 to make a set last a long stint drives it more gently, so the slope a fit
@@ -1261,7 +1360,9 @@ cannot be regenerated from a clone: the Formula~1 breadth layer and the
 Formula~1 and WEC reliability tables. Their outputs are committed, so
 everything downstream of them runs offline, and the rest of the project ---
 Formula~1 core, WEC, IMSA, ELMS, the simulator, the audits and every
-cross-series layer --- reproduces from a clone with no external download.
+cross-series layer --- reproduces from a clone with no external download. The
+Pirelli nominations and the practice laps of Section~\ref{sec:repairs} are
+committed with the scripts that collected them, so they too are read offline.
 
 One of the three is load-bearing. The cross-source slope check that rejected
 one of the candidate explanations for the gap in Result~3 rests on the breadth
@@ -1294,7 +1395,9 @@ stint the team would actually run, the planner lands \CommitAllAfter{} laps
 from the real stop rather than \CommitAllBefore{}, and no endurance class keeps
 an established gap (Section~\ref{sec:committed}). Simpler rules landed closer
 to practice than the first-run audit in \NClassesRuleWins{} of
-\NClassesScored{} classes.
+\NClassesScored{} classes. Two repairs a team would reach for first, coding the
+tyre by its real compound and measuring degradation on Friday, both leave
+transfer where it was or worse (Section~\ref{sec:repairs}).
 
 And the rival that a competition-aware model should answer is
 under-determined: \NRivalRules{} defensible rules name the same car on
@@ -1302,9 +1405,11 @@ under-determined: \NRivalRules{} defensible rules name the same car on
 built on a two-car abstraction.
 
 What remains of the planner--team gap is \CommitOneAfter{} laps in one-stop
-races, where the planner and the team were answering the same question. It is smaller than the
-one this paper set out to explain, and it is the one I would most like someone
-else to explain.
+races, where the planner and the team were answering the same question. In
+the races it is worth tenths of a second per lap of distance, within the noise
+between cars of the same race (Section~\ref{sec:deviationcost}). It is smaller
+than the gap this paper set out to explain, and it is the one I would most like
+someone else to explain.
 
 \section*{Data and code availability}
 
