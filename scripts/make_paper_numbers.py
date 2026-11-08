@@ -746,6 +746,73 @@ def _macros() -> dict[str, str]:
     out["RetestEuuCloser"] = str(sal["closer"])
     out["RetestEuuFurther"] = str(sal["further"])
 
+    design = load("audit_design_checks")
+    names = {"top": "Top", "all": "All"}
+    words = {5: "Five", 10: "Ten", 15: "Fifteen"}
+    for key, g in design["grid"].items():
+        field, lb = key.split("_")
+        tag = names[field] + words[int(lb)]
+        out[f"Design{tag}N"] = f"{g['n']:,}"
+        out[f"Design{tag}Median"] = signed(g["median"])
+        out[f"Design{tag}Ci"] = f"[{g['ci_low']:+.1f}, {g['ci_high']:+.1f}]"
+        out[f"Design{tag}Hl"] = signed(g["hl"])
+        out[f"Design{tag}OneMedian"] = signed(g["one_median"])
+        out[f"Design{tag}OneCi"] = f"[{g['one_ci_low']:+.1f}, {g['one_ci_high']:+.1f}]"
+        out[f"Design{tag}OneHl"] = signed(g["one_hl"])
+        out[f"Design{tag}Bound"] = f"{100 * g['at_bound']:.0f}"
+    medians = [g["median"] for g in design["grid"].values()]
+    out["DesignMinMedian"] = signed(min(medians))
+    out["DesignMaxMedian"] = signed(max(medians))
+    ratio = design["ratio"]
+    out["RatioResolvedN"] = str(ratio["resolved"]["n"])
+    out["RatioResolvedMedian"] = signed(ratio["resolved"]["median"])
+    out["RatioResolvedOneMedian"] = signed(ratio["resolved"]["one_median"])
+    out["RatioUnresolvedN"] = str(ratio["unresolved"]["n"])
+    out["RatioUnresolvedMedian"] = signed(ratio["unresolved"]["median"])
+    out["RatioUnresolvedOneMedian"] = signed(ratio["unresolved"]["one_median"])
+    out["RatioQuadraticN"] = str(ratio["quadratic circuit"]["n"])
+    imp = design["implied"]
+    out["ImpliedN"] = str(imp["n"])
+    out["ImpliedFitted"] = f"{imp['median_fitted']:.2f}"
+    out["ImpliedRatio"] = f"{imp['median_implied']:.2f}"
+    out["ImpliedShareBelow"] = f"{100 * imp['share_below']:.0f}"
+    out["ClosedFormN"] = str(design["closed_form"]["n"])
+    out["ClosedFormGap"] = f"{design['closed_form']['median_abs_vs_engine']:.1f}"
+
+    base = load("transfer_baselines")
+    out["BaseCircuits"] = str(base["n_circuits"])
+    for key, tag in (("past", "Past"), ("category", "Category")):
+        b = base[key]
+        out[f"Base{tag}Median"] = f"{b['median']:.3f}"
+        out[f"Base{tag}Loro"] = f"{b['median_loro']:.3f}"
+        out[f"Base{tag}Diff"] = f"{b['median_diff']:+.3f}"
+        out[f"Base{tag}DiffCi"] = f"[{b['ci_low']:+.3f}, {b['ci_high']:+.3f}]"
+        out[f"NBase{tag}Better"] = str(b["n_better"])
+        out[f"NBase{tag}Worse"] = str(b["n_worse"])
+    out["CeilingShareN"] = str(base["ceiling"]["n"])
+    out["CeilingShareMedian"] = f"{base['ceiling']['median_share']:.2f}"
+    out["NCeilingShareHalf"] = str(base["ceiling"]["n_above_half"])
+    trims = base["trim"]
+    levels = sorted(trims)
+    out["TrimLow"], out["TrimPublished"], out["TrimHigh"] = levels[0], levels[1], levels[2]
+    out["CeilingMeasurable"] = str(base["ceiling"]["threshold"])
+    out["TrimShareMoved"] = f"{100 * max(v['share_moved_10pct'] for v in trims.values()):.0f}"
+    out["TrimLoroLow"] = f"{min(v['median_loro'] for v in trims.values()):.3f}"
+    out["TrimLoroHigh"] = f"{max(v['median_loro'] for v in trims.values()):.3f}"
+
+    index = json.loads((DERIVED_DIR / "cross_series" / "regime_index_summary.json").read_text(encoding="utf-8"))
+    out["IndexN"] = str(index["n_positive"])
+    out["IndexAuc"] = f"{index['index_auc']:.3f}"
+    out["IndexShareSlope"] = f"{100 * index['shares']['slope']:.0f}"
+    out["IndexSharePit"] = f"{100 * index['shares']['pit loss']:.0f}"
+    out["IndexShareStint"] = f"{100 * index['shares']['stint']:.0f}"
+    out["IndexWithoutPit"] = f"{index['auc_without']['pit loss']:.3f}"
+    out["IndexWithoutSlope"] = f"{index['auc_without']['slope']:.3f}"
+
+    est = load("estimability")
+    out["EstChecked"] = str(est["f1_coefficients_checked"])
+    out["EstFailed"] = str(est["f1_non_estimable"])
+
     dev = load("deviation_cost")
     out["NDeviationCars"] = str(dev["n_cars"])
     out["NDeviationRaces"] = str(dev["n_races"])
@@ -761,6 +828,13 @@ def _macros() -> dict[str, str]:
         f"[{dev['predicted_cost_s']['ci_low']:+.2f}, {dev['predicted_cost_s']['ci_high']:+.2f}]"
     )
     out["DeviationSpread"] = f"{dev['within_race_sd_s']:.1f}"
+    # Power: the standard error implied by the interval, the smallest per-lap
+    # effect detectable at 5% with 80% power (2.8 standard errors), and the
+    # decisions that would detect the planner's own price.
+    se = (dev["abs_deviation"]["ci_high"] - dev["abs_deviation"]["ci_low"]) / 3.92
+    out["DeviationMde"] = f"{2.8 * se:.2f}"
+    needed = dev["n_cars"] * (2.8 * se / dev["planner_per_lap_s"]) ** 2
+    out["DeviationNeeded"] = f"{int(round(needed, -2)):,}"
 
     return out
 

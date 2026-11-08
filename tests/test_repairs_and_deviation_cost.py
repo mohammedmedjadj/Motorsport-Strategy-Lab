@@ -111,3 +111,30 @@ def test_one_stop_retest_matches_the_committed_one_stop_set():
     assert s["n_one_stop"] == len(one)
     assert all(r["n"] == len(one) for r in s["rules"].values())
     assert s["salminen"]["closer"] + s["salminen"]["further"] <= s["salminen"]["predicted"]
+
+
+def test_design_checks_reproduce_the_published_committed_replay():
+    checks = pd.read_csv(F1 / "audit_design_checks.csv")
+    published = pd.read_csv(F1 / "committed_strategy.csv").dropna(subset=["committed_pit_lap"])
+    base = checks[(checks["lookback"] == 5) & checks["top"]]
+    merged = base.merge(published, on=["season", "circuit", "driver", "real_pit_lap"])
+    # Same planner, same seed, same horizon: the same lap wherever both exist.
+    assert len(merged) >= 0.9 * len(published)
+    assert (merged["planner_pit_lap"] == merged["committed_pit_lap"]).mean() > 0.99
+
+
+def test_design_check_bound_is_the_earliest_allowed_lap():
+    checks = pd.read_csv(F1 / "audit_design_checks.csv")
+    assert (checks["planner_pit_lap"] > checks["decision_lap"]).all()
+    assert (checks["at_bound"] == (checks["planner_pit_lap"] == checks["decision_lap"] + 1)).all()
+
+
+def test_every_reported_f1_coefficient_is_estimable():
+    s = _summary("estimability")
+    assert s["f1_non_estimable"] == 0
+    assert s["f1_coefficients_checked"] > 0
+
+
+def test_regime_index_shares_sum_to_one():
+    s = json.loads((REPO / "data" / "derived" / "cross_series" / "regime_index_summary.json").read_text())
+    assert sum(s["shares"].values()) == pytest.approx(1.0, abs=1e-4)

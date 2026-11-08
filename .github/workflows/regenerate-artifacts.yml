@@ -137,6 +137,15 @@ jobs:
       # Reads the committed replay and the rival and defence audits.
       - name: Rejected mechanisms retested on the one-stop gap
         run: python scripts/run_one_stop_retest.py
+      # Reruns the committed replay at three lookbacks on the whole field and
+      # splits the gap by slope-ratio precision (about three minutes).
+      - name: Design checks on the committed audit
+        run: python scripts/run_audit_design_checks.py
+      # Reads the transfer ceiling for its verdicts and ceiling scores.
+      - name: Result 1 baselines and traffic-trim sensitivity
+        run: python scripts/run_transfer_baselines.py
+      - name: Estimability of every reported coefficient
+        run: python scripts/run_estimability.py
 
       - name: Report drift
         run: .github/scripts/report_drift.sh "F1"
@@ -290,6 +299,8 @@ jobs:
       # optimiser's comparison actually orders the two regimes.
       - name: Which term decides the strategy regime
         run: python scripts/run_regime_decomposition.py
+      - name: Variance and leave-one-out of the regime index
+        run: python scripts/run_regime_index.py
       # Reads every green-flag stop behind the per-race pit-loss medians, so it
       # runs after the multi-stop plans it classifies against.
       - name: Pit-loss measurement checks

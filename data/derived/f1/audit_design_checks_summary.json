@@ -1,0 +1,135 @@
+{
+ "closed_form": {
+  "median_abs_vs_engine": 0.888406,
+  "n": 243
+ },
+ "grid": {
+  "all_10": {
+   "at_bound": 0.101871,
+   "ci_high": 3.0,
+   "ci_low": 1.0,
+   "hl": 2.0,
+   "later": 0.609148,
+   "median": 2.0,
+   "n": 962,
+   "n_races": 72,
+   "one_ci_high": 4.0,
+   "one_ci_low": 1.0,
+   "one_hl": 2.5,
+   "one_median": 3.0,
+   "one_n": 457
+  },
+  "all_15": {
+   "at_bound": 0.097015,
+   "ci_high": 2.0,
+   "ci_low": 0.0,
+   "hl": 0.5,
+   "later": 0.537313,
+   "median": 1.0,
+   "n": 670,
+   "n_races": 72,
+   "one_ci_high": 3.0,
+   "one_ci_low": -1.0,
+   "one_hl": 0.5,
+   "one_median": 1.0,
+   "one_n": 390
+  },
+  "all_5": {
+   "at_bound": 0.15191,
+   "ci_high": 3.0,
+   "ci_low": 2.0,
+   "hl": 3.0,
+   "later": 0.654514,
+   "median": 3.0,
+   "n": 1152,
+   "n_races": 74,
+   "one_ci_high": 5.0,
+   "one_ci_low": 2.0,
+   "one_hl": 4.5,
+   "one_median": 4.0,
+   "one_n": 484
+  },
+  "top_10": {
+   "at_bound": 0.078125,
+   "ci_high": 4.0,
+   "ci_low": 1.0,
+   "hl": 2.5,
+   "later": 0.634375,
+   "median": 2.0,
+   "n": 320,
+   "n_races": 72,
+   "one_ci_high": 5.5,
+   "one_ci_low": 1.0,
+   "one_hl": 3.5,
+   "one_median": 4.0,
+   "one_n": 143
+  },
+  "top_15": {
+   "at_bound": 0.065502,
+   "ci_high": 3.0,
+   "ci_low": 1.0,
+   "hl": 2.0,
+   "later": 0.598253,
+   "median": 1.0,
+   "n": 229,
+   "n_races": 64,
+   "one_ci_high": 5.0,
+   "one_ci_low": 0.0,
+   "one_hl": 2.5,
+   "one_median": 2.0,
+   "one_n": 127
+  },
+  "top_5": {
+   "at_bound": 0.130682,
+   "ci_high": 4.0,
+   "ci_low": 1.0,
+   "hl": 3.0,
+   "later": 0.659091,
+   "median": 2.0,
+   "n": 352,
+   "n_races": 74,
+   "one_ci_high": 6.5,
+   "one_ci_low": 2.0,
+   "one_hl": 5.0,
+   "one_median": 4.0,
+   "one_n": 150
+  }
+ },
+ "implied": {
+  "median_factor": 0.780394,
+  "median_fitted": 1.021417,
+  "median_implied": 0.765686,
+  "n": 232,
+  "share_below": 0.702586
+ },
+ "ratio": {
+  "quadratic circuit": {
+   "abs_median": 3.0,
+   "median": 2.0,
+   "n": 81,
+   "one_median": 5.0,
+   "one_n": 25
+  },
+  "resolved": {
+   "abs_median": 4.0,
+   "median": 2.0,
+   "n": 73,
+   "one_median": 5.0,
+   "one_n": 37
+  },
+  "same compound": {
+   "abs_median": 1.0,
+   "median": 1.0,
+   "n": 11,
+   "one_median": NaN,
+   "one_n": 0
+  },
+  "unresolved": {
+   "abs_median": 4.0,
+   "median": 3.0,
+   "n": 187,
+   "one_median": 3.5,
+   "one_n": 88
+  }
+ }
+}

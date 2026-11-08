@@ -50,32 +50,30 @@
 
 \begin{abstract}
 Race-strategy models are usually fitted and validated inside one championship.
-Does a fitted model predict an unseen
-season, and does its recommendation resemble what a team did? I apply one protocol to both across \NClasses{} car classes and
-four championships --- Formula~1, WEC, IMSA and ELMS --- common rather than
-identical, since endurance sources carry no tyre compound.
+Does a fitted model predict an unseen season, and does its recommendation
+resemble what a team did? I apply one protocol to both across \NClasses{} car
+classes and four championships: Formula~1, WEC, IMSA and ELMS.
 
-Four findings. Degradation slopes transfer as a property of the
-\emph{circuit-class}, not the championship, and rarely: of \NCircuitClasses{}
-measured by leave-one-race-out, \NTransferAboveTwo{} reach a within-stint $R^2$
-of $\TransferThreshold{}$. With a slope
-stable by construction, \NCeilingBelowThreshold{} of \NCeilingCircuits{}
-Formula~1 circuits cannot clear the threshold against their own lap noise;
-pricing it in leaves \NCeilingUnstable{} unstable and \NCeilingStable{} stable.
-Neither circuit-level recoding to real Pirelli compounds nor Friday long runs
-improve it.
-Whether an extra stop pays is set by its cost: over \NRaceSeasons{}
-race-seasons, pit loss alone separates the regimes at an AUC of
-\RegimeAucPitLoss{} against \RegimeAucSlope{} for degradation. Replaying
-\NDecisions{} real first stops with each team's own next stop held fixed, a
-time-optimal planner lands a median of \CommitAllAfter{} laps from the team in
-Formula~1 and no endurance gap is established; \CommitOneAfter{} remains in
-one-stop races, priced by the planner at tenths of a second a lap, which the
-races cannot confirm. Run to the flag, the same planner is \FoneMedian{}
-late: it must be asked the pit wall's question.
-And the rival such a model should answer is under-determined:
-\NRivalRules{} defensible rules agree on \NRivalAllAgree{} of
-\NRivalAllApply{} decisions.
+Four findings. First, public timing rarely carries enough signal to test
+transfer. With a slope stable by construction, \NCeilingBelowThreshold{} of
+\NCeilingCircuits{} Formula~1 circuits cannot reach a within-stint $R^2$ of
+$\TransferThreshold{}$ against their own lap noise; pricing that in leaves
+\NCeilingUnstable{} unstable and \NCeilingStable{} stable, and
+\NTransferAboveTwo{} of \NCircuitClasses{} endurance circuit-classes reach it.
+Within-circuit recoding to real Pirelli compounds, Friday long runs and
+past-only fitting do not help, and a circuit's own slope does not beat one
+common to the category. Second, in these championships the cost of a stop
+separates the strategy regimes best: over \NRaceSeasons{} race-seasons pit loss
+alone reaches an AUC of \RegimeAucPitLoss{}, against \RegimeAucSlope{} for
+degradation. Third, replaying \NDecisions{} real first stops with each team's
+next stop held fixed, a time-optimal planner lands a median of
+\CommitAllAfter{} laps from the team in Formula~1 (\DesignMinMedian{} to
+\DesignMaxMedian{} across horizons and field); a \CommitOneAfter{} residual in
+one-stop races shrinks when the planner is asked earlier. In endurance the replay cannot
+test the tyre model. Run to the flag, the same planner is \FoneMedian{} late.
+Fourth, \NRivalRules{} defensible rules for the rival agree on
+\NRivalAllAgree{} of \NRivalAllApply{} decisions, though the recommendation
+barely moves between them.
 \end{abstract}
 
 \vspace{0.6em}
@@ -270,8 +268,12 @@ compound index drops out, leaving a single net slope $\beta_1$.
 
 Equation~\ref{eq:degradation} is estimated by ordinary least squares through
 a Moore--Penrose pseudoinverse,
-which handles the rank-deficient cases --- a driver--race seen on one compound
-only. The polynomial degree $d \in \{1,2\}$ is chosen per circuit by
+which would handle a rank-deficient design --- a driver--race seen on one
+compound only --- by a minimum-norm solution. In a rank-deficient design that
+solution fixes any non-estimable coefficient by the norm rather than by the
+data, so every reported coefficient was checked: deleting its column lowers the
+rank of the design in all \EstChecked{} cases across the Formula~1 circuits,
+and \EstFailed{} are non-estimable. The polynomial degree $d \in \{1,2\}$ is chosen per circuit by
 leave-one-race-out cross-validation.
 
 Standard errors are cluster-robust (CR1) on the driver--race and referred to
@@ -555,6 +557,50 @@ repeat. A team reading its own Friday has information this protocol lacks, but
 the timing data alone carry less about Sunday's degradation than other seasons
 do. Neither repair moves Result~1.
 
+\subsection{Three baselines a practitioner would ask for}
+\label{sec:baselines1}
+
+Leave-one-season-out trains on later seasons as well as earlier ones, which no
+team can do, and a flat slope is a weak reference. On the
+\BaseCircuits{} Formula~1 circuits, with the linear model throughout so that
+the comparisons are between predictors rather than degrees:
+
+\paragraph{Past seasons only.} Predicting each season from the seasons before
+it, the question a team actually faces, gives a median score of
+\BasePastMedian{} against \BasePastLoro{} for leave-one-season-out, a median
+paired difference of \BasePastDiff{} \BasePastDiffCi{}, worse at
+\NBasePastWorse{} circuits and better at \NBasePastBetter{}. Fewer training
+seasons and no later ones cost a little; they do not change the picture.
+
+\paragraph{The circuit against the category.} A slope common to the category
+--- for each compound, the median over every \emph{other} circuit of that
+circuit's linear fit, with the median fuel slope --- scores \BaseCategoryMedian{}
+against \BaseCategoryLoro{}, a median paired difference of \BaseCategoryDiff{}
+\BaseCategoryDiffCi{}, better at \NBaseCategoryBetter{} circuits and worse at
+\NBaseCategoryWorse{}. A circuit's own history does not predict its next season
+better than a slope that knows nothing about the circuit.
+
+\paragraph{The ceiling as the yardstick.} Measured against what a perfectly
+stable slope could have scored at the same circuit, rather than against a
+fixed threshold, the median score at the \CeilingShareN{} circuits where the
+ceiling exceeds $\CeilingMeasurable{}$ is \CeilingShareMedian{} of it, and
+\NCeilingShareHalf{} reach half. That is the more informative reading of
+Result~1 for Formula~1: where the laps carry signal at all, a slope from other
+seasons recovers much of what a stable one could, and where they do not, no
+count above a threshold says anything about stability. The ceiling has not been
+built for the endurance classes, so the endurance count stands on the raw
+threshold alone.
+
+Two further checks concern the measurement rather than the predictor. Within a
+stint, tyre age and lap number advance together, so the within-stint $R^2$
+scores the net slope --- degradation plus fuel burn plus whatever the track
+does during the stint --- and Result~1 is a statement about that net
+quantity. And the traffic trim, which drops laps slower than a multiple of the
+driver's race median, truncates the response itself; refitted with the
+multiple at $\TrimLow{}$ and $\TrimHigh{}$ instead of $\TrimPublished{}$, at most \TrimShareMoved{}\% of
+slopes move by more than a tenth and the median score ranges from
+\TrimLoroLow{} to \TrimLoroHigh{}.
+
 \section{Result 2: the cost of the stop sets the strategy regime}
 
 \begin{figure}[htbp]
@@ -605,12 +651,26 @@ circuits than between seasons of the same circuit.
 \paragraph{Is the separation a class label, or the spread of one predictor?}
 Two objections sit here and both have measurements rather than arguments.
 
-The first is that pit loss simply varies more than the slope does, so an AUC
-comparison flatters it. It cannot. The statistic above is the Mann--Whitney
-form, computed from ranks, so it is invariant under any strictly increasing
-transformation: standardising pit loss leaves it at
-\RegimeAucStandardised{}, unmoved to three decimals. Rescaling is not available
-as a correction because the objection does not reach a rank statistic.
+The first is that pit loss simply varies more than the slope does in this
+sample, so it wins a ranking contest for that reason. A rank statistic is
+invariant to rescaling either variable (standardising pit loss leaves it at
+\RegimeAucStandardised{}), but that answers only the units version of the
+objection; it says nothing about how widely each varies against the boundary.
+The closed form makes the question precise. Up to the dynamic program's
+details, an extra stop pays when $\beta n^2/2$ exceeds $\pi$, so the regime is
+set by the index $\log\beta + 2\log n - \log\pi$, with $n$ the fuel range in
+laps. On the \IndexN{} race-seasons with a positive net slope, which hold every
+tyre-limited one, that index separates the regimes at \IndexAuc{}. Its variance
+splits into \IndexShareSlope{}\% from the slope, \IndexSharePit{}\% from pit
+loss and \IndexShareStint{}\% from the stint length: in spread, the slope term
+is the larger. But much of that spread lies far from the boundary, among slopes
+close to zero whose logarithm runs off without changing any verdict. Dropping
+each term from the index in turn measures what moves races across it: without
+pit loss the index falls to \IndexWithoutPit{}, without the slope to
+\IndexWithoutSlope{}. Both terms enter; in these four championships the stop
+cost decides more of the verdicts. That is a description of this sample, not a
+law of motorsport, and a sample in which pit loss varied less would give the
+slope more of the answer.
 
 The second is sharper. Pit loss is nearly constant inside a class, so its AUC
 could be measuring class identity wearing a continuous disguise --- and the
@@ -933,31 +993,33 @@ names circuits differently from the lap files, which still drops
 \DOneStaleDropped{} of \DOneChasers{} values if joined on the slug. Each now has
 a test.
 
-\subsection{A fourth explanation, and the sign it comes back with}
+\subsection{A fourth explanation, and why it cannot move the lap}
 \label{sec:freshtyre}
 
-The most natural candidate explanation is structural rather than
-empirical. A linear slope has no one-off gain at a stop, so an optimiser built
-on it should always recommend stopping later than a pit wall buying an immediate
-jump in pace, and pricing that jump in should close the gap.
+The most natural candidate explanation is structural: a linear slope has no
+one-off gain at a stop, so pricing a jump in pace at the stop should move the
+recommended lap. It cannot, and neither can its opposite. With the number of
+stops fixed --- one before the flag in the first run, one before the team's
+next stop in the committed replay --- any time gained or lost once per stop is
+the same for every candidate lap and cancels from the comparison. A one-off
+term can change how many stops are worth making, not when to make the one
+being planned.
 
-The shape a fit misses is visible in its own residuals, so the claim needs no
-new machinery. A fit forces its residuals to average zero overall; what carries
-the answer is the profile against tyre age, where negative means laps faster
-than the model says. Pooled over \NFreshCircuits{} Formula~1 circuits, the
-youngest measured age carries \FreshResid{}\,s and the next \FreshResidNext{}\,s
---- laps on a new set come in \emph{slower} than the fit expects, and the sign
-only turns over once the set is several laps old. Per circuit, fresh laps are
-faster than modelled at \NFreshFaster{} of \NFreshCircuits{}, median
-\FreshMedianBonus{}\,s. The out-lap is already outside the modelling frame, so
-this is the first flying laps on the new set, which is what a stop buys.
-
-That is tyre warm-up, and it is the opposite of the effect the objection
-predicts. The engine prices a stop as an instant return to the slope's
-intercept, so it is already \emph{over}stating what a stop is worth; correcting
-it would push the recommended lap later still and widen the disagreement rather
-than close it. Four candidate explanations have now been tested here and all
-four have failed, three of them in the direction that makes the gap larger.
+The data do show such a term, and it has the other sign from the objection.
+Pooled over \NFreshCircuits{} Formula~1 circuits, the fit's residual at the
+youngest measured tyre age is \FreshResid{}\,s and at the next
+\FreshResidNext{}\,s, where negative means faster than modelled: laps on a new
+set come in \emph{slower} than the fit expects, and the sign turns over once
+the set is several laps old. Per circuit, fresh laps are faster than modelled
+at \NFreshFaster{} of \NFreshCircuits{}, median \FreshMedianBonus{}\,s. That is
+tyre warm-up. Its only route to the timing is through estimation: slow early
+laps flatten the fitted slope, and because hard compounds warm up more slowly
+than soft ones the effect on the ratio of two slopes, which is what sets the
+timing, has no determined sign. It would have to be measured compound by
+compound, and I have not done so. What this section establishes is narrower
+than an earlier version of it claimed: the one-off-gain objection fails on
+structure, and the warm-up it points to does not settle the direction of the
+gap.
 
 \subsection{A fifth explanation: the question the audit asked}
 \label{sec:committed}
@@ -1022,6 +1084,13 @@ answering the same question, the engine still stops \CommitOneAfter{} laps
 later \CommitOneCi{}. That is the part of Result~3 the audit design does not
 explain.
 
+One caution applies to every committed number. The team's second stop was
+chosen knowing where the first had been and what happened between them, so
+conditioning on it is conditioning on a later decision. The committed median is
+agreement given the plan the team revealed, which is what makes the planner and
+the team answer the same question; it is not by itself a measure of how good
+the planner is.
+
 \paragraph{Do the earlier rejections hold on it?}\label{sec:onestopretest}
 The cover-aware engine and the earliest undefendable undercut were rejected on
 the first-run audit, whose gap was mostly the audit's question. A mechanism too
@@ -1039,6 +1108,56 @@ against \RetestSingleError{} for the single-car optimiser, closer on
 \RetestEuuCloser{} and further on \RetestEuuFurther{}. The argument of
 Section~\ref{sec:freshtyre} does not depend on the size of the gap and needs
 no retest.
+
+\paragraph{Does the audit's design make the gap?}\label{sec:designchecks}
+Three choices could. The planner is asked five laps before the real stop, so
+it can be at most four laps early and arbitrarily late: \DesignTopFiveBound{}\%
+of committed decisions sit on that bound. Only the top five finishers are
+replayed, the cars whose strategy worked and that most often ran in clean air.
+And the median of whole-lap gaps moves in whole laps. So the replay was rerun
+asked ten and fifteen laps ahead, and on every car running at the flag, with
+the Hodges--Lehmann estimate beside the median. For the top five the median is
+\DesignTopFiveMedian{} \DesignTopFiveCi{} asked five laps ahead,
+\DesignTopTenMedian{} \DesignTopTenCi{} at ten and \DesignTopFifteenMedian{}
+\DesignTopFifteenCi{} at fifteen, with \DesignTopFifteenBound{}\% then on the
+bound; for the whole field (\DesignAllFiveN{} decisions asked five laps ahead)
+it is \DesignAllFiveMedian{} \DesignAllFiveCi{}, \DesignAllTenMedian{} and
+\DesignAllFifteenMedian{}. The overall agreement does not depend on the
+design. The one-stop residual does: \DesignTopFiveOneMedian{}
+\DesignTopFiveOneCi{} asked five laps ahead, \DesignTopFifteenOneMedian{}
+\DesignTopFifteenOneCi{} at fifteen, and for the whole field
+\DesignAllFiveOneMedian{} \DesignAllFiveOneCi{} falling to
+\DesignAllFifteenOneMedian{} \DesignAllFifteenOneCi{}. Part of it is the
+asymmetric window the audit gives the planner.
+
+\paragraph{What the timing depends on.} With one stop before a fixed endpoint
+and linear slopes, the time-optimal stop lap $k$ after the decision solves
+$\beta_{\mathrm{old}}(a_0 + k) = \beta_{\mathrm{new}}(W - k)$, for a tyre aged
+$a_0$ and a window of $W$ laps. It depends on the two slopes only through their
+ratio; the fuel slope and any cost paid once per stop cancel. This closed form,
+which leaves out rivals and neutralisations, lands a median of
+\ClosedFormGap{} laps from the engine's own lap on \ClosedFormN{} decisions at
+linear circuits, so it describes what the engine is doing. Two consequences
+follow. The gap could be noise in the ratio, a quotient of two imprecise
+slopes; it is not, since decisions whose ratio is resolved (its 95\% interval
+excludes one) have a median gap of \RatioResolvedMedian{} over
+\RatioResolvedN{}, against \RatioUnresolvedMedian{} over \RatioUnresolvedN{}
+unresolved ones, and \RatioResolvedOneMedian{} against
+\RatioUnresolvedOneMedian{} in one-stop races. And the team's real stop implies
+a ratio: inverting the closed form at the lap the team chose gives a median of
+\ImpliedRatio{}, against \ImpliedFitted{} fitted, and the implied ratio is the
+smaller in \ImpliedShareBelow{}\% of \ImpliedN{} decisions between two
+different compounds. Teams stop as if the tyre they are on were wearing faster,
+relative to the one they are about to fit, than the fit says. That is the
+one-stop residual restated as a parameter, and it is where a structural
+estimate in the manner of \citet{romer2006} would start.
+
+In endurance the same algebra removes the test. The endurance model has one
+net slope per class, so $\beta_{\mathrm{old}} = \beta_{\mathrm{new}}$ and the
+deterministic part of the timing reduces to equal tyre ages either side of the
+stop, whatever the slope is. The endurance replay therefore tests the fuel and
+neutralisation logic, not the tyre model, and it is no surprise that B1, which
+divides the race into equal stints, matches the optimiser there.
 
 \subsection{What the remaining gap costs}
 \label{sec:deviationcost}
@@ -1068,7 +1187,11 @@ both contain the planner's price; the races are consistent with the planner's
 tenths of a second a lap and do not rule out a full second. They cannot tell
 these apart because between cars of the same race the excess time has a median
 standard deviation of \DeviationSpread{}\,s, an order of magnitude more than the
-planner says the typical gap costs.
+planner says the typical gap costs. In power terms, the smallest per-lap cost
+these \NDeviationCars{} decisions could detect at the 5\% level with 80\%
+power is about \DeviationMde{}\,s, and detecting the planner's own price would
+take about \DeviationNeeded{} decisions: the absence of a verdict is a
+quantifiable shortage of data, not only noise.
 
 This is association, not an experiment. Teams leave the planner's lap for
 reasons it cannot see --- traffic, a rival's stop, a car problem --- and those
@@ -1149,7 +1272,7 @@ optimiser was asked, not from information it lacked.
 \emph{Closer to what teams did} is not \emph{better}: every number here scores
 agreement with practice, never which plan was faster.
 
-\section{Result 4: which car counts as the rival is under-determined}
+\section{Result 4: which car counts as the rival is under-determined, and here it matters little}
 \label{sec:rivalchoice}
 
 The replay above pairs each
@@ -1297,12 +1420,31 @@ hindsight; restricting to green-flag second stops answers the part of that
 objection that concerns opportunistic stops, not the part that concerns a plan
 revised during the race. The engine still represents neither the tyre
 allocation nor traffic, so the one-stop residual of \CommitOneAfter{} laps may
-yet be either. And in WEC Hypercar and ELMS the replay cannot discriminate,
+yet be either; and that residual is partly the audit's asymmetric window, as
+it shrinks when the planner is asked earlier
+(Section~\ref{sec:designchecks}). And in WEC Hypercar and ELMS the replay cannot discriminate,
 because the fuel range leaves the engine too few laps to choose from.
 Section~\ref{sec:deviationcost} prices the residual from the races
 themselves, and the price is small; pricing it does not explain it, and that
 measurement is an association between cars, open to every reason a team had
 for its lap.
+
+\paragraph{The endurance tyre clock.} Endurance teams often double-stint
+tyres, changing them at every other fuel stop, and the decision they face is
+often whether to change tyres at a fuel stop rather than whether to add one.
+The endurance model counts tyre age from the last stop and carries one net
+slope with no compound, so it neither measures the real age of a double-stinted
+set nor separates the compounds Hypercar teams choose between. Its
+tyre-limited race-seasons answer a question endurance teams rarely ask, and its
+replay, as Section~\ref{sec:designchecks} shows, cannot test the tyre model at
+all.
+
+\paragraph{What was decided after seeing the data.} The committed replay, the
+rival-selection correction and the design checks were all built after the
+first-run gap was seen. Each is documented with the result that prompted it,
+but the only real protection against a forking path is a test the analysis
+could not have seen. The protocol is frozen for one
+(Section~\ref{sec:prospective}).
 
 \paragraph{Drivers manage tyres to the stint they were given.} A driver told
 to make a set last a long stint drives it more gently, so the slope a fit
@@ -1396,6 +1538,17 @@ layer, whose input a reader cannot obtain from this repository. Reproducing that
 rejection requires the external source, which is named in the repository along
 with what each blocked layer reads and writes.
 
+\paragraph{A prospective test, frozen before its data exist.}
+\label{sec:prospective}
+The protocol of the committed replay --- the planner, its seeds, the lookback,
+the selection of cars and the horizon --- is frozen in
+\texttt{paper/prospective\_protocol.md}, committed before the Formula~1 races
+it will be scored on had been run. It states in advance the hypothesis to be
+tested on every race from the São Paulo Grand Prix of the current season
+onward: that the committed median gap on those races falls inside the interval
+reported here, \CommitAllCi{}. The repository's history dates the file, and
+the result will be reported against it whichever way it falls.
+
 Every number in this manuscript is a macro generated by
 \texttt{scripts/make\_paper\_numbers.py} from the committed artifacts; the
 source of this paper contains no digits. A separate test recomputes each
@@ -1415,12 +1568,18 @@ tyre. A time-optimal planner first appeared to disagree with professional
 practice by a median of \FoneMedian{} laps in Formula~1. Four explanations
 failed against that figure; the fifth was the audit itself: asked to plan the
 stint the team would actually run, the planner lands \CommitAllAfter{} laps
-from the real stop rather than \CommitAllBefore{}, and no endurance class keeps
-an established gap (Section~\ref{sec:committed}). Simpler rules landed closer
+from the real stop rather than \CommitAllBefore{} (Section~\ref{sec:committed}),
+across lookbacks and for the whole field. In endurance, where one net slope
+leaves the timing independent of the tyre, the replay cannot test the tyre
+model at all (Section~\ref{sec:designchecks}). Simpler rules landed closer
 to practice than the first-run audit in \NClassesRuleWins{} of
 \NClassesScored{} classes. Two repairs a team would reach for first, recoding each circuit's tyres by
 their real compound and measuring degradation on Friday, both leave transfer
-where it was or worse (Section~\ref{sec:repairs}).
+where it was or worse (Section~\ref{sec:repairs}), past-only fitting costs a
+little, and a circuit's own slope does not beat one common to the category
+(Section~\ref{sec:baselines1}). Where the laps carry signal, a slope from other
+seasons recovers a median \CeilingShareMedian{} of what a stable one could; the
+larger lesson is how few circuits carry enough signal to ask.
 
 And the rival that a competition-aware model should answer is
 under-determined: \NRivalRules{} defensible rules name the same car on
@@ -1432,7 +1591,11 @@ races, where the planner and the team were answering the same question. The
 planner prices it at tenths of a second per lap of distance, and the races
 cannot decide whether that price is right (Section~\ref{sec:deviationcost}).
 The two mechanisms rejected against the first-run audit stay rejected on it
-(Section~\ref{sec:onestopretest}). It is smaller
+(Section~\ref{sec:onestopretest}), and part of it is the asymmetric window the
+audit gives the planner: asked fifteen laps ahead, it falls to
+\DesignTopFifteenOneMedian{} (Section~\ref{sec:designchecks}). What remains
+reads as a parameter: teams stop as if their worn tyre were degrading faster,
+relative to the new one, than the fit says. It is smaller
 than the gap this paper set out to explain, and it is the one I would most like
 someone else to explain.
 
@@ -1559,6 +1722,11 @@ Heilmeier, A., Thomaser, A., Graf, M., \& Betz, J. (2020). Virtual strategy
 engineer: Using artificial neural networks for making race strategy decisions
 in circuit motorsport. \emph{Applied Sciences}, \emph{10}(21), 7805.
 \url{https://doi.org/10.3390/app10217805}
+
+\bibitem[Romer(2006)]{romer2006}
+Romer, D. (2006). Do firms maximize? Evidence from professional football.
+\emph{Journal of Political Economy}, \emph{114}(2), 340--365.
+\url{https://doi.org/10.1086/501171}
 
 \bibitem[Salminen(2026)]{salminen2026}
 Salminen, T. (2026). \emph{Game-theoretic framework for pit stop strategy
