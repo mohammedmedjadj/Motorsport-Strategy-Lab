@@ -1666,9 +1666,12 @@ What this paper offers is a protocol and what came back from it. Public timing
 rarely carries enough signal to say whether a degradation slope transfers: at
 most Formula~1 circuits even a perfectly stable slope could not clear the
 threshold, and the same is true of most endurance circuit-classes. Where the
-signal is there, Formula~1 slopes mostly move between seasons and endurance
-slopes mostly hold; the GT3 classes score better than the prototypes largely
-because their laps carry more signal. In the endurance planning model, the stop cost and the slope both set
+signal is there, Formula~1 slopes mostly move between seasons
+(\NCeilingUnstable{} unstable against \NCeilingStable{} stable), while
+endurance slopes hold more often than they move (\EndCeilStable{} against
+\EndCeilUnstable{}, with \EndCeilBorderline{} borderline); the GT3 classes
+score better than the prototypes mostly because their laps carry more signal,
+and what is left of their advantage is not established. In the endurance planning model, the stop cost and the slope both set
 whether an extra stop pays; alone, the stop cost ranks the regimes best, at an
 AUC of \RegimeAucPitLoss{} against \RegimeAucSlope{} for the tyre. A time-optimal planner first appeared to disagree with professional
 practice by a median of \FoneMedian{} laps in Formula~1. Four explanations
