@@ -1,5 +1,13 @@
 # Motorsport Strategy Lab — the long version
 
+> **Superseded in places.** This is the project log, written phase by phase.
+> Where it disagrees with the paper (`paper/main.tex`) or the short README, they
+> are right and this is not. In particular, the argument that the
+> near-specification ELMS LMP2 field rules out Balance of Performance as the
+> cause of instability did not survive the endurance noise ceiling
+> (`reports/cross_series/endurance_ceiling.md`): its laps carry too little
+> signal to show a slope moving or holding.
+
 This is the full README, kept because it holds the per-series detail: every
 phase report for every championship, the modelling extensions, the engineering
 rules, and the full repository map. The [short

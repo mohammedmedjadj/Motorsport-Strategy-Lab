@@ -53,13 +53,13 @@ def test_c6_only_exists_from_2025(allocation):
 def test_compound_identity_summary_recomputes():
     frame = pd.read_csv(F1 / "compound_identity.csv")
     s = _summary("compound_identity")
-    moved = frame[frame["allocation_changed"]]
-    changed = moved[moved["sane"].astype(bool)]
+    moved = frame[frame["allocation_changed"] & frame["verdict"].notna()]
+    changed = moved[moved["sane"].fillna(False).astype(bool)]
     assert s["n_circuits"] == len(frame)
     assert s["n_moved"] == len(moved)
     assert s["n_changed"] == len(changed)
     # The degenerate fits are excluded exactly as Result 1 excludes them.
-    assert (moved.loc[~moved["sane"].astype(bool), "verdict"] == "degenerate fit, excluded").all()
+    assert (moved.loc[~moved["sane"].fillna(False).astype(bool), "verdict"] == "degenerate fit, excluded").all()
     unstable = changed[changed["verdict"] == "slope unstable"]
     assert s["unstable"]["n"] == len(unstable)
     assert s["unstable"]["min_difference"] == pytest.approx(unstable["difference"].min(), abs=1e-6)
@@ -138,3 +138,28 @@ def test_every_reported_f1_coefficient_is_estimable():
 def test_regime_index_shares_sum_to_one():
     s = json.loads((REPO / "data" / "derived" / "cross_series" / "regime_index_summary.json").read_text())
     assert sum(s["shares"].values()) == pytest.approx(1.0, abs=1e-4)
+
+
+def test_ceiling_uses_only_the_pre_rule_change_seasons():
+    ceiling = pd.read_csv(F1 / "transfer_ceiling.csv")
+    assert (ceiling["seasons"] <= 4).all()
+    sane = ceiling[ceiling["sane"].astype(bool)]
+    # Per-season residuals carry no slope movement, so they never lower the ceiling much.
+    assert (sane["ceiling_mean"] - sane["ceiling_pooled_resid"]).min() > -0.05
+
+
+def test_endurance_ceiling_summary_recomputes():
+    frame = pd.read_csv(REPO / "data" / "derived" / "endurance" / "endurance_ceiling.csv")
+    s = json.loads((REPO / "data" / "derived" / "endurance" / "endurance_ceiling_summary.json").read_text())
+    sane = frame[frame["verdict"] != "degenerate fit, excluded"]
+    assert s["n"] == len(sane)
+    assert s["n_ceiling_below_threshold"] == int((sane["ceiling_mean"] < 0.2).sum())
+    assert sum(s["verdicts"].values()) == len(sane)
+
+
+def test_estimation_checks_are_internally_consistent():
+    s = _summary("estimation_checks")
+    rc = s["race_clustering"]
+    assert rc["zero_driver_race"] <= rc["zero_race"] <= rc["n_slopes"]
+    rf = s["refuelling"]
+    assert abs(rf["tyre_limited_marginal"] - rf["tyre_limited_published"]) <= rf["n_changed"]

@@ -1,0 +1,55 @@
+{
+ "ceiling_diff": {
+  "ci": [
+   0.033686,
+   0.166244
+  ],
+  "diff": 0.095487
+ },
+ "elms_lmp2": {
+  "no signal to recover": 4,
+  "slope stable": 1
+ },
+ "gt3": {
+  "mean_ceiling": 0.134304,
+  "mean_measured": 0.103813,
+  "n": 24,
+  "verdicts": {
+   "borderline": 5,
+   "no signal to recover": 9,
+   "slope stable": 8,
+   "slope unstable": 2
+  }
+ },
+ "n": 50,
+ "n_ceiling_below_threshold": 43,
+ "n_excluded": 1,
+ "proto": {
+  "mean_ceiling": 0.038817,
+  "mean_measured": -0.005112,
+  "n": 26,
+  "verdicts": {
+   "borderline": 3,
+   "no signal to recover": 19,
+   "slope stable": 3,
+   "slope unstable": 1
+  }
+ },
+ "share": {
+  "ci": [
+   -0.049934,
+   2.16655
+  ],
+  "diff": 0.756297,
+  "gt3_mean": 0.71682,
+  "n_gt3": 15,
+  "n_proto": 7,
+  "proto_mean": -0.039476
+ },
+ "verdicts": {
+  "borderline": 8,
+  "no signal to recover": 28,
+  "slope stable": 11,
+  "slope unstable": 3
+ }
+}

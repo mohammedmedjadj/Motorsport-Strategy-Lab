@@ -112,27 +112,27 @@
         <div class="stat"><b>5 of 51</b><span>circuit-classes reaching R² = 0.2 at all</span></div>
       </div>
       <div>
-        <p>GT3 classes transfer measurably better than prototypes: difference
-          <strong>+0.164</strong>, 95% CI [+0.059, +0.312], permutation
-          <em>p</em> = 0.0011. Resampled at the circuit-class, never the fold —
-          folds inside a class share a fitted slope.</p>
-        <p>The obvious explanation is performance-balanced machinery. It is
-          <strong>ruled out</strong>: ELMS LMP2 is near-specification — one
-          chassis, one engine, no Balance of Performance — and fails exactly as
-          the balanced fields do. The instability is not the hardware.</p>
-        <p><strong>Two repairs a team would try first, both tested on
-          Formula&nbsp;1.</strong> Coding each lap by the compound Pirelli
-          actually supplied (C1&ndash;C6, 92 races) instead of Soft/Medium/Hard:
-          at the 14 circuits whose allocation changed (degenerate fits excluded),
-          the median paired change is &minus;0.008 [&minus;0.027,&nbsp;+0.001],
-          worse at 10, and nothing is gained at the 7 unstable ones. Measuring
-          the slope on Friday's long runs instead of other seasons: median
-          R² &minus;0.502 against +0.021, worse in 44 of 56 races.
+        <p><strong>Mostly a signal limit.</strong> Rebuilt with a slope stable
+          by construction, 16 of 22 F1 circuits and 43 of 50 endurance
+          circuit-classes could not clear 0.2 against their own lap noise.
+          Priced against that ceiling, F1 has 11 unstable slopes and 1 stable;
+          endurance has 3 unstable, 11 stable and 28 with no recoverable
+          signal.</p>
+        <p>GT3 classes score higher than prototypes (+0.164, 95% CI
+          [+0.059,&nbsp;+0.312]) mostly because their laps carry more signal:
+          the ceiling itself differs by +0.095 [+0.034,&nbsp;+0.166]. The
+          near-specification ELMS LMP2 field carries too little signal to say
+          anything about Balance of Performance.</p>
+        <p><strong>Repairs and baselines, tested on Formula&nbsp;1.</strong>
+          Coding each lap by the compound Pirelli actually supplied
+          (C1&ndash;C6, 92 races): median paired change &minus;0.012
+          [&minus;0.349,&nbsp;+0.001] where the allocation moved, nothing gained
+          at the 9 unstable circuits. Friday long runs instead of other
+          seasons: worse in 44 of 56 races.
           <span class="win">Neither helps.</span> Past-only fitting costs a
           little. Where the laps carry signal, a circuit's own slope reaches a
-          median 0.71 of the noise ceiling against 0.25 for a slope common to
-          the category, a difference that points to the circuit but is not
-          established.</p>
+          median 0.42 of the noise ceiling against 0.23 for a slope common to
+          the category, a difference that is not established.</p>
       </div>
     </div>
   </div>

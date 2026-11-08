@@ -7,38 +7,37 @@ circuit's published degree, with the tyre coded two ways: the relative
 label (Soft/Medium/Hard) and the compound Pirelli nominated (C0-C6, the
 2022 C1 coded C0). Both are scored on the same laps.
 
-The allocation changed between seasons at 16 of 24 circuits; elsewhere the two codings are the same model. 2 of those are fits Result 1 excludes as degenerate and are excluded here too. At the other 14 the median score moves from 0.003 to -0.005, a median difference of -0.008 (95% interval over circuits [-0.027, +0.001]). The real compound scores better at 4, worse at 10 (sign test p = 0.18), and its largest gain anywhere is +0.017.
+The allocation changed between seasons at 16 of 23 circuits; elsewhere the two codings are the same model. 1 of those are fits Result 1 excludes as degenerate and are excluded here too. At the other 15 the median score moves from 0.005 to -0.012, a median difference of -0.012 (95% interval over circuits [-0.349, +0.001]). The real compound scores better at 4, worse at 11 (sign test p = 0.12), and its largest gain anywhere is +0.017.
 
-At the 7 of them Result 1 calls unstable, the ones where a better coding had something to repair, the difference runs from -0.349 to +0.017 (median -0.019).
+At the 9 of them Result 1 calls unstable, the ones where a better coding had something to repair, the difference runs from -0.357 to +0.017 (median -0.019).
 
 With every circuit forced to the linear model, so that no quadratic can
-extrapolate on a compound seen in one season only: median difference -0.003 ([-0.021, +0.003]), better at 5, worse at 9 (p = 0.42).
+extrapolate on a compound seen in one season only: median difference -0.004 ([-0.023, +0.001]), better at 5, worse at 10 (p = 0.30).
 
-On average 3.1% of a held-out season's laps at those circuits are on a compound no other season used (at most 10.7% at one circuit), and the real coding cannot predict them at all.
+On average 2.9% of a held-out season's laps at those circuits are on a compound no other season used (at most 10.7% at one circuit), and the real coding cannot predict them at all.
 
 | circuit | Result 1 verdict | seasons | allocations | R², relative | R², real compound | difference | difference, linear | laps on an unseen compound |
 |---|---|---|---|---|---|---|---|---|
 | jeddah | slope unstable | 4 | 2 | 0.307 | 0.324 | +0.017 | +0.017 | 0.0% |
 | miami | slope unstable | 4 | 2 | 0.106 | 0.111 | +0.005 | +0.005 | 0.0% |
-| barcelona | borderline | 4 | 2 | 0.020 | 0.025 | +0.004 | +0.003 | 0.8% |
+| barcelona | borderline | 4 | 2 | 0.018 | 0.022 | +0.003 | +0.003 | 0.8% |
 | austin | degenerate fit, excluded | 4 | 2 | -0.055 | -0.054 | +0.001 | +0.001 | 1.1% |
 | baku | slope unstable | 4 | 2 | 0.269 | 0.270 | +0.001 | +0.001 | 0.0% |
-| interlagos | slope stable | 3 | 1 | 0.083 | 0.083 | +0.000 | +0.000 | 0.0% |
-| las_vegas | borderline | 3 | 1 | 0.128 | 0.128 | +0.000 | +0.000 | 0.0% |
-| losail | borderline | 3 | 1 | 0.249 | 0.249 | +0.000 | +0.000 | 0.0% |
-| suzuka | no signal to recover | 3 | 1 | -0.393 | -0.393 | +0.000 | +0.000 | 0.0% |
-| singapore | no signal to recover | 4 | 1 | -0.081 | -0.081 | +0.000 | +0.000 | 0.0% |
-| shanghai | slope unstable | 2 | 1 | -0.511 | -0.511 | +0.000 | +0.000 | 0.0% |
+| interlagos | no signal to recover | 3 | 1 | 0.083 | 0.083 | +0.000 | +0.000 | 0.0% |
+| losail | slope unstable | 3 | 1 | 0.249 | 0.249 | +0.000 | +0.000 | 0.0% |
+| suzuka | slope unstable | 3 | 1 | -0.257 | -0.257 | +0.000 | +0.000 | 0.0% |
 | yas_marina | no signal to recover | 4 | 1 | 0.045 | 0.045 | +0.000 | +0.000 | 0.0% |
+| singapore | no signal to recover | 4 | 1 | -0.081 | -0.081 | +0.000 | +0.000 | 0.0% |
+| las_vegas | borderline | 3 | 1 | 0.128 | 0.128 | +0.000 | +0.000 | 0.0% |
 | red_bull_ring | slope stable | 4 | 1 | 0.154 | 0.154 | +0.000 | +0.000 | 0.0% |
 | bahrain | borderline | 4 | 2 | 0.260 | 0.259 | -0.001 | -0.002 | 2.6% |
 | silverstone | no signal to recover | 4 | 3 | -0.113 | -0.114 | -0.001 | -0.001 | 10.7% |
 | hungaroring | no signal to recover | 4 | 2 | 0.005 | 0.001 | -0.004 | -0.004 | 5.1% |
-| montreal | slope stable | 4 | 2 | 0.001 | -0.012 | -0.012 | -0.012 | 0.0% |
+| montreal | slope unstable | 4 | 2 | 0.001 | -0.012 | -0.012 | -0.012 | 0.0% |
 | monza | slope unstable | 4 | 2 | -0.102 | -0.120 | -0.019 | -0.019 | 8.9% |
 | monaco | slope unstable | 4 | 2 | 0.078 | 0.054 | -0.023 | -0.023 | 0.9% |
 | spa | slope unstable | 4 | 2 | -0.172 | -0.198 | -0.027 | -0.021 | 2.4% |
 | imola | slope unstable | 3 | 3 | -0.231 | -0.580 | -0.349 | -0.349 | 1.3% |
+| melbourne | slope unstable | 3 | 3 | 0.132 | -0.225 | -0.357 | -0.357 | 0.2% |
 | zandvoort | no signal to recover | 4 | 3 | -0.018 | -0.409 | -0.391 | -0.391 | 10.5% |
-| melbourne | degenerate fit, excluded | 3 | 3 | 0.049 | -2.153 | -2.201 | -0.357 | 0.2% |
 | mexico_city | no signal to recover | 4 | 3 | -0.020 | -18.818 | -18.798 | +0.017 | 0.0% |

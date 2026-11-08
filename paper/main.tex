@@ -57,9 +57,9 @@ classes and four championships: Formula~1, WEC, IMSA and ELMS.
 Four findings. First, public timing rarely carries enough signal to test
 transfer. With a slope stable by construction, \NCeilingBelowThreshold{} of
 \NCeilingCircuits{} Formula~1 circuits cannot reach a within-stint $R^2$ of
-$\TransferThreshold{}$ against their own lap noise; pricing that in leaves
-\NCeilingUnstable{} unstable and \NCeilingStable{} stable, and
-\NTransferAboveTwo{} of \NCircuitClasses{} endurance circuit-classes reach it.
+$\TransferThreshold{}$ against their own lap noise, and \EndCeilBelow{} of
+\EndCeilN{} endurance circuit-classes; pricing that in leaves \NCeilingUnstable{}
+Formula~1 circuits unstable but most endurance ones without signal.
 Within-circuit recoding to real Pirelli compounds, Friday long runs and
 past-only fitting do not help. Second, in an endurance planning model the stop
 cost and the slope both set whether an extra stop pays; over \NRaceSeasons{}
@@ -207,8 +207,9 @@ back from it are negative.
 
 Formula~1 lap timing, tyre compound and per-lap track status come from the
 FastF1 API. WEC, IMSA and ELMS timing comes from a community-maintained
-endurance dataset carrying lap times, stint structure and flag state but
-\emph{not} tyre compound. The endurance degradation models are therefore
+endurance database published on Hugging Face (\texttt{tobil/imsa}, MIT
+licence), carrying lap times, stint structure and flag state but \emph{not}
+tyre compound. The endurance degradation models are therefore
 net-slope models where the Formula~1 one is per compound, and that asymmetry is
 restated wherever the two are compared. Two further Formula~1 sources serve
 Section~\ref{sec:repairs} only: the compound Pirelli nominated for each race,
@@ -218,7 +219,9 @@ from 2023 on. Table~\ref{tab:scope} gives the scope.
 \begin{table}[htbp]
 \centering
 \caption{Scope. A race-season is one class at one circuit in one season, which
-is the unit everything here is fitted and reported on.}
+is the unit everything here is fitted and reported on. Formula~1 is modelled on
+the seasons before the 2026 rules; the \NRacesFoneHeldOut{} races of 2026
+already ingested are held out of every model, transfer layer and audit.}
 \label{tab:scope}
 \begin{tabular}{lrrrrl}
 \toprule
@@ -284,7 +287,12 @@ $t(G-1)$ rather than the normal \citep{cameron2015}. The clustering is not
 decorative: lap-to-lap errors within one driver's race are strongly dependent,
 and a coverage simulation on synthetic races with realistic between-unit slope
 variation puts the classical 95\% interval at roughly 75\% coverage against 95\%
-for the robust one.
+for the robust one. Drivers in one race also share the track's evolution and
+the weather, which driver--race clusters do not allow for. Clustering on the
+race instead allows for it, at the price of three or four clusters per circuit;
+under it, \RaceClusterZero{} of the \RaceClusterN{} slope intervals contain
+zero instead of \RaceClusterZeroDr{}. The intervals below are the driver--race
+ones, and that sensitivity is the measure of how much they lean on it.
 
 \begin{figure}[htbp]
 \centering
@@ -378,6 +386,18 @@ This is what makes the comparison possible and also what stops it being a
 prediction claim. The decision point is defined relative to a stop that already
 happened.
 
+\paragraph{The cover-aware engine.} Section~\ref{sec:audit} also replays the
+decisions through a two-car variant. For every pair of pit laps, one for the
+audited car and one for its rival, the Monte Carlo engine runs both cars under
+the same draws, resolves the pit exchange on the lap both have stopped (whoever
+is ahead on the road then has won it), and lets the gained position survive the
+remaining laps with the probability implied by the circuit's measured rate of
+position swaps between adjacent cars. That gives the probability of finishing
+ahead for every pair. The rival then answers each of the audited car's laps with
+the lap that minimises it, and the audited car picks its lap knowing that
+answer: a Stackelberg leader in the sense of \citet{aguad2024}, solved by
+enumeration rather than in closed form.
+
 \subsection{The three baselines}
 
 Scored on the same decisions, from the same artifacts, on absolute lap error
@@ -439,15 +459,21 @@ the null. Resampling is at the circuit-class, never the fold: folds inside a
 circuit-class share a pooled fitted slope, and treating them as independent
 would roughly quadruple the apparent sample.
 
-The obvious explanation for instability is heterogeneous, performance-balanced
-machinery. I can rule it out. ELMS LMP2 is a near-specification class --- one
-chassis, one engine, no Balance of Performance --- and its slopes fail to
-transfer exactly as the balanced GT3 fields do. Balance of Performance is
-therefore not needed for the instability. That is narrower than saying the car
-plays no part: the GT3--prototype difference above is a car-type effect, and it
-is confounded with circuit, since the circuits where transfer works do not all
-host every class. Where transfer does occur it tracks short circuits with cheap
-stops, which is the same axis Result~2 turns on.
+Two readings of these raw scores do not survive the ceiling of
+Section~\ref{sec:ceiling}. The first is that heterogeneous,
+performance-balanced machinery explains the failures, which the
+near-specification ELMS LMP2 field --- one chassis, one engine, no Balance of
+Performance --- would rule out if its slopes demonstrably moved. They do not
+demonstrably do anything: at \NLmptwoNoSignal{} of its \NLmptwoTotal{} circuits
+even a perfectly stable slope could not have been recovered from its laps. The
+second is that GT3 slopes transfer better than prototype slopes. The GT3 classes
+carry more signal: a stable slope could have reached a mean of
+\EndCeilGtThree{} there against \EndCeilProto{} for the prototypes, a
+difference of \EndCeilDiff{} \EndCeilDiffCi{}. Measured as a share of what
+each circuit-class could reach, the GT3 advantage is \EndShareDiff{}
+\EndShareDiffCi{}, on only \NEndShareProto{} prototype circuit-classes with
+enough signal to compute it, and is not established. The difference in raw
+scores is mostly a difference in what the laps can show.
 
 \subsection{What a stable slope could have scored}
 \label{sec:ceiling}
@@ -457,17 +483,23 @@ measurement. The slope moved between seasons, or there was never enough signal
 in the laps for any slope to be recovered. Counting how few circuit-classes
 clear a threshold cannot separate those, and the separation is the result.
 
-So I measured the second one directly, on Formula~1, where the per-compound
-fit and the lap data are richest. Lap times are rebuilt from each circuit's own
-fit --- its driver--race intercepts, its fuel slope, and \emph{one} degradation
-slope used for every season, so the slope is stable by construction --- plus
-residuals resampled in whole stints, which keeps their within-stint correlation
-rather than handing the model independent draws it would find easier to
-predict. Running the real protocol on that gives the within-stint $R^2$ a
-perfectly stable slope earns against the noise actually present.
+So I measured the second one directly. Lap times are rebuilt from each
+circuit's own fit --- its driver--race intercepts, its fuel slope, and
+\emph{one} degradation slope used for every season, so the slope is stable by
+construction --- plus residuals resampled in whole stints, which keeps their
+within-stint correlation rather than handing the model independent draws it
+would find easier to predict. The residuals come from a fit that lets each
+season have its own slope; taken from the pooled fit instead, they would carry
+any real movement of the slope into the noise and push the ceiling down. A
+per-season fit leaves slightly less noise than there is, so this ceiling leans
+the other way, but not by much: with pooled-fit residuals it is lower by at
+most \CeilingResidGapMax{} at any circuit. Running the real protocol on the
+rebuilt laps gives the within-stint $R^2$ a perfectly stable slope earns
+against the noise actually present. For Formula~1 only the seasons before the
+2026 rules enter, as everywhere else in the paper.
 
-The ceiling is far lower than the threshold, and it varies by an order of
-magnitude between circuits: from \CeilingLowest{} at \CeilingLowestWhere{} to
+At most circuits the ceiling is far below the threshold, and it varies by more
+than an order of magnitude between circuits: from \CeilingLowest{} at \CeilingLowestWhere{} to
 \CeilingHighest{} at \CeilingHighestWhere{}. At
 \NCeilingBelowThreshold{} of \NCeilingCircuits{} circuits a perfectly stable
 slope could not have cleared $\TransferThreshold{}$. The threshold in
@@ -479,10 +511,23 @@ measurable at all.
 Taking the gap between ceiling and measured score instead --- the shortfall the
 noise does not explain --- the picture is sharper than the count it replaces.
 Of \NCeilingCircuits{} circuits, \NCeilingUnstable{} have slopes that genuinely
-move, \NCeilingStable{} have slopes that are stable once the noise is priced
-in, \NCeilingNoSignal{} carry no recoverable signal either way, and
-\NCeilingBorderline{} sit between. Instability is real and it is the largest
-group; it is not, as the raw scores imply, nearly universal.
+move, the slope is stable once the noise is priced in at \NCeilingStable{},
+\NCeilingNoSignal{} carry no recoverable signal either way, and
+\NCeilingBorderline{} sit between. In Formula~1, instability is real and it is
+the largest group.
+
+The endurance classes, rebuilt the same way from their net-slope fits, tell a
+different story. At \EndCeilBelow{} of \EndCeilN{} circuit-classes a perfectly
+stable slope could not have cleared $\TransferThreshold{}$. By the same
+criteria, \EndCeilNoSignal{} carry no recoverable signal,
+\EndCeilStable{} have slopes that are stable once the noise is priced in,
+\EndCeilBorderline{} sit between and \EndCeilUnstable{} genuinely move. The
+endurance count of Figure~\ref{fig:transfer} is therefore mostly a count of
+circuit-classes whose laps cannot show a slope at all, and where they can, the
+slope more often holds than moves. The contrast with Formula~1 may be the
+compound: the Formula~1 model carries a slope per compound and the endurance one
+a single net slope, and these data cannot separate that from the championships
+themselves.
 
 \paragraph{The degree is chosen with the held-out season in view.} The folds
 above select the polynomial degree by averaging cross-validated RMSE over every
@@ -491,8 +536,8 @@ degree inside each fold instead moves the mean score by \LeakageMean{} and at
 most \LeakageMax{}. The leak is real and small. It is also not free to close:
 at one circuit, per-fold selection takes the quadratic and extrapolates it off
 a cliff, which is why the published protocol chooses once.
-\NCeilingExcluded{} circuits are excluded from the counts above as degenerate
-fits and named in the generated report.
+Degenerate fits are excluded from the counts above (\NCeilingExcluded{} here)
+and named in the generated report.
 
 \subsection{Two repairs a team would try first}
 \label{sec:repairs}
@@ -598,11 +643,10 @@ reaching half. On those circuits the category slope trails the circuit's own
 by a median of \CeilingCategoryDiff{} \CeilingCategoryDiffCi{}, worse at
 \NCeilingCategoryWorse{} and better at \NCeilingCategoryBetter{}: the
 direction favours the circuit, the interval does not establish it. Where the
-laps carry signal, then, a slope from other seasons recovers much of what a
-stable one could and probably more than a slope that ignores the circuit;
-where they do not, no count above a threshold says anything about stability. The ceiling has not been
-built for the endurance classes, so the endurance count stands on the raw
-threshold alone.
+laps carry signal, then, a slope from other seasons recovers a median
+\CeilingShareMedian{} of what a stable one could, and probably more than a
+slope that ignores the circuit; where they do not, no count above a threshold
+says anything about stability.
 
 Two further checks concern the measurement rather than the predictor. Within a
 stint, tyre age and lap number advance together, so the within-stint $R^2$
@@ -736,6 +780,18 @@ the readable form of the mechanism, and I do not use it: the dynamic program
 above is exact under the fuel cap and the stop count is read from its solution.
 The closed form is an approximation to that, checked against it rather than
 substituted for it.
+
+\paragraph{The marginal cost of a stop.} The measured stop loss includes
+refuelling, and over a race the fuel put in does not depend on how many stops
+it is split across, so the cost of one more stop is the loss less its
+refuelling share. Estimated from the stops themselves --- loss against the laps
+run since the previous stop, with race fixed effects and controls for driver
+and tyre changes --- refuelling is a median \RefuelShare{}\% of the stop loss.
+With the marginal cost in its place, \RefuelTyreLimited{} race-seasons are
+tyre-limited instead of \NTyreLimited{}; \RefuelChanged{} changes regime. The
+regime is close to an identity of the planning model, as the circularity
+paragraph above concedes, and that is why it is reported as a description of
+these championships rather than as a mechanism.
 
 \paragraph{The rule is robust; the constant is not.} The edge sits at
 \CheapStopEdge{}\,s because a single race puts it there; the next tyre-limited
@@ -938,8 +994,10 @@ against the spread of the input, and not assumed to come from a flat one.}
 \end{figure}
 
 \textbf{Slopes biased toward durability.} A tyre that looks flatter than it is
-makes staying out look cheaper. Measured against an independent source that
-separates tyre wear from fuel burn by a different method on different data, the
+makes staying out look cheaper. Measured against an independent source --- a
+Formula~1 lap history in the Ergast schema, distributed on Kaggle, which
+carries no compound or flags and separates tyre wear from fuel burn by a
+different method on different data --- the
 median paired difference is negligible --- an error of that size moves a stop by
 several race distances, not by ten laps. \textbf{Not detected.} I note that
 comparing the two \emph{medians} instead of the median of paired differences
@@ -1182,8 +1240,15 @@ ratio near one says the compounds wear almost alike, which is exactly what the
 fits cannot resolve (\PctCompoundOverlap{}\% of compound pairs have
 overlapping intervals); teams may know a difference the public timing does
 not, and the implied parameter also absorbs non-linear wear late in a stint,
-the undercut and the option value of a Safety Car. It is where a structural
-estimate in the manner of \citet{romer2006} would start.
+the undercut and the option value of a Safety Car. The most direct mechanism,
+wear that grows with fuel load, does not account for it: refitting the linear
+circuits with a term in tyre age times lap number gives an interaction of
+mixed sign, positive at \InterPositive{} of \InterN{} circuits and significant
+at \InterSignificant{}, and rerunning the closed form with it moves the median
+gap from \InterGapWithout{} to \InterGapWith{} laps over \InterDecisions{}
+decisions, and from \InterOneWithout{} to \InterOneWith{} over the
+\InterOneN{} one-stop ones --- away from the real stop. It is where a
+structural estimate in the manner of \citet{romer2006} would start.
 
 In endurance the same algebra removes the test. The endurance model has one
 net slope per class, so $\beta_{\mathrm{old}} = \beta_{\mathrm{new}}$ and the
@@ -1439,13 +1504,11 @@ reused data-driven parameters. That bounds approaches which carry fitted
 parameters forward, and says nothing against a design that refits as a matter
 of course; on that design's own terms it is an argument for refitting.
 
-The concession stops there. If measured behaviour were stable once the physics
-is fixed, the near-specification control field should have been the one that
-transferred: one chassis, one engine, no Balance of Performance, a single tyre
-supplier. It fails as the performance-balanced fields do. So either lap time
-carries large effects that are not the tyre, or the retuning step is doing more
-than retuning. I read it as the first, and the track evolution withdrawn above
-is my candidate for part of what it is.
+An earlier argument against his position from the near-specification ELMS
+LMP2 field does not survive the endurance ceiling: its laps carry too little
+signal to show a slope moving or holding, so they cannot speak to whether
+behaviour is stable once the physics is fixed. His reading is left standing by
+these data.
 
 \paragraph{The audit was not a fair comparison, and most of Result~3 was
 that.} The engine plans one stop and runs to the flag; a pit wall chooses a lap
@@ -1505,8 +1568,10 @@ genuine instability and of parameters the data never pinned down.
 Section~\ref{sec:ceiling} separates those two for Formula~1 by measuring what a
 stable slope could have scored against the same noise, and the mixture turns
 out to matter: most circuits cannot clear the quoted threshold even with a
-slope that does not move. The endurance classes are not separated this way,
-and their counts should be read with that in mind.
+slope that does not move, and the same holds for most endurance
+circuit-classes. Clustered on the race rather than the driver--race,
+\RaceClusterZero{} of the \RaceClusterN{} Formula~1 slope intervals contain
+zero.
 
 \paragraph{Constants resting on very little.} The cheap-stop edge of
 \CheapStopEdge{}\,s is a maximum set by one race; drop it and the edge falls to
@@ -1600,10 +1665,10 @@ the document that publishes it, which is stricter than recomputing alone.
 What this paper offers is a protocol and what came back from it. Public timing
 rarely carries enough signal to say whether a degradation slope transfers: at
 most Formula~1 circuits even a perfectly stable slope could not clear the
-threshold. In endurance, slopes rarely transfer and GT3 classes transfer better
-than prototypes; Balance of Performance is not needed for the instability, and
-the effect of car type cannot be separated here from the circuits each type
-races on. In the endurance planning model, the stop cost and the slope both set
+threshold, and the same is true of most endurance circuit-classes. Where the
+signal is there, Formula~1 slopes mostly move between seasons and endurance
+slopes mostly hold; the GT3 classes score better than the prototypes largely
+because their laps carry more signal. In the endurance planning model, the stop cost and the slope both set
 whether an extra stop pays; alone, the stop cost ranks the regimes best, at an
 AUC of \RegimeAucPitLoss{} against \RegimeAucSlope{} for the tyre. A time-optimal planner first appeared to disagree with professional
 practice by a median of \FoneMedian{} laps in Formula~1. Four explanations

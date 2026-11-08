@@ -146,6 +146,10 @@ jobs:
         run: python scripts/run_transfer_baselines.py
       - name: Estimability of every reported coefficient
         run: python scripts/run_estimability.py
+      # Race-clustered intervals, fuel-by-age interaction and refuelling share.
+      # Reads the design checks above and committed endurance stop events.
+      - name: Estimation checks
+        run: python scripts/run_estimation_checks.py
 
       - name: Report drift
         run: .github/scripts/report_drift.sh "F1"
@@ -243,6 +247,10 @@ jobs:
         run: python scripts/run_systematic_endurance_audit.py
       - name: The endurance audit with each team's strategy held fixed
         run: python scripts/run_committed_strategy_endurance.py
+      # The stable-slope ceiling for every endurance circuit-class (about ten
+      # minutes). Reads the leave-one-season-out table written above.
+      - name: Endurance noise ceiling
+        run: python scripts/run_endurance_ceiling.py
 
       - name: Report drift
         run: .github/scripts/report_drift.sh "endurance"

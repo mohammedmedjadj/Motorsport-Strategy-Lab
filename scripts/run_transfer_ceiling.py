@@ -18,6 +18,18 @@ This separates them. For each Formula 1 circuit:
   real protocol is then run on that. Whatever R² comes back is what a perfectly
   stable slope earns at this circuit against this much noise.
 
+* **Which residuals.** The residuals are taken from a fit that gives every
+  season its own slope, not from the pooled fit. Residuals from the pooled fit
+  would carry any real season-to-season movement of the slope into the noise,
+  and so bias the ceiling downward -- the opposite of what a ceiling should do.
+  A per-season fit has fewer laps per parameter and leaves slightly less noise
+  than is really there, so this ceiling leans the other way; the pooled-residual
+  ceiling is kept beside it, and the two bracket the truth.
+
+* **One regulation set.** Only the seasons before the 2026 rules
+  (``PRE_ERA_SEASONS``) are used, the same seasons the circuit models and every
+  other Result 1 layer are fitted on.
+
 * **The gap.** Ceiling minus the measured score. That is the part of the
   shortfall the noise does *not* explain, and it is the quantity Result 1 wanted
   all along.
@@ -55,7 +67,7 @@ from src.degradation.dataset import (  # noqa: E402
 )
 from src.degradation.model import fit_circuit, predict_shape  # noqa: E402
 from src.degradation.validation import leave_one_race_out, mean_rmse  # noqa: E402
-from src.ingestion.config import DERIVED_DIR, REPORTS_DIR  # noqa: E402
+from src.ingestion.config import DERIVED_DIR, PRE_ERA_SEASONS, REPORTS_DIR  # noqa: E402
 
 OUT_CSV = DERIVED_DIR / "f1" / "transfer_ceiling.csv"
 OUT_MD = REPORTS_DIR / "f1" / "transfer_ceiling.md"
@@ -124,13 +136,28 @@ def _no_leakage(frame: pd.DataFrame, circuit: str) -> list[float]:
     return out
 
 
-def _synthetic(frame: pd.DataFrame, circuit: str, degree: int, rng) -> pd.DataFrame:
+def _per_season_residuals(frame: pd.DataFrame, circuit: str, degree: int) -> np.ndarray:
+    """Residuals from a fit that lets every season have its own slope."""
+    resid = np.full(len(frame), np.nan)
+    for _, part in frame.groupby("season"):
+        fit = fit_circuit(part, circuit, degree=degree)
+        pred = predict_shape(fit, part) + part["driver_race"].map(fit.fixed_effects)
+        resid[frame.index.get_indexer(part.index)] = (part["lap_time_s"] - pred).to_numpy()
+    return resid
+
+
+def _synthetic(
+    frame: pd.DataFrame, circuit: str, degree: int, rng, per_season: bool = True
+) -> pd.DataFrame:
     """One stable-slope replicate of this circuit, with its own noise."""
     fit = fit_circuit(frame, circuit, degree=degree)
     clean = (
         predict_shape(fit, frame) + frame["driver_race"].map(fit.fixed_effects)
     ).to_numpy(dtype=float)
-    resid = frame["lap_time_s"].to_numpy(dtype=float) - clean
+    if per_season:
+        resid = _per_season_residuals(frame, circuit, degree)
+    else:
+        resid = frame["lap_time_s"].to_numpy(dtype=float) - clean
 
     positions = list(frame.groupby("stint_id").indices.values())
     blocks = [resid[np.asarray(p)] for p in positions]
@@ -150,10 +177,12 @@ def _synthetic(frame: pd.DataFrame, circuit: str, degree: int, rng) -> pd.DataFr
     return syn.dropna(subset=["lap_time_s"]).reset_index(drop=True)
 
 
-def _ceiling(frame: pd.DataFrame, circuit: str, degree: int, rng) -> list[float]:
+def _ceiling(
+    frame: pd.DataFrame, circuit: str, degree: int, rng, per_season: bool = True
+) -> list[float]:
     scores: list[float] = []
     for _ in range(REPLICATES):
-        syn = _synthetic(frame, circuit, degree, rng)
+        syn = _synthetic(frame, circuit, degree, rng, per_season)
         for held in sorted(syn["race"].unique()):
             train, test = syn[syn["race"] != held], syn[syn["race"] == held]
             if train.empty or test.empty:
@@ -179,12 +208,13 @@ def verdict(row: pd.Series) -> str:
 def measure() -> pd.DataFrame:
     rng = np.random.default_rng(SEED)
     rows = []
-    for circuit in circuits_with_laps():
+    for circuit in circuits_with_laps(seasons=PRE_ERA_SEASONS):
         try:
-            laps = load_circuit_laps(circuit)
+            laps = load_circuit_laps(circuit, seasons=PRE_ERA_SEASONS)
         except ValueError:
             continue
         frame, _ = build_modelling_frame(laps, circuit)
+        frame = frame.reset_index(drop=True)
         if frame.empty or frame["race"].nunique() < 3:
             continue
         published = _published_degree(frame, circuit)
@@ -194,6 +224,7 @@ def measure() -> pd.DataFrame:
 
         clean = _no_leakage(frame, circuit)
         ceiling = _ceiling(frame, circuit, degree, rng)
+        pooled = _ceiling(frame, circuit, degree, rng, per_season=False)
         if not ceiling:
             continue
 
@@ -209,6 +240,7 @@ def measure() -> pd.DataFrame:
                 "noleak_r2": noleak,
                 "ceiling_mean": ceil_mean,
                 "ceiling_p95": float(np.percentile(ceiling, 95)),
+                "ceiling_pooled_resid": float(np.mean(pooled)) if pooled else np.nan,
                 "gap": ceil_mean - (noleak if np.isfinite(noleak) else pub),
                 "sane": bool(
                     abs(ceil_mean) < SANE

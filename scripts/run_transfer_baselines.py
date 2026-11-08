@@ -132,7 +132,7 @@ def build() -> pd.DataFrame:
 TRIMS = (1.05, 1.10, 1.20)
 
 
-def trim_sensitivity() -> dict:
+def trim_sensitivity(circuits: set[str]) -> dict:
     import src.degradation.dataset as dataset
 
     published = dataset.TRAFFIC_TRIM_FACTOR
@@ -142,7 +142,7 @@ def trim_sensitivity() -> dict:
         for trim in TRIMS:
             dataset.TRAFFIC_TRIM_FACTOR = trim
             slopes[trim], scores[trim] = {}, []
-            for circuit in circuits_with_laps(seasons=PRE_ERA_SEASONS):
+            for circuit in sorted(circuits):
                 laps = load_circuit_laps(circuit, seasons=PRE_ERA_SEASONS)
                 frame, _ = build_modelling_frame(laps, circuit)
                 if frame["race"].nunique() < 2:
@@ -181,7 +181,9 @@ def _median_ci(x: np.ndarray, rng) -> tuple[float, float]:
 
 def summarise(frame: pd.DataFrame) -> dict:
     rng = np.random.default_rng(BOOT_SEED)
-    sane = frame[frame["sane"].astype(bool)].copy()
+    # Circuits with too few seasons for a ceiling carry no verdict and are left
+    # out, as they are in Result 1.
+    sane = frame[frame["sane"].fillna(False).astype(bool)].copy()
     out = {"n_circuits": int(len(sane)), "n_excluded": int(len(frame) - len(sane))}
     for name, col in (("past", "r2_past_only"), ("category", "r2_category")):
         part = sane.dropna(subset=[col, "r2_loro"])
@@ -195,7 +197,7 @@ def summarise(frame: pd.DataFrame) -> dict:
             "n_better": int((diff > 0).sum()), "n_worse": int((diff < 0).sum()),
         }
     measurable = sane[sane["ceiling_mean"] > UNMEASURABLE]
-    out["trim"] = trim_sensitivity()
+    out["trim"] = trim_sensitivity(set(sane["circuit"]))
     out["ceiling"] = {
         "threshold": UNMEASURABLE,
         "n": int(len(measurable)),

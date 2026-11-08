@@ -91,7 +91,14 @@ def _macros() -> dict[str, str]:
     import glob
     import re as _re
 
-    f1_files = sorted(glob.glob(str(F1_DERIVED_DIR / "laps_*.csv")))
+    # The F1 models, the transfer layers and the audit all use the seasons
+    # before the 2026 rules; races from 2026 are ingested but not modelled.
+    from src.ingestion.config import PRE_ERA_SEASONS as _PRE
+
+    all_f1 = sorted(glob.glob(str(F1_DERIVED_DIR / "laps_*.csv")))
+    f1_files = [f for f in all_f1
+                if int(_re.search(r"laps_(\d{4})_", pathlib.Path(f).name).group(1)) in _PRE]
+    out["NRacesFoneHeldOut"] = str(len(all_f1) - len(f1_files))
     f1_years = sorted({
         int(_re.search(r"laps_(\d{4})_", pathlib.Path(f).name).group(1))
         for f in f1_files
@@ -842,6 +849,52 @@ def _macros() -> dict[str, str]:
                 for _ in range(20_000)]
         lo, hi = np.percentile(meds, [2.5, 97.5])
         out[f"ProspectivePi{tag}"] = f"[{signed(lo)}, {signed(hi)}]"
+
+    ceil_tab = pd.read_csv(F1_DERIVED_DIR / "transfer_ceiling.csv")
+    ceil_tab = ceil_tab[ceil_tab["sane"].astype(bool)]
+    out["CeilingResidGapMax"] = f"{(ceil_tab['ceiling_mean'] - ceil_tab['ceiling_pooled_resid']).max():.3f}"
+    endc = json.loads((ENDURANCE_DERIVED_DIR / "endurance_ceiling_summary.json").read_text(encoding="utf-8"))
+    out["EndCeilN"] = str(endc["n"])
+    out["EndCeilBelow"] = str(endc["n_ceiling_below_threshold"])
+    v = endc["verdicts"]
+    out["EndCeilNoSignal"] = str(v.get("no signal to recover", 0))
+    out["EndCeilStable"] = str(v.get("slope stable", 0))
+    out["EndCeilUnstable"] = str(v.get("slope unstable", 0))
+    out["EndCeilBorderline"] = str(v.get("borderline", 0))
+    out["EndCeilGtThree"] = f"{endc['gt3']['mean_ceiling']:+.3f}"
+    out["EndCeilProto"] = f"{endc['proto']['mean_ceiling']:+.3f}"
+    out["EndCeilDiff"] = f"{endc['ceiling_diff']['diff']:+.3f}"
+    out["EndCeilDiffCi"] = f"[{endc['ceiling_diff']['ci'][0]:+.3f}, {endc['ceiling_diff']['ci'][1]:+.3f}]"
+    sh = endc["share"]
+    out["EndShareGtThree"] = f"{sh['gt3_mean']:.2f}"
+    out["EndShareProto"] = f"{sh['proto_mean']:.2f}"
+    out["NEndShareGtThree"] = str(sh["n_gt3"])
+    out["NEndShareProto"] = str(sh["n_proto"])
+    out["EndShareDiff"] = f"{sh['diff']:+.2f}"
+    out["EndShareDiffCi"] = f"[{sh['ci'][0]:+.2f}, {sh['ci'][1]:+.2f}]"
+    lm = endc["elms_lmp2"]
+    out["NLmptwoNoSignal"] = str(lm.get("no signal to recover", 0))
+    out["NLmptwoTotal"] = str(sum(lm.values()))
+    out["NLmptwoUnstable"] = str(lm.get("slope unstable", 0))
+
+    chk = load("estimation_checks")
+    rc, it, rf = chk["race_clustering"], chk["interaction"], chk["refuelling"]
+    out["RaceClusterN"] = str(rc["n_slopes"])
+    out["RaceClusterZeroDr"] = str(rc["zero_driver_race"])
+    out["RaceClusterZero"] = str(rc["zero_race"])
+    out["InterN"] = str(it["n_circuits"])
+    out["InterPositive"] = str(it["n_gamma_positive"])
+    out["InterSignificant"] = str(it["n_gamma_significant"])
+    out["InterDecisions"] = str(it["n_decisions"])
+    out["InterGapWithout"] = signed(it["gap_without"])
+    out["InterGapWith"] = signed(it["gap_with"])
+    out["InterOneN"] = str(it["one_n"])
+    out["InterOneWithout"] = signed(it["one_gap_without"])
+    out["InterOneWith"] = signed(it["one_gap_with"])
+    out["RefuelShare"] = f"{100 * rf['median_fuel_share']:.0f}"
+    out["RefuelShareMax"] = f"{100 * rf['max_fuel_share']:.0f}"
+    out["RefuelTyreLimited"] = str(rf["tyre_limited_marginal"])
+    out["RefuelChanged"] = str(rf["n_changed"])
 
     est = load("estimability")
     out["EstChecked"] = str(est["f1_coefficients_checked"])

@@ -169,8 +169,11 @@ def build() -> pd.DataFrame:
 def summarise(frame: pd.DataFrame) -> dict:
     rng = np.random.default_rng(BOOT_SEED)
     out = {}
-    moved = frame[frame["allocation_changed"]]
-    changed = moved[moved["sane"].astype(bool)]
+    frame = frame[frame["verdict"].notna()]
+    # Circuits with too few seasons for Result 1's ceiling carry no verdict and
+    # are left out, as they are there.
+    moved = frame[frame["allocation_changed"] & frame["verdict"].notna()]
+    changed = moved[moved["sane"].fillna(False).astype(bool)]
     unstable = changed[changed["verdict"] == "slope unstable"]
     for name, part, suffix in (
         ("changed", changed, ""),

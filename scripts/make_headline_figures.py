@@ -116,7 +116,7 @@ def r1_transfer() -> str:
         "leave-one-race-out mean within-stint R\u00b2   \u2192   transfers better"
     )
     ax.set_title(
-        "In endurance, a degradation slope rarely transfers to an unseen season",
+        "Few endurance slopes clear 0.2, and most could not even if they were stable",
         fontsize=13, pad=24, loc="left",
     )
     clear = int((mean["r2_within"] > 0.2).sum())

@@ -4,51 +4,49 @@
 
 A low transfer score has two explanations that look the same from outside: the slope moved, or there was never enough signal to recover it. This separates them by rebuilding each circuit's lap times from its own fit with **one slope for every season** — stable by construction — and residuals resampled in whole stints, then running the real protocol on that.
 
-**18 of 22 circuits have a ceiling below 0.2**: at those circuits a perfectly stable slope could not have cleared the threshold Result 1 quotes. The threshold is therefore reporting signal-to-noise, not stability.
+**16 of 22 circuits have a ceiling below 0.2**: at those circuits a perfectly stable slope could not have cleared the threshold Result 1 quotes. The threshold is therefore reporting signal-to-noise, not stability.
 
 | circuit | seasons | measured R² | ceiling | gap | verdict |
 |---|---|---|---|---|---|
-| jeddah | 4 | +0.301 | +0.420 | +0.119 | slope unstable |
-| losail | 3 | +0.249 | +0.346 | +0.097 | borderline |
-| baku | 4 | +0.040 | +0.325 | +0.284 | slope unstable |
-| bahrain | 4 | +0.253 | +0.284 | +0.031 | borderline |
-| shanghai | 3 | -0.019 | +0.195 | +0.214 | slope unstable |
-| miami | 5 | +0.045 | +0.183 | +0.138 | slope unstable |
-| las_vegas | 3 | +0.128 | +0.180 | +0.052 | borderline |
-| red_bull_ring | 5 | +0.168 | +0.180 | +0.012 | slope stable |
-| barcelona | 5 | +0.033 | +0.122 | +0.089 | borderline |
-| monaco | 5 | -0.014 | +0.108 | +0.122 | slope unstable |
-| imola | 3 | -0.230 | +0.095 | +0.325 | slope unstable |
-| monza | 4 | -0.113 | +0.092 | +0.205 | slope unstable |
-| montreal | 5 | +0.051 | +0.077 | +0.026 | slope stable |
-| spa | 5 | -0.092 | +0.058 | +0.150 | slope unstable |
-| interlagos | 3 | +0.083 | +0.057 | -0.026 | slope stable |
-| singapore | 4 | -0.146 | +0.040 | +0.186 | no signal to recover |
-| yas_marina | 4 | +0.045 | +0.035 | -0.011 | no signal to recover |
-| hungaroring | 5 | +0.010 | +0.033 | +0.024 | no signal to recover |
-| suzuka | 4 | -0.127 | +0.028 | +0.155 | no signal to recover |
-| mexico_city | 4 | -0.031 | +0.011 | +0.042 | no signal to recover |
-| zandvoort | 5 | -0.009 | +0.010 | +0.019 | no signal to recover |
-| silverstone | 5 | -0.045 | +0.005 | +0.050 | no signal to recover |
-| austin | 4 | -83.368 | -0.026 | +83.342 | degenerate fit, excluded |
-| melbourne | 4 | -0.077 | -1.793 | -1.716 | degenerate fit, excluded |
+| jeddah | 4 | +0.301 | +0.439 | +0.138 | slope unstable |
+| melbourne | 3 | +0.132 | +0.368 | +0.236 | slope unstable |
+| losail | 3 | +0.249 | +0.353 | +0.104 | slope unstable |
+| baku | 4 | +0.040 | +0.330 | +0.289 | slope unstable |
+| bahrain | 4 | +0.253 | +0.296 | +0.043 | borderline |
+| miami | 4 | +0.106 | +0.255 | +0.148 | slope unstable |
+| las_vegas | 3 | +0.128 | +0.181 | +0.053 | borderline |
+| monaco | 4 | +0.054 | +0.175 | +0.120 | slope unstable |
+| red_bull_ring | 4 | +0.154 | +0.160 | +0.006 | slope stable |
+| montreal | 4 | +0.001 | +0.147 | +0.147 | slope unstable |
+| monza | 4 | -0.113 | +0.117 | +0.230 | slope unstable |
+| imola | 3 | -0.230 | +0.106 | +0.336 | slope unstable |
+| spa | 4 | -0.193 | +0.089 | +0.282 | slope unstable |
+| barcelona | 4 | +0.019 | +0.081 | +0.062 | borderline |
+| suzuka | 3 | -0.277 | +0.051 | +0.327 | slope unstable |
+| interlagos | 3 | +0.083 | +0.049 | -0.034 | no signal to recover |
+| singapore | 4 | -0.146 | +0.045 | +0.191 | no signal to recover |
+| yas_marina | 4 | +0.045 | +0.037 | -0.008 | no signal to recover |
+| hungaroring | 4 | -0.009 | +0.031 | +0.040 | no signal to recover |
+| silverstone | 4 | -0.106 | +0.015 | +0.121 | no signal to recover |
+| mexico_city | 4 | -0.031 | +0.012 | +0.043 | no signal to recover |
+| zandvoort | 4 | -0.020 | +0.011 | +0.031 | no signal to recover |
+| austin | 4 | -83.368 | -0.007 | +83.360 | degenerate fit, excluded |
 
 ## Once the noise is priced in
 
-- slope **unstable**: 8
-- slope **stable**, the shortfall being noise: 3
+- slope **unstable**: 11
+- slope **stable**, the shortfall being noise: 1
 - **no signal** to recover either way: 7
-- borderline: 4
+- borderline: 3
 
 ## The degree-selection leakage, measured
 
-The published folds pick the polynomial degree by averaging RMSE over every fold, including the season later held out. Choosing it inside each fold instead moves the mean score by **0.0188** and at most **0.2290**. The leakage is real and small.
+The published folds pick the polynomial degree by averaging RMSE over every fold, including the season later held out. Choosing it inside each fold instead moves the mean score by **0.0178** and at most **0.2290**. The leakage is real and small.
 
 ## Two circuits excluded, and why that matters
 
 | circuit | problem |
 |---|---|
 | austin | measured -83.4, ceiling -0.0 — degenerate |
-| melbourne | measured -0.1, ceiling -1.8 — degenerate |
 
 At one of these, per-fold degree selection picks the quadratic and extrapolates it off a cliff. That is worth stating plainly: the naive fix for the leakage above makes a circuit dramatically worse, which is why the published protocol chooses the degree once.
