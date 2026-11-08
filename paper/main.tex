@@ -50,26 +50,28 @@
 
 \begin{abstract}
 Race-strategy models are usually fitted and validated inside one championship.
-Does a fitted model predict a season it
-has never seen, and does its recommendation resemble what a team did? I apply one protocol to both across \NClasses{} car classes and
+Does a fitted model predict an unseen
+season, and does its recommendation resemble what a team did? I apply one protocol to both across \NClasses{} car classes and
 four championships --- Formula~1, WEC, IMSA and ELMS --- common rather than
 identical, since endurance sources carry no tyre compound.
 
 Four findings. Degradation slopes transfer as a property of the
 \emph{circuit-class}, not the championship, and rarely: of \NCircuitClasses{}
 measured by leave-one-race-out, \NTransferAboveTwo{} reach a within-stint $R^2$
-of $\TransferThreshold{}$. That count overstates instability. With a slope
+of $\TransferThreshold{}$. With a slope
 stable by construction, \NCeilingBelowThreshold{} of \NCeilingCircuits{}
 Formula~1 circuits cannot clear the threshold against their own lap noise;
 pricing it in leaves \NCeilingUnstable{} unstable and \NCeilingStable{} stable.
-Neither real Pirelli compounds nor Friday long runs improve it.
+Neither circuit-level recoding to real Pirelli compounds nor Friday long runs
+improve it.
 Whether an extra stop pays is set by its cost: over \NRaceSeasons{}
 race-seasons, pit loss alone separates the regimes at an AUC of
 \RegimeAucPitLoss{} against \RegimeAucSlope{} for degradation. Replaying
 \NDecisions{} real first stops with each team's own next stop held fixed, a
 time-optimal planner lands a median of \CommitAllAfter{} laps from the team in
 Formula~1 and no endurance gap is established; \CommitOneAfter{} remains in
-one-stop races, worth tenths of a second a lap. Run to the flag instead, the same planner is \FoneMedian{}
+one-stop races, priced by the planner at tenths of a second a lap, which the
+races cannot confirm. Run to the flag, the same planner is \FoneMedian{}
 late: it must be asked the pit wall's question.
 And the rival such a model should answer is under-determined:
 \NRivalRules{} defensible rules agree on \NRivalAllAgree{} of
@@ -503,22 +505,33 @@ in 2023 it renamed its hardest one; a 2022 lap on that tyre is coded with the
 name the same rubber carried afterwards, not with its old one. Recoding every
 lap to the real compound and rerunning the leave-one-race-out protocol, both
 codings scored on the same laps, changes nothing where the allocation stayed the
-same. At the \NCompoundChanged{} of \NCompoundCircuits{} circuits where it
-changed, the median score moves from \CompoundRelative{} to \CompoundReal{},
-a median paired difference of \CompoundDiff{} \CompoundDiffCi{}. The real
-compound scores better at \NCompoundBetter{} circuits and worse at
-\NCompoundWorse{}, and its largest gain anywhere is \CompoundMaxGain{}. With
-every circuit forced to the linear model, so that no quadratic can extrapolate
-on a compound seen in one season, the difference is \CompoundLinearDiff{}
-\CompoundLinearDiffCi{}. The recoding also has a cost the relative labels
-hide: on average \CompoundUnseenPct{}\% of a held-out season's laps, and up to
-\CompoundUnseenMaxPct{}\% at one circuit, are on a compound no other season of
-that circuit used, and cannot be predicted at all. Relative labels are not what
-breaks transfer.
+same. It changed at \NCompoundMoved{} of \NCompoundCircuits{} circuits;
+\NCompoundDegenerate{} of them are the degenerate fits Section~\ref{sec:ceiling}
+excludes, and they are excluded here for the same reason. At the other
+\NCompoundChanged{} the median score moves from \CompoundRelative{} to
+\CompoundReal{}, a median paired difference of \CompoundDiff{}
+\CompoundDiffCi{}; the real compound scores better at \NCompoundBetter{}
+circuits and worse at \NCompoundWorse{}, and its largest gain anywhere is
+\CompoundMaxGain{}. The test matters most at the \NCompoundUnstable{} of those
+circuits Section~\ref{sec:ceiling} calls unstable, where a better coding had
+something to repair: there the difference runs from \CompoundUnstableMin{} to
+\CompoundUnstableMax{}, better at \NCompoundUnstableBetter{} and worse at
+\NCompoundUnstableWorse{}. With every circuit forced to the linear model, so
+that no quadratic can extrapolate on a compound seen in few seasons, the
+difference is \CompoundLinearDiff{} \CompoundLinearDiffCi{}. The recoding has
+a cost the relative labels hide: on average \CompoundUnseenPct{}\% of a
+held-out season's laps, and up to \CompoundUnseenMaxPct{}\% at one circuit, are
+on a compound no other season of that circuit used, and cannot be predicted at
+all. The claim this supports is narrow. Recoding within a circuit gives each
+real compound fewer seasons to be fitted on than its relative label had, and it
+does not repair transfer. A model that pools information across circuits, a
+circuit severity times a compound effect for instance, is the version that
+could profit from knowing the real compound, and it is not tested here.
 
 \paragraph{Measure it on Friday.} A team need not rely on other seasons at all:
-in second practice every car runs long runs on race fuel, on that weekend's
-tyres and asphalt. A long run here is a practice stint long enough to fit a
+in second practice every car runs long runs on a heavy fuel load, on that
+weekend's tyres and asphalt, though not necessarily on the race load and on a
+track with less rubber laid down than on Sunday. A long run here is a practice stint long enough to fit a
 slope to once its out-lap, in-lap and cool-down laps are dropped, and a
 compound's Friday slope is used only when several cars ran one on it; on a
 sprint weekend the only practice session is used, which is the case in
@@ -531,7 +544,8 @@ within-stint $R^2$ of \FridayRaw{} against \FridayOther{}, lower in
 difference of \FridayRawDiff{} \FridayRawDiffCi{} when whole circuits are
 resampled. Part of that is a level difference: Friday long runs degrade faster
 than the same compound does in the race, by a median of \FridayOffset{}\,s a
-lap. Subtracting that gap, learned on every other circuit so that no race
+lap, which is the direction a greener track would give, though these data do
+not separate the causes. Subtracting that gap, learned on every other circuit so that no race
 informs its own correction, still leaves \FridayCorrected{}. Averaging the
 corrected Friday shape with the other-seasons shape gives \FridayBoth{}, worse
 than other seasons alone in \NFridayBothWorse{} of \NFridayRaces{} races
@@ -676,25 +690,18 @@ tyre allocation, so a bootstrap over decisions would understate its width in
 the direction that flatters the result. The audit tables carry race
 identifiers, so the race is the unit resampled.
 
-That interval changes how Result~3 (Section~\ref{sec:audit}) should be read, and it is the reason this
-section reports it per class rather than only for the pooled median. Of the
-\NAuditScopes{} class-level medians, \NAuditContainsZero{} contain zero
-(\AuditZeroClasses{}), and the gap in those two classes is not established.
-Formula~1 is \AuditMedFone{} laps with a race-clustered interval of
-\AuditCiFone{} over \AuditRacesFone{} races; IMSA GTD \AuditMedImsaGtd{}
-\AuditCiImsaGtd{}; IMSA GTD PRO \AuditMedImsaGtdpro{} \AuditCiImsaGtdpro{};
-IMSA GTP \AuditMedImsaGtp{} \AuditCiImsaGtp{}; WEC Hypercar
-\AuditMedWecHypercar{} \AuditCiWecHypercar{}; ELMS LMP2 \AuditMedElmsLmptwo{}
-\AuditCiElmsLmptwo{}; ELMS LMP2 Pro/Am \AuditMedElmsLmptwoProAm{}
-\AuditCiElmsLmptwoProAm{}.
-
-So the ladder reported in Result~3 is not a smooth gradient across the caution
-rate. As the audit was first run, it is a large and resolved disagreement in
-Formula~1 and in all three IMSA classes, against no established disagreement at all in WEC Hypercar and
-ELMS LMP2. The ordering still tracks the caution rate, but the low end of it
-is a statement about what I cannot resolve rather than about a small gap.
-Section~\ref{sec:committed} then shows that the resolved part is mostly a
-property of the audit rather than of the planner.
+For the first-run audit of Result~3 (Section~\ref{sec:audit}),
+\NAuditContainsZero{} of the \NAuditScopes{} class-level medians contain zero
+(\AuditZeroClasses{}). Formula~1 is \AuditMedFone{} laps with a race-clustered
+interval of \AuditCiFone{} over \AuditRacesFone{} races; IMSA GTD
+\AuditMedImsaGtd{} \AuditCiImsaGtd{}; IMSA GTD PRO \AuditMedImsaGtdpro{}
+\AuditCiImsaGtdpro{}; IMSA GTP \AuditMedImsaGtp{} \AuditCiImsaGtp{}; WEC
+Hypercar \AuditMedWecHypercar{} \AuditCiWecHypercar{}; ELMS LMP2
+\AuditMedElmsLmptwo{} \AuditCiElmsLmptwo{}; ELMS LMP2 Pro/Am
+\AuditMedElmsLmptwoProAm{} \AuditCiElmsLmptwoProAm{}. As first run, the audit
+therefore resolved a disagreement in Formula~1 and the three IMSA classes and
+none in WEC Hypercar and ELMS; Section~\ref{sec:committed} shows that the
+resolved part is mostly a property of the audit.
 
 \section{Result 3: most of the planner--team gap was the question the audit asked}
 \label{sec:audit}
@@ -1015,6 +1022,24 @@ answering the same question, the engine still stops \CommitOneAfter{} laps
 later \CommitOneCi{}. That is the part of Result~3 the audit design does not
 explain.
 
+\paragraph{Do the earlier rejections hold on it?}\label{sec:onestopretest}
+The cover-aware engine and the earliest undefendable undercut were rejected on
+the first-run audit, whose gap was mostly the audit's question. A mechanism too
+weak for \FoneMedian{} laps could still account for \CommitOneAfter{}, so both
+are retested on the \NRetest{} one-stop first stops alone, where the committed
+replay and the first run coincide. Neither recovers. Under the published rival
+rule the cover-aware engine moves closer to the real stop on \RetestCloser{}
+of them and further on \RetestFurther{}; across all \NRetestRules{} rival rules
+it moves closer on at most \RetestCloserMax{} and further on at least
+\RetestFurtherMin{}, a sign test giving $p \le \RetestSignPMax{}$ under each.
+The earliest undefendable undercut has no prediction for the
+\NRetestLeaders{} race leaders; on the \NRetestPredicted{} decisions that
+carry one it lands a median of \RetestEuuError{} laps from the real stop
+against \RetestSingleError{} for the single-car optimiser, closer on
+\RetestEuuCloser{} and further on \RetestEuuFurther{}. The argument of
+Section~\ref{sec:freshtyre} does not depend on the size of the gap and needs
+no retest.
+
 \subsection{What the remaining gap costs}
 \label{sec:deviationcost}
 
@@ -1039,17 +1064,18 @@ elapsed time \DeviationPerLapCi{}, against \DeviationPlannerPerLap{}\,s by the
 planner's own pricing. Regressed on the planner's predicted cost directly, the
 slope is \DeviationSlope{} \DeviationSlopeCi{}, where one would mean the
 model's costs show up in the clock unchanged. Both intervals contain zero, and
-both contain the planner's price. The races cannot tell them apart because the
-quantity is small: between cars of the same race the excess time has a median
+both contain the planner's price; the races are consistent with the planner's
+tenths of a second a lap and do not rule out a full second. They cannot tell
+these apart because between cars of the same race the excess time has a median
 standard deviation of \DeviationSpread{}\,s, an order of magnitude more than the
 planner says the typical gap costs.
 
 This is association, not an experiment. Teams leave the planner's lap for
 reasons it cannot see --- traffic, a rival's stop, a car problem --- and those
-reasons have costs of their own, in either direction. What it does establish is
-the scale. The residual Result~3 leaves is worth tenths of a second per lap of
-distance, inside the flat part of the optimum where a single race cannot
-distinguish the team's lap from the planner's.
+reasons have costs of their own, in either direction. What it establishes is a
+limit on what the races can say: the residual Result~3 leaves is priced by the
+planner at tenths of a second per lap of distance, and a race is too noisy to
+confirm that price or to reject one several times larger.
 
 \subsection{Comparison against three baselines}
 
@@ -1385,19 +1411,16 @@ needed for the instability, and the effect of car type cannot be separated
 here from the circuits each type races on. Whether an extra
 stop can ever pay is decided by the cost of the stop, which separates the two
 regimes at an AUC of \RegimeAucPitLoss{} against \RegimeAucSlope{} for the
-tyre. And a time-optimal planner appeared to disagree with professional
-practice by a median of \FoneMedian{} laps in Formula~1. I proposed two
-explanations, tested both and lost both; I took a third from published work,
-which has the right sign and fails on the quantity it depends on by a factor of
-\DOneThetaRatio{}; a fourth comes back with the wrong sign
-(Section~\ref{sec:freshtyre}). The fifth was the audit: asked to plan the
+tyre. A time-optimal planner first appeared to disagree with professional
+practice by a median of \FoneMedian{} laps in Formula~1. Four explanations
+failed against that figure; the fifth was the audit itself: asked to plan the
 stint the team would actually run, the planner lands \CommitAllAfter{} laps
 from the real stop rather than \CommitAllBefore{}, and no endurance class keeps
 an established gap (Section~\ref{sec:committed}). Simpler rules landed closer
 to practice than the first-run audit in \NClassesRuleWins{} of
-\NClassesScored{} classes. Two repairs a team would reach for first, coding the
-tyre by its real compound and measuring degradation on Friday, both leave
-transfer where it was or worse (Section~\ref{sec:repairs}).
+\NClassesScored{} classes. Two repairs a team would reach for first, recoding each circuit's tyres by
+their real compound and measuring degradation on Friday, both leave transfer
+where it was or worse (Section~\ref{sec:repairs}).
 
 And the rival that a competition-aware model should answer is
 under-determined: \NRivalRules{} defensible rules name the same car on
@@ -1405,9 +1428,11 @@ under-determined: \NRivalRules{} defensible rules name the same car on
 built on a two-car abstraction.
 
 What remains of the planner--team gap is \CommitOneAfter{} laps in one-stop
-races, where the planner and the team were answering the same question. In
-the races it is worth tenths of a second per lap of distance, within the noise
-between cars of the same race (Section~\ref{sec:deviationcost}). It is smaller
+races, where the planner and the team were answering the same question. The
+planner prices it at tenths of a second per lap of distance, and the races
+cannot decide whether that price is right (Section~\ref{sec:deviationcost}).
+The two mechanisms rejected against the first-run audit stay rejected on it
+(Section~\ref{sec:onestopretest}). It is smaller
 than the gap this paper set out to explain, and it is the one I would most like
 someone else to explain.
 

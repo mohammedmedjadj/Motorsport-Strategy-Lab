@@ -134,6 +134,9 @@ jobs:
       # Reads the committed-strategy replay's planner lap and predicted cost.
       - name: What leaving the planner's lap cost in the races
         run: python scripts/run_deviation_cost.py
+      # Reads the committed replay and the rival and defence audits.
+      - name: Rejected mechanisms retested on the one-stop gap
+        run: python scripts/run_one_stop_retest.py
 
       - name: Report drift
         run: .github/scripts/report_drift.sh "F1"

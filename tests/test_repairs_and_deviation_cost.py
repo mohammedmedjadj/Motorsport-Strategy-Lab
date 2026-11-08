@@ -53,9 +53,16 @@ def test_c6_only_exists_from_2025(allocation):
 def test_compound_identity_summary_recomputes():
     frame = pd.read_csv(F1 / "compound_identity.csv")
     s = _summary("compound_identity")
-    changed = frame[frame["allocation_changed"]]
+    moved = frame[frame["allocation_changed"]]
+    changed = moved[moved["sane"].astype(bool)]
     assert s["n_circuits"] == len(frame)
+    assert s["n_moved"] == len(moved)
     assert s["n_changed"] == len(changed)
+    # The degenerate fits are excluded exactly as Result 1 excludes them.
+    assert (moved.loc[~moved["sane"].astype(bool), "verdict"] == "degenerate fit, excluded").all()
+    unstable = changed[changed["verdict"] == "slope unstable"]
+    assert s["unstable"]["n"] == len(unstable)
+    assert s["unstable"]["min_difference"] == pytest.approx(unstable["difference"].min(), abs=1e-6)
     assert s["changed"]["median_difference"] == pytest.approx(
         np.median(changed["difference"]), abs=1e-6
     )
@@ -95,3 +102,12 @@ def test_deviation_windows_are_consistent():
     s = _summary("deviation_cost")
     assert s["n_cars"] == len(frame)
     assert s["n_races"] == frame["race"].nunique()
+
+
+def test_one_stop_retest_matches_the_committed_one_stop_set():
+    committed = pd.read_csv(F1 / "committed_strategy.csv")
+    one = committed[(committed["n_stops"] == 1) & committed["committed_delta_laps"].notna()]
+    s = _summary("one_stop_retest")
+    assert s["n_one_stop"] == len(one)
+    assert all(r["n"] == len(one) for r in s["rules"].values())
+    assert s["salminen"]["closer"] + s["salminen"]["further"] <= s["salminen"]["predicted"]

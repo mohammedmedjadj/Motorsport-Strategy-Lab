@@ -1,0 +1,51 @@
+{
+ "committed_median": 4.0,
+ "n_one_stop": 150,
+ "rules": {
+  "d1": {
+   "better": 29,
+   "closed_median": 0.0,
+   "cover_error": 6.0,
+   "n": 150,
+   "sign_p": 0.006038,
+   "single_error": 4.0,
+   "worse": 55
+  },
+  "pi_window": {
+   "better": 28,
+   "closed_median": -1.0,
+   "cover_error": 5.0,
+   "n": 150,
+   "sign_p": 1e-06,
+   "single_error": 4.0,
+   "worse": 79
+  },
+  "position": {
+   "better": 34,
+   "closed_median": 0.0,
+   "cover_error": 5.0,
+   "n": 150,
+   "sign_p": 0.000149,
+   "single_error": 4.0,
+   "worse": 74
+  },
+  "thraves": {
+   "better": 37,
+   "closed_median": 0.0,
+   "cover_error": 5.0,
+   "n": 150,
+   "sign_p": 0.00184,
+   "single_error": 4.0,
+   "worse": 70
+  }
+ },
+ "salminen": {
+  "closer": 9,
+  "euu_error": 73.0,
+  "further": 97,
+  "leaders": 39,
+  "n": 150,
+  "predicted": 109,
+  "single_error": 5.0
+ }
+}

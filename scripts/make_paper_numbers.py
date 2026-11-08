@@ -696,6 +696,15 @@ def _macros() -> dict[str, str]:
     out["CompoundLinearDiffCi"] = f"[{linear['ci_low']:+.3f}, {linear['ci_high']:+.3f}]"
     out["NCompoundLinearBetter"] = str(linear["n_better"])
     out["NCompoundLinearWorse"] = str(linear["n_worse"])
+    out["NCompoundMoved"] = str(ident["n_moved"])
+    out["NCompoundDegenerate"] = str(ident["n_degenerate"])
+    unstable = ident["unstable"]
+    out["NCompoundUnstable"] = str(unstable["n"])
+    out["NCompoundUnstableBetter"] = str(unstable["n_better"])
+    out["NCompoundUnstableWorse"] = str(unstable["n_worse"])
+    out["CompoundUnstableMin"] = f"{unstable['min_difference']:+.3f}"
+    out["CompoundUnstableMax"] = f"{unstable['max_difference']:+.3f}"
+    out["CompoundUnstableMedian"] = f"{unstable['median_difference']:+.3f}"
     out["CompoundUnseenPct"] = f"{100 * ident['unseen_share']:.1f}"
     out["CompoundUnseenMaxPct"] = f"{100 * ident['unseen_max']:.1f}"
 
@@ -718,6 +727,24 @@ def _macros() -> dict[str, str]:
     out["NFridayOtherAbove"] = str(fri["n_other_above"])
     out["NFridayRawAbove"] = str(fri["n_friday_above"])
     out["NFridayBothAbove"] = str(fri["n_both_above"])
+
+    retest = load("one_stop_retest")
+    out["NRetest"] = str(retest["n_one_stop"])
+    rules = retest["rules"]
+    out["NRetestRules"] = str(len(rules))
+    pub = rules["position"]
+    out["RetestCloser"] = str(pub["better"])
+    out["RetestFurther"] = str(pub["worse"])
+    out["RetestCloserMax"] = str(max(r["better"] for r in rules.values()))
+    out["RetestFurtherMin"] = str(min(r["worse"] for r in rules.values()))
+    out["RetestSignPMax"] = f"{max(r['sign_p'] for r in rules.values()):.3f}"
+    sal = retest["salminen"]
+    out["NRetestLeaders"] = str(sal["leaders"])
+    out["NRetestPredicted"] = str(sal["predicted"])
+    out["RetestEuuError"] = signed(sal["euu_error"])
+    out["RetestSingleError"] = signed(sal["single_error"])
+    out["RetestEuuCloser"] = str(sal["closer"])
+    out["RetestEuuFurther"] = str(sal["further"])
 
     dev = load("deviation_cost")
     out["NDeviationCars"] = str(dev["n_cars"])

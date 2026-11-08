@@ -157,6 +157,10 @@ def build() -> pd.DataFrame:
         published["r2_real_linear"] = linear["r2_real"]
         rows.append(published)
     frame = pd.DataFrame(rows)
+    # Result 1's own verdict per circuit: degenerate fits are excluded here
+    # for the same reason they are excluded there.
+    ceiling = pd.read_csv(CEILING)[["circuit", "sane", "verdict"]]
+    frame = frame.merge(ceiling, on="circuit", how="left")
     frame["difference"] = frame["r2_real"] - frame["r2_relative"]
     frame["difference_linear"] = frame["r2_real_linear"] - frame["r2_relative_linear"]
     return frame
@@ -165,10 +169,13 @@ def build() -> pd.DataFrame:
 def summarise(frame: pd.DataFrame) -> dict:
     rng = np.random.default_rng(BOOT_SEED)
     out = {}
-    changed = frame[frame["allocation_changed"]]
+    moved = frame[frame["allocation_changed"]]
+    changed = moved[moved["sane"].astype(bool)]
+    unstable = changed[changed["verdict"] == "slope unstable"]
     for name, part, suffix in (
         ("changed", changed, ""),
         ("changed_linear", changed, "_linear"),
+        ("unstable", unstable, ""),
     ):
         diff = part["difference" + suffix].dropna().to_numpy()
         lo, hi = bootstrap_median(diff, rng)
@@ -184,8 +191,11 @@ def summarise(frame: pd.DataFrame) -> dict:
             "n_worse": worse,
             "sign_p": float(binomtest(better, better + worse).pvalue) if better + worse else float("nan"),
             "max_difference": float(diff.max()),
+            "min_difference": float(diff.min()),
         }
     out["n_circuits"] = int(len(frame))
+    out["n_moved"] = int(len(moved))
+    out["n_degenerate"] = int(len(moved) - len(changed))
     out["n_changed"] = int(len(changed))
     out["unseen_share"] = float(changed["unseen_share"].mean())
     out["unseen_max"] = float(frame["unseen_share"].max())
@@ -204,14 +214,22 @@ def report(frame: pd.DataFrame, stats: dict) -> str:
         "label (Soft/Medium/Hard) and the compound Pirelli nominated (C0-C6, the",
         "2022 C1 coded C0). Both are scored on the same laps.",
         "",
-        f"The allocation changed between seasons at {stats['n_changed']} of "
+        f"The allocation changed between seasons at {stats['n_moved']} of "
         f"{stats['n_circuits']} circuits; elsewhere the two codings are the same "
-        "model. At those circuits the median score moves from "
+        f"model. {stats['n_degenerate']} of those are fits Result 1 excludes as "
+        f"degenerate and are excluded here too. At the other {stats['n_changed']} "
+        "the median score moves from "
         f"{c['median_relative']:.3f} to {c['median_real']:.3f}, a median difference of "
         f"{c['median_difference']:+.3f} (95% interval over circuits "
         f"[{c['ci_low']:+.3f}, {c['ci_high']:+.3f}]). The real compound scores better "
         f"at {c['n_better']}, worse at {c['n_worse']} (sign test p = {c['sign_p']:.2f}), "
         f"and its largest gain anywhere is {c['max_difference']:+.3f}.",
+        "",
+        f"At the {stats['unstable']['n']} of them Result 1 calls unstable, the ones "
+        "where a better coding had something to repair, the difference runs from "
+        f"{stats['unstable']['min_difference']:+.3f} to "
+        f"{stats['unstable']['max_difference']:+.3f} (median "
+        f"{stats['unstable']['median_difference']:+.3f}).",
         "",
         "With every circuit forced to the linear model, so that no quadratic can",
         f"extrapolate on a compound seen in one season only: median difference "
@@ -223,12 +241,12 @@ def report(frame: pd.DataFrame, stats: dict) -> str:
         f"{100 * stats['unseen_max']:.1f}% at one circuit), and the real coding cannot "
         "predict them at all.",
         "",
-        "| circuit | seasons | allocations | R², relative | R², real compound | difference | difference, linear | laps on an unseen compound |",
-        "|---|---|---|---|---|---|---|---|",
+        "| circuit | Result 1 verdict | seasons | allocations | R², relative | R², real compound | difference | difference, linear | laps on an unseen compound |",
+        "|---|---|---|---|---|---|---|---|---|",
     ]
     for r in frame.sort_values("difference", ascending=False).itertuples():
         lines.append(
-            f"| {r.circuit} | {r.seasons} | {r.allocations} | {r.r2_relative:.3f} | "
+            f"| {r.circuit} | {r.verdict} | {r.seasons} | {r.allocations} | {r.r2_relative:.3f} | "
             f"{r.r2_real:.3f} | {r.difference:+.3f} | {r.difference_linear:+.3f} | "
             f"{100 * r.unseen_share:.1f}% |"
         )
