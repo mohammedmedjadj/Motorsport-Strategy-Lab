@@ -27,6 +27,6 @@ log ratio of the new compound's slope to the old one's excludes zero.
 | same compound | 11 | +1 | 1 | 0 | +nan |
 | unresolved | 187 | +3 | 4 | 88 | +4 |
 
-On 232 decisions between two different compounds at linear circuits, the fitted ratio has median 1.02 and the ratio the team's real stop implies has median 0.77; the implied ratio is the smaller in 70% of them (median factor 0.78).
+On 232 decisions between two different compounds at linear circuits, the fitted ratio has median 1.02 and the ratio the team's real stop implies has median 0.77; the implied ratio is the smaller in 70% of them [62%, 78%], median implied ratio interval [0.70, 0.83] (median factor 0.78).
 
 The closed form lands a median of 0.9 laps from the engine's own lap on 243 linear-circuit decisions.

@@ -125,6 +125,7 @@ def build() -> pd.DataFrame:
     ceiling = pd.read_csv(CEILING)[["circuit", "ceiling_mean", "sane", "verdict"]]
     out = out.merge(ceiling, on="circuit", how="left")
     out["share_of_ceiling"] = out["r2_loro"] / out["ceiling_mean"]
+    out["category_share_of_ceiling"] = out["r2_category"] / out["ceiling_mean"]
     return out
 
 
@@ -199,6 +200,13 @@ def summarise(frame: pd.DataFrame) -> dict:
         "threshold": UNMEASURABLE,
         "n": int(len(measurable)),
         "median_share": float(measurable["share_of_ceiling"].median()),
+        "median_share_category": float(measurable["category_share_of_ceiling"].median()),
+        "n_above_half_category": int((measurable["category_share_of_ceiling"] >= 0.5).sum()),
+        "category_minus_own": float(np.median(measurable["r2_category"] - measurable["r2_loro"])),
+        "category_minus_own_ci": list(_median_ci(
+            (measurable["r2_category"] - measurable["r2_loro"]).to_numpy(), rng)),
+        "n_category_better": int((measurable["r2_category"] > measurable["r2_loro"]).sum()),
+        "n_category_worse": int((measurable["r2_category"] < measurable["r2_loro"]).sum()),
         "n_above_half": int((measurable["share_of_ceiling"] >= 0.5).sum()),
     }
     return out
@@ -222,7 +230,12 @@ def report(frame: pd.DataFrame, s: dict) -> str:
         f"median difference {c['median_diff']:+.3f} [{c['ci_low']:+.3f}, "
         f"{c['ci_high']:+.3f}], better at {c['n_better']}, worse at {c['n_worse']}.",
         f"- Share of the noise ceiling, at the {k['n']} circuits where it exceeds "
-        f"{k['threshold']}: median {k['median_share']:.2f}; {k['n_above_half']} reach half.",
+        f"{k['threshold']}: median {k['median_share']:.2f}; {k['n_above_half']} reach half. "
+        f"The category slope on the same circuits: median {k['median_share_category']:.2f}; "
+        f"{k['n_above_half_category']} reach half. There the category slope minus "
+        f"the circuit's own: median {k['category_minus_own']:+.3f} "
+        f"[{k['category_minus_own_ci'][0]:+.3f}, {k['category_minus_own_ci'][1]:+.3f}], "
+        f"better at {k['n_category_better']}, worse at {k['n_category_worse']}.",
         "- Traffic trim: " + "; ".join(
             f"at {t}, slopes move by a median of {100 * v['median_slope_change']:+.1f}% "
             f"(absolute {100 * v['median_abs_slope_change']:.1f}%, "

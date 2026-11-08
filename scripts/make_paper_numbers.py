@@ -776,6 +776,12 @@ def _macros() -> dict[str, str]:
     out["ImpliedFitted"] = f"{imp['median_fitted']:.2f}"
     out["ImpliedRatio"] = f"{imp['median_implied']:.2f}"
     out["ImpliedShareBelow"] = f"{100 * imp['share_below']:.0f}"
+    out["ImpliedShareBelowCi"] = (
+        f"[{100 * imp['share_below_ci'][0]:.0f}\\%, {100 * imp['share_below_ci'][1]:.0f}\\%]"
+    )
+    out["ImpliedRatioCi"] = (
+        f"[{imp['median_implied_ci'][0]:.2f}, {imp['median_implied_ci'][1]:.2f}]"
+    )
     out["ClosedFormN"] = str(design["closed_form"]["n"])
     out["ClosedFormGap"] = f"{design['closed_form']['median_abs_vs_engine']:.1f}"
 
@@ -792,6 +798,15 @@ def _macros() -> dict[str, str]:
     out["CeilingShareN"] = str(base["ceiling"]["n"])
     out["CeilingShareMedian"] = f"{base['ceiling']['median_share']:.2f}"
     out["NCeilingShareHalf"] = str(base["ceiling"]["n_above_half"])
+    k = base["ceiling"]
+    out["CeilingShareCategory"] = f"{k['median_share_category']:.2f}"
+    out["NCeilingShareHalfCategory"] = str(k["n_above_half_category"])
+    out["CeilingCategoryDiff"] = f"{k['category_minus_own']:+.3f}"
+    out["CeilingCategoryDiffCi"] = (
+        f"[{k['category_minus_own_ci'][0]:+.3f}, {k['category_minus_own_ci'][1]:+.3f}]"
+    )
+    out["NCeilingCategoryBetter"] = str(k["n_category_better"])
+    out["NCeilingCategoryWorse"] = str(k["n_category_worse"])
     trims = base["trim"]
     levels = sorted(trims)
     out["TrimLow"], out["TrimPublished"], out["TrimHigh"] = levels[0], levels[1], levels[2]
@@ -808,6 +823,11 @@ def _macros() -> dict[str, str]:
     out["IndexShareStint"] = f"{100 * index['shares']['stint']:.0f}"
     out["IndexWithoutPit"] = f"{index['auc_without']['pit loss']:.3f}"
     out["IndexWithoutSlope"] = f"{index['auc_without']['slope']:.3f}"
+    d = index["differences"]
+    out["IndexDropDiff"] = f"{d['without_slope_minus_without_pit']:+.3f}"
+    out["IndexDropDiffCi"] = f"[{d['without_ci'][0]:+.3f}, {d['without_ci'][1]:+.3f}]"
+    out["IndexAloneDiff"] = f"{d['pit_minus_slope_alone']:+.3f}"
+    out["IndexAloneDiffCi"] = f"[{d['alone_ci'][0]:+.3f}, {d['alone_ci'][1]:+.3f}]"
 
     est = load("estimability")
     out["EstChecked"] = str(est["f1_coefficients_checked"])

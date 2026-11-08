@@ -98,7 +98,7 @@
 
 <section>
   <div class="wrap">
-    <h2><span class="n">1</span>Transfer is a property of the circuit-class, not the championship</h2>
+    <h2><span class="n">1</span>Public timing rarely carries enough signal to test transfer</h2>
     <p class="lede">Fit a degradation slope on every season of a circuit but one,
       predict the held-out season, score the within-stint residual. Do it the
       same way everywhere.</p>
@@ -129,9 +129,10 @@
           the slope on Friday's long runs instead of other seasons: median
           R² &minus;0.502 against +0.021, worse in 44 of 56 races.
           <span class="win">Neither helps.</span> Past-only fitting costs a
-          little, and a circuit's own slope does not beat one common to the
-          category; where the laps carry signal, transfer reaches a median 0.71
-          of the noise ceiling.</p>
+          little. Where the laps carry signal, a circuit's own slope reaches a
+          median 0.71 of the noise ceiling against 0.25 for a slope common to
+          the category, a difference that points to the circuit but is not
+          established.</p>
       </div>
     </div>
   </div>
@@ -139,7 +140,7 @@
 
 <section>
   <div class="wrap">
-    <h2><span class="n">2</span>The cost of the stop, not the car, sets the strategy regime</h2>
+    <h2><span class="n">2</span>The stop cost and the tyre both set the regime; alone, the stop cost ranks it best</h2>
     <p class="lede">An exact dynamic program plans every endurance race under a
       hard fuel constraint and reports whether the tyre-optimal plan needs more
       stops than the tank forces.</p>
@@ -162,6 +163,12 @@
           tyre-limited race sits at 13.2 s. No interval is reported for it,
           because a bootstrap of a maximum is degenerate on one side. Quote the
           rule; treat the number as an order of magnitude.</div>
+        <p>Both terms enter. In the closed-form index the slope carries more of
+          the spread, and dropping either from it costs a similar share of the
+          verdicts (difference +0.030 [&minus;0.017,&nbsp;+0.084]). Alone, pit
+          loss ranks the regimes better than the slope by +0.155
+          [+0.087,&nbsp;+0.231]. This describes the endurance planning model
+          on these four championships, not a law.</p>
       </div>
     </div>
   </div>
@@ -218,9 +225,12 @@
           0.25&nbsp;s by the planner's own pricing: the races cannot confirm
           or reject that price, with 5.6&nbsp;s of spread between cars of the
           same race. The overall +2 holds asked 5, 10 or 15 laps ahead and for
-          the whole field (+1 to +3); the one-stop residual shrinks to +2 at
-          15 laps, and teams stop as if the slope ratio of new to worn tyre
-          were 0.77 rather than the fitted 1.02. In endurance, with one net
+          the whole field (+1 to +3); the one-stop residual is +1 to +4
+          depending on how early the planner is asked, and not established for
+          the whole field asked 15 laps ahead (+1 [&minus;1.0,&nbsp;+3.0]).
+          Teams stop as if the slope ratio of new to worn tyre were 0.77
+          [0.70,&nbsp;0.83] rather than the fitted 1.02 &mdash; possibly
+          knowledge the public timing cannot resolve rather than an error. In endurance, with one net
           slope, the replay cannot test the tyre model. A
           <a href="https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab/blob/main/paper/prospective_protocol.md">prospective test</a>
           was frozen before the 2026 São Paulo Grand Prix. It is the first of the

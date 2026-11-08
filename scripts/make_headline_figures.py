@@ -62,7 +62,7 @@ def _style(ax: plt.Axes) -> None:
 
 
 def r1_transfer() -> str:
-    """Transfer is a property of the circuit-class, not of the championship."""
+    """In endurance, a degradation slope rarely transfers to an unseen season."""
     loro = pd.read_csv(ENDURANCE_DERIVED_DIR / "endurance_degradation_loro.csv")
     mean = (
         loro[loro["held_out_season"].astype(str) == "MEAN"]
@@ -116,7 +116,7 @@ def r1_transfer() -> str:
         "leave-one-race-out mean within-stint R\u00b2   \u2192   transfers better"
     )
     ax.set_title(
-        "A degradation slope transfers by circuit-class, not by championship",
+        "In endurance, a degradation slope rarely transfers to an unseen season",
         fontsize=13, pad=24, loc="left",
     )
     clear = int((mean["r2_within"] > 0.2).sum())
@@ -138,7 +138,7 @@ def r1_transfer() -> str:
 
 
 def r2_pit_loss_rule() -> str:
-    """The cost of the stop, not the car, sets the strategy regime."""
+    """Tyre-limited race-seasons occur only where the stop is cheap."""
     plans = pd.read_csv(ENDURANCE_DERIVED_DIR / "multistop_plans.csv")
     plans["tyre_limited"] = plans["optimal_stops"] != plans["min_stops"]
 
@@ -224,7 +224,7 @@ def r2_pit_loss_rule() -> str:
     right.grid(axis="y", alpha=0.25, linewidth=0.6)
 
     fig.suptitle(
-        "The cost of the stop, not the car, decides whether tyres ever beat fuel",
+        "In these championships, tyres beat fuel only where the stop is cheap",
         fontsize=13, x=0.006, ha="left", y=0.995,
     )
     path = FIGURES / "r2_pit_loss_rule.png"

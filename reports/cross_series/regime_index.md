@@ -13,3 +13,5 @@ counts only what moves races across it. Both are reported.
 | slope | 51% | 1.19 | 0.825 | 0.953 |
 | stint | 10% | 0.59 | 0.653 | 0.991 |
 | pit loss | 39% | 0.87 | 0.980 | 0.923 |
+
+Index AUC without the slope minus without pit loss: +0.030, 95% interval resampling race-seasons [-0.017, +0.084]. Pit loss alone minus slope alone: +0.155 [+0.087, +0.231].

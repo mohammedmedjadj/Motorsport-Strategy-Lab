@@ -47,6 +47,8 @@ from src.ingestion.config import DERIVED_DIR, ENDURANCE_DERIVED_DIR, REPORTS_DIR
 PLANS = ENDURANCE_DERIVED_DIR / "multistop_plans.csv"
 OUT_JSON = DERIVED_DIR / "cross_series" / "regime_index_summary.json"
 OUT_MD = REPORTS_DIR / "cross_series" / "regime_index.md"
+SEED = 20261108
+DRAWS = 10_000
 
 
 def build() -> dict:
@@ -69,7 +71,34 @@ def build() -> dict:
 
     alone = {name: _auc(terms[name]) for name in terms}
     without = {name: _auc(terms.drop(columns=name).sum(axis=1)) for name in terms}
+
+    # Is the difference between the two leave-one-out AUCs, and between the two
+    # single-term AUCs, more than resampling noise? Race-seasons are the unit
+    # the regime is defined on, so they are what is resampled.
+    rng = np.random.default_rng(SEED)
+    values = terms.to_numpy()
+    cols = list(terms.columns)
+    i_slope, i_pit = cols.index("slope"), cols.index("pit loss")
+    d_without, d_alone = [], []
+    for _ in range(DRAWS):
+        pick = rng.integers(0, len(values), len(values))
+        v, lab = values[pick], limited[pick]
+        if lab.all() or not lab.any():
+            continue
+
+        def a(x):
+            return auc(x[lab], x[~lab])
+
+        d_without.append(a(v.sum(axis=1) - v[:, i_pit]) - a(v.sum(axis=1) - v[:, i_slope]))
+        d_alone.append(a(v[:, i_pit]) - a(v[:, i_slope]))
+    diff = {
+        "without_slope_minus_without_pit": float(without["slope"] - without["pit loss"]),
+        "without_ci": [float(x) for x in np.percentile(np.array(d_without) * -1, [2.5, 97.5])],
+        "pit_minus_slope_alone": float(alone["pit loss"] - alone["slope"]),
+        "alone_ci": [float(x) for x in np.percentile(d_alone, [2.5, 97.5])],
+    }
     return {
+        "differences": diff,
         "auc_alone": alone,
         "auc_without": without,
         "n_race_seasons": int(len(plans)),
@@ -105,7 +134,16 @@ def report(s: dict) -> str:
             f"| {name} | {100 * share:.0f}% | {s['sds'][name]:.2f} | "
             f"{s['auc_alone'][name]:.3f} | {s['auc_without'][name]:.3f} |"
         )
-    lines.append("")
+    d = s["differences"]
+    lines += [
+        "",
+        f"Index AUC without the slope minus without pit loss: "
+        f"{d['without_slope_minus_without_pit']:+.3f}, 95% interval resampling "
+        f"race-seasons [{d['without_ci'][0]:+.3f}, {d['without_ci'][1]:+.3f}]. "
+        f"Pit loss alone minus slope alone: {d['pit_minus_slope_alone']:+.3f} "
+        f"[{d['alone_ci'][0]:+.3f}, {d['alone_ci'][1]:+.3f}].",
+        "",
+    ]
     return "\n".join(lines)
 
 

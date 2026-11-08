@@ -61,15 +61,15 @@ $\TransferThreshold{}$ against their own lap noise; pricing that in leaves
 \NCeilingUnstable{} unstable and \NCeilingStable{} stable, and
 \NTransferAboveTwo{} of \NCircuitClasses{} endurance circuit-classes reach it.
 Within-circuit recoding to real Pirelli compounds, Friday long runs and
-past-only fitting do not help, and a circuit's own slope does not beat one
-common to the category. Second, in these championships the cost of a stop
-separates the strategy regimes best: over \NRaceSeasons{} race-seasons pit loss
-alone reaches an AUC of \RegimeAucPitLoss{}, against \RegimeAucSlope{} for
-degradation. Third, replaying \NDecisions{} real first stops with each team's
+past-only fitting do not help. Second, in an endurance planning model the stop
+cost and the slope both set whether an extra stop pays; over \NRaceSeasons{}
+race-seasons pit loss alone ranks the regimes best, at an AUC of
+\RegimeAucPitLoss{} against \RegimeAucSlope{} for degradation. Third, replaying \NDecisions{} real first stops with each team's
 next stop held fixed, a time-optimal planner lands a median of
 \CommitAllAfter{} laps from the team in Formula~1 (\DesignMinMedian{} to
-\DesignMaxMedian{} across horizons and field); a \CommitOneAfter{} residual in
-one-stop races shrinks when the planner is asked earlier. In endurance the replay cannot
+\DesignMaxMedian{} across horizons and field); a one-stop residual of
+\CommitOneAfter{} falls to \DesignAllFifteenOneMedian{}
+\DesignAllFifteenOneCi{} when the whole field is replayed fifteen laps ahead. In endurance the replay cannot
 test the tyre model. Run to the flag, the same planner is \FoneMedian{} late.
 Fourth, \NRivalRules{} defensible rules for the rival agree on
 \NRivalAllAgree{} of \NRivalAllApply{} decisions, though the recommendation
@@ -408,7 +408,7 @@ rule. Coverage is reported alongside every error, because a rule answering a
 fifth of the decisions and landing close on those has not beaten one that
 answers all of them.
 
-\section{Result 1: transfer is a property of the circuit-class}
+\section{Result 1: public timing rarely carries enough signal to test transfer}
 \label{sec:transfer}
 
 \begin{figure}[htbp]
@@ -584,10 +584,16 @@ better than a slope that knows nothing about the circuit.
 stable slope could have scored at the same circuit, rather than against a
 fixed threshold, the median score at the \CeilingShareN{} circuits where the
 ceiling exceeds $\CeilingMeasurable{}$ is \CeilingShareMedian{} of it, and
-\NCeilingShareHalf{} reach half. That is the more informative reading of
-Result~1 for Formula~1: where the laps carry signal at all, a slope from other
-seasons recovers much of what a stable one could, and where they do not, no
-count above a threshold says anything about stability. The ceiling has not been
+\NCeilingShareHalf{} reach half. That number means something only beside the
+same ratio for the category slope, which recovers a median
+\CeilingShareCategory{} of the ceiling there, with \NCeilingShareHalfCategory{}
+reaching half. On those circuits the category slope trails the circuit's own
+by a median of \CeilingCategoryDiff{} \CeilingCategoryDiffCi{}, worse at
+\NCeilingCategoryWorse{} and better at \NCeilingCategoryBetter{}: the
+direction favours the circuit, the interval does not establish it. Where the
+laps carry signal, then, a slope from other seasons recovers much of what a
+stable one could and probably more than a slope that ignores the circuit;
+where they do not, no count above a threshold says anything about stability. The ceiling has not been
 built for the endurance classes, so the endurance count stands on the raw
 threshold alone.
 
@@ -598,10 +604,12 @@ does during the stint --- and Result~1 is a statement about that net
 quantity. And the traffic trim, which drops laps slower than a multiple of the
 driver's race median, truncates the response itself; refitted with the
 multiple at $\TrimLow{}$ and $\TrimHigh{}$ instead of $\TrimPublished{}$, at most \TrimShareMoved{}\% of
-slopes move by more than a tenth and the median score ranges from
-\TrimLoroLow{} to \TrimLoroHigh{}.
+slopes change by more than ten per cent, but the median score ranges from
+\TrimLoroLow{} to \TrimLoroHigh{}, a several-fold change on a scale where the
+comparisons above sit near zero. The low scores of Result~1 are sensitive to
+this choice; none of the settings brings them near the threshold.
 
-\section{Result 2: the cost of the stop sets the strategy regime}
+\section{Result 2: the stop cost and the tyre both set the strategy regime; alone, the stop cost ranks it best}
 
 \begin{figure}[htbp]
 \centering
@@ -667,10 +675,16 @@ is the larger. But much of that spread lies far from the boundary, among slopes
 close to zero whose logarithm runs off without changing any verdict. Dropping
 each term from the index in turn measures what moves races across it: without
 pit loss the index falls to \IndexWithoutPit{}, without the slope to
-\IndexWithoutSlope{}. Both terms enter; in these four championships the stop
-cost decides more of the verdicts. That is a description of this sample, not a
-law of motorsport, and a sample in which pit loss varied less would give the
-slope more of the answer.
+\IndexWithoutSlope{}. The difference, \IndexDropDiff{} with an interval of
+\IndexDropDiffCi{} resampling race-seasons, rests on
+\NTyreLimited{} tyre-limited race-seasons and is not established. Alone,
+pit loss ranks the regimes better than the slope by \IndexAloneDiff{}
+\IndexAloneDiffCi{}. So both terms set the regime, and the stop cost is the
+better single predictor of it. That is a description of this sample, not a law
+of motorsport: a sample in which pit loss varied less would give the slope more
+of the answer. It is also a statement about the endurance planning model,
+whose tyre-limited regime answers a question endurance teams rarely ask
+(Section~\ref{sec:threats}).
 
 The second is sharper. Pit loss is nearly constant inside a class, so its AUC
 could be measuring class identity wearing a continuous disguise --- and the
@@ -1145,11 +1159,18 @@ excludes one) have a median gap of \RatioResolvedMedian{} over
 unresolved ones, and \RatioResolvedOneMedian{} against
 \RatioUnresolvedOneMedian{} in one-stop races. And the team's real stop implies
 a ratio: inverting the closed form at the lap the team chose gives a median of
-\ImpliedRatio{}, against \ImpliedFitted{} fitted, and the implied ratio is the
-smaller in \ImpliedShareBelow{}\% of \ImpliedN{} decisions between two
-different compounds. Teams stop as if the tyre they are on were wearing faster,
-relative to the one they are about to fit, than the fit says. That is the
-one-stop residual restated as a parameter, and it is where a structural
+\ImpliedRatio{} \ImpliedRatioCi{}, against \ImpliedFitted{} fitted, and the
+implied ratio is the smaller in \ImpliedShareBelow{}\% \ImpliedShareBelowCi{}
+of \ImpliedN{} decisions between two different compounds, intervals resampling
+races. The implied ratio depends only on the team's real stop and the fixed
+endpoint, not on when the planner is asked, so it escapes the censoring above.
+Teams stop as if the tyre they are on were wearing faster, relative to the one
+they are about to fit, than the fit says. That need not be an error. A fitted
+ratio near one says the compounds wear almost alike, which is exactly what the
+fits cannot resolve (\PctCompoundOverlap{}\% of compound pairs have
+overlapping intervals); teams may know a difference the public timing does
+not, and the implied parameter also absorbs non-linear wear late in a stint,
+the undercut and the option value of a Safety Car. It is where a structural
 estimate in the manner of \citet{romer2006} would start.
 
 In endurance the same algebra removes the test. The endurance model has one
@@ -1381,7 +1402,9 @@ The game-theoretic branch of this literature is built on a two-car abstraction.
 \citet{salminen2026} derives his equilibrium for a leader and a chaser. Each is
 internally consistent and none of them has occasion to say which two cars those
 are in a real race, because the question does not arise inside the abstraction.
-Measured against real decisions, the identification is the part that gives way.
+Measured against real decisions, the identification is under-determined. In
+this model the recommendation barely depends on it; whether that holds for
+those richer games is open.
 
 \section{Threats to validity}
 \label{sec:threats}
@@ -1557,14 +1580,15 @@ the document that publishes it, which is stricter than recomputing alone.
 
 \section{Conclusion}
 
-What this paper offers is a protocol and what came back from it. Degradation
-slopes rarely transfer, and where they do it is a property of the
-circuit-class rather than of the championship; Balance of Performance is not
-needed for the instability, and the effect of car type cannot be separated
-here from the circuits each type races on. Whether an extra
-stop can ever pay is decided by the cost of the stop, which separates the two
-regimes at an AUC of \RegimeAucPitLoss{} against \RegimeAucSlope{} for the
-tyre. A time-optimal planner first appeared to disagree with professional
+What this paper offers is a protocol and what came back from it. Public timing
+rarely carries enough signal to say whether a degradation slope transfers: at
+most Formula~1 circuits even a perfectly stable slope could not clear the
+threshold. In endurance, slopes rarely transfer and GT3 classes transfer better
+than prototypes; Balance of Performance is not needed for the instability, and
+the effect of car type cannot be separated here from the circuits each type
+races on. In the endurance planning model, the stop cost and the slope both set
+whether an extra stop pays; alone, the stop cost ranks the regimes best, at an
+AUC of \RegimeAucPitLoss{} against \RegimeAucSlope{} for the tyre. A time-optimal planner first appeared to disagree with professional
 practice by a median of \FoneMedian{} laps in Formula~1. Four explanations
 failed against that figure; the fifth was the audit itself: asked to plan the
 stint the team would actually run, the planner lands \CommitAllAfter{} laps
@@ -1583,21 +1607,24 @@ larger lesson is how few circuits carry enough signal to ask.
 
 And the rival that a competition-aware model should answer is
 under-determined: \NRivalRules{} defensible rules name the same car on
-\NRivalAllAgree{} of \NRivalAllApply{} decisions, which constrains every model
-built on a two-car abstraction.
+\NRivalAllAgree{} of \NRivalAllApply{} decisions. In this model the
+recommendation barely moves between them, so the disagreement matters less
+here than its size suggests.
 
-What remains of the planner--team gap is \CommitOneAfter{} laps in one-stop
-races, where the planner and the team were answering the same question. The
-planner prices it at tenths of a second per lap of distance, and the races
-cannot decide whether that price is right (Section~\ref{sec:deviationcost}).
-The two mechanisms rejected against the first-run audit stay rejected on it
-(Section~\ref{sec:onestopretest}), and part of it is the asymmetric window the
-audit gives the planner: asked fifteen laps ahead, it falls to
-\DesignTopFifteenOneMedian{} (Section~\ref{sec:designchecks}). What remains
-reads as a parameter: teams stop as if their worn tyre were degrading faster,
-relative to the new one, than the fit says. It is smaller
-than the gap this paper set out to explain, and it is the one I would most like
-someone else to explain.
+What remains of the planner--team gap is a one-stop residual of
+\DesignTopFifteenOneMedian{} to \CommitOneAfter{} laps depending on how early
+the planner is asked, and it is not established when the whole field is
+replayed fifteen laps ahead (\DesignAllFifteenOneMedian{}
+\DesignAllFifteenOneCi{}; Section~\ref{sec:designchecks}). The planner prices
+it at tenths of a second per lap of distance and the races cannot decide
+whether that price is right (Section~\ref{sec:deviationcost}); the two
+mechanisms rejected against the first-run audit stay rejected on it
+(Section~\ref{sec:onestopretest}). Its cleanest form does not depend on the
+horizon at all: teams stop as if the slope ratio of the new tyre to the worn
+one were \ImpliedRatio{} \ImpliedRatioCi{} rather than the fitted
+\ImpliedFitted{}. That may be knowledge of a difference between compounds the
+public timing cannot resolve as much as an error, and it is the one I would
+most like someone else to explain.
 
 \section*{Data and code availability}
 

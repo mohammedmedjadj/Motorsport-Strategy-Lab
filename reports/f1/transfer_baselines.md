@@ -6,7 +6,7 @@
 
 - Past only: median -0.019 against 0.009 for leave-one-season-out on the same circuits; median difference -0.035 [-0.114, +0.005], better at 7, worse at 15.
 - Category slope: median 0.004 against 0.009; median difference -0.012 [-0.087, +0.075], better at 10, worse at 12.
-- Share of the noise ceiling, at the 15 circuits where it exceeds 0.05: median 0.71; 9 reach half.
+- Share of the noise ceiling, at the 15 circuits where it exceeds 0.05: median 0.71; 9 reach half. The category slope on the same circuits: median 0.25; 4 reach half. There the category slope minus the circuit's own: median -0.067 [-0.178, +0.058], better at 5, worse at 10.
 - Traffic trim: at 1.05, slopes move by a median of +0.0% (absolute 1.1%, 17% move by over a tenth) and the median score is 0.033; at 1.10, slopes move by a median of +0.0% (absolute 0.0%, 0% move by over a tenth) and the median score is 0.009; at 1.20, slopes move by a median of +0.0% (absolute 0.0%, 14% move by over a tenth) and the median score is 0.007.
 
 | circuit | Result 1 verdict | seasons | R², other seasons | R², past only | R², category slope | share of ceiling |

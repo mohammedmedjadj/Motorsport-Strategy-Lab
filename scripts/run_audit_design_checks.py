@@ -209,7 +209,12 @@ def summarise(frame: pd.DataFrame) -> dict:
     usable = base.dropna(subset=["implied_ratio", "fitted_ratio"])
     usable = usable[usable["ratio_class"] != "same compound"]
     log_gap = np.log(usable["implied_ratio"]) - np.log(usable["fitted_ratio"])
+    usable = usable.assign(below=(log_gap < 0).astype(float), log_gap=log_gap)
+    share_lo, share_hi = race_ci(usable, "below", rng, stat=np.mean)
+    imp_lo, imp_hi = race_ci(usable, "implied_ratio", rng)
     out["implied"] = {
+        "share_below_ci": [share_lo, share_hi],
+        "median_implied_ci": [imp_lo, imp_hi],
         "n": int(len(usable)),
         "median_fitted": float(usable["fitted_ratio"].median()),
         "median_implied": float(usable["implied_ratio"].median()),
@@ -278,7 +283,9 @@ def report(s: dict) -> str:
         f"the fitted ratio has median {i['median_fitted']:.2f} and the ratio the "
         f"team's real stop implies has median {i['median_implied']:.2f}; the "
         f"implied ratio is the smaller in {100 * i['share_below']:.0f}% of them "
-        f"(median factor {i['median_factor']:.2f}).",
+        f"[{100 * i['share_below_ci'][0]:.0f}%, {100 * i['share_below_ci'][1]:.0f}%], "
+        f"median implied ratio interval [{i['median_implied_ci'][0]:.2f}, "
+        f"{i['median_implied_ci'][1]:.2f}] (median factor {i['median_factor']:.2f}).",
         "",
         f"The closed form lands a median of {c['median_abs_vs_engine']:.1f} laps from "
         f"the engine's own lap on {c['n']} linear-circuit decisions.",
