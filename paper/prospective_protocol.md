@@ -84,3 +84,27 @@ the committed replay survives a rule change; a failure will be reported as
 that, not explained away by it.
 
 Nothing else in this file changes.
+
+## Second amendment, 8 November 2026, still before the São Paulo race
+
+A reviewer pointed out that the hypotheses above freeze the five-laps-ahead
+lookback, the very design the paper shows to be partly responsible for the
+one-stop residual. Two further hypotheses are therefore added, frozen with the
+code in `scripts/run_audit_design_checks.py` at this commit, and computed by
+the same race-resampling procedure (seed 20261108, 20,000 draws, from the 72
+races of the whole-field fifteen-laps-ahead replay and the 50 races carrying a
+horizon-free implied ratio):
+
+4. **Whole field, asked fifteen laps ahead.** Over the 2027 season, the median
+   of planner lap minus real lap is predicted to lie in **[−1, +2.5]** laps
+   (95% prediction interval for 24 races; [−6.5, +7] for the four remaining
+   2026 races, reported for completeness).
+5. **The implied slope ratio**, which depends only on the team's real stop and
+   the fixed endpoint and not on when the planner is asked. Over the 2027
+   season, its median is predicted to lie in **[0.68, 0.87]** (fitted ratio in
+   the paper: 1.02), and the share of decisions where it falls below the fitted
+   ratio in **[0.59, 0.81]**.
+
+Hypothesis 5 is the one that does not depend on any choice the audit makes, and
+it is the one a reader should weight most. The original hypotheses stand
+unchanged beside these.
