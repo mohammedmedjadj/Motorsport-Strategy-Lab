@@ -77,4 +77,10 @@ resampled set of races.
 3. **One-stop decisions** in either set: the median is predicted to be
    positive, reported with its race-clustered interval.
 
+One property of the test is stated so that it is not discovered afterwards: the
+frozen circuit models were fitted on the 2022-2025 cars, and the 2026 rules
+changed the cars and narrowed the tyres. The test therefore also asks whether
+the committed replay survives a rule change; a failure will be reported as
+that, not explained away by it.
+
 Nothing else in this file changes.
