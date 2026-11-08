@@ -829,6 +829,20 @@ def _macros() -> dict[str, str]:
     out["IndexAloneDiff"] = f"{d['pit_minus_slope_alone']:+.3f}"
     out["IndexAloneDiffCi"] = f"[{d['alone_ci'][0]:+.3f}, {d['alone_ci'][1]:+.3f}]"
 
+    # The prospective test's prediction intervals, by the procedure fixed in
+    # paper/prospective_protocol.md: resample whole races of the committed
+    # replay and take the median of each resampled set.
+    committed = pd.read_csv(F1_DERIVED_DIR / "committed_strategy.csv").dropna(
+        subset=["committed_delta_laps"])
+    committed["race"] = committed["season"].astype(str) + "_" + committed["circuit"]
+    groups = [g["committed_delta_laps"].to_numpy() for _, g in committed.groupby("race")]
+    rng_pi = np.random.default_rng(20261108)
+    for n_races, tag in ((4, "Four"), (24, "Season")):
+        meds = [np.median(np.concatenate([groups[j] for j in rng_pi.integers(0, len(groups), n_races)]))
+                for _ in range(20_000)]
+        lo, hi = np.percentile(meds, [2.5, 97.5])
+        out[f"ProspectivePi{tag}"] = f"[{signed(lo)}, {signed(hi)}]"
+
     est = load("estimability")
     out["EstChecked"] = str(est["f1_coefficients_checked"])
     out["EstFailed"] = str(est["f1_non_estimable"])
