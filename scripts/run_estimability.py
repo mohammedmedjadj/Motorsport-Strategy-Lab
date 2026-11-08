@@ -37,7 +37,7 @@ from src.degradation.dataset import (  # noqa: E402
 from src.degradation.model import _design_matrix  # noqa: E402
 from src.ingestion.config import F1_DERIVED_DIR, PRE_ERA_SEASONS  # noqa: E402
 
-CEILING = F1_DERIVED_DIR / "transfer_ceiling.csv"
+COEFS = F1_DERIVED_DIR / "degradation_coefficients.csv"
 OUT_JSON = F1_DERIVED_DIR / "estimability_summary.json"
 
 
@@ -47,7 +47,9 @@ def estimable(X: np.ndarray, columns: list[int]) -> dict[int, bool]:
 
 
 def main() -> int:
-    degrees = pd.read_csv(CEILING).set_index("circuit")["degree"]
+    # The published fits: every circuit in degradation_coefficients.csv, at
+    # the degree it was published at.
+    degrees = pd.read_csv(COEFS).groupby("circuit")["degree"].first()
     checked = failed = 0
     rank_deficient = 0
     failures = []
