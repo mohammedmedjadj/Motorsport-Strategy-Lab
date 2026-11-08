@@ -49,3 +49,32 @@ The evaluation reads the frozen code and models above and writes its output to
 `reports/f1/prospective_test.md`. It is added as a separate commit after the
 races, so that the code that scores the test can be compared line by line with
 the code frozen here.
+
+## Amendment, 8 November 2026, still before the São Paulo race
+
+A reviewer pointed out that the primary hypothesis above compares the median of
+a new sample with a *confidence* interval for the published median, when what
+is needed is a *prediction* interval for the median of a sample of the size
+that will actually be observed. Four races are far too few for that interval to
+be informative. The hypotheses are therefore restated as follows, before any of
+the races they cover has been run.
+
+The prediction intervals are computed by resampling whole races, with
+replacement, from the 74 races of the published committed replay (seed
+20261108, 20,000 draws), and taking the median of the decisions in each
+resampled set of races.
+
+1. **Primary: the 2027 season.** Every race of the 2027 season with a fitted
+   model for its circuit. The median of planner lap minus real lap over its
+   replayed first stops is predicted to lie in **[+1, +4.5]** laps, the 95%
+   prediction interval for a set of 24 races. If fewer races are scored, the
+   interval is recomputed for that number of races by the same procedure,
+   which is fixed here.
+2. **Secondary: the rest of 2026** (São Paulo, Las Vegas, Qatar, Abu Dhabi).
+   The 95% prediction interval for four races is **[−2, +12]**. It is reported
+   for completeness; a result inside it says little, and the primary test is
+   the one that can fail.
+3. **One-stop decisions** in either set: the median is predicted to be
+   positive, reported with its race-clustered interval.
+
+Nothing else in this file changes.
