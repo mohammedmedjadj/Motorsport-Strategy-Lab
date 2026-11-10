@@ -414,7 +414,8 @@ still out, is modelled as a logistic function of the old tyre's next-lap loss
 $\hat\beta_{\mathrm{old}}a_t$ and the new tyre's loss to the endpoint
 $\hat\beta_{\mathrm{new}}(W-t)$, with the fitted slopes plugged in and an
 indicator for a neutralised lap. The ratio of the two weights is one if teams
-weigh the tyres as the fit does.
+weigh the tyres as the fit does. The slopes are held at their estimates, so the
+hazard's interval, resampled by race, leaves out their own uncertainty.
 
 \paragraph{Intervals.} Every interval is a percentile bootstrap at the level the
 data vary at: circuits or circuit-classes for transfer, races for the audit,
