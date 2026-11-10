@@ -16,3 +16,5 @@
 ## Earliest undefendable undercut (Salminen 2026)
 
 39 of 150 decisions belong to the race leader and carry no prediction. On the 109 that do, the median error is +73 laps against +5 for the single-car optimiser; closer on 9, further on 97.
+
+On 72 of those 109 the predicted lap falls after the chequered flag: the mechanism predicts no undefendable undercut in that race. On the 37 decisions (23 races) where it falls inside the race, the median error is +0.0 laps [-9.0, +7.0] against +6 for the single-car optimiser; median difference in absolute error +9.0 [+1.0, +15.0], closer on 9, further on 25 (sign test p = 0.0090). This subset is selected by the mechanism's own prediction, so it is a description, not a test.

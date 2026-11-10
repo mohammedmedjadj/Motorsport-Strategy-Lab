@@ -32,10 +32,12 @@ classes. Then 1,280 real pit-stop decisions replayed against all of it, three
 rule-of-thumb baselines scored on the same decisions, and confidence intervals
 on every headline.
 
-Two of the three results are negative. The third came apart under its fifth
-test: four explanations for why a planner stops later than real pit walls
-failed, and the fifth showed that most of the gap was the audit asking the
-planner to plan a stint the team never ran.
+Transfer is mostly not measurable from public timing, because inside a stint
+fuel burn nearly cancels tyre wear; measured directly, slopes move between
+races anyway. Held to each team's own next stop, a planner stops within a few
+laps of the real pit wall — but so does a rule that uses no fitted quantity, so
+the agreement comes from the horizon. What the timing does reveal is a
+preference the fitted model does not contain.
 
 ---
 
@@ -43,38 +45,36 @@ planner to plan a stint the team never ran.
 
 <table>
 <tr>
-<td width="33%"><img src="reports/figures/r1_transfer.png" alt="Leave-one-race-out transfer per circuit-class"></td>
+<td width="33%"><img src="reports/figures/r1_ceiling.png" alt="Measured transfer score against the noise ceiling, F1 and endurance"></td>
 <td width="33%"><img src="reports/figures/r2_pit_loss_rule.png" alt="Pit loss against tyre-limited share"></td>
 <td width="33%"><img src="reports/figures/r3_audit_bias.png" alt="Model lap minus team lap, per class"></td>
 </tr>
 <tr>
-<td valign="top"><b>Public timing rarely carries enough signal to test transfer.</b> 51 endurance circuit-classes and 22 F1 circuits, one protocol. Only 5 endurance circuit-classes clear R² 0.2 (best: GT3 at Lime Rock, <b>+0.573</b>). <b>The count is mostly a signal limit:</b> rebuilt with a slope stable by construction, 16 of 22 F1 circuits and 43 of 50 endurance circuit-classes could not clear 0.2 against their own lap noise. Priced against that ceiling, F1 has 11 unstable slopes and 1 stable; endurance has 3 unstable, 11 stable and 28 with no recoverable signal. GT3 scores higher than prototypes mostly because its laps carry more signal (ceiling difference +0.095 [+0.034, +0.166]); as a share of the ceiling the difference is not established. The near-spec ELMS LMP2 field carries too little signal to say anything about Balance of Performance. <b>Repairs and baselines:</b> recoding laps by the real Pirelli compound (C1–C6, 92 races) changes the median score by −0.012 [−0.349, +0.001] where the allocation moved, and gains nothing at the 9 unstable circuits; Friday long runs predict Sunday worse than other seasons in 44 of 56 races; past-only fitting costs a little (−0.046 [−0.114, +0.005]). Where the laps carry signal, a circuit's own slope reaches a median 0.42 of the ceiling against 0.23 for a slope common to the category, a difference (−0.047 [−0.178, +0.058]) that is not established.</td>
-<td valign="top"><b>The stop cost and the tyre both set the regime; alone, the stop cost ranks it best.</b> Across 205 race-seasons: <b>r = −0.982</b> [−0.986, −0.745], monotonic, no inversion. 150 race-seasons above a 22.5 s pit loss contain no tyre-limited race at all. That edge is a maximum set by one race, so quote the rule and treat the number as an order of magnitude. In the closed-form index log(β n²/2π), the slope carries 51% of the spread and pit loss 39%, and dropping either from the index costs a similar share of the verdicts (AUC 0.996 → 0.923 without pit loss, → 0.953 without the slope; difference +0.030 [−0.017, +0.084], not established). Alone, pit loss ranks the regimes better by +0.155 [+0.087, +0.231]. This describes the endurance planning model on these three endurance championships, not a law.</td>
-<td valign="top"><b>A planner stops later than teams do — and most of it was the question.</b> 1,280 replayed first stops, seven classes, one criterion. Published median +10 laps in F1 [+8.0, +11.5], +12 in IMSA GTD. Four explanations failed. The fifth: the planner ran its second stint to the flag, while teams that stopped again did not. Holding each team's next stop fixed, F1 falls to <b>+2</b> [+1.0, +4.0] and stays at +1 to +3 asked 5, 10 or 15 laps ahead, for the top five or the whole field. In endurance, with one net slope, the timing does not depend on the tyre, so the replay cannot test the tyre model. What survives is <b>+4</b> [+2.0, +7.0] in one-stop races. In the races themselves a lap of distance from the planner costs <b>0.42 s</b> [−0.24, +1.11] against 0.25 s by the planner's own price: the races cannot confirm or reject it, with 5.6 s of car-to-car spread. The cover-aware engine and the earliest undefendable undercut stay rejected on the 150 one-stop decisions; the residual is +1 to +4 depending on how early the planner is asked and not established for the whole field asked 15 laps ahead (+1 [−1.0, +3.0]). Its horizon-free form: teams stop as if the slope ratio of new to worn tyre were 0.77 [0.70, 0.83] rather than the fitted 1.02, in 70% [62%, 78%] of decisions — possibly knowledge the public timing cannot resolve rather than an error. A <a href="paper/prospective_protocol.md">prospective test</a> was frozen before the 2026 São Paulo Grand Prix.</td>
+<td valign="top"><b>Transfer is mostly not measurable, and slopes move.</b> Only 5 of 51 endurance circuit-classes and 3 of 22 F1 circuits clear a within-stint R² of 0.2 (best: GT3 at Lime Rock, <b>+0.573</b>). The reason is physical: in F1 the median fuel term is −0.053 s/lap against +0.040 for wear, so the net slope a stint shows is 0.030 s/lap against 0.67 s of lap noise. Rebuilt with a slope stable by construction, 16 of 22 F1 circuits and 43 of 50 endurance circuit-classes still could not clear 0.2. Measured directly as a variance component, the slope moves between races at 31 of 45 F1 circuit-compounds (median I² 0.84 [0.66, 0.91]; between-race SD a median 31% [16, 60] of the slope) and at 42 of 51 endurance circuit-classes. Track temperature explains 2% of it. Recoding to the real Pirelli compound (C1–C6), Friday long runs, a temperature term, past-only fitting and a category-wide slope do not establish any gain. The raw GT3-over-prototype difference (+0.164) falls to +0.035 [−0.005, +0.085], p = 0.22, paired within the 9 events that run both: a difference between circuits, not car types.</td>
+<td valign="top"><b>In the endurance planning model, the stop cost ranks the regime better than the slope.</b> Across 205 race-seasons, pit loss alone separates tyre-limited from fuel-limited races at AUC 0.977 [0.955, 0.994], the net slope at 0.865 [0.806, 0.915]; dropping either from the planner's own index costs a similar share (difference +0.030 [−0.017, +0.084]), so both set the regime. Class level: <b>r = −0.982</b> [−0.986, −0.745], on six class points. 150 race-seasons above a 22.5 s pit loss contain no tyre-limited race; that edge is set by one race, so treat it as an order of magnitude. The regime is close to an identity of the planner and is reported as a description of these championships, not a mechanism.</td>
+<td valign="top"><b>With the strategy held fixed, the planner agrees with teams — and the agreement comes from the horizon.</b> 1,280 replayed first stops. Run to the flag, the planner is +10 laps late in F1 [+8, +11.5], because it answers a different question from a team that already planned a second stop. Holding each team's next stop fixed: <b>+2</b> [+1, +4] over 352 F1 decisions, <b>+3</b> [+2, +4] out of sample with slopes fitted without the decision's season, +1 to +3 across lookbacks and fields. But a ratio-one rule — balance tyre age before the team's next stop, no fitted quantity — ties the full engine's error in 7 of 7 classes. What the timing reveals is a preference: teams stop as if the new tyre's wear rate relative to the old were <b>0.77</b> [0.70, 0.83] rather than the fitted 1.02, and a stop hazard on every lap at risk agrees (0.50 [0.34, 0.71]). Fuel-dependent wear, steeper first stints, track position and Salminen's undefendable undercut do not account for it. A <a href="paper/prospective_protocol.md">prospective test</a> was frozen before the 2026 São Paulo Grand Prix.</td>
 </tr>
 </table>
 
-**And a rule of thumb sits closer to real practice in 5 of the 7 classes.**
+**Run to the flag, a rule of thumb sits closer to real practice in 5 of the 7 classes; given the team's next stop, a rule with no fitted quantity ties the optimiser everywhere.**
 
-| class | optimiser | B1 interval | B2 threshold | B3 fuel |
-|---|---|---|---|---|
-| Formula 1 | 10 | 11 | **7** | — |
-| IMSA GTP | 9 | 9 | 54 | 14 |
-| IMSA GTD | 12 | **7** | 18 | 14 |
-| IMSA GTD PRO | 12 | **9** | 33 | 15 |
-| WEC Hypercar | 2 | 2 | 39 | **1** |
-| ELMS LMP2 | **2** | 3 | 45 | 4 |
-| ELMS LMP2 Pro/Am | 3 | **2** | 45 | 4 |
+| class | optimiser | B1 interval | B2 threshold | B3 fuel | optimiser, next stop fixed | ratio one, next stop fixed |
+|---|---|---|---|---|---|---|
+| Formula 1 | 10 | 11 | **7** | — | 4 | 4 |
+| IMSA GTP | 9 | 9 | 54 | 14 | 2 | 2 |
+| IMSA GTD | 12 | **7** | 18 | 14 | 2 | 2 |
+| IMSA GTD PRO | 12 | **9** | 33 | 15 | 2 | 2 |
+| WEC Hypercar | 2 | 2 | 39 | **1** | 1 | 1 |
+| ELMS LMP2 | **2** | 3 | 45 | 4 | 2 | 2 |
+| ELMS LMP2 Pro/Am | 3 | **2** | 45 | 4 | 2 | 2 |
 
-Median absolute lap error against the real stop, on 1,263 of the audit's 1,280
-decisions. B1 is the winning rule in three of those five and uses no fitted quantity at
-all, only the race length and the number of stops the tank forces. In the two
-classes it does not win it ties the optimiser rather than losing to it.
+Median absolute lap error against the real stop. The first four columns are run
+to the flag, on 1,263 of the audit's 1,280 decisions; bold marks the best of
+them. B1 uses no fitted quantity at all, only the race length and the number of
+stops the tank forces. The last two columns are given the team's own next stop.
 
 Closer to what teams did is not the same as better. Everything here scores
-agreement with practice, never which plan was faster. What it settles is
-narrower: the 12-lap gap cannot come from the simpler methods lacking
-information the optimiser has, because they have less and land nearer.
+agreement with practice, never which plan was faster.
 
 ## Quick start
 

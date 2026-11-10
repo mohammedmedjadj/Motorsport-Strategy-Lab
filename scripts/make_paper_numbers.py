@@ -312,6 +312,11 @@ def _macros() -> dict[str, str]:
     out["NRivalTwoCars"] = str(int((wide.nunique(axis=1) == 2).sum()))
     out["NRivalThreeCars"] = str(int((wide.nunique(axis=1) == 3).sum()))
     out["MaxRivalCars"] = str(int(wide.nunique(axis=1).max()))
+    pairs = [100 * (wide[x] == wide[y]).mean()
+             for i, x in enumerate(wide.columns) for y in wide.columns[i + 1:]]
+    out["RivalPairMin"] = f"{min(pairs):.0f}"
+    out["RivalPairMax"] = f"{max(pairs):.0f}"
+    out["RivalPairMedian"] = f"{np.median(pairs):.0f}"
     out["PctRivalThravesAgrees"] = (
         f"{100 * (wide['thraves'] == wide['position']).mean():.0f}"
     )
@@ -752,6 +757,15 @@ def _macros() -> dict[str, str]:
     out["RetestSingleError"] = signed(sal["single_error"])
     out["RetestEuuCloser"] = str(sal["closer"])
     out["RetestEuuFurther"] = str(sal["further"])
+    ins = retest["salminen_inside"]
+    out["NRetestEuuAfterFlag"] = str(ins["after_flag"])
+    out["NRetestEuuInside"] = str(ins["n"])
+    out["RetestEuuInsideAbsDiff"] = signed(ins["abs_diff"])
+    out["RetestEuuInsideAbsDiffCi"] = (
+        f"[{ins['abs_diff_ci'][0]:+.0f}, {ins['abs_diff_ci'][1]:+.0f}]"
+    )
+    out["RetestEuuInsideCloser"] = str(ins["closer"])
+    out["RetestEuuInsideFurther"] = str(ins["further"])
 
     design = load("audit_design_checks")
     names = {"top": "Top", "all": "All"}
@@ -896,6 +910,149 @@ def _macros() -> dict[str, str]:
     out["RefuelTyreLimited"] = str(rf["tyre_limited_marginal"])
     out["RefuelChanged"] = str(rf["n_changed"])
 
+    # --- identification checks (run_identification_checks.py) ---------------
+    idc = load("identification_checks")
+    ca, va, en = idc["cancellation"], idc["variance"], idc["endurance"]
+    out["CancelN"] = str(ca["n"])
+    out["CancelFuel"] = f"{ca['fuel_median']:+.3f}"
+    out["CancelWear"] = f"{ca['wear_median']:+.3f}"
+    out["CancelNet"] = f"{ca['net_abs_median']:.3f}"
+    out["CancelRho"] = f"{ca['rho']:.2f}"
+    out["CancelLowest"] = str(ca["lowest"]).replace("_", " ").title()
+    out["CancelLowestFuel"] = f"{ca['lowest_fuel']:+.3f}"
+    out["CancelLowestWear"] = f"{ca['lowest_wear']:+.3f}"
+    out["VarN"] = str(va["n"])
+    out["VarCircuits"] = str(va["n_circuits"])
+    out["VarHet"] = str(va["n_heterogeneous"])
+    out["VarIsq"] = f"{va['i2_median']:.2f}"
+    out["VarIsqCi"] = f"[{va['i2_median_ci'][0]:.2f}, {va['i2_median_ci'][1]:.2f}]"
+    out["VarIsqHalf"] = str(va["n_i2_above_half"])
+    out["VarTauShare"] = f"{100 * va['tau_over_mu_median']:.0f}"
+    out["VarTauShareCi"] = (
+        f"[{100 * va['tau_over_mu_ci'][0]:.0f}, {100 * va['tau_over_mu_ci'][1]:.0f}]"
+    )
+    out["VarTauExcl"] = str(va["n_tau_ci_excludes_zero"])
+    out["VarSeInflation"] = f"{va['se_inflation_median']:.1f}"
+    out["VarSeInflationMax"] = f"{va['se_inflation_max']:.1f}"
+    iv = va["i2_by_verdict"]
+    out["VarIsqStable"] = f"{iv.get('slope stable', float('nan')):.2f}"
+    out["VarIsqUnstable"] = f"{iv.get('slope unstable', float('nan')):.2f}"
+    out["VarIsqNoSignal"] = f"{iv.get('no signal to recover', float('nan')):.2f}"
+    out["EndVarN"] = str(en["n"])
+    out["EndVarHet"] = str(en["n_heterogeneous"])
+    out["EndVarIsq"] = f"{en['i2_median']:.2f}"
+    out["EndVarIsqStable"] = f"{en['i2_by_verdict'].get('slope stable', float('nan')):.2f}"
+    t, tr = idc["temperature"], idc["temperature_repair"]
+    out["TempTheta"] = f"{t['theta_per_10c']:+.3f}"
+    out["TempThetaSe"] = f"{t['theta_per_10c_se']:.3f}"
+    out["TempShare"] = f"{100 * t['share_removed']:.0f}"
+    out["TempRange"] = f"{t['temp_range_median_c']:.0f}"
+    out["TempOwnDiff"] = f"{tr['median_difference']:+.3f}"
+    out["TempOwnDiffCi"] = f"[{tr['ci'][0]:+.3f}, {tr['ci'][1]:+.3f}]"
+    out["TempOwnBetter"] = str(tr["n_better"])
+    out["TempCatDiff"] = f"{tr['category']['median_difference']:+.3f}"
+    out["TempCatDiffCi"] = f"[{tr['category']['ci'][0]:+.3f}, {tr['category']['ci'][1]:+.3f}]"
+    out["TempCatBetter"] = str(tr["category"]["n_better"])
+    out["TempN"] = str(tr["n"])
+    fs = idc["first_stint"]
+    out["FirstPairs"] = str(fs["n_pairs"])
+    out["FirstSteeper"] = str(fs["n_first_steeper"])
+    out["FirstSig"] = str(fs["n_significant"])
+    out["FirstSigSteeper"] = str(fs["n_significant_steeper"])
+    out["FirstN"] = str(fs["n_decisions"])
+    out["FirstGapPooled"] = signed(fs["gap_pooled"])
+    out["FirstGapSplit"] = signed(fs["gap_split"])
+    out["FirstOneN"] = str(fs["one_n"])
+    out["FirstOneGapPooled"] = signed(fs["one_gap_pooled"])
+    out["FirstOneGapSplit"] = signed(fs["one_gap_split"])
+    ex = idc["extrapolation"]
+    out["ExtrapN"] = str(ex["n"])
+    out["ExtrapMax"] = f"{ex['pct_beyond_max']:.0f}"
+    out["ExtrapPninetyfive"] = f"{ex['pct_beyond_p95']:.0f}"
+    out["ExtrapReal"] = f"{ex['pct_real_beyond_p95']:.0f}"
+    out["ExtrapOne"] = f"{ex['one_pct_beyond_p95']:.0f}"
+    out["ExtrapInsideGap"] = signed(ex["gap_inside_p95"])
+    out["ExtrapOneInsideGap"] = signed(ex["one_gap_inside_p95"])
+    gp = idc["gt3_paired"]["measured"]
+    out["GtPairEvents"] = str(gp["n_events"])
+    out["GtPairDiff"] = f"{gp['mean_difference']:+.3f}"
+    out["GtPairDiffCi"] = f"[{gp['ci'][0]:+.3f}, {gp['ci'][1]:+.3f}]"
+    out["GtPairP"] = f"{gp['p_sign_flip']:.2f}"
+    out["GtPairHigher"] = str(gp["n_gt3_higher"])
+
+    # --- the committed audit out of sample (run_audit_out_of_sample.py) -----
+    aos = load("audit_out_of_sample")
+    for tag, key in (("Oos", "out_of_sample"), ("Wide", "widened")):
+        g = aos[key]
+        out[f"{tag}N"] = str(g["n"])
+        out[f"{tag}Median"] = signed(g["median"])
+        out[f"{tag}Ci"] = f"[{signed(g['ci'][0])}, {signed(g['ci'][1])}]"
+        out[f"{tag}Published"] = signed(g["published_median"])
+        out[f"{tag}OneN"] = str(g["n_one"])
+        out[f"{tag}OneMedian"] = signed(g["one_median"])
+        out[f"{tag}OneCi"] = f"[{signed(g['one_ci'][0])}, {signed(g['one_ci'][1])}]"
+        out[f"{tag}OnePublished"] = signed(g["one_published_median"])
+        out[f"{tag}Moved"] = f"{g['pct_moved']:.0f}"
+
+    # The verdict rule of the noise ceiling, read from the script that applies it.
+    import importlib.util
+    spec = importlib.util.spec_from_file_location(
+        "run_transfer_ceiling", REPO_ROOT / "scripts" / "run_transfer_ceiling.py")
+    ceiling_mod = importlib.util.module_from_spec(spec)
+    sys.path.insert(0, str(REPO_ROOT / "scripts"))
+    spec.loader.exec_module(ceiling_mod)
+    out["StableGap"] = f"{ceiling_mod.STABLE_GAP:.2f}"
+    out["UnstableGap"] = f"{ceiling_mod.UNSTABLE_GAP:.2f}"
+
+    coefs_tab = pd.read_csv(F1_DERIVED_DIR / "degradation_coefficients.csv")
+    noise = coefs_tab.groupby("circuit")["cv_rmse_s"].first()
+    sane_ceiling = ceil_tab.set_index("circuit")
+    out["CancelNoise"] = f"{noise.reindex(sane_ceiling.index).median():.2f}"
+    out["NFoneAboveTwo"] = str(int((sane_ceiling["noleak_r2"] > 0.2).sum()))
+    out["OosShift"] = f"{aos['out_of_sample']['median_abs_shift']:.0f}"
+    # The cross-source slope check: core FastF1 slopes beside the independent
+    # Ergast-schema history, paired by circuit, as tests/test_paper_claims.py
+    # recomputes it for the README.
+    from src.ingestion.config import breadth_key
+    history = pd.read_csv(F1_DERIVED_DIR / "history_degradation.csv")
+    core_slope = coefs_tab.groupby("circuit")["deg_p1"].median()
+    hist_slope = (history[history["era"] == "ground-effect"]
+                  .groupby("circuit")["tyre_slope_s"].median())
+    pairs = [(float(v), float(hist_slope[breadth_key(c)])) for c, v in core_slope.items()
+             if breadth_key(c) in hist_slope.index]
+    pairs = [(a, b) for a, b in pairs if np.isfinite(a) and np.isfinite(b)]
+    diffs = np.array([b - a for a, b in pairs])
+    out["CrossSourceN"] = str(len(pairs))
+    out["CrossSourceDiff"] = f"{np.median(diffs):+.4f}"
+    out["CrossSourceWear"] = f"{np.median([a for a, _ in pairs]):.3f}"
+
+    hz = load("stop_hazard")
+    out["HazardStints"] = str(hz["n_stints"])
+    out["HazardLaps"] = f"{hz['n_laps']:,}"
+    out["HazardRaces"] = str(hz["n_races"])
+    out["HazardRatio"] = f"{hz['ratio']:.2f}"
+    out["HazardRatioCi"] = f"[{hz['ratio_ci'][0]:.2f}, {hz['ratio_ci'][1]:.2f}]"
+
+    # --- reference rules (run_reference_rules.py) ---------------------------
+    ref = json.loads((DERIVED_DIR / "cross_series" / "reference_rules_summary.json").read_text(encoding="utf-8"))
+    ties = sum(1 for g in ref.values() if round(g["ratio_one_abs"]) == round(g["committed_abs"]))
+    out["RatioOneTies"] = str(ties)
+    out["RatioOneClasses"] = str(len(ref))
+    for key, g in ref.items():
+        series, car_class = key.split("|")
+        name = (_tex_name(series) if series == "f1"
+                else _tex_name(series) + _CLASS_TEX.get(car_class, ""))
+        out[f"{name}RatioOneError"] = f"{g['ratio_one_abs']:.0f}"
+        out[f"{name}Caution"] = f"{g['pct_neutralised']:.0f}"
+        out[f"{name}GreenN"] = str(g["green_n"])
+        out[f"{name}GreenMedian"] = signed(g["green_committed_median"])
+        out[f"{name}GreenCi"] = (
+            f"[{signed(g['green_committed_ci'][0])}, {signed(g['green_committed_ci'][1])}]")
+    out["FoneRatioOneSigned"] = signed(ref["f1|"]["ratio_one_median"])
+    imsa = [g for k, g in ref.items() if k.startswith("imsa")]
+    out["ImsaCautionMin"] = f"{min(g['pct_neutralised'] for g in imsa):.0f}"
+    out["ImsaCautionMax"] = f"{max(g['pct_neutralised'] for g in imsa):.0f}"
+
     est = load("estimability")
     out["EstChecked"] = str(est["f1_coefficients_checked"])
     out["EstFailed"] = str(est["f1_non_estimable"])
@@ -926,6 +1083,31 @@ def _macros() -> dict[str, str]:
     return out
 
 
+
+_ONE_DECIMAL_INTERVAL = re.compile(r"^\[([-+]?\d+\.\d), ([-+]?\d+\.\d)\]$")
+
+
+def _lap_interval(value: str) -> str:
+    """Write a lap interval the way its median is written: [+1, +4], not [+1.0, +4.0].
+
+    Medians of whole laps are whole or half laps, so a one-decimal interval whose
+    bounds are both multiples of a half is a lap interval; every other value is
+    returned unchanged.
+    """
+    m = _ONE_DECIMAL_INTERVAL.match(str(value))
+    if not m:
+        return value
+    bounds = [float(m.group(1)), float(m.group(2))]
+    if any((2 * b) % 1 for b in bounds):
+        return value
+
+    def one(b: float) -> str:
+        if b == 0:
+            return "0"
+        return f"{b:+.0f}" if b.is_integer() else f"{b:+.1f}"
+
+    return f"[{one(bounds[0])}, {one(bounds[1])}]"
+
 def main() -> int:
     macros = _macros()
     PAPER.mkdir(parents=True, exist_ok=True)
@@ -939,7 +1121,7 @@ def main() -> int:
         "",
     ]
     for name, value in macros.items():
-        lines.append(f"\\newcommand{{\\{name}}}{{{value}}}")
+        lines.append(f"\\newcommand{{\\{name}}}{{{_lap_interval(value)}}}")
     lines.append("")
 
     (PAPER / "numbers.tex").write_text("\n".join(lines), encoding="utf-8")

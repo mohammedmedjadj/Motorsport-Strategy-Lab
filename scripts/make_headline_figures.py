@@ -137,6 +137,51 @@ def r1_transfer() -> str:
     return f"{path}  ({len(mean)} circuit-classes, {clear} above 0.2)"
 
 
+def r1_ceiling() -> str:
+    """Measured transfer against what a perfectly stable slope could have scored."""
+    f1 = pd.read_csv(F1_DERIVED_DIR / "transfer_ceiling.csv")
+    f1 = f1[f1["sane"].fillna(False).astype(bool)]
+    end = pd.read_csv(ENDURANCE_DERIVED_DIR / "endurance_ceiling.csv")
+    end = end[end["verdict"] != "degenerate fit, excluded"]
+    verdict_colour = {
+        "no signal to recover": "#9aa5b1", "slope stable": "#2a7f62",
+        "borderline": "#d9a441", "slope unstable": "#b8434f",
+    }
+    fig, axes = plt.subplots(1, 2, figsize=(11, 5.2), sharey=False)
+    for ax, frame, measured, title in (
+        (axes[0], f1, "noleak_r2", "Formula 1, one point per circuit"),
+        (axes[1], end, "measured_r2", "Endurance, one point per circuit-class"),
+    ):
+        x = frame["ceiling_mean"].to_numpy()
+        y = frame[measured].to_numpy()
+        top = max(0.65, float(np.nanmax(x)) + 0.05)
+        ax.plot([0, top], [0, top], color=MUTED, linewidth=0.9, linestyle="--", zorder=1)
+        ax.axvline(0.2, color="#444444", linewidth=0.8, zorder=1)
+        ax.axhline(0.2, color="#444444", linewidth=0.8, zorder=1)
+        for verdict, colour in verdict_colour.items():
+            part = frame[frame["verdict"] == verdict]
+            ax.scatter(part["ceiling_mean"], part[measured], s=40, color=colour,
+                       edgecolor="white", linewidth=0.6, zorder=3,
+                       label=f"{verdict} ({len(part)})")
+        below = int((x < 0.2).sum())
+        ax.set_xlim(-0.02, top)
+        ax.set_ylim(float(np.nanmin(y)) - 0.05, top)
+        ax.set_xlabel("ceiling: R\u00b2 a perfectly stable slope earns against the lap noise")
+        ax.set_ylabel("measured leave-one-season-out R\u00b2")
+        ax.set_title(title, fontsize=11, loc="left")
+        ax.text(0.01, 0.985, f"{below} of {len(frame)} left of 0.2: not measurable there",
+                transform=ax.transAxes, fontsize=8.5, color="#555555", va="top")
+        ax.legend(frameon=False, fontsize=8, loc="lower right")
+        _style(ax)
+    fig.suptitle("Transfer is unmeasurable at most circuits; where it is measurable, "
+                 "Formula 1 slopes mostly move", fontsize=12.5, x=0.01, ha="left")
+    path = FIGURES / "r1_ceiling.png"
+    fig.tight_layout()
+    fig.savefig(path, dpi=170)
+    plt.close(fig)
+    return str(path)
+
+
 def r2_pit_loss_rule() -> str:
     """Tyre-limited race-seasons occur only where the stop is cheap."""
     plans = pd.read_csv(ENDURANCE_DERIVED_DIR / "multistop_plans.csv")
@@ -346,7 +391,7 @@ def r3_audit_bias() -> str:
 
 def main() -> int:
     FIGURES.mkdir(parents=True, exist_ok=True)
-    for build in (r1_transfer, r2_pit_loss_rule, r3_audit_bias):
+    for build in (r1_transfer, r1_ceiling, r2_pit_loss_rule, r3_audit_bias):
         print("wrote", build())
     # The website serves its own copy under docs/, and a copy nothing
     # refreshes is the stale-duplicate problem this project has had before.

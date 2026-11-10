@@ -80,9 +80,11 @@
 <header>
   <div class="wrap">
     <h1>Does a tyre-degradation model transfer?</h1>
-    <p class="sub">One protocol across four championships and seven car classes.
-      1,280 real pit-stop decisions replayed against it. Two of the three
-      results are negative, and most of the third was the audit's own question.</p>
+    <p class="sub">One protocol across four championships and seven car classes,
+      and 1,280 real pit-stop decisions replayed against it. Transfer is mostly
+      not measurable from public timing; held to the team's own next stop, a
+      planner agrees with the pit wall, but the agreement comes from the
+      horizon; and the stops reveal a preference the fitted model lacks.</p>
     <p class="byline">Mohammed Reda Medjadj · Formula&nbsp;1 · WEC · IMSA · ELMS</p>
     <div class="links">
       <a class="btn primary" href="https://motorsport-strategy-lab.streamlit.app/">Try the demo</a>
@@ -98,7 +100,7 @@
 
 <section>
   <div class="wrap">
-    <h2><span class="n">1</span>Public timing rarely carries enough signal to test transfer</h2>
+    <h2><span class="n">1</span>Transfer is mostly not measurable, and slopes move</h2>
     <p class="lede">Fit a degradation slope on every season of a circuit but one,
       predict the held-out season, score the within-stint residual. Do it the
       same way everywhere.</p>
@@ -110,29 +112,25 @@
       <div>
         <div class="stat"><b>+0.573</b><span>best transfer anywhere — IMSA GTD at Lime Rock</span></div>
         <div class="stat"><b>5 of 51</b><span>circuit-classes reaching R² = 0.2 at all</span></div>
+        <div class="stat"><b>31 of 45</b><span>F1 circuit-compounds whose slope moves between races (Cochran's Q)</span></div>
       </div>
       <div>
-        <p><strong>Mostly a signal limit.</strong> Rebuilt with a slope stable
-          by construction, 16 of 22 F1 circuits and 43 of 50 endurance
-          circuit-classes could not clear 0.2 against their own lap noise.
-          Priced against that ceiling, F1 has 11 unstable slopes and 1 stable;
-          endurance has 3 unstable, 11 stable and 28 with no recoverable
-          signal.</p>
-        <p>GT3 classes score higher than prototypes (+0.164, 95% CI
-          [+0.059,&nbsp;+0.312]) mostly because their laps carry more signal:
-          the ceiling itself differs by +0.095 [+0.034,&nbsp;+0.166]. The
-          near-specification ELMS LMP2 field carries too little signal to say
-          anything about Balance of Performance.</p>
-        <p><strong>Repairs and baselines, tested on Formula&nbsp;1.</strong>
-          Coding each lap by the compound Pirelli actually supplied
-          (C1&ndash;C6, 92 races): median paired change &minus;0.012
-          [&minus;0.349,&nbsp;+0.001] where the allocation moved, nothing gained
-          at the 9 unstable circuits. Friday long runs instead of other
-          seasons: worse in 44 of 56 races.
-          <span class="win">Neither helps.</span> Past-only fitting costs a
-          little. Where the laps carry signal, a circuit's own slope reaches a
-          median 0.42 of the noise ceiling against 0.23 for a slope common to
-          the category, a difference that is not established.</p>
+        <p><strong>Why the score is low.</strong> Inside a stint tyre age and
+          fuel burned advance together. In Formula&nbsp;1 the median fuel term is
+          &minus;0.053&nbsp;s per lap against +0.040 for wear, so the net slope a
+          stint shows is 0.030&nbsp;s per lap against 0.67&nbsp;s of lap noise.
+          Rebuilt with a slope stable by construction, 16 of 22 F1 circuits and
+          43 of 50 endurance circuit-classes could not clear 0.2.</p>
+        <p><strong>Measured directly, slopes move.</strong> As a variance
+          component, the between-race spread is a median 31% [16,&nbsp;60] of
+          the slope, with I² 0.84 [0.66,&nbsp;0.91] in F1 and 0.87 in endurance.
+          Track temperature explains 2% of it.</p>
+        <p><strong>Repairs, tested on Formula&nbsp;1.</strong> The real Pirelli
+          compound (C1&ndash;C6), Friday long runs, a temperature term, past-only
+          fitting and a category-wide slope: <span class="win">none establishes
+          a gain.</span> The raw GT3-over-prototype difference (+0.164) falls to
+          +0.035 [&minus;0.005,&nbsp;+0.085] paired within the 9 events that run
+          both, a difference between circuits rather than car types.</p>
       </div>
     </div>
   </div>
@@ -140,7 +138,7 @@
 
 <section>
   <div class="wrap">
-    <h2><span class="n">2</span>The stop cost and the tyre both set the regime; alone, the stop cost ranks it best</h2>
+    <h2><span class="n">2</span>In the endurance planning model, the stop cost ranks the regime better than the slope</h2>
     <p class="lede">An exact dynamic program plans every endurance race under a
       hard fuel constraint and reports whether the tyre-optimal plan needs more
       stops than the tank forces.</p>
@@ -154,10 +152,10 @@
         <div class="stat"><b>150 → 0</b><span>race-seasons above a 22.5 s pit loss, and how many are tyre-limited</span></div>
       </div>
       <div>
-        <p>Monotonic across all six classes with no inversion. The interval is
-          bootstrapped over <em>races</em>, recomputing each class summary inside
-          every replicate — bootstrapping six fixed championships would produce
-          an interval over a variation that does not exist.</p>
+        <p>Six class points, monotonic. The interval is bootstrapped over
+          <em>races</em>, recomputing each class summary inside every
+          replicate. Over every race-season, pit loss alone separates the
+          regimes at AUC 0.977, the net slope at 0.865.</p>
         <div class="note"><strong>The rule is robust; the constant is not.</strong>
           The 22.5 s edge is a maximum set by a single race — the next
           tyre-limited race sits at 13.2 s. No interval is reported for it,
@@ -168,7 +166,9 @@
           verdicts (difference +0.030 [&minus;0.017,&nbsp;+0.084]). Alone, pit
           loss ranks the regimes better than the slope by +0.155
           [+0.087,&nbsp;+0.231]. This describes the endurance planning model
-          on these three endurance championships, not a law.</p>
+          on these three endurance championships, not a law: the regime is
+          decided inside the planner, so it is close to an identity of the
+          model.</p>
       </div>
     </div>
   </div>
@@ -176,66 +176,46 @@
 
 <section>
   <div class="wrap">
-    <h2><span class="n">3</span>A planner stops later than teams do — and most of it was the question</h2>
+    <h2><span class="n">3</span>With the strategy held fixed, the planner agrees with teams — and the agreement comes from the horizon</h2>
     <p class="lede">Every real first stop is replayed. The model is asked five
       laps early, given the state as it was, and its recommendation compared to
       the lap the team chose.</p>
     <figure>
-      <img src="figures/r3_audit_bias.png" alt="Model lap minus team lap per class, as first audited and with each team's next stop held fixed: F1 median +10 falls to +2, IMSA GTD +12 to +1, IMSA GTD PRO +13 to +1.">
+      <img src="figures/r3_audit_bias.png" alt="Model lap minus team lap per class, run to the flag and with each team's next stop held fixed.">
       <figcaption>1,280 replayed decisions, four championships, one criterion.</figcaption>
     </figure>
     <div class="cols two">
       <div>
-        <p><strong>Four explanations were tested, and none accounted for the magnitude.</strong></p>
-        <p><strong>No track position</strong>, so the engine cannot pay for an
-          undercut. Re-running all 357 F1 decisions through a cover-aware
-          Stackelberg engine moves the recommendation <em>away</em> from the real
-          stop. <span class="win">Rejected.</span></p>
-        <p><strong>Slopes biased toward durability.</strong> Against an
-          independent source separating tyre wear from fuel burn by a different
-          method, the paired difference is negligible — an error that size moves
-          a stop by several race distances, not ten laps.
-          <span class="win">Not detected.</span></p>
-        <p><strong>Salminen's position-keeping defence.</strong> The right sign,
-          and it fails on the quantity it depends on by a factor of 3.4.
-          <span class="win">Too small.</span></p>
-        <p><strong>A fresh tyre is worth more than the slope says.</strong> The
-          most natural explanation of all. The residuals say the
-          opposite: at the youngest measured tyre age laps are +0.187&nbsp;s
-          <em>slower</em> than the fit expects. That is warm-up, and pricing it
-          in widens the gap. <span class="win">Wrong sign.</span></p>
+        <div class="note"><strong>The question first.</strong> Run to the flag,
+          the planner is +10 laps late on all 357 F1 decisions, because it plans
+          a second stint the team never ran. Replayed with each team's own next
+          stop as the end of the stint, the gap is <strong>+2</strong>
+          [+1,&nbsp;+4], and <strong>+3</strong> [+2,&nbsp;+4] with slopes
+          fitted without the decision's season.</div>
+        <p><strong>But a rule with no fitted quantity does as well.</strong>
+          Balancing tyre age before the team's next stop ties the full Monte
+          Carlo engine's error in 7 of 7 classes. The agreement is a property of
+          the horizon; the engine's slopes and hazard add nothing to it.</p>
+        <p>In endurance, with one net slope, the timing does not depend on the
+          tyre at all, so the replay cannot test the tyre model.</p>
       </div>
       <div>
-        <div class="note"><strong>The fifth explanation was the audit
-          itself.</strong> The planner plans one stop and runs the stint after it
-          to the flag. For a car that really stopped again, that is not the
-          question the pit wall answered. Replayed with each team's own next stop
-          as the end of the stint, the Formula&nbsp;1 gap falls from +10 laps to
-          <strong>+2</strong> [+1.0,&nbsp;+4.0], and no endurance class keeps an
-          established gap.</div>
-        <p>That is agreement the window does not hand out for free: in
-          Formula&nbsp;1 the planner chooses from a median of 24 laps and misses
-          the real stop by 3, where a lap picked at random from the same window
-          would miss by 8.3. In WEC Hypercar and ELMS the fuel range leaves too
-          few laps for the test to discriminate, and it is reported that way.</p>
-        <p><strong>What survives</strong> is +4 laps [+2.0,&nbsp;+7.0] in
-          one-stop races, where the planner and the team were answering the same
-          question. Measured in the races, a lap of distance from the
-          planner's lap costs 0.42&nbsp;s [&minus;0.24,&nbsp;+1.11], against
-          0.25&nbsp;s by the planner's own pricing: the races cannot confirm
-          or reject that price, with 5.6&nbsp;s of spread between cars of the
-          same race. The overall +2 holds asked 5, 10 or 15 laps ahead and for
-          the whole field (+1 to +3); the one-stop residual is +1 to +4
-          depending on how early the planner is asked, and not established for
-          the whole field asked 15 laps ahead (+1 [&minus;1.0,&nbsp;+3.0]).
-          Teams stop as if the slope ratio of new to worn tyre were 0.77
-          [0.70,&nbsp;0.83] rather than the fitted 1.02 &mdash; possibly
-          knowledge the public timing cannot resolve rather than an error. In endurance, with one net
-          slope, the replay cannot test the tyre model. A
+        <p><strong>What the stops reveal.</strong> Teams stop as if the new
+          tyre's wear rate, relative to the old, were <strong>0.77</strong>
+          [0.70,&nbsp;0.83] rather than the fitted 1.02; a stop hazard fitted on
+          every lap at risk agrees (0.50 [0.34,&nbsp;0.71]). Possibly knowledge
+          the public timing cannot resolve rather than an error.</p>
+        <p><strong>What does not explain it.</strong> Wear that grows with fuel
+          load, steeper first stints, track position (a cover-aware Stackelberg
+          engine moves the lap <em>away</em> from the real stop), Salminen's
+          undefendable undercut, and a durability bias in the slopes against an
+          independent source. <span class="win">All rejected.</span></p>
+        <p>The residual in one-stop races is +4 [+2,&nbsp;+7]; in the races a
+          lap of distance from the planner goes with 0.42&nbsp;s
+          [&minus;0.24,&nbsp;+1.11], which the 5.6&nbsp;s of spread between cars
+          cannot confirm or reject. A
           <a href="https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab/blob/main/paper/prospective_protocol.md">prospective test</a>
-          was frozen before the 2026 São Paulo Grand Prix. It is the first of the
-          <a href="https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab/blob/main/outreach/questions.md">three questions</a>
-          this project would most like answered.</p>
+          was frozen before the 2026 São Paulo Grand Prix.</p>
       </div>
     </div>
   </div>
@@ -243,7 +223,7 @@
 
 <section>
   <div class="wrap">
-    <h2>And a rule of thumb beats it, in five of the seven classes</h2>
+    <h2>Run to the flag, a rule of thumb beats it in five of the seven classes</h2>
     <p class="lede">Three baselines, scored on 1,263 of the audit's 1,280
       decisions, from the same artifacts, on the same metric. Written to win if
       they could — a straw man would prove nothing. The 17 that are not scored
@@ -282,9 +262,9 @@
       end.</p>
     <div class="note"><strong>Closer to what teams did is not the same as
       better.</strong> Every number here scores agreement with practice, never
-      which plan was faster. What it does settle is narrower and still worth
-      having: the 12-lap gap cannot come from the simpler methods lacking
-      information the optimiser has. They have less, and land nearer.</div>
+      which plan was faster. Given each team's next stop, the optimiser's error
+      falls to 1 to 4 laps per class, and a rule that only balances tyre age
+      before that stop matches it in every class.</div>
   </div>
 </section>
 

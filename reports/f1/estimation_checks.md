@@ -4,6 +4,6 @@
 
 **Clustering by race.** Of 73 published linear slope terms, 16 have an interval containing zero with driver-race clusters and 40 with race clusters.
 
-**Fuel times tyre age.** On 19 linear circuits the interaction has median +0.00016 s per lap of age per race lap, positive at 10, significant at 8. The closed-form planner's median gap to the real stop over 260 decisions is +2.0 laps without it and +4.0 with it; over the 125 one-stop decisions +1.0 and +6.0.
+**Fuel times tyre age.** On 19 linear circuits the interaction has median +0.00016 s per lap of age per race lap, positive at 10, significant at 8. The closed-form planner's median gap to the real stop over 260 decisions is +3.0 laps without it and +4.0 with it; over the 125 one-stop decisions +4.0 and +6.0.
 
 **Refuelling time.** Seconds of stop loss per lap of fuel, by class: {'elms LMP2': 0.335, 'elms LMP2 Pro/Am': 0.231, 'imsa GTD': 0.0, 'imsa GTDPRO': 0.037, 'imsa GTP': 0.111, 'wec HYPERCAR': 0.324}. Refuelling is a median 5% of the measured stop loss (at most 65%). With the marginal stop cost, 26 race-seasons are tyre-limited instead of 25; 1 change regime.

@@ -323,6 +323,19 @@ jobs:
       # Result 2's separation inside each class.
       - name: Race-clustered audit intervals and the within-class regime check
         run: python scripts/run_audit_intervals.py
+      # Reads committed F1 laps, the transfer and endurance ceilings and the
+      # committed audits: between-race variance of the slopes, track
+      # temperature, first-stint slopes, extrapolation, GT3 paired by event.
+      - name: Identification checks
+        run: python scripts/run_identification_checks.py
+      # Reads the variance components above, so it runs after them. Replays the
+      # committed audit with slopes the decision's season never saw.
+      - name: Committed audit out of sample
+        run: python scripts/run_audit_out_of_sample.py
+      - name: Ratio-one rule and green-flag stops
+        run: python scripts/run_reference_rules.py
+      - name: Stop hazard
+        run: python scripts/run_stop_hazard.py
       # Last, because the figures read the artifacts every step above writes.
       # A figure that disagrees with its own data is the same defect as a
       # sentence that does, and it is harder to notice.

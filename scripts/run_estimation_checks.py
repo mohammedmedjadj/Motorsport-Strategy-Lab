@@ -100,9 +100,14 @@ def interaction() -> dict:
         se, g = cluster_robust_se(X2, y, beta, frame["driver_race"].to_numpy())
         gamma, gse = beta[-1], se[-1]
         gammas.append((gamma, abs(gamma) > stats.t.ppf(0.975, g - 1) * gse))
+        # The baseline is the published model, refitted without the interaction:
+        # the interaction model's own slopes with gamma set to zero are slopes at
+        # lap zero, not the published ones.
+        pooled = _ols(X, y)
         fits[circuit] = {
             "gamma": gamma,
             "beta": {n.split("::")[1]: beta[j] for j, n in enumerate(names) if n.startswith("deg::")},
+            "pooled": {n.split("::")[1]: pooled[j] for j, n in enumerate(names) if n.startswith("deg::")},
         }
     dec = pd.read_csv(DECISIONS)
     dec = dec[(dec["lookback"] == 5) & dec["top"] & (dec["compound"] != dec["target"])]
@@ -115,19 +120,19 @@ def interaction() -> dict:
         if w < 4:
             continue
 
-        def best(gamma: float) -> int:
+        def best(beta: dict, gamma: float) -> int:
             costs = []
             for k in range(1, w):
                 laps1 = r.decision_lap + np.arange(1, k + 1)
                 laps2 = r.decision_lap + np.arange(k + 1, w + 1)
-                c1 = np.sum((f["beta"][r.compound] + gamma * laps1) * (r.tyre_age + np.arange(1, k + 1)))
-                c2 = np.sum((f["beta"][r.target] + gamma * laps2) * np.arange(1, w - k + 1))
+                c1 = np.sum((beta[r.compound] + gamma * laps1) * (r.tyre_age + np.arange(1, k + 1)))
+                c2 = np.sum((beta[r.target] + gamma * laps2) * np.arange(1, w - k + 1))
                 costs.append(c1 + c2)
             return int(np.argmin(costs)) + 1
 
         real_k = r.real_pit_lap - r.decision_lap
-        rows.append({"one_stop": r.n_stops == 1, "without": best(0.0) - real_k,
-                     "with": best(f["gamma"]) - real_k})
+        rows.append({"one_stop": r.n_stops == 1, "without": best(f["pooled"], 0.0) - real_k,
+                     "with": best(f["beta"], f["gamma"]) - real_k})
     d = pd.DataFrame(rows)
     one = d[d["one_stop"]]
     g = np.array([x for x, _ in gammas])

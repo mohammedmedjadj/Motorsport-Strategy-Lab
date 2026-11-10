@@ -24,6 +24,7 @@ import json
 import sys
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 from scipy.stats import binomtest
 
@@ -73,6 +74,42 @@ def build() -> dict:
     predicted = defence[defence["euu_error"].notna()]
     closer = int((predicted["euu_error"].abs() < predicted["single_car_error"].abs()).sum())
     further = int((predicted["euu_error"].abs() > predicted["single_car_error"].abs()).sum())
+    # A predicted lap after the chequered flag means "no undefendable undercut in
+    # this race", not an error of that many laps; count those apart.
+    laps = {
+        (season, circuit): int(
+            pd.read_csv(F1_DERIVED_DIR / f"laps_{season}_{circuit}.csv", usecols=["LapNumber"])[
+                "LapNumber"
+            ].max()
+        )
+        for season, circuit in predicted[["season", "circuit"]].drop_duplicates().itertuples(index=False)
+    }
+    race_laps = [laps[(a, b)] for a, b in zip(predicted["season"], predicted["circuit"])]
+    inside = predicted[predicted["euu_lap"].to_numpy() <= np.array(race_laps)]
+    in_closer = int((inside["euu_error"].abs() < inside["single_car_error"].abs()).sum())
+    in_further = int((inside["euu_error"].abs() > inside["single_car_error"].abs()).sum())
+    rng = np.random.default_rng(20261110)
+    races = inside[["season", "circuit"]].drop_duplicates().to_numpy()
+    groups = {tuple(r): g for r, g in inside.groupby(["season", "circuit"])}
+    diffs, euus = [], []
+    for _ in range(4000):
+        pick = races[rng.integers(0, len(races), len(races))]
+        g = pd.concat([groups[tuple(r)] for r in pick])
+        euus.append(g["euu_error"].median())
+        diffs.append((g["euu_error"].abs() - g["single_car_error"].abs()).median())
+    out["salminen_inside"] = {
+        "after_flag": int(len(predicted) - len(inside)),
+        "n": int(len(inside)),
+        "races": int(len(races)),
+        "euu_error": float(inside["euu_error"].median()),
+        "euu_ci": [float(np.percentile(euus, 2.5)), float(np.percentile(euus, 97.5))],
+        "single_error": float(inside["single_car_error"].median()),
+        "abs_diff": float((inside["euu_error"].abs() - inside["single_car_error"].abs()).median()),
+        "abs_diff_ci": [float(np.percentile(diffs, 2.5)), float(np.percentile(diffs, 97.5))],
+        "closer": in_closer,
+        "further": in_further,
+        "sign_p": float(binomtest(in_closer, in_closer + in_further).pvalue),
+    }
     out["salminen"] = {
         "n": int(len(defence)),
         "leaders": int((defence["role"] == "race leader").sum()),
@@ -113,6 +150,19 @@ def report(s: dict) -> str:
         f"prediction. On the {d['predicted']} that do, the median error is "
         f"{d['euu_error']:+.0f} laps against {d['single_error']:+.0f} for the "
         f"single-car optimiser; closer on {d['closer']}, further on {d['further']}.",
+        "",
+    ]
+    i = s["salminen_inside"]
+    lines += [
+        f"On {i['after_flag']} of those {d['predicted']} the predicted lap falls after the "
+        "chequered flag: the mechanism predicts no undefendable undercut in that race. "
+        f"On the {i['n']} decisions ({i['races']} races) where it falls inside the race, "
+        f"the median error is {i['euu_error']:+.1f} laps [{i['euu_ci'][0]:+.1f}, {i['euu_ci'][1]:+.1f}] "
+        f"against {i['single_error']:+.0f} for the single-car optimiser; median difference in "
+        f"absolute error {i['abs_diff']:+.1f} [{i['abs_diff_ci'][0]:+.1f}, {i['abs_diff_ci'][1]:+.1f}], "
+        f"closer on {i['closer']}, further on {i['further']} (sign test p = {i['sign_p']:.4f}). "
+        "This subset is selected by the mechanism's own prediction, so it is a description, "
+        "not a test.",
         "",
     ]
     return "\n".join(lines)
