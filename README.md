@@ -36,8 +36,8 @@ Transfer is mostly not measurable from public timing, because inside a stint
 fuel burn nearly cancels tyre wear; measured directly, slopes move between
 races anyway. Held to each team's own next stop, a planner stops within a few
 laps of the real pit wall — but so does a rule that uses no fitted quantity, so
-the agreement comes from the horizon. What the timing does reveal is a
-preference the fitted model does not contain.
+the agreement comes from the horizon. What the stops do reveal is the compound
+difference the fitted slopes miss.
 
 ---
 
@@ -46,13 +46,14 @@ preference the fitted model does not contain.
 <table>
 <tr>
 <td width="33%"><img src="reports/figures/r1_ceiling.png" alt="Measured transfer score against the noise ceiling, F1 and endurance"></td>
-<td width="33%"><img src="reports/figures/r2_pit_loss_rule.png" alt="Pit loss against tyre-limited share"></td>
 <td width="33%"><img src="reports/figures/r3_audit_bias.png" alt="Model lap minus team lap, per class"></td>
+<td width="33%" valign="middle" align="center"><i>implied wear ratio:<br>0.73 to a harder compound<br>1.74 to a softer one<br>fitted: 1.02 and 0.87</i></td>
 </tr>
 <tr>
 <td valign="top"><b>Transfer is mostly not measurable, and slopes move.</b> Only 5 of 51 endurance circuit-classes and 3 of 22 F1 circuits clear a within-stint R² of 0.2 (best: GT3 at Lime Rock, <b>+0.573</b>). The reason is physical: in F1 the median fuel term is −0.053 s/lap against +0.040 for wear, so the net slope a stint shows is 0.030 s/lap against 0.67 s of lap noise. Rebuilt with a slope stable by construction, 16 of 22 F1 circuits and 43 of 50 endurance circuit-classes still could not clear 0.2. Measured directly as a variance component, the slope moves between races at 31 of 45 F1 circuit-compounds (median I² 0.84 [0.66, 0.91]; between-race SD a median 31% [16, 60] of the slope) and at 42 of 51 endurance circuit-classes. Track temperature explains 2% of it. Recoding to the real Pirelli compound (C1–C6), Friday long runs, a temperature term, past-only fitting and a category-wide slope do not establish any gain. The raw GT3-over-prototype difference (+0.164) falls to +0.035 [−0.005, +0.085], p = 0.22, paired within the 9 events that run both: a difference between circuits, not car types.</td>
-<td valign="top"><b>In the endurance planning model, the stop cost ranks the regime better than the slope.</b> Across 205 race-seasons, pit loss alone separates tyre-limited from fuel-limited races at AUC 0.977 [0.955, 0.994], the net slope at 0.865 [0.806, 0.915]; dropping either from the planner's own index costs a similar share (difference +0.030 [−0.017, +0.084]), so both set the regime. Class level: <b>r = −0.982</b> [−0.986, −0.745], on six class points. 150 race-seasons above a 22.5 s pit loss contain no tyre-limited race; that edge is set by one race, so treat it as an order of magnitude. The regime is close to an identity of the planner and is reported as a description of these championships, not a mechanism.</td>
-<td valign="top"><b>With the strategy held fixed, the planner agrees with teams — and the agreement comes from the horizon.</b> 1,280 replayed first stops. Run to the flag, the planner is +10 laps late in F1 [+8, +11.5], because it answers a different question from a team that already planned a second stop. Holding each team's next stop fixed: <b>+2</b> [+1, +4] over 352 F1 decisions, <b>+3</b> [+2, +4] out of sample with slopes fitted without the decision's season, +1 to +3 across lookbacks and fields. But a ratio-one rule — balance tyre age before the team's next stop, no fitted quantity — ties the full engine's error in 7 of 7 classes. What the timing reveals is a preference: teams stop as if the new tyre's wear rate relative to the old were <b>0.77</b> [0.70, 0.83] rather than the fitted 1.02, and a stop hazard on every lap at risk agrees (0.50 [0.34, 0.71]). Fuel-dependent wear, steeper first stints, track position and Salminen's undefendable undercut do not account for it. A <a href="paper/prospective_protocol.md">prospective test</a> was frozen before the 2026 São Paulo Grand Prix.</td>
+
+<td valign="top"><b>With the strategy held fixed, the planner agrees with teams — and the agreement comes from the horizon.</b> 1,280 replayed first stops. Run to the flag, the planner is +10 laps late in F1 [+8, +11.5], because it answers a different question from a team that already planned a second stop. Holding each team's next stop fixed: <b>+2</b> [+1, +4] over 352 F1 decisions, <b>+3</b> [+2, +4] out of sample with slopes fitted without the decision's season, +1 to +3 across lookbacks and fields. But a ratio-one rule — balance tyre age before the team's next stop, no fitted quantity — ties the full engine's error in 7 of 7 classes. A <a href="paper/prospective_protocol.md">prospective test</a> was frozen before the 2026 São Paulo Grand Prix.</td>
+<td valign="top"><b>The stops carry the compound difference the fit misses.</b> Inverting the time-optimal stop at the lap each team chose gives the wear ratio that would make it optimal: the tyre's age at the stop over the length of the next stint, with no fitted slope in it. Pooled it is 0.77 [0.70, 0.83] against a fitted 1.02. Split by the direction of the change it is <b>0.73</b> [0.68, 0.77] to a harder compound (204 decisions) and <b>1.74</b> [1.43, 2.53] to a softer one (28), on the side of one hardness predicts for 79% of decisions against 48% for the fitted slopes: teams act on a compound difference public timing does not resolve. A stop hazard on every lap at risk agrees in sign (0.50 [0.34, 0.77], slopes refitted in every replicate) but cannot separate the directions. Replayed on the 11 already-ingested 2026 races with the frozen models (out of sample, not pre-registered): committed median +1 [−4, +4] over 54 decisions.</td>
 </tr>
 </table>
 
@@ -132,11 +133,10 @@ The 22.5 s cheap-stop threshold is a maximum set by a single race; drop that rac
 and it moves to 13.2 s. Lime Rock GTD PRO's +0.497 transfer score is the mean of
 two folds that run from +0.357 to +0.638. The 14-fold track-position range has
 three races behind its high end, at a circuit first run in 2023. And the
-audit's central finding may not be a fair comparison at all: the model is offered
-every remaining lap while a pit wall chooses among a handful inside a plan it has
-already committed to. Testing that means changing the audit rather than the
-model, and it is the first of the
-[three questions](outreach/questions.md) this project would most like answered.
+audit's original run-to-flag gap was not a fair comparison: the model was offered
+every remaining lap while a pit wall chooses inside a plan it has already
+committed to. The committed replay is the fix, and once it is applied a rule with
+no fitted quantity agrees with teams as well as the model does.
 
 ## Where it sits in the literature
 

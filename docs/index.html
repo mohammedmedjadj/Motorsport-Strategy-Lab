@@ -6,7 +6,7 @@
 <title>Motorsport Strategy Lab — does a tyre-degradation model transfer?</title>
 <meta name="description" content="Race strategy across Formula 1, WEC, IMSA and ELMS: one protocol, seven car classes, 1,280 real pit-stop decisions replayed. Two negative results, and a planner-versus-team gap that turned out to be mostly the question the audit asked.">
 <meta property="og:title" content="Motorsport Strategy Lab">
-<meta property="og:description" content="One protocol across four championships. 1,280 real pit-stop decisions replayed. Two of three results are negative, and most of the third was the audit's own question.">
+<meta property="og:description" content="One protocol across four championships. 1,280 real pit-stop decisions replayed. Transfer is mostly not measurable from public timing; teams' stops reveal the compound difference the fitted slopes miss.">
 <meta property="og:image" content="https://mohammedmedjadj.github.io/Motorsport-Strategy-Lab/figures/r3_audit_bias.png">
 <meta property="og:url" content="https://mohammedmedjadj.github.io/Motorsport-Strategy-Lab/">
 <meta name="twitter:card" content="summary_large_image">
@@ -84,7 +84,8 @@
       and 1,280 real pit-stop decisions replayed against it. Transfer is mostly
       not measurable from public timing; held to the team's own next stop, a
       planner agrees with the pit wall, but the agreement comes from the
-      horizon; and the stops reveal a preference the fitted model lacks.</p>
+      horizon; and the stops reveal the compound difference the fitted
+      slopes miss.</p>
     <p class="byline">Mohammed Reda Medjadj · Formula&nbsp;1 · WEC · IMSA · ELMS</p>
     <div class="links">
       <a class="btn primary" href="https://motorsport-strategy-lab.streamlit.app/">Try the demo</a>
@@ -105,7 +106,7 @@
       predict the held-out season, score the within-stint residual. Do it the
       same way everywhere.</p>
     <figure>
-      <img src="figures/r1_transfer.png" alt="Leave-one-race-out mean within-stint R-squared for 51 circuit-classes, sorted; only five exceed 0.2.">
+      <img src="figures/r1_transfer.png" alt="Leave-one-season-out mean within-stint R-squared for 51 circuit-classes, sorted; only five exceed 0.2.">
       <figcaption>51 circuit-classes across IMSA, WEC and ELMS. One point each.</figcaption>
     </figure>
     <div class="cols two">
@@ -138,7 +139,7 @@
 
 <section>
   <div class="wrap">
-    <h2><span class="n">2</span>In the endurance planning model, the stop cost ranks the regime better than the slope</h2>
+    <h2>A note on the endurance planner: the stop cost ranks the regime better than the slope</h2>
     <p class="lede">An exact dynamic program plans every endurance race under a
       hard fuel constraint and reports whether the tyre-optimal plan needs more
       stops than the tank forces.</p>
@@ -176,7 +177,7 @@
 
 <section>
   <div class="wrap">
-    <h2><span class="n">3</span>With the strategy held fixed, the planner agrees with teams — and the agreement comes from the horizon</h2>
+    <h2><span class="n">2</span>With the strategy held fixed, the planner agrees with teams — and the agreement comes from the horizon</h2>
     <p class="lede">Every real first stop is replayed. The model is asked five
       laps early, given the state as it was, and its recommendation compared to
       the lap the team chose.</p>
@@ -200,16 +201,20 @@
           tyre at all, so the replay cannot test the tyre model.</p>
       </div>
       <div>
-        <p><strong>What the stops reveal.</strong> Teams stop as if the new
-          tyre's wear rate, relative to the old, were <strong>0.77</strong>
-          [0.70,&nbsp;0.83] rather than the fitted 1.02; a stop hazard fitted on
-          every lap at risk agrees (0.50 [0.34,&nbsp;0.71]). Possibly knowledge
-          the public timing cannot resolve rather than an error.</p>
-        <p><strong>What does not explain it.</strong> Wear that grows with fuel
-          load, steeper first stints, track position (a cover-aware Stackelberg
-          engine moves the lap <em>away</em> from the real stop), Salminen's
-          undefendable undercut, and a durability bias in the slopes against an
-          independent source. <span class="win">All rejected.</span></p>
+        <p><strong>3 · What the stops reveal.</strong> Inverting the
+          time-optimal stop at the lap each team chose gives the wear ratio that
+          would make it optimal: the tyre's age at the stop over the length of
+          the next stint, with no fitted slope in it. It is
+          <strong>0.73</strong> [0.68,&nbsp;0.77] when teams move to a harder
+          compound and <strong>1.74</strong> [1.43,&nbsp;2.53] when they move to
+          a softer one, on the side hardness predicts for 79% of decisions;
+          the fitted slopes manage 48%. Teams act on a compound difference that
+          public timing does not resolve.</p>
+        <p><strong>What does not explain the shorter first stints.</strong> Wear
+          that grows with fuel load, steeper first stints, track position (a
+          cover-aware Stackelberg engine moves the lap <em>away</em> from the real
+          stop), Salminen's undefendable undercut, and a durability bias in the
+          slopes against an independent source.</p>
         <p>The residual in one-stop races is +4 [+2,&nbsp;+7]; in the races a
           lap of distance from the planner goes with 0.42&nbsp;s
           [&minus;0.24,&nbsp;+1.11], which the 5.6&nbsp;s of spread between cars

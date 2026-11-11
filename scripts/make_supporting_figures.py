@@ -287,12 +287,12 @@ def s3_f1_degradation() -> str:
 
     ax.set_yticks(range(len(order)))
     ax.set_yticklabels([circuit_name(c) for c in order], fontsize=9)
-    ax.set_xlabel("tyre-age slope (s per lap of tyre age), cluster-robust 95% CI")
-    ax.set_title("Degradation per circuit and compound, with honest intervals",
+    ax.set_xlabel("tyre-age slope (s per lap of tyre age), 95% CI clustered by driver-race")
+    ax.set_title("Degradation per circuit and compound, intervals clustered by driver-race",
                  fontsize=13, pad=34, loc="left")
     _caption(ax, f"{len(coefs)} fitted coefficients across {len(order)} circuits.\n"
-                 "An interval crossing zero means no measurable wear on that "
-                 "compound at that circuit.")
+                 "The intervals leave out how the slope varies between races, "
+                 "which is measured separately.")
     ax.legend(frameon=False, fontsize=9, loc="lower right",
               title="compound", title_fontsize=9,
               bbox_to_anchor=(1.0, 0.02))
@@ -430,8 +430,8 @@ def s5_baselines() -> str:
 #: The artifact stores terse keys. A figure is read by people who have not
 #: opened the CSV, and "LORO" is not a word.
 _INTERVAL_LABELS = {
-    "GT3 mean LORO R2": "GT3 classes,\nmean leave-one-race-out R\u00b2",
-    "prototype mean LORO R2": "Prototype classes,\nmean leave-one-race-out R\u00b2",
+    "GT3 mean LORO R2": "GT3 classes,\nmean leave-one-season-out R\u00b2",
+    "prototype mean LORO R2": "Prototype classes,\nmean leave-one-season-out R\u00b2",
     "GT3 minus prototype": "GT3 minus prototype",
     "pit loss vs tyre-limited share (r)": "Median pit loss against\ntyre-limited share",
 }

@@ -1032,6 +1032,64 @@ def _macros() -> dict[str, str]:
     out["HazardRaces"] = str(hz["n_races"])
     out["HazardRatio"] = f"{hz['ratio']:.2f}"
     out["HazardRatioCi"] = f"[{hz['ratio_ci'][0]:.2f}, {hz['ratio_ci'][1]:.2f}]"
+    out["HazardRatioCiFixed"] = (
+        f"[{hz['ratio_ci_fixed_slopes'][0]:.2f}, {hz['ratio_ci_fixed_slopes'][1]:.2f}]"
+    )
+    for key, name in (("to harder", "Harder"), ("to softer", "Softer")):
+        d = hz["directions"][key]
+        out[f"Hazard{name}"] = f"{d['ratio']:.2f}"
+        out[f"Hazard{name}Ci"] = f"[{d['ratio_ci'][0]:.2f}, {d['ratio_ci'][1]:.2f}]"
+
+    # --- implied ratio by direction (run_implied_direction.py) ---------------
+    idr = load("implied_direction")
+    for key, name in (("to harder", "Harder"), ("to softer", "Softer")):
+        d = idr["directions"][key]
+        out[f"Implied{name}N"] = str(d["n"])
+        out[f"Implied{name}Races"] = str(d["races"])
+        out[f"Implied{name}"] = f"{d['implied']:.2f}"
+        out[f"Implied{name}Ci"] = f"[{d['implied_ci'][0]:.2f}, {d['implied_ci'][1]:.2f}]"
+        out[f"ImpliedFitted{name}"] = f"{d['fitted']:.2f}"
+        out[f"ImpliedFitted{name}Ci"] = f"[{d['fitted_ci'][0]:.2f}, {d['fitted_ci'][1]:.2f}]"
+    out["ImpliedExpectedSide"] = f"{100 * idr['implied_on_expected_side']:.0f}"
+    out["ImpliedFittedExpectedSide"] = f"{100 * idr['fitted_on_expected_side']:.0f}"
+
+    # --- 2026 races already ingested (run_heldout_2026.py) -----------------
+    h26 = load("heldout_2026")
+    out["HeldRaces"] = str(h26["n_races"])
+    out["HeldIngested"] = str(h26["n_ingested"])
+    out["HeldN"] = str(h26["top5_five"]["n"])
+    out["HeldMedian"] = signed(h26["top5_five"]["median"])
+    out["HeldCi"] = f"[{signed(h26['top5_five']['ci'][0])}, {signed(h26['top5_five']['ci'][1])}]"
+    out["HeldOneMedian"] = signed(h26["top5_five"]["one_median"])
+    out["HeldOneN"] = str(h26["top5_five"]["one_n"])
+    out["HeldWideN"] = str(h26["all_fifteen"]["n"])
+    out["HeldWideMedian"] = signed(h26["all_fifteen"]["median"])
+    out["HeldWideCi"] = (
+        f"[{signed(h26['all_fifteen']['ci'][0])}, {signed(h26['all_fifteen']['ci'][1])}]"
+    )
+    out["HeldImpliedN"] = str(h26["implied"]["n"])
+    out["HeldImplied"] = f"{h26['implied']['median']:.2f}"
+    out["HeldImpliedCi"] = f"[{h26['implied']['ci'][0]:.2f}, {h26['implied']['ci'][1]:.2f}]"
+
+    # --- between-race variance, three objections (run_tau_robustness.py) ----
+    tr = load("tau_robustness")
+    for key, name in (("published", "Pub"), ("real_compound", "Real"),
+                      ("unchanged_allocation", "Unchanged"), ("net_slope", "Net")):
+        t = tr[key]
+        out[f"Tau{name}N"] = str(t["n"])
+        out[f"Tau{name}Circuits"] = str(t["n_circuits"])
+        out[f"Tau{name}Het"] = str(t["n_heterogeneous"])
+        out[f"Tau{name}Isq"] = f"{t['i2_median']:.2f}"
+        out[f"Tau{name}ShareDl"] = f"{100 * t['share_dl_median']:.0f}"
+        out[f"Tau{name}ShareReml"] = f"{100 * t['share_reml_median']:.0f}"
+        out[f"Tau{name}ShareRemlCi"] = (
+            f"[{100 * t['share_reml_ci'][0]:.0f}, {100 * t['share_reml_ci'][1]:.0f}]"
+        )
+        out[f"Tau{name}Common"] = f"{100 * t['common_tau_share']:.0f}"
+        out[f"Tau{name}CommonCi"] = (
+            f"[{100 * t['common_tau_share_ci'][0]:.0f}, {100 * t['common_tau_share_ci'][1]:.0f}]"
+        )
+        out[f"Tau{name}CommonN"] = str(t["n_resolved_means"])
 
     # --- reference rules (run_reference_rules.py) ---------------------------
     ref = json.loads((DERIVED_DIR / "cross_series" / "reference_rules_summary.json").read_text(encoding="utf-8"))

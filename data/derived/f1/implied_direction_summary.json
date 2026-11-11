@@ -1,0 +1,46 @@
+{
+ "directions": {
+  "to harder": {
+   "fitted": 1.021417,
+   "fitted_ci": [
+    0.932406,
+    1.136444
+   ],
+   "implied": 0.725705,
+   "implied_ci": [
+    0.675676,
+    0.772727
+   ],
+   "n": 204,
+   "races": 50,
+   "share_below_one": 0.779412,
+   "transitions": {
+    "MEDIUM-HARD": 171,
+    "SOFT-HARD": 3,
+    "SOFT-MEDIUM": 30
+   }
+  },
+  "to softer": {
+   "fitted": 0.868832,
+   "fitted_ci": [
+    0.574976,
+    1.358559
+   ],
+   "implied": 1.736842,
+   "implied_ci": [
+    1.425725,
+    2.527311
+   ],
+   "n": 28,
+   "races": 19,
+   "share_below_one": 0.142857,
+   "transitions": {
+    "HARD-MEDIUM": 14,
+    "MEDIUM-SOFT": 14
+   }
+  }
+ },
+ "fitted_on_expected_side": 0.478448,
+ "implied_on_expected_side": 0.788793,
+ "n": 232
+}

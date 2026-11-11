@@ -76,8 +76,9 @@ def running_at_flag(laps: pd.DataFrame) -> list[tuple[str, int, int]]:
     return [(str(r.Driver), int(r.Position), int(r.LapNumber)) for r in kept.itertuples()]
 
 
-def build() -> pd.DataFrame:
-    races = sorted(pd.read_csv(AUDIT)[["season", "circuit"]].drop_duplicates().itertuples(index=False))
+def build(races: list[tuple[int, str]] | None = None) -> pd.DataFrame:
+    if races is None:
+        races = sorted(pd.read_csv(AUDIT)[["season", "circuit"]].drop_duplicates().itertuples(index=False))
     models = load_circuit_models()
     rows = []
     for season, circuit in races:

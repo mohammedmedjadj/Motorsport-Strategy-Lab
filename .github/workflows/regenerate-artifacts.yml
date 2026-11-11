@@ -141,6 +141,14 @@ jobs:
       # splits the gap by slope-ratio precision (about three minutes).
       - name: Design checks on the committed audit
         run: python scripts/run_audit_design_checks.py
+      # Reads the design-check decisions: the implied ratio by the direction of
+      # the compound change (seconds).
+      - name: Implied ratio by direction of the compound change
+        run: python scripts/run_implied_direction.py
+      # The 2026 races already ingested, replayed with the frozen pre-2026
+      # models: out of sample, not pre-registered (under a minute).
+      - name: 2026 races replayed out of sample
+        run: python scripts/run_heldout_2026.py
       # Reads the transfer ceiling for its verdicts and ceiling scores.
       - name: Result 1 baselines and traffic-trim sensitivity
         run: python scripts/run_transfer_baselines.py
@@ -334,8 +342,15 @@ jobs:
         run: python scripts/run_audit_out_of_sample.py
       - name: Ratio-one rule and green-flag stops
         run: python scripts/run_reference_rules.py
+      # Refits every circuit's slopes in each bootstrap replicate (a minute
+      # and a half).
       - name: Stop hazard
         run: python scripts/run_stop_hazard.py
+      # Reads the season slopes and the compound identity table written above:
+      # real compound coding, unchanged nominations, net slope, REML (three
+      # minutes).
+      - name: Between-race variance under three objections
+        run: python scripts/run_tau_robustness.py
       # Last, because the figures read the artifacts every step above writes.
       # A figure that disagrees with its own data is the same defect as a
       # sentence that does, and it is harder to notice.

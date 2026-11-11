@@ -113,7 +113,7 @@ def r1_transfer() -> str:
 
     ax.set_yticks([])
     ax.set_xlabel(
-        "leave-one-race-out mean within-stint R\u00b2   \u2192   transfers better"
+        "leave-one-season-out mean within-stint R\u00b2   \u2192   transfers better"
     )
     ax.set_title(
         "Few endurance slopes clear 0.2, and most could not even if they were stable",
@@ -369,15 +369,15 @@ def r3_audit_bias() -> str:
     ax.set_ylim(-0.7, len(groups) - 0.3)
     ax.set_xticks([-30, -20, -10, 0, 10, 20, 30, 40, 50])
     ax.set_xlabel("model's lap  -  team's lap      (negative = model stops earlier)")
-    ax.text(60, len(groups) - 0.45, "median: published \u2192 strategy fixed",
+    ax.text(60, len(groups) - 0.45, "median: run to the flag \u2192 next stop fixed",
             fontsize=8.5, color=MUTED, va="center")
     total = sum(len(p) for _, _, p, _ in groups)
     ax.set_title(
-        "Most of the planner-team gap was the question the audit asked",
+        "Given the team's next stop, the planner lands within a few laps of it",
         fontsize=13, pad=30, loc="left",
     )
     _caption(ax,
-             f"Grey: {total} first stops as first audited, with the planner's "
+             f"Grey: {total} first stops with the planner's "
              "second stint run to the flag.\nColour: the same decisions "
              "replayed with the stint ending at the team's own second stop.")
     _style(ax)
