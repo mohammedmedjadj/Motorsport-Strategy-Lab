@@ -19,16 +19,17 @@ abstract: >-
   degradation model predict a season it has never seen, and does its
   recommendation resemble what a professional team actually did.
 
-  Tyre-degradation slopes transfer as a property of the
-  circuit-class rather than of the championship, and a near-specification
-  control field fails exactly as the performance-balanced fields do, ruling out
-  heterogeneous machinery as the cause. Whether an extra pit stop can ever pay
-  is set by the cost of the stop rather than by the car. Replaying 1,280 real
-  first pit stops shows a single-next-stop planner stopping later than teams
-  did; four explanations fail, and the fifth is the audit itself, which ran the
-  planner's second stint to the flag. Holding each team's next stop fixed, the
-  Formula 1 median falls from +10 to +2 laps, every endurance interval contains
-  zero, and +4 laps survives in one-stop races.
+  Transfer is mostly not measurable from public timing: inside a stint the
+  fuel burned nearly cancels the tyre's wear, so even a slope stable by
+  construction could not reach a within-stint R-squared of 0.2 at 16 of 22
+  Formula 1 circuits, and measured directly as a variance component the slope
+  moves between races by about a third of its mean. Replaying 1,280 real first
+  pit stops with each team's next stop held fixed, a time-optimal planner lands
+  a median of +3 laps from the Formula 1 team out of sample, but a rule that
+  only balances tyre age before that stop does as well in every class. Read as
+  an implied wear ratio, teams' stint lengths follow compound hardness in both
+  directions of change (0.73 to a harder compound, 1.74 to a softer one) where
+  the fitted slopes are no better than chance.
 
   Every quantity is measured from published timing or absent; nothing is
   imputed. Two estimators built for this work were validated on synthetic data

@@ -1,7 +1,7 @@
 # The paper
 
-*Does a tyre-degradation model transfer? Cross-championship evidence and a
-retrospective audit of 1,280 real pit-stop decisions.*
+*Does a tyre-degradation model transfer? What public timing cannot identify,
+and what teams' pit stops reveal.*
 
 | file | what it is |
 |---|---|

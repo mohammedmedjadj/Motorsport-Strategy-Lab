@@ -1,5 +1,12 @@
 # Three questions a reviewer can actually settle
 
+> **Status, 11 November 2026.** Written for the first round of outreach and kept
+> as sent. Question 1 is settled the other way: paired within events, the GT3
+> advantage is not established, and the paper no longer claims it. Question 2 is
+> answered by the committed replay, which holds each team's next stop fixed.
+> Question 3 still stands. The current results are in the
+> [paper](../paper/main.tex) and the [one-pager](one_pager.md).
+
 Not "what do you think" — three specific methodological decisions where I am
 genuinely unsure, each with a stated position and what would change it. A person
 with fifteen minutes can answer any one of them.
