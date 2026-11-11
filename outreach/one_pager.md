@@ -62,8 +62,9 @@ Inverting the time-optimal stop at the lap each team chose gives the wear ratio
 that would have made it optimal, which is a ratio of stint lengths and uses no
 fitted slope. **To a harder compound it is 0.73 [0.68, 0.77]; to a softer one,
 1.74 [1.43, 2.53]**, on the side hardness predicts for 79% of decisions, against
-48% for the fitted slopes. Teams act as if they know which compound lasts, and
-public timing does not resolve it.
+48% for the fitted slopes (64% once each compound gets its own baseline pace).
+Teams act as if they know which compound lasts; the fitted model resolves it
+only in part.
 
 ## A note on the endurance planner
 

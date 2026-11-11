@@ -149,6 +149,10 @@ jobs:
       # models: out of sample, not pre-registered (under a minute).
       - name: 2026 races replayed out of sample
         run: python scripts/run_heldout_2026.py
+      # Compound baseline offsets refitted for the implied-ratio decisions
+      # (seconds).
+      - name: Compound baseline offsets
+        run: python scripts/run_compound_offsets.py
       # Reads the transfer ceiling for its verdicts and ceiling scores.
       - name: Result 1 baselines and traffic-trim sensitivity
         run: python scripts/run_transfer_baselines.py

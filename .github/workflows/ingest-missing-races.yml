@@ -1,0 +1,46 @@
+name: Ingest missing races
+
+# The weekly post-race refresh re-ingests the whole calendar and runs out of
+# FastF1's hourly call budget before it reaches the current season, so the
+# races the prospective test is scored on were never ingested. This workflow
+# fetches only the races whose lap files are missing, most recent first, and
+# commits the lap and track-status files alone: nothing is refitted, because
+# the prospective test's models are frozen and 2026 is held out of every fit.
+
+on:
+  schedule:
+    - cron: "17 4 * * 1,3" # Mondays and Wednesdays 04:17 UTC
+  workflow_dispatch: {}
+
+concurrency:
+  group: ingest-missing-races
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Ingest missing races
+        run: python scripts/ingest_missing_races.py --max 6
+      - name: Commit new lap files (only if any)
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add 'data/derived/f1/laps_*.csv' 'data/derived/f1/track_status_*.csv'
+          if git diff --staged --quiet; then
+            echo "No new race ingested."
+          else
+            git commit -m "data(f1): ingest missing races $(date -u +%Y-%m-%d)"
+            git push
+          fi

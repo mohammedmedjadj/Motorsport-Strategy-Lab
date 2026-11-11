@@ -1053,6 +1053,17 @@ def _macros() -> dict[str, str]:
     out["ImpliedExpectedSide"] = f"{100 * idr['implied_on_expected_side']:.0f}"
     out["ImpliedFittedExpectedSide"] = f"{100 * idr['fitted_on_expected_side']:.0f}"
 
+    # --- compound baseline offsets (run_compound_offsets.py) ---------------
+    co = load("compound_offsets")
+    out["OffsetsN"] = str(co["n"])
+    out["OffsetsFittedSide"] = f"{100 * co['fitted_offsets_expected_side']:.0f}"
+    h = co["directions"]["to harder"]
+    out["OffsetHarder"] = f"{h['offset_gap']:+.3f}"
+    out["OffsetHarderCi"] = f"[{h['offset_gap_ci'][0]:+.3f}, {h['offset_gap_ci'][1]:+.3f}]"
+    out["OffsetsGapPlain"] = signed(co["gap_plain"])
+    out["OffsetsGap"] = signed(co["gap_offsets"])
+    out["OffsetsGapCi"] = f"[{signed(co['gap_offsets_ci'][0])}, {signed(co['gap_offsets_ci'][1])}]"
+
     # --- 2026 races already ingested (run_heldout_2026.py) -----------------
     h26 = load("heldout_2026")
     out["HeldRaces"] = str(h26["n_races"])

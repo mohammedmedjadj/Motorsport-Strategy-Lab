@@ -69,7 +69,7 @@ stint to the next is \ImpliedHarder{}
 \ImpliedSofterCi{} when they move to a softer one, on the side of one that
 hardness predicts for \ImpliedExpectedSide{}\% of decisions, against
 \ImpliedFittedExpectedSide{}\% for the fitted slopes: teams act on a compound
-difference that public timing does not resolve.
+difference the fitted slopes resolve only in part.
 \end{abstract}
 
 \vspace{0.6em}
@@ -118,8 +118,9 @@ optimal-replacement decision, the lap a team chose implies a ratio of the new
 tyre's wear rate to the old one's. That implied ratio is a ratio of stint
 lengths and uses no fitted slope, and it follows compound hardness in the
 direction physics predicts, in both directions of change, where the fitted
-slopes are no better than chance: teams act on a difference between compounds
-that public timing does not resolve.
+slopes are no better than chance and, given a baseline pace per compound, only
+partly better: teams act on a difference between compounds that the fitted
+model resolves only in part.
 
 The modelling is simpler than much of the work cited, and it ignores energy
 management. The contribution is the protocol and what it returned.
@@ -190,7 +191,7 @@ they act on and compares it with the fitted one.
 \paragraph{A mechanism that predicts early stops.} \citet{salminen2026} solves
 the two-car one-stop game analytically and derives the earliest lap on which an
 undercut cannot be answered, the only published mechanism I have found that
-predicts stopping \emph{before} the time optimum. Section~\ref{sec:residual}
+predicts stopping \emph{before} the time optimum. Section~\ref{sec:implied}
 tests it on the same decisions.
 
 \section{Data and protocol}
@@ -274,6 +275,10 @@ the variation of the slope between races, which Section~\ref{sec:variance}
 measures. Points outside the plotted range are named under the axis.}
 \label{fig:degradation}
 \end{figure}
+
+The model gives each compound its own wear slope but no baseline of its own:
+once the driver-race intercept is removed, compounds are assumed equally fast
+when new. Section~\ref{sec:implied} tests what a baseline per compound changes.
 
 Two features of Figure~\ref{fig:degradation} matter for what follows.
 \PctCoefCrossingZero{}\% of the slopes have an interval containing zero, and
@@ -802,10 +807,20 @@ races, and it lies on the side of one that hardness predicts for
 compound at \ImpliedFittedHarder{} of the softer one's wear and the softer at
 \ImpliedFittedSofter{} of the harder one's. The implied ratio therefore measures
 what the fit does not resolve: teams stop as if they know which compound lasts,
-and by how much, and the public timing does not show it. Part of this is the same knowledge
+and by how much, and the published fit does not show it. Part of this is the same knowledge
 exercised the other way round, choosing the harder compound for the longer
 stint, which the inversion cannot tell from a wear rate. The pooled
 \ImpliedRatio{} is mostly the harder-compound case, which is the common one.
+
+Part of what the fit misses is its own specification. Refitted with one
+baseline pace per compound, the harder compound is slower when new, by
+\OffsetHarder{}\,s \OffsetHarderCi{} over the decisions that move to it, and
+the refitted slopes order the compounds on the expected side for
+\OffsetsFittedSide{}\% of decisions instead of \ImpliedFittedExpectedSide{}\%:
+better than chance, still short of the teams. With those baselines in the
+time-optimal single stop, the planner's lap moves from \OffsetsGapPlain{} to
+\OffsetsGap{} laps \OffsetsGapCi{} of the team's, so the shorter first stints
+remain.
 
 \begin{table}[htbp]
 \centering
@@ -1011,8 +1026,9 @@ rule that only balances tyre age before the team's next stop: the agreement is
 a property of the horizon. What the stops do reveal is the compound difference
 the fit misses. Read as an implied wear ratio, the length of a team's first
 stint against the next follows compound hardness in both directions of change,
-where the fitted slopes are no better than chance. Teams act as if they know which
-tyre lasts; public timing, as modelled here, does not show it.
+where the fitted slopes are no better than chance, and only partly better once each compound has its own
+baseline pace. Teams act as if they know which tyre lasts; public timing, as
+modelled here, shows it only in part.
 
 \section*{Data and code availability}
 
@@ -1035,8 +1051,10 @@ correlation may run backwards; both were tested, and neither disturbs the class
 ordering. Jorn van Kampen (TU Eindhoven) described the same structure from
 electric endurance racing, where a tyre change is negligible beside the charging
 stop. Giona Fieni (ETH Z\"urich) drew the line between reused parameters and
-model-based policy stated in Section~\ref{sec:threats}. None of them is
-responsible for what this manuscript says.
+model-based policy stated in Section~\ref{sec:threats}. Felipe Carrasco Heine
+pointed out that the lap-time model has no baseline pace per compound, which
+Section~\ref{sec:implied} tests. None of them is responsible for what this
+manuscript says.
 
 \singlespacing
 \nolinenumbers
