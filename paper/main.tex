@@ -193,8 +193,8 @@ they act on and compares it with the fitted one.
 \paragraph{A mechanism that predicts early stops.} \citet{salminen2026} solves
 the two-car one-stop game analytically and derives the earliest lap on which an
 undercut cannot be answered, the only published mechanism I have found that
-predicts stopping \emph{before} the time optimum. Section~\ref{sec:implied}
-tests it on the same decisions.
+predicts stopping \emph{before} the time optimum.
+Appendix~\ref{app:mechanisms} tests it on the same decisions.
 
 \section{Materials and methods}
 
@@ -220,7 +220,7 @@ published on Hugging Face as \texttt{tobil/imsa} under the MIT licence; it
 carries lap times, stint structure, flag state and an estimated tyre age, but
 \emph{not} tyre compound. The endurance degradation models are therefore
 net-slope models where the Formula~1 one is per compound. Two further Formula~1
-sources serve Section~\ref{sec:repairs} only: the compounds Pirelli nominated
+sources serve Appendix~\ref{sec:repairs} only: the compounds Pirelli nominated
 for each race, and second-practice laps from the OpenF1 API. Formula~1 is
 modelled on the seasons before the 2026 rules throughout; the
 \NRacesFoneHeldOut{} races of 2026 already ingested are held out of every model,
@@ -358,33 +358,13 @@ circuit-class with its net slope.
 \subsection{The planners}
 \label{sec:method}
 
-\paragraph{The multi-stop dynamic program.} For an endurance race of $L$ laps
-with green pace $p$, net slope $\beta$, pit loss $\pi$ and fuel range $F$, a
-plan is a partition of $L$ into stints $(n_1,\dots,n_{m+1})$ with $m$ stops,
-of total time
-%
-\begin{equation}
-T(n_1,\dots,n_{m+1}) \;=\; m\pi \;+\; \sum_{j}\left(n_j p + \beta\,\frac{n_j(n_j+1)}{2}\right),
-\qquad n_j \le F,
-\label{eq:dp}
-\end{equation}
-%
-minimised exactly by a dynamic program in remaining laps for each $m$ from the
-fuel minimum $\lceil L/F \rceil - 1$ upward. A race is \emph{tyre-limited} when
-the time-optimal $m$ exceeds that minimum.
-
 \paragraph{The Monte Carlo engine.} The single-next-stop engine evaluates every
 candidate lap for the next stop over \NDraws{} shared draws. Each draw samples
 the degradation and fuel coefficients from their sampling distributions ($t(G-1)$
 scaled by the cluster-robust standard errors), the neutralisation rate from its
 Gamma posterior, and lap noise at the cross-validated residual scale. Candidate
 laps share draws, so a comparison between two laps carries no unrelated
-sampling noise. A \emph{cover-aware} variant runs the audited car and one rival
-under the same draws, resolves the pit exchange on the lap both have stopped,
-lets a gained position survive with the circuit's measured rate of adjacent-car
-swaps, and lets the rival answer each of the audited car's laps with its best
-reply: a Stackelberg leader in the sense of \citet{aguad2024}, solved by
-enumeration.
+sampling noise.
 
 \subsection{The audit}
 \label{sec:auditprotocol}
@@ -440,17 +420,8 @@ $\beta_{\mathrm{new}}/\beta_{\mathrm{old}} = (a_0+k)/(W-k)$ that would have
 made that lap optimal: the age of the tyre at the stop over the length of the
 stint after it. No fitted slope enters it. It is an implied parameter, which
 may stand for what teams know or for what they believe, and it uses one lap per
-decision. A discrete-time hazard uses every lap of
-the stint instead: the probability of stopping on lap $t$, given the car is
-still out, is modelled as a logistic function of the old tyre's next-lap loss
-$\hat\beta_{\mathrm{old}}a_t$ and the new tyre's loss to the endpoint
-$\hat\beta_{\mathrm{new}}(W-t)$, with the fitted slopes plugged in and an
-indicator for a neutralised lap. The ratio of the two weights is one if teams
-weigh the tyres as the fit does. Inside one stint $a_t + (W-t)$ is constant, so
-the two weights are told apart only by how the fitted slopes and $W$ vary
-between stints; the slopes' own noise is therefore part of what identifies the
-ratio, and every bootstrap replicate refits them on the races it drew. $W$ is
-the team's next stop, known only afterwards.
+decision. A stop hazard that uses every lap of the stint is reported in
+Appendix~\ref{app:mechanisms}.
 
 \paragraph{Intervals.} Unless stated otherwise, every interval is a percentile bootstrap at the level the
 data vary at: circuits or circuit-classes for transfer, races for the audit,
@@ -472,9 +443,9 @@ Formula~1, top five, asked five laps ahead & \NDecisionsFone{} & run to the flag
 \quad\quad one-stop races & \NCommitOne{} & residual \\
 \quad\quad refitted without the season & \OosN{} & out of sample \\
 \quad between two compounds, linear circuits & \ImpliedN{} & implied ratio, hazard \\
-Formula~1, every finisher, five laps ahead & \DesignAllFiveN{} & design checks \\
+Formula~1, every finisher, five laps ahead & \DesignAllFiveN{} & design checks (Appendix~\ref{app:checks}) \\
 Endurance, replayable with the next stop fixed & \NEndCommit{} & committed replay \\
-Formula~1, first stops with no neutralisation in the window & \NDeviationCars{} & cost of the residual \\
+Formula~1, first stops with no neutralisation in the window & \NDeviationCars{} & cost of the residual (Appendix~\ref{sec:deviationcost}) \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -599,91 +570,15 @@ degrees between seasons. The effect is real and small: it removes
 This variance also bears on the audit. The random-effects standard error of a
 circuit-compound's mean slope, which counts the between-race variation, is a
 median \VarSeInflation{} times the driver--race-clustered one the engine draws
-from, and up to \VarSeInflationMax{} times. Section~\ref{sec:audit} reruns the
+from, and up to \VarSeInflationMax{} times. Appendix~\ref{app:checks} reruns the
 audit with the wider distributions.
 
-\subsection{Repairs a team would try}
-\label{sec:repairs}
-
-\paragraph{Code the tyre by what it was.} Compound labels are relative: Pirelli
-nominates three of its compounds for each race, so the same circuit's Medium
-can be a different rubber from one season to the next. I collected the
-nomination for all \NAllocationRaces{} races from 2022 to 2025 from the race
-articles of Wikipedia, checked against Pirelli's press releases where they state
-it in text (\NAllocationPirelli{} races, agreeing every time), and recoded every
-lap. Where the allocation changed, at \NCompoundChanged{} circuits with a
-ceiling verdict, the median score moves from \CompoundRelative{} to
-\CompoundReal{}, a paired difference of \CompoundDiff{} \CompoundDiffCi{}, better
-at \NCompoundBetter{} circuits and worse at \NCompoundWorse{}. Recoding gives
-each real compound fewer seasons than its relative label had, and does not
-repair transfer.
-
-\paragraph{Measure it on Friday.} In second practice every car runs long runs on
-that weekend's tyres and asphalt. Used in place of other seasons, the Friday
-slope scores \FridayRaw{} against \FridayOther{}, worse in
-\NFridayRawWorse{} of \NFridayRaces{} races, a paired difference of
-\FridayRawDiff{} \FridayRawDiffCi{}. Friday runs degrade faster than the race by
-a median \FridayOffset{}\,s per lap; removing that offset, learned on the other
-circuits, still leaves \FridayCorrected{}.
-
-\paragraph{Price the temperature.} Adding tyre age times track temperature to
-each circuit's own model, with the held-out race's temperature, changes the score
-by a median \TempOwnDiff{} \TempOwnDiffCi{}: three training races cannot pin
-down a temperature sensitivity. Borrowing the sensitivity from the other
-circuits instead changes it by \TempCatDiff{} \TempCatDiffCi{}, better at
-\TempCatBetter{} of \TempN{} circuits, too little to establish.
-
-\paragraph{Baselines.} Predicting each season only from earlier ones, the
-question a team actually faces, costs a median \BasePastDiff{}
-\BasePastDiffCi{} against leave-one-season-out. A slope common to the category,
-the median of every other circuit's fit, scores \BaseCategoryDiff{}
-\BaseCategoryDiffCi{} against the circuit's own: over all circuits a circuit's
-history does not measurably beat a slope that knows nothing about it. At the
-\CeilingShareN{} circuits whose ceiling exceeds $\CeilingMeasurable{}$, the
-circuit's own slope recovers a median \CeilingShareMedian{} of its ceiling
-against \CeilingShareCategory{} for the category slope, a paired difference in score of
-\CeilingCategoryDiff{} \CeilingCategoryDiffCi{} that is not established either.
-Refitted with the traffic trim at $\TrimLow{}$ or $\TrimHigh{}$ instead of
-$\TrimPublished{}$, at most \TrimShareMoved{}\% of slopes move by more than a
-tenth of their value and the median score ranges from \TrimLoroLow{} to \TrimLoroHigh{}: the
-low scores are sensitive to the trim, and no setting brings them near the
-threshold.
-
-\subsection{Car type}
-
-Grouped by car type, the raw scores favour GT3 classes, \GTThreeMean{} against
-\ProtoMean{} for prototypes, a difference of \TransferDiff{}
-\TransferDiffCI{} with a permutation $p$ of \TransferP{}. That comparison treats
-classes at different events as exchangeable, and they are not: the two
-highest GT3 scores, both at Lime Rock, come from an event with no prototype
-class. Paired within the
-\GtPairEvents{} events that run both, GT3 scores higher by \GtPairDiff{}
-\GtPairDiffCi{}, at \GtPairHigher{} of them, with an exact sign-flip $p$ of
-\GtPairP{}. The raw difference is mostly a difference between circuits, and I do
-not claim one between car types. For the same reason the near-specification
-ELMS LMP2 field cannot speak to Balance of Performance, the adjustments that
-equalise different cars in one class: at \NLmptwoNoSignal{}
-of its \NLmptwoTotal{} circuits its laps carry no recoverable signal.
-
-\section{A note on the endurance planner}
-\label{sec:regime}
-
-The dynamic program of Equation~\ref{eq:dp} also reports, for each endurance
-race, whether the time-optimal plan needs more stops than the fuel minimum:
-\NTyreLimited{} of \NRaceSeasons{} race-seasons do. The regime is decided inside
-the planner by weighing an extra stop against what the tyre gives back, so it is
-close to an identity of the model and is reported here only as a description of
-where these championships sit. Ranked by pit loss alone the race-seasons
-separate at an area under the ROC curve of \RegimeAucPitLoss{} \RegimeAucPitLossCI{}, by the net slope
-alone at \RegimeAucSlope{} \RegimeAucSlopeCI{}; dropping either from the
-planner's own index, $\log\beta + 2\log F - \log\pi$, costs a similar amount
-(\IndexDropDiff{} \IndexDropDiffCi{}), so both set the regime. Refuelling is a
-median \RefuelShare{}\% of the stop loss and does not change the count, and no
-tyre-limited race-season has a pit loss above \CheapStopEdge{}\,s, an edge set by
-one race. Figure~\ref{fig:pitloss} in the Appendix shows the class-level
-relation ($r = \PitLossR{}$ on six class points). The decision endurance teams
-more often face, whether to change tyres at a fuel stop, is not in the model
-(Section~\ref{sec:threats}).
+\paragraph{Repairs and car type.} Three repairs a team would try (coding the
+tyre by the real compound Pirelli nominated, measuring the slope in Friday
+practice, pricing track temperature) and two simpler baselines leave the scores
+far from the threshold (Appendix~\ref{sec:repairs}). Nor does car type matter
+once events are compared like for like: the raw advantage of GT3 classes over
+prototypes is mostly a difference between circuits (Appendix~\ref{app:cartype}).
 
 \section{Result 2: with the strategy held fixed, the planner agrees with teams, and the agreement comes from the horizon}
 \label{sec:audit}
@@ -714,26 +609,18 @@ decisions are run to the flag (Figure~\ref{fig:audit}). In endurance the
 interval contains zero in all \NEndCommitContainsZero{} classes.
 
 The agreement survives the checks a reader would ask for first, although
-Section~\ref{sec:designchecks} shows why the first two could hardly fail: a rule
-that uses no fitted slope does as well, so refitting or widening the slopes has
-little left to move. They rule out an error in how the slopes enter the
-replay, not a weakness of the model.
+Section~\ref{sec:designchecks} shows why the out-of-sample check could hardly
+fail: a rule that uses no fitted slope does as well, so refitting the slopes
+has little left to move. It rules out an error in how the slopes enter the
+replay, not a weakness of the model. Three further checks (slopes widened to
+their between-race error, six audit designs, green-flag stops only) leave the
+median between \DesignMinMedian{} and \DesignMaxMedian{} laps in Formula~1
+(Appendix~\ref{app:checks}).
 \begin{itemize}
 \item \emph{Out of sample.} With slopes fitted without the decision's season, the
 median is \OosMedian{} \OosCi{} over \OosN{} decisions, against
 \OosPublished{} in sample on the same ones; the recommended lap moves for
 \OosMoved{}\% of decisions, by a median of \OosShift{} lap.
-\item \emph{Wider uncertainty.} With every slope's sampling distribution widened
-to its random-effects standard error, the median is \WideMedian{} \WideCi{}.
-\item \emph{Design.} Asked ten or fifteen laps ahead instead of five, and on every
-finisher instead of the top five, the median runs from \DesignMinMedian{} to
-\DesignMaxMedian{} across six designs.
-\item \emph{Green flag only.} On the \FoneGreenN{} decisions whose real stop was
-under green, it is \FoneGreenMedian{} \FoneGreenCi{}; keeping only decisions
-whose \emph{next} stop was under green, \CommitGreenAfter{} \CommitGreenCi{}.
-In IMSA, where \ImsaCautionMin{} to \ImsaCautionMax{}\% of first stops are
-taken under caution, the green-flag medians are \ImsaGtpGreenMedian{},
-\ImsaGtdGreenMedian{} and \ImsaGtdproGreenMedian{} for GTP, GTD and GTD PRO.
 \item \emph{Not a narrow window.} In Formula~1 races with a second stop, the
 window between the decision and that stop is a median \CommitWindow{} laps; a
 lap drawn uniformly inside it would miss the real stop by a median
@@ -814,8 +701,9 @@ extrapolation: \ExtrapOne{}\% of one-stop recommendations stop at a tyre age
 beyond the 95th percentile of the stints observed on that compound at that
 circuit, where the linear slope is no longer measured, and where the
 recommendation stays inside that range the one-stop median is
-\ExtrapOneInsideGap{}. What it costs is taken up in
-Section~\ref{sec:deviationcost}.
+\ExtrapOneInsideGap{}. The planner prices the residual at tenths of a second
+per lap, below what the timing of these races can detect
+(Appendix~\ref{sec:deviationcost}).
 
 \subsection{What the stops reveal}
 \label{sec:implied}
@@ -885,95 +773,24 @@ To a softer compound & \ImpliedSofterN{} & \ImpliedSofterRaces{} & \ImpliedSofte
 \end{tabular}
 \end{table}
 
-The stop hazard, fitted on all \HazardLaps{} laps those \HazardStints{} first
-stints were at risk, puts the weight teams give the new tyre's fitted loss,
-relative to the old tyre's, at \HazardRatio{} \HazardRatioCi{} with the slopes
-refitted in every replicate (\HazardRatioCiFixed{} if they are held fixed). It
-agrees with the implied ratio in sign, not in size, and it cannot separate the
-two directions: \HazardHarder{} \HazardHarderCi{} to a harder compound,
-\HazardSofter{} \HazardSofterCi{} to a softer one. Since it is identified only
-across stints, through slopes that do not resolve the compounds and an endpoint
-known only afterwards, I read it as consistent with the implied ratio rather
-than as a second measurement of it.
-
 Compound knowledge is not the only thing the implied parameter can absorb:
 wear that accelerates late in a stint, the value of keeping the option of a
 Safety Car and tyre management to a planned stint length all act on the
-same ratio. Five further mechanisms I could test do not account for the
-shorter first stints:
-\begin{itemize}
-\item \emph{Wear that grows with fuel load.} A term in tyre age times lap number
-has mixed sign, positive at \InterPositive{} of \InterN{} circuits, and
-rerunning Equation~\ref{eq:closedform} with it moves the median gap from
-\InterGapWithout{} to \InterGapWith{} laps, away from the real stop.
-\item \emph{Heavier first stints.} Fitted separately, first-stint slopes are
-steeper than later ones at only \FirstSteeper{} of \FirstPairs{}
-circuit-compounds, and of the \FirstSig{} differences that are significant,
-\FirstSigSteeper{} go that way; using them moves the gap from
-\FirstGapPooled{} to \FirstGapSplit{} laps, again away.
-\item \emph{Track position.} The cover-aware engine moves the recommendation
-closer to the real stop on \RetestCloser{} of the \NRetest{} one-stop
-decisions and further on \RetestFurther{}, and under each of the
-\NRetestRules{} rival rules below it moves closer on at most
-\RetestCloserMax{} (sign test $p \le \RetestSignPMax{}$).
-\item \emph{The earliest undefendable undercut} of \citet{salminen2026}, with
-the position-keeping defence, predicts no undefendable undercut before the
-flag on \NRetestEuuAfterFlag{} of the \NRetestPredicted{} one-stop decisions
-carrying a prediction. On the \NRetestEuuInside{} where its lap falls inside
-the race, its absolute error exceeds the single-car optimiser's by a median
-\RetestEuuInsideAbsDiff{} laps \RetestEuuInsideAbsDiffCi{}, closer on
-\RetestEuuInsideCloser{} and further on \RetestEuuInsideFurther{}. Across all
-Formula~1 decisions, for it to reproduce what teams do, tyres would have to wear
-at a median \DOneImpliedTheta{}\,s per lap, a median of \DOneThetaRatio{} times
-the rate measured for the same decision.
-\item \emph{A gain at the stop.} With the number of stops fixed, any time
-gained or lost once per stop is common to every candidate lap and cancels;
-it cannot move the lap. The data show such a term with the opposite sign
-anyway: laps on a new set come in slower than the fit expects, which is tyre
-warm-up.
-\end{itemize}
-If the fitted slopes understated wear, the planner would stop late, as it does.
-Re-estimated by an independent estimator on a separate copy of the same
-official timing, in the Ergast schema and distributed on Kaggle, which
-separates wear from fuel by a different method, they differ by
-a median \CrossSourceDiff{}\,s per lap over \CrossSourceN{} circuits, against a
-median wear slope of \CrossSourceWear{}, so no such bias shows. A full structural estimate in the manner of
+same ratio. A stop hazard fitted on every lap at risk agrees with the implied
+ratio in sign, and five further mechanisms I could test, among them the
+earliest undefendable undercut of \citet{salminen2026}, do not account for the
+shorter first stints (Appendix~\ref{app:mechanisms}). A full structural estimate in the manner of
 \citet{rust1987}, with the compound difference as a parameter rather than a
 fitted input, is where explaining the ratio would start.
 
-\subsection{What the residual costs}
-\label{sec:deviationcost}
-
-The planner prices the residual at tenths of a second. Over the same stretch of
-each real race, from the decision to the next stop or the flag, with
-neutralised windows dropped, I compared each car's elapsed time with what its own
-median green lap predicts, within races and controlling for the window's length.
-Over \NDeviationCars{} first stops in \NDeviationRaces{} races, each lap of
-distance from the planner's lap goes with \DeviationPerLap{}\,s of extra time
-\DeviationPerLapCi{}, against \DeviationPlannerPerLap{}\,s by the planner's
-own pricing. Between cars of one race the excess time has a median standard
-deviation of \DeviationSpread{}\,s, so the smallest per-lap cost these decisions
-could detect with 80\% power is about \DeviationMde{}\,s, and detecting the
-planner's own price would take about \DeviationNeeded{} decisions. This is an
-association between cars, open to every reason a team had for its lap.
-
 \subsection{Which car is the rival}
-\label{sec:rivalchoice}
 
-A competition-aware model needs a rival, and the timing does not name one. The
-published replay pairs each car with its nearest neighbour on classified
-position, which, as Charles Thraves pointed out, picks the car ahead on some
-decisions and the car behind on others. Against it I ran his proposal (the car
-whose standalone optimal race time is closest), the car ahead on the clock that
-the model of \citet{salminen2026} is defined on, and every car within one pit
-loss. Over the \NRivalAllApply{} decisions where all \NRivalRules{} apply, they
-name the same car \NRivalAllAgree{} times; pairwise, two rules agree on between
-\RivalPairMin{}\% and \RivalPairMax{}\% of decisions, a median of
-\RivalPairMedian{}\%. The recommendation barely moves between them: the
-cover-aware engine stays later than the real stop under every rule. The
-game-theoretic literature is built on a two-car abstraction
-\citep{aguad2024,devries2026,salminen2026}; measured against real decisions,
-which two cars those are is under-determined.
+A competition-aware replay needs a rival, and the timing does not name one.
+Four defensible rules name the same car on only \NRivalAllAgree{} of
+\NRivalAllApply{} decisions, and the recommendation barely moves between them
+(Appendix~\ref{sec:rivalchoice}): which two cars the two-car game of
+\citet{aguad2024} and \citet{salminen2026} describes is, against real
+decisions, under-determined.
 
 \section{Discussion and threats to validity}
 \label{sec:threats}
@@ -986,8 +803,9 @@ not a plan revised during the race.
 and the decision they face is often whether to change tyres at a fuel stop. The
 endurance model counts tyre age from the source's estimate, carries one net
 slope with no compound, and does not represent that decision; its
-tyre-limited regime answers a question endurance teams rarely ask, and its
-replay cannot test the tyre model (Section~\ref{sec:designchecks}).
+tyre-limited regime, described in Appendix~\ref{sec:regime}, answers a question
+endurance teams rarely ask, and its replay cannot test the tyre model
+(Section~\ref{sec:designchecks}).
 
 \paragraph{Slopes depend on the strategy.} A driver told to make a set last
 drives it more gently, so a fitted slope depends partly on the stint the team
@@ -1026,7 +844,7 @@ downloaded from Kaggle, that \NBlockedLayers{} of its layers read: a Formula~1
 history in the Ergast schema (lap times, pit stops, results) and a WEC results
 table. Those layers cannot be regenerated from a clone; their outputs are
 committed, and the only published result resting on them is the cross-source
-slope check of Section~\ref{sec:implied}.
+slope check of Appendix~\ref{app:mechanisms}.
 
 \paragraph{A prospective test, frozen before its data exist.}
 \label{sec:prospective}
@@ -1092,9 +910,9 @@ results were computed from is archived at
 Several researchers replied to cold emails about this work, and their replies
 changed it. Charles Thraves (Universidad de Chile) identified the
 rival-selection defect and proposed the standalone-time rule of
-Section~\ref{sec:rivalchoice}, and named the endogeneity that bounds it. Wytze de
+Appendix~\ref{sec:rivalchoice}, and named the endogeneity that bounds it. Wytze de
 Vries (TU Eindhoven) raised two measurement objections to the endurance regime of
-Section~\ref{sec:regime}, that class
+Appendix~\ref{sec:regime}, that class
 medians pool stops with and without a driver change and that part of the
 correlation may run backwards; both were tested, and neither disturbs the class
 ordering. Jorn van Kampen (TU Eindhoven) described the same structure from
@@ -1109,17 +927,6 @@ manuscript says.
 \nolinenumbers
 
 \bibliographystyle{plainnat}
-\appendix
-\section{The stop cost in the endurance planner}
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=\textwidth]{r2_pit_loss_rule.png}
-\caption{Left: class-level median pit loss against the share of race-seasons
-whose time-optimal plan needs more stops than the fuel minimum. Right: every
-race-season, with the empirical edge marked (Section~\ref{sec:regime}).}
-\label{fig:pitloss}
-\end{figure}
 
 \begin{thebibliography}{99}
 
@@ -1264,5 +1071,251 @@ meta-analysis. \emph{Statistics in Medicine}, \emph{26}(1), 37--52.
 \url{https://doi.org/10.1002/sim.2514}
 
 \end{thebibliography}
+
+\clearpage
+\doublespacing
+\linenumbers
+\appendix
+\renewcommand{\appendixname}{Appendix}
+\section*{Supporting information}
+
+The sections below hold the checks the main text summarises. Every number is
+generated in the same way as in the main text.
+
+\section{Repairs a team would try}
+\label{sec:repairs}
+
+\paragraph{Code the tyre by what it was.} Compound labels are relative: Pirelli
+nominates three of its compounds for each race, so the same circuit's Medium
+can be a different rubber from one season to the next. I collected the
+nomination for all \NAllocationRaces{} races from 2022 to 2025 from the race
+articles of Wikipedia, checked against Pirelli's press releases where they state
+it in text (\NAllocationPirelli{} races, agreeing every time), and recoded every
+lap. Where the allocation changed, at \NCompoundChanged{} circuits with a
+ceiling verdict, the median score moves from \CompoundRelative{} to
+\CompoundReal{}, a paired difference of \CompoundDiff{} \CompoundDiffCi{}, better
+at \NCompoundBetter{} circuits and worse at \NCompoundWorse{}. Recoding gives
+each real compound fewer seasons than its relative label had, and does not
+repair transfer.
+
+\paragraph{Measure it on Friday.} In second practice every car runs long runs on
+that weekend's tyres and asphalt. Used in place of other seasons, the Friday
+slope scores \FridayRaw{} against \FridayOther{}, worse in
+\NFridayRawWorse{} of \NFridayRaces{} races, a paired difference of
+\FridayRawDiff{} \FridayRawDiffCi{}. Friday runs degrade faster than the race by
+a median \FridayOffset{}\,s per lap; removing that offset, learned on the other
+circuits, still leaves \FridayCorrected{}.
+
+\paragraph{Price the temperature.} Adding tyre age times track temperature to
+each circuit's own model, with the held-out race's temperature, changes the score
+by a median \TempOwnDiff{} \TempOwnDiffCi{}: three training races cannot pin
+down a temperature sensitivity. Borrowing the sensitivity from the other
+circuits instead changes it by \TempCatDiff{} \TempCatDiffCi{}, better at
+\TempCatBetter{} of \TempN{} circuits, too little to establish.
+
+\paragraph{Baselines.} Predicting each season only from earlier ones, the
+question a team actually faces, costs a median \BasePastDiff{}
+\BasePastDiffCi{} against leave-one-season-out. A slope common to the category,
+the median of every other circuit's fit, scores \BaseCategoryDiff{}
+\BaseCategoryDiffCi{} against the circuit's own: over all circuits a circuit's
+history does not measurably beat a slope that knows nothing about it. At the
+\CeilingShareN{} circuits whose ceiling exceeds $\CeilingMeasurable{}$, the
+circuit's own slope recovers a median \CeilingShareMedian{} of its ceiling
+against \CeilingShareCategory{} for the category slope, a paired difference in score of
+\CeilingCategoryDiff{} \CeilingCategoryDiffCi{} that is not established either.
+Refitted with the traffic trim at $\TrimLow{}$ or $\TrimHigh{}$ instead of
+$\TrimPublished{}$, at most \TrimShareMoved{}\% of slopes move by more than a
+tenth of their value and the median score ranges from \TrimLoroLow{} to \TrimLoroHigh{}: the
+low scores are sensitive to the trim, and no setting brings them near the
+threshold.
+
+\section{Car type}
+\label{app:cartype}
+
+Grouped by car type, the raw scores favour GT3 classes, \GTThreeMean{} against
+\ProtoMean{} for prototypes, a difference of \TransferDiff{}
+\TransferDiffCI{} with a permutation $p$ of \TransferP{}. That comparison treats
+classes at different events as exchangeable, and they are not: the two
+highest GT3 scores, both at Lime Rock, come from an event with no prototype
+class. Paired within the
+\GtPairEvents{} events that run both, GT3 scores higher by \GtPairDiff{}
+\GtPairDiffCi{}, at \GtPairHigher{} of them, with an exact sign-flip $p$ of
+\GtPairP{}. The raw difference is mostly a difference between circuits, and I do
+not claim one between car types. For the same reason the near-specification
+ELMS LMP2 field cannot speak to Balance of Performance, the adjustments that
+equalise different cars in one class: at \NLmptwoNoSignal{}
+of its \NLmptwoTotal{} circuits its laps carry no recoverable signal.
+
+\section{The endurance planner}
+\label{sec:regime}
+
+For an endurance race of $L$ laps
+with green pace $p$, net slope $\beta$, pit loss $\pi$ and fuel range $F$, a
+plan is a partition of $L$ into stints $(n_1,\dots,n_{m+1})$ with $m$ stops,
+of total time
+%
+\begin{equation}
+T(n_1,\dots,n_{m+1}) \;=\; m\pi \;+\; \sum_{j}\left(n_j p + \beta\,\frac{n_j(n_j+1)}{2}\right),
+\qquad n_j \le F,
+\label{eq:dp}
+\end{equation}
+%
+minimised exactly by a dynamic program in remaining laps for each $m$ from the
+fuel minimum $\lceil L/F \rceil - 1$ upward. A race is \emph{tyre-limited} when
+the time-optimal $m$ exceeds that minimum.
+
+
+The dynamic program of Equation~\ref{eq:dp} reports, for each endurance
+race, whether the time-optimal plan needs more stops than the fuel minimum:
+\NTyreLimited{} of \NRaceSeasons{} race-seasons do. The regime is decided inside
+the planner by weighing an extra stop against what the tyre gives back, so it is
+close to an identity of the model and is reported here only as a description of
+where these championships sit. Ranked by pit loss alone the race-seasons
+separate at an area under the ROC curve of \RegimeAucPitLoss{} \RegimeAucPitLossCI{}, by the net slope
+alone at \RegimeAucSlope{} \RegimeAucSlopeCI{}; dropping either from the
+planner's own index, $\log\beta + 2\log F - \log\pi$, costs a similar amount
+(\IndexDropDiff{} \IndexDropDiffCi{}), so both set the regime. Refuelling is a
+median \RefuelShare{}\% of the stop loss and does not change the count, and no
+tyre-limited race-season has a pit loss above \CheapStopEdge{}\,s, an edge set by
+one race. Figure~\ref{fig:pitloss} shows the class-level
+relation ($r = \PitLossR{}$ on six class points). The decision endurance teams
+more often face, whether to change tyres at a fuel stop, is not in the model
+(Section~\ref{sec:threats}).
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{r2_pit_loss_rule.png}
+\caption{Left: class-level median pit loss against the share of race-seasons
+whose time-optimal plan needs more stops than the fuel minimum. Right: every
+race-season, with the empirical edge marked.}
+\label{fig:pitloss}
+\end{figure}
+
+\section{Further checks on the agreement}
+\label{app:checks}
+
+On the Formula~1 decisions of Section~\ref{sec:committed}, with each team's next
+stop held fixed:
+\begin{itemize}
+\item \emph{Wider uncertainty.} With every slope's sampling distribution widened
+to its random-effects standard error, the median is \WideMedian{} \WideCi{}.
+\item \emph{Design.} Asked ten or fifteen laps ahead instead of five, and on every
+finisher instead of the top five, the median runs from \DesignMinMedian{} to
+\DesignMaxMedian{} across six designs.
+\item \emph{Green flag only.} On the \FoneGreenN{} decisions whose real stop was
+under green, it is \FoneGreenMedian{} \FoneGreenCi{}; keeping only decisions
+whose \emph{next} stop was under green, \CommitGreenAfter{} \CommitGreenCi{}.
+In IMSA, where \ImsaCautionMin{} to \ImsaCautionMax{}\% of first stops are
+taken under caution, the green-flag medians are \ImsaGtpGreenMedian{},
+\ImsaGtdGreenMedian{} and \ImsaGtdproGreenMedian{} for GTP, GTD and GTD PRO.
+\end{itemize}
+
+\section{What the residual costs}
+\label{sec:deviationcost}
+
+The planner prices the residual at tenths of a second. Over the same stretch of
+each real race, from the decision to the next stop or the flag, with
+neutralised windows dropped, I compared each car's elapsed time with what its own
+median green lap predicts, within races and controlling for the window's length.
+Over \NDeviationCars{} first stops in \NDeviationRaces{} races, each lap of
+distance from the planner's lap goes with \DeviationPerLap{}\,s of extra time
+\DeviationPerLapCi{}, against \DeviationPlannerPerLap{}\,s by the planner's
+own pricing. Between cars of one race the excess time has a median standard
+deviation of \DeviationSpread{}\,s, so the smallest per-lap cost these decisions
+could detect with 80\% power is about \DeviationMde{}\,s, and detecting the
+planner's own price would take about \DeviationNeeded{} decisions. This is an
+association between cars, open to every reason a team had for its lap.
+
+\section{Which car is the rival}
+\label{sec:rivalchoice}
+
+A competition-aware model needs a rival, and the timing does not name one. The
+published replay pairs each car with its nearest neighbour on classified
+position, which, as Charles Thraves pointed out, picks the car ahead on some
+decisions and the car behind on others. Against it I ran his proposal (the car
+whose standalone optimal race time is closest), the car ahead on the clock that
+the model of \citet{salminen2026} is defined on, and every car within one pit
+loss. Over the \NRivalAllApply{} decisions where all \NRivalRules{} apply, they
+name the same car \NRivalAllAgree{} times; pairwise, two rules agree on between
+\RivalPairMin{}\% and \RivalPairMax{}\% of decisions, a median of
+\RivalPairMedian{}\%. The recommendation barely moves between them: the
+cover-aware engine stays later than the real stop under every rule. The
+game-theoretic literature is built on a two-car abstraction
+\citep{aguad2024,devries2026,salminen2026}; measured against real decisions,
+which two cars those are is under-determined.
+
+The \emph{cover-aware} variant of the engine used in this appendix and the next
+runs the audited car and one rival
+under the same draws, resolves the pit exchange on the lap both have stopped,
+lets a gained position survive with the circuit's measured rate of adjacent-car
+swaps, and lets the rival answer each of the audited car's laps with its best
+reply: a Stackelberg leader in the sense of \citet{aguad2024}, solved by
+enumeration.
+
+\section{The stop hazard and further mechanisms}
+\label{app:mechanisms}
+
+\paragraph{The stop hazard.} Where the implied ratio uses one lap per decision, a
+discrete-time hazard uses every lap of the stint: the probability of stopping on lap $t$, given the car is
+still out, is modelled as a logistic function of the old tyre's next-lap loss
+$\hat\beta_{\mathrm{old}}a_t$ and the new tyre's loss to the endpoint
+$\hat\beta_{\mathrm{new}}(W-t)$, with the fitted slopes plugged in and an
+indicator for a neutralised lap. The ratio of the two weights is one if teams
+weigh the tyres as the fit does. Inside one stint $a_t + (W-t)$ is constant, so
+the two weights are told apart only by how the fitted slopes and $W$ vary
+between stints; the slopes' own noise is therefore part of what identifies the
+ratio, and every bootstrap replicate refits them on the races it drew. $W$ is
+the team's next stop, known only afterwards.
+
+The stop hazard, fitted on all \HazardLaps{} laps those \HazardStints{} first
+stints were at risk, puts the weight teams give the new tyre's fitted loss,
+relative to the old tyre's, at \HazardRatio{} \HazardRatioCi{} with the slopes
+refitted in every replicate (\HazardRatioCiFixed{} if they are held fixed). It
+agrees with the implied ratio in sign, not in size, and it cannot separate the
+two directions: \HazardHarder{} \HazardHarderCi{} to a harder compound,
+\HazardSofter{} \HazardSofterCi{} to a softer one. Since it is identified only
+across stints, through slopes that do not resolve the compounds and an endpoint
+known only afterwards, I read it as consistent with the implied ratio rather
+than as a second measurement of it.
+
+\paragraph{Further mechanisms.} Five further mechanisms I could test do not account for the shorter first
+stints of Section~\ref{sec:implied}:
+\begin{itemize}
+\item \emph{Wear that grows with fuel load.} A term in tyre age times lap number
+has mixed sign, positive at \InterPositive{} of \InterN{} circuits, and
+rerunning Equation~\ref{eq:closedform} with it moves the median gap from
+\InterGapWithout{} to \InterGapWith{} laps, away from the real stop.
+\item \emph{Heavier first stints.} Fitted separately, first-stint slopes are
+steeper than later ones at only \FirstSteeper{} of \FirstPairs{}
+circuit-compounds, and of the \FirstSig{} differences that are significant,
+\FirstSigSteeper{} go that way; using them moves the gap from
+\FirstGapPooled{} to \FirstGapSplit{} laps, again away.
+\item \emph{Track position.} The cover-aware engine moves the recommendation
+closer to the real stop on \RetestCloser{} of the \NRetest{} one-stop
+decisions and further on \RetestFurther{}, and under each of the
+\NRetestRules{} rival rules of Appendix~\ref{sec:rivalchoice} it moves closer on at most
+\RetestCloserMax{} (sign test $p \le \RetestSignPMax{}$).
+\item \emph{The earliest undefendable undercut} of \citet{salminen2026}, with
+the position-keeping defence, predicts no undefendable undercut before the
+flag on \NRetestEuuAfterFlag{} of the \NRetestPredicted{} one-stop decisions
+carrying a prediction. On the \NRetestEuuInside{} where its lap falls inside
+the race, its absolute error exceeds the single-car optimiser's by a median
+\RetestEuuInsideAbsDiff{} laps \RetestEuuInsideAbsDiffCi{}, closer on
+\RetestEuuInsideCloser{} and further on \RetestEuuInsideFurther{}. Across all
+Formula~1 decisions, for it to reproduce what teams do, tyres would have to wear
+at a median \DOneImpliedTheta{}\,s per lap, a median of \DOneThetaRatio{} times
+the rate measured for the same decision.
+\item \emph{A gain at the stop.} With the number of stops fixed, any time
+gained or lost once per stop is common to every candidate lap and cancels;
+it cannot move the lap. The data show such a term with the opposite sign
+anyway: laps on a new set come in slower than the fit expects, which is tyre
+warm-up.
+\end{itemize}
+If the fitted slopes understated wear, the planner would stop late, as it does.
+Re-estimated by an independent estimator on a separate copy of the same
+official timing, in the Ergast schema and distributed on Kaggle, which
+separates wear from fuel by a different method, they differ by
+a median \CrossSourceDiff{}\,s per lap over \CrossSourceN{} circuits, against a
+median wear slope of \CrossSourceWear{}, so no such bias shows.
 
 \end{document}
