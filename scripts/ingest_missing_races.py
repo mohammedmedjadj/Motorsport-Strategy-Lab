@@ -7,7 +7,15 @@ and the 2026 races after the twelfth were never ingested. The prospective test
 (``paper/prospective_protocol.md``) is scored on exactly those races, and its
 frozen models are never refitted, so all it needs is their lap and track-status
 files. This script loads the missing races only, newest season first, up to a
-cap per run, and writes nothing else.
+cap of *successful* ingestions per run, and writes nothing else. A race that
+fails to load (not run yet, or refused) does not count against the cap, so the
+next three races on the calendar cannot use up a run before the past ones are
+tried.
+
+Since FastF1 3.9 the live-timing archive is behind sign-in: FastF1 requires an
+active F1 TV Access/Pro/Premium subscription, whose credentials it reads from
+``F1_USERNAME`` and ``F1_PASSWORD`` (repository secrets in CI). Without them
+every session loads with no laps and this script says so.
 
     python scripts/ingest_missing_races.py            # up to 6 races
     python scripts/ingest_missing_races.py --max 3
@@ -16,6 +24,7 @@ cap per run, and writes nothing else.
 from __future__ import annotations
 
 import argparse
+import os
 import sys
 from pathlib import Path
 
@@ -38,9 +47,14 @@ def main() -> int:
     parser.add_argument("--max", type=int, default=6)
     args = parser.parse_args()
     todo = missing()
-    print(f"{len(todo)} races without lap files; trying up to {args.max}.")
+    print(f"{len(todo)} races without lap files; ingesting up to {args.max}.")
+    if not (os.environ.get("F1_USERNAME") and os.environ.get("F1_PASSWORD")):
+        print("F1_USERNAME / F1_PASSWORD not set: FastF1 3.9+ cannot read lap "
+              "timing without an F1 TV account, so loads will come back empty.")
     done = 0
-    for race in todo[: args.max]:
+    for race in todo:
+        if done >= args.max:
+            break
         print(f"Ingesting {race.slug} ...", flush=True)
         try:
             raw = load_race(race)

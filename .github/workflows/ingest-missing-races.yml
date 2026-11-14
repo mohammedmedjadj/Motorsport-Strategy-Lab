@@ -32,6 +32,12 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
       - name: Ingest missing races
+        # Since FastF1 3.9 the live-timing archive needs an F1 TV subscription
+        # (Access or higher): without it every session loads with no laps.
+        # The credentials are repository secrets, never written to the log.
+        env:
+          F1_USERNAME: ${{ secrets.F1_USERNAME }}
+          F1_PASSWORD: ${{ secrets.F1_PASSWORD }}
         run: python scripts/ingest_missing_races.py --max 6
       - name: Commit new lap files (only if any)
         run: |

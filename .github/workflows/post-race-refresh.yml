@@ -104,6 +104,9 @@ jobs:
         # only way to tell why. Not a project-wide default (see run_ingestion.py).
         env:
           FASTF1_DEBUG: "1"
+          # FastF1 3.9+ needs an F1 TV subscription for the live-timing archive.
+          F1_USERNAME: ${{ secrets.F1_USERNAME }}
+          F1_PASSWORD: ${{ secrets.F1_PASSWORD }}
         shell: bash
         run: |
           set -o pipefail
