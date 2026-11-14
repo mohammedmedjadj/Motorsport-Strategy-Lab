@@ -22,7 +22,7 @@ championships, and reports what came back, including what it could not measure.
 
 ---
 
-## R1 — Transfer is mostly not measurable from public timing, and slopes move
+## R1 — The within-stint score rarely measures transfer, and slope estimates move
 
 Leave one season out: fit the degradation slope on every other season of a
 circuit, predict the held-out one, score the within-stint R². Of **51 endurance
@@ -33,7 +33,8 @@ in Formula 1 the two nearly cancel (−0.053 s/lap of fuel against +0.040 of wea
 so the shape a stint shows is tiny against 0.67 s of lap noise. Rebuilt with a
 slope stable by construction, **16 of 22 F1 circuits and 43 of 50 endurance
 circuit-classes still could not reach 0.2.** Measured directly as a variance
-component, the slope does move between races, by about a third of its mean,
+component, slope estimates do move between races, by up to about a third of
+their mean (an upper bound: each season of a circuit is one race),
 whether compounds are coded by label or by the real Pirelli rubber.
 
 The raw GT3-over-prototype difference (+0.164) falls to +0.035 [−0.005, +0.085]
@@ -63,8 +64,8 @@ that would have made it optimal, which is a ratio of stint lengths and uses no
 fitted slope. **To a harder compound it is 0.73 [0.68, 0.77]; to a softer one,
 1.74 [1.43, 2.53]**, on the side hardness predicts for 79% of decisions, against
 48% for the fitted slopes (64% once each compound gets its own baseline pace).
-Teams act as if they know which compound lasts; the fitted model resolves it
-only in part.
+That teams put the harder compound on the longer stint is no surprise; what is
+new is that slopes fitted to the same lap times resolve it only in part.
 
 ## A note on the endurance planner
 

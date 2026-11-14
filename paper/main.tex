@@ -19,7 +19,7 @@
 \graphicspath{{../reports/figures/}{figures/}}
 \usepackage{caption}
 \usepackage[hidelinks]{hyperref}
-\usepackage{natbib}
+\usepackage[round]{natbib}
 % expansion=false on purpose. microtype's font expansion needs scalable Type1
 % fonts, and a TeX installation without cm-super dies on this file with
 % "auto expansion is only possible with scalable fonts" and writes no PDF at
@@ -39,7 +39,7 @@
 \title{Does a tyre-degradation model transfer?\\
 \large What public timing cannot identify, and what teams' pit stops reveal}
 
-\author{Mohammed Reda Medjadj \\ Independent}
+\author{Mohammed Reda Medjadj \\ Lyc\'ee Chevrollier, Angers, France}
 
 \date{\today}
 
@@ -53,23 +53,23 @@ two validation questions of one protocol across \NClasses{} car classes in
 Formula~1, WEC, IMSA and ELMS: does a fitted tyre-degradation slope predict a
 season it never saw, and does a time-optimal planner stop where teams stopped?
 Transfer is scored by the within-stint $R^2$, the share of the lap-to-lap change
-inside a held-out stint that the fitted slope explains. First, public timing
-rarely carries enough signal to answer the transfer question: inside a stint
+inside a held-out stint that the fitted slope explains. First, that score
+rarely has enough signal to answer the transfer question: inside a stint
 fuel burn nearly cancels tyre wear, so even a slope stable by construction
 could not reach $\TransferThreshold{}$ at \NCeilingBelowThreshold{} of
-\NCeilingCircuits{} Formula~1 circuits; estimated directly, the slope varies
-between races by a median \TauPubShareReml{}\% of its mean. Second, replaying
+\NCeilingCircuits{} Formula~1 circuits; estimated directly, slope estimates vary
+between races by up to a median \TauPubShareReml{}\% of their mean. Second, replaying
 \NCommitTotal{} real first stops with each team's next stop held fixed, the
-planner lands a median of \OosMedian{} laps \OosCi{} from the Formula~1 team
-out of sample, but a rule that only balances tyre age
+planner lands a median of \CommitAllAfter{} laps \CommitAllCi{} from the Formula~1 team,
+but a rule that only balances tyre age
 before the team's next stop does as well. Third, the stops carry
 what the fit misses. Read as an implied wear ratio, the ratio of the first
 stint to the next is \ImpliedHarder{}
 \ImpliedHarderCi{} when teams move to a harder compound and \ImpliedSofter{}
 \ImpliedSofterCi{} when they move to a softer one, in the direction
 hardness predicts for \ImpliedExpectedSide{}\% of decisions, against
-\ImpliedFittedExpectedSide{}\% for the fitted slopes: teams act on a compound
-difference the fitted slopes resolve only in part.
+\ImpliedFittedExpectedSide{}\% for the fitted slopes: stint lengths carry a
+compound difference that the lap times, as modelled, resolve only in part.
 \end{abstract}
 
 \vspace{0.6em}
@@ -96,30 +96,33 @@ much.
 
 Three contributions come out of it.
 
-\textbf{Transfer is mostly not measurable from public timing, and the reason is
+\textbf{The within-stint score rarely measures transfer, and the reason is
 physical.} Inside a stint, tyre age and the fuel burned advance together, so the
 lap-to-lap shape a stint shows is the net of wear and fuel gain, and the two
 nearly cancel. A noise ceiling, the score a slope that is stable by construction
-earns against the lap noise actually present, falls below the threshold of $\TransferThreshold{}$ used here at most circuits. Estimated directly as a variance component, the
-slope does move between races, by an amount the threshold cannot see.
+earns against the lap noise actually present, falls below the threshold of $\TransferThreshold{}$ used here at most circuits. Estimated directly as a variance component, slope
+estimates do move between races, by an amount the threshold cannot see; since
+each season of a circuit is a single race, that amount is an upper bound, and
+whether the tyre itself changed these data cannot say.
 
 \textbf{An audit against practice must hold the team's committed strategy
 fixed.} A planner that stretches its second stint to the flag answers a
 different question from a team that has already planned a second stop, and the
 difference looks like a disagreement of \FoneMedian{} laps. With the team's next stop
-held fixed, the planner and the team agree to within a few laps, out of sample
-as well as in it. That agreement, however, comes from the horizon: a rule that
+held fixed, the planner and the team agree to within a few laps. That
+agreement, however, comes from the horizon: a rule that
 uses no fitted quantity and simply balances tyre age before the team's next stop
 does as well.
 
 \textbf{The stops carry what the fit misses.} Treating the stop as an
 optimal-replacement decision, the lap a team chose implies a ratio of the new
 tyre's wear rate to the old one's. That implied ratio is a ratio of stint
-lengths and uses no fitted slope, and it follows compound hardness in the
-direction physics predicts, in both directions of change, where the fitted
-slopes are no better than chance and, given a baseline pace per compound, only
-partly better: teams act on a difference between compounds that the fitted
-model resolves only in part.
+lengths and uses no fitted slope, and it follows compound hardness in both
+directions of change. That teams put the harder compound on the longer stint
+will surprise no strategist. What is new is the comparison: the slopes fitted
+to the same lap times are no better than chance at it and, given a baseline
+pace per compound, only partly better, so stint lengths carry a compound
+difference that the lap times, as modelled, resolve only in part.
 
 The modelling is simpler than much of the work cited, and it ignores energy
 management. The contribution is the protocol and what it returned.
@@ -193,7 +196,7 @@ undercut cannot be answered, the only published mechanism I have found that
 predicts stopping \emph{before} the time optimum. Section~\ref{sec:implied}
 tests it on the same decisions.
 
-\section{Data and protocol}
+\section{Materials and methods}
 
 \paragraph{Terms.} A \emph{stint} is the run of laps a car does on one set of
 tyres. For each race the tyre supplier brings three dry
@@ -208,7 +211,11 @@ pace of the new tyres gains the position when the rival stops in turn.
 \subsection{Sources and scope}
 
 Formula~1 lap timing, tyre compound, track status and weather come from the
-FastF1 API. WEC, IMSA and ELMS timing comes from an endurance database
+FastF1 API. The endurance series are the FIA World Endurance Championship
+(WEC), the IMSA WeatherTech SportsCar Championship (IMSA) and the European Le
+Mans Series (ELMS). Their classes are prototypes (WEC Hypercar, IMSA GTP, ELMS
+LMP2 and LMP2 Pro/Am) and production-based GT3 cars (IMSA GTD and GTD PRO),
+which with Formula~1 makes \NClasses{} classes. Endurance timing comes from an endurance database
 published on Hugging Face as \texttt{tobil/imsa} under the MIT licence; it
 carries lap times, stint structure, flag state and an estimated tyre age, but
 \emph{not} tyre compound. The endurance degradation models are therefore
@@ -267,21 +274,22 @@ a single net slope of lap time on tyre age.
 
 Estimation is ordinary least squares. Every published Formula~1 coefficient was
 checked for estimability: deleting its column lowers the rank of the design for
-all \EstChecked{} of them. Standard errors are cluster-robust (CR1) on the
-driver--race and referred to $t(G-1)$ \citep{cameron2015}. Drivers in one race
+all \EstChecked{} of them. Standard errors are cluster-robust, with the usual small-sample
+correction, on the driver--race and referred to $t(G-1)$ \citep{cameron2015}. Drivers in one race
 also share shocks the driver--race cluster does not cover, and clustering on the
-race instead leaves \RaceClusterZero{} of the \RaceClusterN{} slope intervals
-containing zero rather than \RaceClusterZeroDr{}. Section~\ref{sec:variance}
+race instead leaves \RaceClusterZero{} of the \RaceClusterNRace{} slopes that
+have such an interval containing zero (Paul Ricard was raced once), against
+\RaceClusterZeroDr{} of \RaceClusterN{} with driver--race clusters. Section~\ref{sec:variance}
 estimates that race-level variation directly.
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.82\textwidth]{s3_f1_degradation.png}
 \caption{Linear tyre-degradation coefficients for Formula~1, by circuit and
-compound, with driver--race-clustered intervals: \NCoefficientsFone{}
-coefficients across \NCircuitsFone{} circuits. These intervals do not include
-the variation of the slope between races, which Section~\ref{sec:variance}
-measures. Points outside the plotted range are named under the axis.}
+compound: \NCoefficientsFone{} coefficients across \NCircuitsFone{} circuits.
+Thin lines are race-clustered intervals, on three or four races per circuit and
+cut at the axis; thick lines are driver--race-clustered. Points outside the
+plotted range are named under the axis.}
 \label{fig:degradation}
 \end{figure}
 
@@ -290,9 +298,10 @@ once the driver-race intercept is removed, compounds are assumed equally fast
 when new. Section~\ref{sec:implied} tests what a baseline per compound changes.
 
 Two features of Figure~\ref{fig:degradation} matter for what follows.
-\PctCoefCrossingZero{}\% of the slopes have an interval containing zero, and
-within a circuit \PctCompoundOverlap{}\% of compound pairs have overlapping
-intervals: the compound distinction the model carries is largely unresolved by
+Clustered on the race, \PctCoefCrossingZeroRace{}\% of the slopes have an
+interval containing zero (\PctCoefCrossingZero{}\% on the driver--race), and
+within a circuit \PctCompoundOverlapRace{}\% of compound pairs have overlapping
+intervals (\PctCompoundOverlap{}\%): the compound distinction the model carries is largely unresolved by
 the data. Neither is screened out, because screening on resolved slopes would
 select the circuits likeliest to transfer.
 
@@ -331,7 +340,7 @@ $\CeilingMeasurable{}$; otherwise \emph{stable} if the gap is below
 $\StableGap{}$, \emph{unstable} if it exceeds $\UnstableGap{}$, and
 \emph{borderline} between. The ceiling needs at least three seasons, which Paul
 Ricard and Shanghai lack, and the synthetic fits for Austin and for WEC
-Hypercar at COTA are degenerate and excluded. These verdicts are descriptive
+Hypercar at the Circuit of the Americas are degenerate and excluded. These verdicts are descriptive
 thresholds, not tests.
 
 \paragraph{Between-race variance.} The ceiling says whether the score could
@@ -470,7 +479,7 @@ Formula~1, first stops with no neutralisation in the window & \NDeviationCars{} 
 \end{tabular}
 \end{table}
 
-\section{Result 1: transfer is mostly not measurable, and slopes do move}
+\section{Result 1: the within-stint score rarely measures transfer, and slope estimates move between races}
 \label{sec:transfer}
 
 \begin{figure}[htbp]
@@ -555,8 +564,14 @@ unstable (median \VarIsqUnstable{}) and lowest where there is no signal
 (\VarIsqNoSignal{}), so the two measures agree where both can speak. In
 endurance, $Q$ rejects at \EndVarHet{} of \EndVarN{} circuit-classes with a
 median $I^2$ of \EndVarIsq{}, including \EndVarIsqStable{} among those the
-ceiling calls stable. Slopes move between races at most circuits; at most
-circuits, too, the within-stint score is too weak an instrument to notice.
+ceiling calls stable. Because each season of a circuit is one race, these
+components also carry whatever moves every car's laps in that race at once,
+which the standard errors do not see (Figure~\ref{fig:degradation} shows how much
+wider race-clustered intervals are). They are upper bounds: read as a forecast,
+the slope fitted on one race predicts the next to within about a third of its
+value, and whether the tyre itself changed, these data cannot say. Slope
+estimates move between races at most circuits; at most circuits, too, the
+within-stint score is too weak an instrument to notice.
 
 Three objections do not change this. \emph{Compound labels}: coded by the real
 compound each lap ran on, $Q$ rejects at \TauRealHet{} of \TauRealN{} and the
@@ -659,7 +674,7 @@ race, whether the time-optimal plan needs more stops than the fuel minimum:
 the planner by weighing an extra stop against what the tyre gives back, so it is
 close to an identity of the model and is reported here only as a description of
 where these championships sit. Ranked by pit loss alone the race-seasons
-separate at an AUC of \RegimeAucPitLoss{} \RegimeAucPitLossCI{}, by the net slope
+separate at an area under the ROC curve of \RegimeAucPitLoss{} \RegimeAucPitLossCI{}, by the net slope
 alone at \RegimeAucSlope{} \RegimeAucSlopeCI{}; dropping either from the
 planner's own index, $\log\beta + 2\log F - \log\pi$, costs a similar amount
 (\IndexDropDiff{} \IndexDropDiffCi{}), so both set the regime. Refuelling is a
@@ -698,7 +713,11 @@ replayable Formula~1 decisions, against \CommitAllBefore{} when the same
 decisions are run to the flag (Figure~\ref{fig:audit}). In endurance the
 interval contains zero in all \NEndCommitContainsZero{} classes.
 
-The agreement survives the checks a reader would ask for first.
+The agreement survives the checks a reader would ask for first, although
+Section~\ref{sec:designchecks} shows why the first two could hardly fail: a rule
+that uses no fitted slope does as well, so refitting or widening the slopes has
+little left to move. They rule out an error in how the slopes enter the
+replay, not a weakness of the model.
 \begin{itemize}
 \item \emph{Out of sample.} With slopes fitted without the decision's season, the
 median is \OosMedian{} \OosCi{} over \OosN{} decisions, against
@@ -808,7 +827,8 @@ ratio $\beta_{\mathrm{new}}/\beta_{\mathrm{old}}$ of \ImpliedRatio{}
 \ImpliedRatioCi{} against \ImpliedFitted{} fitted. Because the implied ratio is
 $(a_0+k)/(W-k)$, this says first that teams' first stints are shorter than the
 stints that follow them; the fitted value it is compared with is a ratio the
-fits do not resolve, since \PctCompoundOverlap{}\% of compound pairs overlap.
+fits do not resolve, since \PctCompoundOverlapRace{}\% of compound pairs overlap
+on race-clustered intervals.
 
 The direction of the change separates the two readings. If teams act on a
 difference between compounds that the fits miss, the implied ratio should fall
@@ -822,11 +842,11 @@ races, and it lies on the side of one that hardness predicts for
 \ImpliedExpectedSide{}\% of decisions. The fitted ratios do so for
 \ImpliedFittedExpectedSide{}\%, no better than a coin: they put the harder
 compound at \ImpliedFittedHarder{} of the softer one's wear and the softer at
-\ImpliedFittedSofter{} of the harder one's. The implied ratio therefore measures
-what the fit does not resolve: teams stop as if they know which compound lasts,
-and the published fit does not show it. Part of this is the same knowledge
-exercised the other way round, choosing the harder compound for the longer
-stint, which the inversion cannot tell from a wear rate. The pooled
+\ImpliedFittedSofter{} of the harder one's. That teams put the harder compound on the
+longer stint will surprise no strategist, and the inversion cannot tell a wear
+rate from that choice of compound for a planned stint length. What the implied
+ratio adds is the comparison: stint lengths carry a compound difference that
+the published fit of the same lap times does not show. The pooled
 \ImpliedRatio{} is mostly the harder-compound case, which is the common one.
 
 Part of what the fit misses is its own specification. Refitted with one
@@ -836,8 +856,18 @@ the refitted slopes order the compounds on the expected side for
 \OffsetsFittedSide{}\% of decisions instead of \ImpliedFittedExpectedSide{}\%:
 better than chance, still short of the teams. With those baselines in the
 time-optimal single stop, the planner's lap moves from \OffsetsGapPlain{} to
-\OffsetsGap{} laps \OffsetsGapCi{} of the team's, so the shorter first stints
-remain.
+\OffsetsGap{} laps \OffsetsGapCi{} of the team's: dropping the inversion's
+assumption that the two compounds are equally fast when new leaves the shorter
+first stints in place.
+
+Strategy-dependent slopes are a competing reading of the fitted ratios. If
+every stint is driven to its planned length, a slope measures the pace a driver
+chose to hold as much as the rubber, and public timing cannot remove that.
+Driven that way, the harder compound on the longer stint would look gentler,
+which pushes the fitted ratios toward the side hardness predicts rather than
+away from it, so it does not by itself explain why they sit at chance.
+Comparing one compound's slopes on short and long stints would separate the two
+readings; it is left for the next version.
 
 \begin{table}[htbp]
 \centering
@@ -903,8 +933,9 @@ anyway: laps on a new set come in slower than the fit expects, which is tyre
 warm-up.
 \end{itemize}
 If the fitted slopes understated wear, the planner would stop late, as it does.
-Re-estimated from an independent lap history in the Ergast schema, distributed
-on Kaggle, which separates wear from fuel by a different method, they differ by
+Re-estimated by an independent estimator on a separate copy of the same
+official timing, in the Ergast schema and distributed on Kaggle, which
+separates wear from fuel by a different method, they differ by
 a median \CrossSourceDiff{}\,s per lap over \CrossSourceN{} circuits, against a
 median wear slope of \CrossSourceWear{}, so no such bias shows. A full structural estimate in the manner of
 \citet{rust1987}, with the compound difference as a parameter rather than a
@@ -944,7 +975,7 @@ game-theoretic literature is built on a two-car abstraction
 \citep{aguad2024,devries2026,salminen2026}; measured against real decisions,
 which two cars those are is under-determined.
 
-\section{Threats to validity}
+\section{Discussion and threats to validity}
 \label{sec:threats}
 
 \paragraph{The committed horizon is hindsight.} The replay of
@@ -961,7 +992,8 @@ replay cannot test the tyre model (Section~\ref{sec:designchecks}).
 \paragraph{Slopes depend on the strategy.} A driver told to make a set last
 drives it more gently, so a fitted slope depends partly on the stint the team
 chose, which pushes in the direction of the one-stop residual and would show up
-between seasons as instability. Public timing cannot remove it.
+between seasons as instability. Public timing cannot remove it;
+Section~\ref{sec:implied} discusses what it means for the fitted ratios.
 
 \paragraph{Reuse, not refitting.} As Giona Fieni put it, a model-based policy
 retunes its degradation curves for each car and circuit and never depends on a
@@ -1030,21 +1062,22 @@ cars and tyres, but over \HeldImpliedN{} decisions its interval reaches the
 
 \section{Conclusion}
 
-Public timing rarely carries enough signal to say whether a degradation slope
+The within-stint score rarely carries enough signal to say whether a degradation slope
 transfers, and the reason is physical: inside a stint the fuel burned nearly
 cancels the tyre's wear, so the shape a stint shows is small against the lap
-noise. Measured directly, the slope moves between races at most circuits, by a
-median \TauPubShareReml{}\% of its mean, and by about its own size for the net
-slope a stint shows; neither a change of compound nor track temperature
-explains much of it. Held to the team's committed strategy, and out of sample,
+noise. Measured directly, slope estimates move between races at most circuits,
+by up to a median \TauPubShareReml{}\% of their mean, an upper bound since each
+season is one race, and by about their own size for the net slope a stint shows; neither a change of compound nor track temperature
+explains much of it. Held to the team's committed strategy,
 a time-optimal planner stops within a few laps of the pit wall, but so does a
 rule that only balances tyre age before the team's next stop: the agreement is
 a property of the horizon. What the stops do reveal is the compound difference
 the fit misses. Read as an implied wear ratio, the length of a team's first
-stint against the next follows compound hardness in both directions of change,
-where the fitted slopes are no better than chance, and only partly better once each compound has its own
-baseline pace. Teams act as if they know which tyre lasts; public timing, as
-modelled here, shows it only in part.
+stint against the next follows compound hardness in both directions of change.
+That much any strategist would expect; what is new is that the fitted slopes
+are no better than chance at it, and only partly better once each compound has
+its own baseline pace: stint lengths carry a compound difference that public
+timing, as modelled here, resolves only in part.
 
 \section*{Data and code availability}
 

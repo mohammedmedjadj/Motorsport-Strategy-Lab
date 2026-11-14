@@ -898,6 +898,9 @@ def _macros() -> dict[str, str]:
     out["RaceClusterN"] = str(rc["n_slopes"])
     out["RaceClusterZeroDr"] = str(rc["zero_driver_race"])
     out["RaceClusterZero"] = str(rc["zero_race"])
+    out["RaceClusterNRace"] = str(rc["n_race_intervals"])
+    out["PctCoefCrossingZeroRace"] = f"{100 * rc['zero_race'] / rc['n_race_intervals']:.0f}"
+    out["PctCompoundOverlapRace"] = f"{100 * rc['pairs_overlap_race'] / rc['pairs']:.0f}"
     out["InterN"] = str(it["n_circuits"])
     out["InterPositive"] = str(it["n_gamma_positive"])
     out["InterSignificant"] = str(it["n_gamma_significant"])

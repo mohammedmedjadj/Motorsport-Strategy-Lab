@@ -250,6 +250,12 @@ def s3_f1_degradation() -> str:
     narrowing here, and there have been enough of those.
     """
     coefs = pd.read_csv(F1_DERIVED_DIR / "degradation_coefficients.csv")
+    # Race-clustered intervals, from scripts/run_estimation_checks.py. Each
+    # season is one race, so these are the honest ones; the driver-race ones
+    # are drawn inside them.
+    race = pd.read_csv(F1_DERIVED_DIR / "degradation_race_clustered.csv")
+    coefs = coefs.merge(race[["circuit", "compound", "ci_low_race", "ci_high_race"]],
+                        on=["circuit", "compound"], how="left")
     order = (coefs.groupby("circuit")["deg_p1"].median()
              .sort_values().index.tolist())
 
@@ -265,11 +271,14 @@ def s3_f1_degradation() -> str:
         colour = COMPOUND_COLOURS.get(str(compound), "#888888")
         offset = {"SOFT": -0.24, "MEDIUM": 0.0, "HARD": 0.24}.get(str(compound), 0)
         y = [order.index(c) + offset for c in group["circuit"]]
+        ax.hlines(y, group["ci_low_race"].clip(lower=limits[0]),
+                  group["ci_high_race"].clip(upper=limits[1]),
+                  color=colour, linewidth=0.8, alpha=0.45, zorder=2)
         ax.errorbar(
             group["deg_p1"], y,
             xerr=[group["deg_p1"] - group["deg_p1_ci_low"],
                   group["deg_p1_ci_high"] - group["deg_p1"]],
-            fmt="o", markersize=4.5, elinewidth=1.1, capsize=0,
+            fmt="o", markersize=4.5, elinewidth=2.2, capsize=0,
             color=colour, label=str(compound).title(), alpha=0.9, zorder=3,
         )
     ax.axvline(0, color="#444444", linewidth=1.0, zorder=2)
@@ -287,12 +296,13 @@ def s3_f1_degradation() -> str:
 
     ax.set_yticks(range(len(order)))
     ax.set_yticklabels([circuit_name(c) for c in order], fontsize=9)
-    ax.set_xlabel("tyre-age slope (s per lap of tyre age), 95% CI clustered by driver-race")
-    ax.set_title("Degradation per circuit and compound, intervals clustered by driver-race",
+    ax.set_xlabel("tyre-age slope (s per lap of tyre age); thin line: 95% CI clustered by race, "
+                  "thick: by driver-race")
+    ax.set_title("Degradation per circuit and compound, race- and driver-race-clustered intervals",
                  fontsize=13, pad=34, loc="left")
     _caption(ax, f"{len(coefs)} fitted coefficients across {len(order)} circuits.\n"
-                 "The intervals leave out how the slope varies between races, "
-                 "which is measured separately.")
+                 "Thin lines cluster on the race (three or four per circuit) and are cut "
+                 "at the axis; thick lines cluster on the driver-race.")
     ax.legend(frameon=False, fontsize=9, loc="lower right",
               title="compound", title_fontsize=9,
               bbox_to_anchor=(1.0, 0.02))

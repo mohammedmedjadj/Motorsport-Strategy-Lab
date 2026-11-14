@@ -29,7 +29,7 @@
 \large Ce que le chronométrage public ne peut pas identifier, et ce que
 révèlent les arrêts des équipes}
 
-\author{Mohammed Reda Medjadj \\ Indépendant}
+\author{Mohammed Reda Medjadj \\ Lycée Chevrollier, Angers, France}
 
 \date{Traduction française de travail --- la version soumise est en anglais}
 
@@ -51,24 +51,24 @@ dégradation des pneus ajustée prédit-elle une saison qu'elle n'a jamais vue, 
 un planificateur qui minimise le temps s'arrête-t-il là où les équipes se sont
 arrêtées~? Le transfert est noté par le $R^2$ intra-relais, la part de
 l'évolution tour après tour à l'intérieur d'un relais tenu à part que la pente
-ajustée explique. Premièrement, le chronométrage public contient rarement assez
+ajustée explique. Premièrement, ce score a rarement assez
 de signal pour répondre à la question du transfert : à l'intérieur d'un relais,
 l'allègement en carburant annule presque l'usure du pneu, si bien que même une
 pente stable par construction ne pourrait pas atteindre $\TransferThreshold{}$
 sur \NCeilingBelowThreshold{} des \NCeilingCircuits{} circuits de Formule~1 ;
-estimée directement, la pente varie d'une course à l'autre d'une médiane de
-\TauPubShareReml{}\,\% de sa moyenne. Deuxièmement, en rejouant \NCommitTotal{}
+estimées directement, les pentes varient d'une course à l'autre d'au plus une médiane de
+\TauPubShareReml{}\,\% de leur moyenne. Deuxièmement, en rejouant \NCommitTotal{}
 vrais premiers arrêts avec l'arrêt suivant de chaque équipe tenu fixe, le
-planificateur tombe à une médiane de \OosMedian{} tours \OosCi{} de l'équipe en
-Formule~1 hors échantillon, mais une règle qui se contente d'équilibrer l'âge
+planificateur tombe à une médiane de \CommitAllAfter{} tours \CommitAllCi{} de l'équipe en
+Formule~1, mais une règle qui se contente d'équilibrer l'âge
 des pneus avant l'arrêt suivant de l'équipe fait aussi bien. Troisièmement, les arrêts portent ce que l'ajustement manque. Lu
 comme un rapport d'usure implicite, le rapport du premier relais au suivant
 vaut \ImpliedHarder{} \ImpliedHarderCi{} quand les équipes passent à une gomme
 plus dure et \ImpliedSofter{} \ImpliedSofterCi{} quand elles passent à une gomme
 plus tendre, dans le sens que prévoit la dureté pour
 \ImpliedExpectedSide{}\,\% des décisions, contre \ImpliedFittedExpectedSide{}\,\%
-pour les pentes ajustées : les équipes agissent sur une différence entre
-gommes que les pentes ajustées ne résolvent qu'en partie.
+pour les pentes ajustées : la longueur des relais porte une différence entre
+gommes que les temps au tour, tels que modélisés, ne résolvent qu'en partie.
 \end{abstract}
 
 \vspace{0.6em}
@@ -116,11 +116,13 @@ aussi bien.
 comme une décision de remplacement optimal, le tour choisi par une équipe
 implique un rapport entre le rythme d'usure du pneu neuf et celui du vieux. Ce
 rapport implicite est un rapport de longueurs de relais et n'utilise aucune
-pente ajustée, et il suit la dureté des gommes dans le sens que prévoit la
-physique, dans les deux sens de changement, là où les pentes ajustées ne font
-pas mieux que le hasard et, avec un rythme de base par gomme, seulement un peu
-mieux : les équipes agissent sur une différence entre gommes que le modèle
-ajusté ne résout qu'en partie.
+pente ajustée, et il suit la dureté des gommes dans les deux sens de
+changement. Que les équipes mettent la gomme plus dure sur le relais le plus
+long n'étonnera aucun stratège. Ce qui est nouveau, c'est la comparaison : les
+pentes ajustées sur les mêmes temps au tour ne font pas mieux que le hasard et,
+avec un rythme de base par gomme, seulement un peu mieux ; la longueur des
+relais porte donc une différence entre gommes que les temps au tour, tels que
+modélisés, ne résolvent qu'en partie.
 
 La modélisation est plus simple qu'une bonne partie des travaux cités, et elle
 ignore la gestion de l'énergie. La contribution est le protocole et ce qu'il a
@@ -204,7 +206,7 @@ premier tour où un undercut ne peut plus être contré, le seul mécanisme publ
 que j'aie trouvé qui prédise un arrêt \emph{avant} l'optimum en temps. La
 Section~\ref{sec:implied} le teste sur les mêmes décisions.
 
-\section{Données et protocole}
+\section{Matériels et méthodes}
 
 \paragraph{Termes.} Un \emph{relais} est la suite de tours qu'une voiture fait sur
 un même train de pneus. Pour chaque course, le manufacturier apporte trois
@@ -501,7 +503,7 @@ Formule~1, premiers arrêts sans neutralisation dans la fenêtre & \NDeviationCa
 \end{tabular}
 \end{table}
 
-\section{Résultat 1 : le transfert n'est en général pas mesurable, et les pentes bougent bien}
+\section{Résultat 1 : le score intra-relais mesure rarement le transfert, et les estimations de pente bougent entre courses}
 \label{sec:transfer}
 
 \begin{figure}[htbp]
@@ -872,11 +874,12 @@ prévoit la dureté pour \ImpliedExpectedSide{}\,\% des décisions. Les rapports
 ajustés le sont pour \ImpliedFittedExpectedSide{}\,\%, pas mieux qu'une pièce :
 ils placent la gomme plus dure à \ImpliedFittedHarder{} de l'usure de la plus
 tendre, et la plus tendre à \ImpliedFittedSofter{} de celle de la plus dure. Le
-rapport implicite mesure donc ce que l'ajustement ne résout pas : les équipes
-s'arrêtent comme si elles savaient quelle gomme dure, et
-l'ajustement publié ne le montre pas. Une partie de cela est le même savoir
-exercé dans l'autre sens, choisir la gomme plus dure pour le relais plus long,
-que l'inversion ne peut pas distinguer d'un rythme d'usure. Le \ImpliedRatio{}
+fait que les équipes mettent la gomme plus dure sur le relais le plus long
+n'étonnera aucun stratège, et l'inversion ne peut pas distinguer un rythme
+d'usure de ce choix de gomme pour une longueur de relais prévue. Ce que le
+rapport implicite ajoute, c'est la comparaison : la longueur des relais porte
+une différence entre gommes que l'ajustement publié des mêmes temps au tour ne
+montre pas. Le \ImpliedRatio{}
 poolé est surtout le cas vers une gomme plus dure, qui est le cas courant.
 
 Une partie de ce que l'ajustement manque tient à sa propre spécification.
@@ -1000,7 +1003,7 @@ chaque règle. La littérature de théorie des jeux repose sur une abstraction �
 deux voitures \citep{aguad2024,devries2026,salminen2026} ; face à de vraies
 décisions, quelles sont ces deux voitures est sous-déterminé.
 
-\section{Menaces sur la validité}
+\section{Discussion et menaces sur la validité}
 \label{sec:threats}
 
 \paragraph{L'horizon engagé est rétrospectif.} La reconstitution de la
@@ -1097,14 +1100,14 @@ aucun changement n'est établi.
 
 \section{Conclusion}
 
-Le chronométrage public contient rarement assez de signal pour dire si une pente
+Le score intra-relais contient rarement assez de signal pour dire si une pente
 de dégradation se transfère, et la raison est physique : à l'intérieur d'un
 relais, le carburant brûlé annule presque l'usure du pneu, donc la forme d'un
-relais est petite face au bruit des tours. Mesurée directement, la pente bouge
-entre courses sur la plupart des circuits, d'une médiane de \TauPubShareReml{}\,\% de sa
-moyenne, et d'environ sa propre taille pour la pente nette que montre un
+relais est petite face au bruit des tours. Mesurées directement, les estimations de pente bougent
+entre courses sur la plupart des circuits, d'au plus une médiane de \TauPubShareReml{}\,\% de leur
+moyenne (une borne haute, chaque saison étant une seule course), et d'environ sa propre taille pour la pente nette que montre un
 relais ; ni un changement de gomme ni la température de piste n'en expliquent
-beaucoup. Tenu à la stratégie engagée de l'équipe, et hors échantillon, un
+beaucoup. Tenu à la stratégie engagée de l'équipe, un
 planificateur qui minimise le temps s'arrête à quelques tours du muret des
 stands, mais une règle qui se contente d'équilibrer l'âge des pneus avant
 l'arrêt suivant de l'équipe aussi : l'accord est une propriété de l'horizon. Ce
@@ -1112,9 +1115,10 @@ que les arrêts révèlent, c'est la différence entre gommes que l'ajustement
 manque. Lue comme un rapport d'usure implicite, la longueur du premier relais
 d'une équipe face au suivant suit la dureté des gommes dans les deux sens de
 changement, là où les pentes ajustées ne font pas mieux que le hasard, et
-seulement un peu mieux quand chaque gomme a son propre rythme de base. Les
-équipes agissent comme si elles savaient quel pneu dure ; le chronométrage
-public, tel que modélisé ici, ne le montre qu'en partie.
+seulement un peu mieux quand chaque gomme a son propre rythme de base. Cela,
+tout stratège s'y attend ; ce qui est nouveau, c'est que la longueur des relais
+porte une différence entre gommes que le chronométrage public, tel que modélisé
+ici, ne résout qu'en partie.
 
 \section*{Disponibilité des données et du code}
 

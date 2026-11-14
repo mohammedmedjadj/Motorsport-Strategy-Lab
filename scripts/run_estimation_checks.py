@@ -53,6 +53,7 @@ DECISIONS = F1_DERIVED_DIR / "audit_design_checks.csv"
 STOPS = DERIVED_DIR / "cross_series" / "pit_loss_stop_events.csv"
 PLANS = DERIVED_DIR / "endurance" / "multistop_plans.csv"
 OUT_JSON = F1_DERIVED_DIR / "estimation_checks_summary.json"
+RACE_CLUSTERED = F1_DERIVED_DIR / "degradation_race_clustered.csv"
 OUT_MD = REPORTS_DIR / "f1" / "estimation_checks.md"
 
 
@@ -62,8 +63,16 @@ def _ols(X: np.ndarray, y: np.ndarray) -> np.ndarray:
 
 
 def race_clustering() -> dict:
+    """Every published linear slope with driver-race and race-clustered intervals.
+
+    Each season of a circuit is one race, so drivers in a race share shocks the
+    driver-race cluster does not cover. The race-clustered intervals rest on
+    three or four clusters and are wide; both are written out so the figure can
+    show them side by side.
+    """
     degrees = pd.read_csv(COEFS).groupby("circuit")["degree"].first()
-    n = zero_dr = zero_race = 0
+    n = n_race = zero_dr = zero_race = 0
+    rows = []
     for circuit in circuits_with_laps(seasons=PRE_ERA_SEASONS):
         if circuit not in degrees.index:
             continue
@@ -79,8 +88,29 @@ def race_clustering() -> dict:
             if name.startswith("deg::") and name.endswith("p1"):
                 n += 1
                 zero_dr += abs(beta[j]) <= t_dr * se_dr[j]
-                zero_race += abs(beta[j]) <= t_r * se_r[j]
-    return {"n_slopes": n, "zero_driver_race": int(zero_dr), "zero_race": int(zero_race)}
+                # A circuit raced once has no race-clustered interval.
+                if g_r > 1 and np.isfinite(se_r[j]):
+                    n_race += 1
+                    zero_race += abs(beta[j]) <= t_r * se_r[j]
+                rows.append({"circuit": circuit, "compound": name.split("::")[1],
+                             "slope": float(beta[j]),
+                             "ci_low_driver_race": float(beta[j] - t_dr * se_dr[j]),
+                             "ci_high_driver_race": float(beta[j] + t_dr * se_dr[j]),
+                             "ci_low_race": float(beta[j] - t_r * se_r[j]),
+                             "ci_high_race": float(beta[j] + t_r * se_r[j]),
+                             "n_races": int(g_r)})
+    table = pd.DataFrame(rows).round(6)
+    table.to_csv(RACE_CLUSTERED, index=False)
+    overlap = total = 0
+    for _, group in table.dropna(subset=["ci_low_race"]).groupby("circuit"):
+        r = list(group.itertuples())
+        for i, first in enumerate(r):
+            for second in r[i + 1:]:
+                total += 1
+                overlap += (first.ci_low_race <= second.ci_high_race
+                            and second.ci_low_race <= first.ci_high_race)
+    return {"n_slopes": n, "n_race_intervals": int(n_race), "zero_driver_race": int(zero_dr), "zero_race": int(zero_race),
+            "pairs": int(total), "pairs_overlap_race": int(overlap)}
 
 
 def interaction() -> dict:

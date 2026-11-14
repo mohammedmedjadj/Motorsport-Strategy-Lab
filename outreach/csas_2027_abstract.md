@@ -17,14 +17,14 @@ one protocol to seven car classes in Formula 1, WEC, IMSA and ELMS and ask two
 validation questions: does a fitted tyre-degradation slope predict a season it
 never saw, and does a time-optimal planner stop where teams stopped?
 
-Transfer is mostly not measurable from public timing. Inside a stint the fuel
+The within-stint score rarely measures transfer. Inside a stint the fuel
 burned nearly cancels the tyre's wear, so even a slope stable by construction
 could not reach a within-stint R² of 0.2 at 16 of 22 Formula 1 circuits; measured
-directly as a variance component, the slope moves between races by about a third
-of its mean.
+directly as a variance component, slope estimates move between races by up to
+about a third of their mean.
 
 Replaying 1,136 real first stops with each team's next stop held fixed, the
-planner lands a median of +3 laps [+2, +4] from the Formula 1 team out of sample,
+planner lands a median of +2 laps [+1, +4] from the Formula 1 team,
 but a rule with no fitted quantity, balancing tyre age before that stop, does as
 well: the agreement comes from the horizon.
 
