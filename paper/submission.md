@@ -28,8 +28,8 @@ Form: <https://wsb.wharton.upenn.edu/wharton-sports-analytics-journal-submission
 
 The upload accepts `pdf`, `txt` and `docx`. The guidelines prefer LaTeX and ask
 for the raw `.tex` alongside the PDF, but the form takes one file and does not
-list `.tex`. Upload the PDF, and offer the source if they ask: `main.tex` is in
-the repository and in the Overleaf bundle.
+list `.tex`. Upload the PDF; the free-text answer below links the raw source
+(`paper/main.tex` and `paper/numbers.tex`).
 
 ---
 
@@ -43,6 +43,7 @@ the repository and in the Overleaf bundle.
 >
 > All the code and data are public: https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab
 > Archived on Zenodo: https://doi.org/10.5281/zenodo.22726130
+> LaTeX source of the manuscript (raw .tex files): https://github.com/mohammedmedjadj/Motorsport-Strategy-Lab/tree/main/paper
 
 ---
 
