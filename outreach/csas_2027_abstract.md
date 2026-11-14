@@ -23,10 +23,10 @@ could not reach a within-stint R² of 0.2 at 16 of 22 Formula 1 circuits; measur
 directly as a variance component, the slope moves between races by about a third
 of its mean.
 
-Replaying 1,280 real first stops with each team's next stop held fixed, the
+Replaying 1,136 real first stops with each team's next stop held fixed, the
 planner lands a median of +3 laps [+2, +4] from the Formula 1 team out of sample,
 but a rule with no fitted quantity, balancing tyre age before that stop, does as
-well in every class: the agreement comes from the horizon.
+well: the agreement comes from the horizon.
 
 What the stops do reveal is the compound difference the fit misses. Read as an
 implied wear ratio, the ratio of a team's first stint to the next is 0.73

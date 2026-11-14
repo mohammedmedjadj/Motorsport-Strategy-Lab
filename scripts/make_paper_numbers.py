@@ -665,6 +665,8 @@ def _macros() -> dict[str, str]:
         out[f"EndCommit{tex}Midpoint"] = f"{r.midpoint_miss:.1f}"
         informative += int(r.committed_abs_miss < min(r.uniform_miss, r.midpoint_miss))
     out["NEndCommit"] = str(int(end_commit["n_decisions"].sum()))
+    # First stops replayed with the team's next stop held fixed, all series.
+    out["NCommitTotal"] = f"{int(out['NCommitAll']) + int(out['NEndCommit']):,}"
     out["NEndCommitClasses"] = str(len(end_commit))
     out["NEndCommitContainsZero"] = str(int(end_commit["committed_contains_zero"].sum()))
     out["NEndCommitInformative"] = str(informative)

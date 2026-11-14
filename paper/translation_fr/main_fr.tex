@@ -57,12 +57,11 @@ l'allègement en carburant annule presque l'usure du pneu, si bien que même une
 pente stable par construction ne pourrait pas atteindre $\TransferThreshold{}$
 sur \NCeilingBelowThreshold{} des \NCeilingCircuits{} circuits de Formule~1 ;
 estimée directement, la pente varie d'une course à l'autre d'une médiane de
-\TauPubShareReml{}\,\% de sa moyenne. Deuxièmement, en rejouant \NDecisions{}
+\TauPubShareReml{}\,\% de sa moyenne. Deuxièmement, en rejouant \NCommitTotal{}
 vrais premiers arrêts avec l'arrêt suivant de chaque équipe tenu fixe, le
 planificateur tombe à une médiane de \OosMedian{} tours \OosCi{} de l'équipe en
 Formule~1 hors échantillon, mais une règle qui se contente d'équilibrer l'âge
-des pneus avant l'arrêt suivant de l'équipe fait aussi bien dans chaque
-catégorie. Troisièmement, les arrêts portent ce que l'ajustement manque. Lu
+des pneus avant l'arrêt suivant de l'équipe fait aussi bien. Troisièmement, les arrêts portent ce que l'ajustement manque. Lu
 comme un rapport d'usure implicite, le rapport du premier relais au suivant
 vaut \ImpliedHarder{} \ImpliedHarderCi{} quand les équipes passent à une gomme
 plus dure et \ImpliedSofter{} \ImpliedSofterCi{} quand elles passent à une gomme
@@ -207,6 +206,18 @@ Section~\ref{sec:implied} le teste sur les mêmes décisions.
 
 \section{Données et protocole}
 
+\paragraph{Termes.} Un \emph{relais} est la suite de tours qu'une voiture fait sur
+un même train de pneus. Pour chaque course, le manufacturier apporte trois
+\emph{gommes} sèches, de la tendre (plus rapide neuve, s'use plus vite) à la dure,
+et dans une course de Formule~1 sur le sec chaque voiture doit en utiliser au
+moins deux, donc au moins un arrêt est obligatoire. La \emph{perte au stand} est
+le temps qu'un arrêt coûte par rapport à rester en piste. Une
+\emph{neutralisation} (Safety Car ou Virtual Safety Car en Formule~1, caution
+sur tout le circuit en endurance) ralentit tout le peloton, ce qui rend moins
+cher un arrêt fait pendant celle-ci. Un \emph{undercut} consiste à s'arrêter
+avant un rival pour que le rythme des pneus neufs fasse gagner la place quand le
+rival s'arrête à son tour.
+
 \subsection{Sources et périmètre}
 
 Le chronométrage au tour, les gommes, l'état de la piste et la météo de
@@ -220,7 +231,7 @@ sources de Formule~1 ne servent qu'à la Section~\ref{sec:repairs} : les gommes
 que Pirelli a désignées pour chaque course, et les tours de deuxième séance
 d'essais de l'API OpenF1. La Formule~1 est modélisée partout sur les saisons
 d'avant le règlement 2026 ; les \NRacesFoneHeldOut{} courses de 2026 déjà
-récupérées sont tenues hors de tout modèle et de tout audit. Le
+récupérées sont tenues hors de tout modèle, et ne sont auditées qu'à part, en Section~\ref{sec:prospective}. Le
 Tableau~\ref{tab:scope} donne le périmètre et le Tableau~\ref{tab:samples}
 chaque ensemble de décisions sur lequel les résultats sont calculés.
 
@@ -571,8 +582,8 @@ chacun, il vaut \TauPubCommon{}\,\% \TauPubCommonCi{}. $I^2$ est le plus haut l�
 (\VarIsqNoSignal{}), donc les deux mesures concordent là où les deux peuvent
 parler. En endurance, $Q$ rejette pour \EndVarHet{} des \EndVarN{}
 catégories-circuits avec un $I^2$ médian de \EndVarIsq{}, dont \EndVarIsqStable{}
-parmi celles que le plafond dit stables. Les pentes bougent entre courses presque
-partout ; sur la plupart des circuits, le score intra-relais est simplement un
+parmi celles que le plafond dit stables. Les pentes bougent entre courses sur la
+plupart des circuits ; sur la plupart des circuits aussi, le score intra-relais est simplement un
 instrument trop faible pour s'en apercevoir.
 
 Trois objections ne changent rien. \emph{Les étiquettes de gommes} : codées par
@@ -710,9 +721,9 @@ qui était le plus rapide.
 \includegraphics[width=\textwidth]{r3_audit_bias.png}
 \caption{Tour du modèle moins tour de l'équipe sur les \NDecisions{} premiers
 arrêts rejoués. Gris : le moteur mené jusqu'au drapeau. Couleur : les mêmes
-décisions avec un relais qui se termine au propre arrêt suivant de l'équipe ;
-en endurance, seules les décisions avec un arrêt ultérieur peuvent être
-rejouées. Les boîtes montrent les quartiles.}
+décisions avec un relais qui se termine au propre arrêt suivant de l'équipe,
+pour les \NCommitTotal{} décisions qui peuvent y être tenues
+(Tableau~\ref{tab:samples}). Les boîtes montrent les quartiles.}
 \label{fig:audit}
 \end{figure}
 
@@ -862,7 +873,7 @@ ajustés le sont pour \ImpliedFittedExpectedSide{}\,\%, pas mieux qu'une pièce 
 ils placent la gomme plus dure à \ImpliedFittedHarder{} de l'usure de la plus
 tendre, et la plus tendre à \ImpliedFittedSofter{} de celle de la plus dure. Le
 rapport implicite mesure donc ce que l'ajustement ne résout pas : les équipes
-s'arrêtent comme si elles savaient quelle gomme dure, et de combien, et
+s'arrêtent comme si elles savaient quelle gomme dure, et
 l'ajustement publié ne le montre pas. Une partie de cela est le même savoir
 exercé dans l'autre sens, choisir la gomme plus dure pour le relais plus long,
 que l'inversion ne peut pas distinguer d'un rythme d'usure. Le \ImpliedRatio{}
@@ -1079,7 +1090,7 @@ sur \HeldN{} décisions, \HeldWideMedian{} \HeldWideCi{} pour tout le plateau
 quinze tours avant sur \HeldWideN{} décisions, et un rapport implicite de
 \HeldImplied{} \HeldImpliedCi{} sur \HeldImpliedN{} décisions, toutes vers une
 gomme plus dure, contre \ImpliedHarder{} dans ce sens en 2022--2025. L'accord
-engagé survit au changement de règlement. Le rapport implicite est plus proche
+engagé n'est pas contredit par les premières courses sous le nouveau règlement. Le rapport implicite est plus proche
 de un sur les nouvelles voitures et les nouveaux pneus, mais sur
 \HeldImpliedN{} décisions son intervalle atteint la valeur de 2022--2025, donc
 aucun changement n'est établi.
@@ -1090,7 +1101,7 @@ Le chronométrage public contient rarement assez de signal pour dire si une pent
 de dégradation se transfère, et la raison est physique : à l'intérieur d'un
 relais, le carburant brûlé annule presque l'usure du pneu, donc la forme d'un
 relais est petite face au bruit des tours. Mesurée directement, la pente bouge
-entre courses presque partout, d'une médiane de \TauPubShareReml{}\,\% de sa
+entre courses sur la plupart des circuits, d'une médiane de \TauPubShareReml{}\,\% de sa
 moyenne, et d'environ sa propre taille pour la pente nette que montre un
 relais ; ni un changement de gomme ni la température de piste n'en expliquent
 beaucoup. Tenu à la stratégie engagée de l'équipe, et hors échantillon, un
