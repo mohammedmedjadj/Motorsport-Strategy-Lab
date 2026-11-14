@@ -57,7 +57,7 @@ inside a held-out stint that the fitted slope explains. First, that score
 rarely has enough signal to answer the transfer question: inside a stint
 fuel burn nearly cancels tyre wear, so even a slope stable by construction
 could not reach $\TransferThreshold{}$ at \NCeilingBelowThreshold{} of
-\NCeilingCircuits{} Formula~1 circuits; estimated directly, slope estimates vary
+\NCeilingCircuits{} Formula~1 circuits; measured directly, slope estimates vary
 between races by up to a median \TauPubShareReml{}\% of their mean. Second, replaying
 \NCommitTotal{} real first stops with each team's next stop held fixed, the
 planner lands a median of \CommitAllAfter{} laps \CommitAllCi{} from the Formula~1 team,
@@ -705,10 +705,20 @@ recommendation stays inside that range the one-stop median is
 per lap, below what the timing of these races can detect
 (Appendix~\ref{sec:deviationcost}).
 
-\subsection{What the stops reveal}
+\subsection{Which car is the rival}
+
+A competition-aware replay needs a rival, and the timing does not name one.
+Four defensible rules name the same car on only \NRivalAllAgree{} of
+\NRivalAllApply{} decisions, and the recommendation barely moves between them
+(Appendix~\ref{sec:rivalchoice}): which two cars the two-car game of
+\citet{aguad2024} and \citet{salminen2026} describes is, against real
+decisions, under-determined.
+
+\section{Result 3: the stops carry the compound difference the fit misses}
 \label{sec:implied}
 
-The residual has a form that does not depend on the window. Inverting
+The residual of Section~\ref{sec:residual} has a form that does not depend on
+the window. Inverting
 Equation~\ref{eq:closedform} at the lap each team chose, over the \ImpliedN{}
 decisions between two different compounds at linear circuits, gives a median
 ratio $\beta_{\mathrm{new}}/\beta_{\mathrm{old}}$ of \ImpliedRatio{}
@@ -743,7 +753,7 @@ baseline pace per compound, the harder compound is slower when new, by
 the refitted slopes order the compounds on the expected side for
 \OffsetsFittedSide{}\% of decisions instead of \ImpliedFittedExpectedSide{}\%:
 better than chance, still short of the teams. With those baselines in the
-time-optimal single stop, the planner's lap moves from \OffsetsGapPlain{} to
+time-optimal single stop of Equation~\ref{eq:closedform}, its lap moves from \OffsetsGapPlain{} to
 \OffsetsGap{} laps \OffsetsGapCi{} of the team's: dropping the inversion's
 assumption that the two compounds are equally fast when new leaves the shorter
 first stints in place.
@@ -782,15 +792,6 @@ earliest undefendable undercut of \citet{salminen2026}, do not account for the
 shorter first stints (Appendix~\ref{app:mechanisms}). A full structural estimate in the manner of
 \citet{rust1987}, with the compound difference as a parameter rather than a
 fitted input, is where explaining the ratio would start.
-
-\subsection{Which car is the rival}
-
-A competition-aware replay needs a rival, and the timing does not name one.
-Four defensible rules name the same car on only \NRivalAllAgree{} of
-\NRivalAllApply{} decisions, and the recommendation barely moves between them
-(Appendix~\ref{sec:rivalchoice}): which two cars the two-car game of
-\citet{aguad2024} and \citet{salminen2026} describes is, against real
-decisions, under-determined.
 
 \section{Discussion and threats to validity}
 \label{sec:threats}
