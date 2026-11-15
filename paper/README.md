@@ -110,15 +110,16 @@ one, and it is the single easiest thing for a reviewer to catch.
 
 ## Publication route
 
-**Zenodo is done.** The current release is `v1.2.0`, archived and carried
-onward into Software Heritage and OpenAIRE. `v1.0.0` and `v1.1.0` keep their
+**Zenodo is done.** The current release is `v1.3.0`, the state submitted to
+the Wharton Sports Analytics Journal, archived and carried onward into Software
+Heritage and OpenAIRE. `v1.0.0`, `v1.1.0` and `v1.2.0` keep their
 own frozen DOIs, which still resolve; they are simply no longer the ones to cite.
 
 | | |
 |---|---|
 | Concept DOI | [`10.5281/zenodo.22726130`](https://doi.org/10.5281/zenodo.22726130) — resolves to the newest version |
-| v1.2.0 DOI | [`10.5281/zenodo.23845526`](https://doi.org/10.5281/zenodo.23845526) — frozen |
-| Record | <https://zenodo.org/records/23845526> |
+| v1.3.0 DOI | [`10.5281/zenodo.24246810`](https://doi.org/10.5281/zenodo.24246810) — frozen |
+| Record | <https://zenodo.org/records/24246810> |
 
 Which one to use is not a matter of taste. Anything pointing at *the project* —
 the README badge, the site footer, the outreach pack, the paper's data and code
