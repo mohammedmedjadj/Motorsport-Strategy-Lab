@@ -2,7 +2,7 @@
 
 The degradation model (Equation 1) gives each compound its own wear slope but
 no baseline of its own: a soft and a hard tyre at age zero are assumed equally
-fast once the driver-race intercept is removed. Felipe Carrasco Heine pointed
+fast once the driver-race intercept is removed. Oscar F. Carrasco Heine pointed
 this out (11 November 2026): baseline differences between compounds matter
 whenever two strategies use different compounds.
 
