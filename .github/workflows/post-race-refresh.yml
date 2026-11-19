@@ -171,16 +171,43 @@ jobs:
         if: steps.ingest.outputs.outage != 'true'
         run: python scripts/run_degradation.py
 
+      # The safety-car fit calls the timing API again, edition by edition, and
+      # can hit the same hourly limit the ingest step guards against: on
+      # 16 Nov 2026 the ingest finished cleanly, then this step was
+      # rate-limited and refitted on 22 of 153 editions. The test gate refused
+      # the result, so nothing was committed, but the run went red for an
+      # outage rather than a fault. Same rule as above: a rate-limited fit is
+      # not a refresh, so nothing downstream runs and the run stays green.
       - name: Fit safety-car / VSC probability model
+        id: safety_car
         if: steps.ingest.outputs.outage != 'true'
-        run: python scripts/run_safety_car.py
+        env:
+          F1_USERNAME: ${{ secrets.F1_USERNAME }}
+          F1_PASSWORD: ${{ secrets.F1_PASSWORD }}
+        shell: bash
+        run: |
+          set -o pipefail
+          python scripts/run_safety_car.py 2>&1 | tee safety_car.log
+          if grep -q "RateLimitExceededError" safety_car.log; then
+            echo "outage=true" >> "$GITHUB_OUTPUT"
+            {
+              echo "## No refresh: the timing API rate-limited the safety-car fit"
+              echo
+              echo "The ingest finished, but the safety-car fit hit FastF1's"
+              echo "hourly call limit, so it saw only part of the calendar."
+              echo "Nothing downstream ran and **nothing was committed**."
+            } >> "$GITHUB_STEP_SUMMARY"
+            git checkout -- data/derived/f1 reports/f1 2>/dev/null || true
+          else
+            echo "outage=false" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Regenerate simulator demo report
-        if: steps.ingest.outputs.outage != 'true'
+        if: steps.ingest.outputs.outage != 'true' && steps.safety_car.outputs.outage != 'true'
         run: python scripts/run_simulator_demo.py
 
       - name: Regenerate retrospective audit report
-        if: steps.ingest.outputs.outage != 'true'
+        if: steps.ingest.outputs.outage != 'true' && steps.safety_car.outputs.outage != 'true'
         run: python scripts/run_audit.py
       # -------------------------------------------------------------------
 
@@ -188,11 +215,11 @@ jobs:
       # passes on the regenerated artifacts. A broken refresh fails the job and
       # commits nothing.
       - name: Run test suite
-        if: steps.ingest.outputs.outage != 'true'
+        if: steps.ingest.outputs.outage != 'true' && steps.safety_car.outputs.outage != 'true'
         run: pytest -q
 
       - name: Commit and push refreshed artifacts (only on a real diff)
-        if: steps.ingest.outputs.outage != 'true'
+        if: steps.ingest.outputs.outage != 'true' && steps.safety_car.outputs.outage != 'true'
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
