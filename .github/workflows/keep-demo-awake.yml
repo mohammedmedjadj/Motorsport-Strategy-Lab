@@ -1,0 +1,51 @@
+name: Keep the demo awake
+
+# Streamlit Community Cloud puts an app to sleep after a period without
+# visitors, and a sleeping app greets the next visitor with a "Zzzz" page and a
+# wake-up button instead of the simulator. The demo link goes out in emails, so
+# the first person to click it should land on the app, not on that page.
+#
+# A plain HTTP request does not count as a visit (the sleep page is served
+# without starting the app), so this opens the page in a headless browser and
+# presses the wake-up button if it is there. Nothing in the repository changes.
+
+on:
+  schedule:
+    - cron: "17 */8 * * *" # every 8 hours
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  visit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install Playwright
+        run: |
+          pip install playwright==1.48.0
+          python -m playwright install --with-deps chromium
+
+      - name: Open the demo and wake it if asleep
+        shell: python
+        run: |
+          from playwright.sync_api import sync_playwright
+
+          URL = "https://motorsport-strategy-lab.streamlit.app/"
+          with sync_playwright() as p:
+              page = p.chromium.launch().new_page()
+              page.goto(URL, wait_until="domcontentloaded", timeout=60_000)
+              page.wait_for_timeout(5_000)
+              button = page.get_by_role("button", name="Yes, get this app back up!")
+              if button.count():
+                  button.first.click()
+                  print("The app was asleep: wake-up requested.")
+                  page.wait_for_timeout(60_000)
+              else:
+                  print("The app was already awake.")
