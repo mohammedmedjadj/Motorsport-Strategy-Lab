@@ -134,9 +134,7 @@ and the concept DOI follows it. Bump `version` and `date-released` in
 `CITATION.cff` and put the new version DOI in its `doi` field and `identifiers`
 list. Nothing else changes, because nothing else names a version.
 
-arXiv needs an endorsement in the relevant category. A serious reply from any of
-the authors above is the realistic route to one, which is what
-[`../outreach/`](../outreach/) exists for — and the three questions in
-[`../outreach/questions.md`](../outreach/questions.md) are the ones worth
-asking them, particularly the second, on whether the audit compares comparable
-things.
+The three methodological questions in
+[`../outreach/questions.md`](../outreach/questions.md) are the ones I would most
+like a reader to settle, particularly the second, on whether the audit compares
+comparable things.

@@ -1,7 +1,6 @@
 """The brief is the one document here that goes to a named researcher.
 
-Everything else in `outreach/` is a template I fill in before sending. This one
-is generated with the numbers already in it, and it was written because Wytze
+Unlike the other files in `outreach/`, this one is generated with the numbers already in it, and it was written because Wytze
 de Vries asked for the correlation data behind Result 2. A stale figure in it
 would be wrong in front of someone who works on exactly this problem.
 

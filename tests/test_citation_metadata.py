@@ -69,9 +69,6 @@ GENERAL_POINTERS = [
     "docs/index.html",
     "paper/main.tex",
     "outreach/one_pager.md",
-    "outreach/emails.md",
-    "outreach/targets.md",
-    "outreach/README.md",
 ]
 
 #: Files that explain the difference between the two DOIs, or give a formal

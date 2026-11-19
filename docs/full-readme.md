@@ -1457,9 +1457,9 @@ Motorsport-Strategy-Lab/
   docs/                 # index.html -- the GitHub Pages site, plus figures/
                         #   kept byte-identical to reports/figures/ by
                         #   tests/test_site.py
-  outreach/             # the contact pack: one-pager, three methodological
-                        #   questions, three email variants, and a ready-to-file
-                        #   FastF1 bug report with a self-contained reproduction
+  outreach/             # supporting material: one-pager, three methodological
+                        #   questions, one-page briefs, and the FastF1 bug report
+                        #   with a self-contained reproduction
   reports/              # one branch per modelled class -- see reports/README.md
     figures/            # 9 figures generated from committed artifacts: three
                         #   headline results, six supporting layers
